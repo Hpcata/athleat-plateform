@@ -12,7 +12,7 @@
 					<i class="bi bi-bag-check-fill  text-primary" style="font-size: 90px;"></i>
 				</div>
 				<div class="mb-5">
-					<h2 class="color-900 text-center">Performance Health</h2>
+					<h2 class="color-900 text-center">Athleat</h2>
 				</div>
 				<!-- Image block -->
 				<div class="">

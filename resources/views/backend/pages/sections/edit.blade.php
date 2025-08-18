@@ -1,5 +1,7 @@
 @extends('backend.layouts.app')
 
+@section('title', 'Edit Section')
+
 @section('content')
 <style>
     .dropzone .dz-preview {

@@ -79,7 +79,7 @@ $auth = auth()->guard('web')->check();
         <header class="header">
             <div class="header-content">
                 <div class="logo">
-                    <a href="{{ route('front.sub-home-page') }}">
+                    <a href="{{ route('front.index') }}">
                     <img src="{{ frontAssets('images/logo.svg') }}" alt="Athleat Logo" class="logo-img" width="142"
                         height="30" />
                     </a>
@@ -165,17 +165,11 @@ $auth = auth()->guard('web')->check();
                 </div>
         </header>
     @endif
-@elseif(
-    Route::is('front.sub-home-page') ||
-    Route::is('front.training.nutrition.plan') ||
-    Route::is('front.competition.plan') ||
-    Route::is('front.injury.recovery.plan') ||
-    Route::is('front.about-us')
-)
+@else
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-custom homepage-navbar">
         <div class="container-homepage">
-            <a class="navbar-brand" href="{{ route('front.sub-home-page') }}">
+            <a class="navbar-brand" href="{{ route('front.index') }}">
                 <img src="{{ frontAssets('images/logo.svg') }}" alt="ATHLEAT Fuel Logo" />
             </a>
             <div class="mob-btn-wrap">
@@ -183,15 +177,15 @@ $auth = auth()->guard('web')->check();
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                     style="border: none">
                     <span class="menu-icon" style="color: white">
-                        <img href="{{ route('front.sub-home-page') }}" src="{{ frontAssets('images/bars.svg') }}" alt="ATHLEAT Fuel Logo" class="bars-icon" />
-                        <img href="{{ route('front.sub-home-page') }}" src="{{ frontAssets('images/cross.svg') }}" alt="Menu" class="cross-icon" />
+                        <img href="{{ route('front.index') }}" src="{{ frontAssets('images/bars.svg') }}" alt="ATHLEAT Fuel Logo" class="bars-icon" />
+                        <img href="{{ route('front.index') }}" src="{{ frontAssets('images/cross.svg') }}" alt="Menu" class="cross-icon" />
                     </span>
                 </button>
             </div>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="mx-auto navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('front.sub-home-page') }}">Home</a>
+                        <a class="nav-link" href="{{ route('front.index') }}">Home</a>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
@@ -240,129 +234,6 @@ $auth = auth()->guard('web')->check();
             </div>
         </div>
     </nav>
-@else
-    <header id="header">
-        <div class="container">
-            <nav class="navbar navbar-expand-lg">
-                <div class="d-flex align-items-center w-100">
-                    <a class="navbar-brand" href="{{ route('front.index') }}">
-                        <img src="{{ frontAssets('images/logo.svg') }}" alt="">
-                    </a>
-                    <button class="collapsed navbar-toggler" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
-                        aria-label="Toggle navigation">
-                        <span class="menu-icon">
-                            <img src="{{ frontAssets('images/bars.svg') }}" alt="Menu" class="bars-icon">
-                            <img src="{{ frontAssets('images/cross.svg') }}" alt="Close" class="cross-icon">
-                        </span>
-                    </button>
-                    <div class="collapse navbar-collapse" id="navbarNav">
-                        <ul class="ms-lg-auto header-navbar navbar-nav">
-                            @foreach ($headerData as $menu)
-                                @php
-                                    $slug = '';
-                                    $link = $menu['link'] ?? '';
-                                    if (str_contains($link, '|')) {
-                                        $explodelinks = explode('|', $link);
-                                        $link = $explodelinks[0] ?? '';
-                                        $slug = $explodelinks[1] ?? '';
-                                    }
-                                    $title = $menu['title'] ?? 'Untitled';
-                                @endphp
-                                @if ($link != '' && $link != '#')
-                                    <li class="nav-item">
-                                        <a class="nav-link restriction-page" id="{{ strtolower($title) }}"
-                                            href="{{ route($link, $slug ? ['page_slug' => $slug] : []) }}">{{ $title }}</a>
-                                    </li>
-                                @elseif($title == 'Contact')
-                                    <li class="nav-item">
-                                        <a class="nav-link restriction-page" id="contact-us"
-                                            href="{{ route('front.index') }}#contact"> Contact</a>
-                                    </li>
-                                @else
-                                    @if (Auth::check() && Auth::guard('web')->user()->is_superadmin == 0)
-                                        <li class="nav-item dropdown">
-                                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown"
-                                                role="button" data-bs-toggle="dropdown" aria-expanded="false"><i
-                                                    class="fa-solid fa-user"></i>
-                                                My Account
-                                            </a>
-                                            <ul class="dropdown-menu dropdown-menu-end"
-                                                aria-labelledby="userDropdown">
-                                                <li>
-                                                    <a class="p-2 text-dark dropdown-item"
-                                                        href="{{ route('front.profile-old', ['id' => Auth::guard('web')->user()->id]) }}">
-                                                        My Profile
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <form id="logout-form" action="{{ route('front.logout') }}"
-                                                        method="POST" style="display: none;">
-                                                        @csrf
-                                                    </form>
-                                                    <a class="p-2 text-danger dropdown-item" href="#"
-                                                        onclick="handleLogout(event)">
-                                                        Logout
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                        </li>
-                                    @elseif($title == 'Login')
-                                        <li class="nav-item">
-                                            <a class="nav-link restriction-page" id="login" href="#"
-                                                onclick="openSingupFreePopup(true)"><i class="fa-solid fa-user"></i>
-                                                Login</a>
-                                        </li>
-                                    @else
-                                        <li class="nav-item">
-                                            <a class="nav-link restriction-page" id="{{ strtolower($title) }}"
-                                                href="#{{ strtolower($title) }}">{{ $title }}</a>
-                                        </li>
-                                    @endif
-                                @endif
-                            @endforeach
-                        </ul>
-                    </div>
-                </div>
-            </nav>
-        </div>
-    </header>
-    <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="loginModalLabel">Sign In</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-
-                <div class="modal-body">
-                    <div id="login-error" class="text-danger"></div> <!-- This will display the error message -->
-                    <!-- Sign In Form -->
-                    <form id="login-form">
-                        <div class="mb-3">
-                            <label for="login-email" class="form-label">Email</label>
-                            <input type="email" name="email" class="form-control" id="login-email" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="login-password" class="form-label">Password</label>
-                            <input type="password" name="password" class="form-control" id="login-password"
-                                required>
-                        </div>
-
-                        <!-- Sign In Button -->
-                        <button type="submit" id="login-submit" class="mt-3 w-100 btn-primary">
-                            Sign In
-                        </button>
-                    </form>
-
-                    <!-- Sign Up Link -->
-                    <div class="mt-3 text-center">
-                        <small>Don't have an account? <a href="#" id="show-signup-modal">Sign Up</a></small>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 @endif
 
 @include('front.modal.single-signup')

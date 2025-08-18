@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=Edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-	<title>Performance Health:: @yield('title')</title>
+	<title>Athleat:: @yield('title')</title>
 	<link rel="icon" href="{{ url('/') }}/favicon.svg" type="image/x-icon"> <!-- Favicon-->
 
 	<link rel="stylesheet" href="{!! backendAssets('dist/assets/plugin/datatables/responsive.dataTables.min.css') !!}">
@@ -13,7 +13,7 @@
 	<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" id="theme-styles">
 	@stack('styles')
 	<style>
-		.tawk-custom-color {	
+		.tawk-custom-color {
 			display: none !important;
 		}
 		.page-item.active .page-link {
@@ -41,8 +41,6 @@
 	</style>
 	<!-- project css file  -->
 	<link rel="stylesheet" href="{!! backendAssets('ebazar.style.min.css') !!}">
-	<!-- <link rel="stylesheet" href="{!! backendAssets('dist/assets/plugin/datatables/responsive.dataTables.min.css') !!}"> -->
-	<!-- <link rel="stylesheet" href="{!! backendAssets('dist/assets/plugin/datatables/dataTables.bootstrap5.min.css') !!}"> -->
 
 	@stack('custom_styles')
 
@@ -230,7 +228,7 @@
 		</div>
 
 	</div>
-<!-- jQuery -->
+	<!-- jQuery -->
 	<!-- Jquery Core Js -->
 	<script src="https://cdn.tiny.cloud/1/szrx9k170icaql0d40hu6euk46v017qd55txbsvwac74hcdq/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
 	<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
@@ -238,7 +236,7 @@
 	<script src="{!! backendAssets('dist/assets/bundles/libscripts.bundle.js') !!}"></script>
 	<script src="{!! backendAssets('dist/assets/bundles/dataTables.bundle.js') !!}"></script>
 	<script src="{!! backendAssets('dist/assets/js/general.js') !!}"></script>
-	
+
 	<script>
 		$('#myDataTable')
 			.DataTable({
@@ -256,33 +254,11 @@
 					}
 				]
 			});
-
-		// $('.deleterow').on('click', function() {
-		// 	var tablename = $(this).closest('table').DataTable();
-		// 	tablename
-		// 		.row($(this)
-		// 			.parents('tr'))
-		// 		.remove()
-		// 		.draw();
-
-		// });
-		// // Flash message auto-hide logic
-		// window.onload = function() {
-		// 	// Select all alert messages
-		// 	const alerts = document.querySelectorAll('.alert');
-		// 	alerts.forEach(function(alert) {
-		// 		// Set timeout to fade out the alert after 5 seconds (5000ms)
-		// 		setTimeout(function() {
-		// 			alert.classList.add('fade');
-		// 			alert.classList.remove('show');
-		// 		}, 5000);
-		// 	});
-		// }
 	</script>
 	@stack('scripts')
 	<!-- Jquery Page Js -->
 	<script src="{!! backendAssets('dist/assets/js/template.js') !!}"></script>
-	
+
 	@stack('custom_scripts')
 </body>
 

@@ -5,6 +5,7 @@ use Carbon\Carbon;
 use App\Models\SportGame;
 use App\Constants\AgeGroups;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
 
 // APP FUNCTIONS
 function appName() {
@@ -13,10 +14,10 @@ function appName() {
 
 // ROUTE FUNCTIONS
 function routePut($name, $args = []) {
-	return $name && \Route::has($name) ? route($name, $args) : '#';
+	return $name && Route::has($name) ? route($name, $args) : '#';
 }
 function routeCurrentName() {
-	return \Route::getCurrentRoute()->getName();
+	return Route::getCurrentRoute()->getName();
 }
 function routeIsActive($name, $activeClass = "active") {
 	return routeCurrentName() == $name ? $activeClass : '';
@@ -37,17 +38,16 @@ function backendRoutePut($key, $args = []) {
 }
 
 function frontAssets($path) {
-	$asset = config('constant.ENVIRONMENT') == 'production' ? 'front/' . $path : 'front/' . $path;
+	$asset = 'front/' . $path;
 	return asset($asset);
 }
 
 function webAssets($path) {
-	$asset = config('constant.ENVIRONMENT') == 'production' ? '' . $path : 'public/' . $path;
-	return asset($asset);
+	return asset($path);
 }
 
 function adminAssets($path) {
-	$asset = config('constant.ENVIRONMENT') == 'production' ? 'public/admin/' . $path : 'admin/' . $path;
+	$asset = 'admin/' . $path;
 	return asset($asset);
 }
 

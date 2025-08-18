@@ -64,13 +64,27 @@ class FrontController extends Controller
 
     public function index()
     {
-        $requirements = [];
+        // Step 1: Get all sub_plan_ids from plan_sub_plans table
+        $subPlanIds = DB::table('plan_sub_plans')->pluck('sub_plan_id')->toArray();
 
-        $disabledDay = json_encode([]);
+        // Step 2: Retrieve all plans that are NOT sub-plans
+        $plans = Plan::whereNotIn('id', $subPlanIds)->get();
 
-        $organization = [];
-        $testimonials = [];
-        return view('front.pages.index', compact('requirements', 'disabledDay', 'organization', 'testimonials'));
+        $page = Page::with('sections')->where('slug', 'action_sport_nutrition_plan')->first();
+
+        $isAuthenticated = Auth::check(); // Returns true if the user is logged in
+        $sportCategories = SportCategory::select('id', 'name')->get();
+
+        $userId       = User::where('slug', 'age-better')->first()->id;
+        $testimonials = Testimonial::with('testimonialImage')->where('user_id', $userId)->get();
+
+        // Get age groups from constants
+        $ageGroups = \App\Constants\AgeGroups::getAll();
+
+        // Get all sports as an alphabetically sorted array
+        $sports = SportGame::orderBy('name', 'asc')->get();
+
+        return view('front.pages.sub-home-page', compact('page', 'plans', 'isAuthenticated', 'sportCategories', 'testimonials', 'ageGroups', 'sports'));
     }
 
     public function save(QueryRequest $request)
@@ -121,7 +135,7 @@ class FrontController extends Controller
         // Step 2: Retrieve all plans that are NOT sub-plans
         $plans = Plan::whereNotIn('id', $subPlanIds)->get();
 
-        $page = Page::with('sections')->where('slug', 'actionsport_nutrition_plan')->first();
+        $page = Page::with('sections')->where('slug', 'action_sport_nutrition_plan')->first();
 
         $isAuthenticated = Auth::check(); // Returns true if the user is logged in
         $sportCategories = SportCategory::select('id', 'name')->get();
