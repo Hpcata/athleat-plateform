@@ -71,7 +71,7 @@
                         </div>
                     </div>
                 </section>
-            @elseif($payment && $payment->plan_id && $userPlan->is_mail_sent == 0)
+            @elseif($payment && $payment->plan_id && isset($userPlan->is_mail_sent) && $userPlan->is_mail_sent == 0)
                 <section class="challenges">
                     <div class="section-header">
                         <h2>My Nutrition Plan</h2>
@@ -136,7 +136,7 @@
                         </div>
                     </div>
                 </section>
-            @elseif ($userPlan && $userPlan->is_mail_sent == 1 && $userPlan->mail_sent_at != null)
+            @elseif ($userPlan && isset($userPlan->is_mail_sent) && $userPlan->is_mail_sent == 1 && isset($userPlan->mail_sent_at) && $userPlan->mail_sent_at != null)
                 <section class="training-plan">
                     @if (isset($userPlan->plan))
                         <div class="section-header">
