@@ -19,7 +19,7 @@
             <p>Copyright © 2025 Catalysta Pty Ltd trading as Athlete Elite. All rights reserved.</p>
         </div>
     </footer>
-@elseif(Route::is('front.sub-home-page') || Route::is('front.training.nutrition.plan') || Route::is('front.competition.plan') || Route::is('front.injury.recovery.plan') || Route::is('front.about-us'))
+@else
     <footer class="footer-bg">
         <div class="footer-grid container-homepage">
             <!-- Left Section: Logo, Tagline, Social, Copyright -->
@@ -89,27 +89,6 @@
             <p class="copyright-text web-hide">Copyright {{ date('Y') }} Catalysta Pty Ltd</p>
         </div>
     </footer>
-@else
-    <div class="site-footer">
-        <div class="container">
-            <div class="row mt-5">
-                <div class="col-12 text-center">
-                    <p class="mb-0">
-                        Copyright © 2024 Kerry O’Bryan.
-                    </p>
-                </div>
-            </div>
-            <!-- /.container -->
-        </div>
-        <!-- /.site-footer -->
-        <!-- Preloader -->
-        <div id="overlayer"></div>
-        <div class="loader">
-            <div class="spinner-border text-primary" role="status">
-                <span class="visually-hidden">Loading...</span>
-            </div>
-        </div>
-    </div>
 @endif
 
 <style>
