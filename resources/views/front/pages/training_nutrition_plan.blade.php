@@ -19,9 +19,9 @@
                             <div class="hero-content-fixed">
                                 <h1 class="hero-title-landing">{{ $section->title }}</h1>
                                 <button class="btn-signup purchase-now-btn"
-                                    data-plan-id="{{ $planDetails->id }}"
-                                    data-plan-name="{{ $planDetails->name }}"
-                                    data-plan-price="{{ $planDetails->price }}">
+                                    data-plan-id="{{ $planDetails?->id }}"
+                                    data-plan-name="{{ $planDetails?->name }}"
+                                    data-plan-price="{{ $planDetails?->price }}">
                                     Purchase plan
                                 </button>
                             </div>

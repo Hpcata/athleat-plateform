@@ -103,7 +103,7 @@ class QuizController extends Controller
             // ③ find quiz
             $quiz = Quiz::findOrFail($request->quiz_id);
 
-            if ($request->step == 1) {
+            if ($request->step == 2) {
                 $click = ActivityTracker::click('quiz_started', null);
 
                 // Log in trackings with click reference
