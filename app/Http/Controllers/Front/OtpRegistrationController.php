@@ -14,6 +14,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use App\Services\ActivityTracker;
+use App\Models\TrackingType;
 
 class OtpRegistrationController extends Controller
 {
@@ -152,6 +154,15 @@ class OtpRegistrationController extends Controller
                 $existingUser = User::where('phone', $mobileNumber)->first();
 
                 if ($existingUser && $existingUser->email) {
+                    $click = ActivityTracker::click('user_logged_in', $existingUser->id);
+                    // Log in trackings with click reference
+                    ActivityTracker::log(TrackingType::USER_LOGGED_IN, $existingUser->id, [
+                        'user_click_id' => $click->id,
+                        'section_element_id' => $click->section_element_id,
+                        'user_id' => $existingUser->id,
+                        'login_time' => now()->toDateTimeString(),
+                    ]);
+
                     // User exists - log them in
                     Auth::login($existingUser);
 
@@ -321,6 +332,14 @@ class OtpRegistrationController extends Controller
                 $existingUser->phone = $mobileNumber;
                 $existingUser->save();
 
+                $click = ActivityTracker::click('user_logged_in', $existingUser->id);
+                // Log in trackings with click reference
+                ActivityTracker::log(TrackingType::USER_LOGGED_IN, $existingUser->id, [
+                    'user_click_id' => $click->id,
+                    'section_element_id' => $click->section_element_id,
+                    'user_id' => $existingUser->id,
+                    'login_time' => now()->toDateTimeString(),
+                ]);
                 // Log in the user
                 Auth::login($existingUser);
 
@@ -366,8 +385,28 @@ class OtpRegistrationController extends Controller
 
             $user = User::create($userData);
 
+            $click = ActivityTracker::click('user_account_create', $user->id);
+            ActivityTracker::log(
+                TrackingType::ACCOUNT_CREATED, $user->id,
+                [
+                    'email'              => $user->email,
+                    'user_click_id'      => $click->id,
+                    'section_element_id' => $click->section_element_id,
+                    'user_id'            => $user->id,
+                ]
+            );
+
             // Clear OTP verification
             $this->otpService->clearOtpVerification($mobileNumber);
+
+            $click = ActivityTracker::click('user_logged_in', $user->id);
+            // Log in trackings with click reference
+            ActivityTracker::log(TrackingType::USER_LOGGED_IN, $user->id, [
+                'user_click_id' => $click->id,
+                'section_element_id' => $click->section_element_id,
+                'user_id' => $user->id,
+                'login_time' => now()->toDateTimeString(),
+            ]);
 
             // Log in the user
             Auth::login($user);
