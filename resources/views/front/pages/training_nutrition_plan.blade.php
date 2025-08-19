@@ -8,10 +8,10 @@
         @foreach($page->sections as $section)
             @if($section->section_type == \App\Models\Section::TYPE_TRAINING_PLAN_MAIN_BANNER && $section->enabled == 1) <!-- done -->
                     @php
-            $bannerImage = '';
-            if (isset($section->banner_image[0])) {
-                $bannerImage = $section->banner_image[0];
-            }
+                        $bannerImage = '';
+                        if (isset($section->banner_image[0])) {
+                            $bannerImage = $section->banner_image[0];
+                        }
                     @endphp
                     <div class="hero-section-landing"
                         style="background-image: url('{{ webAssets('storage/' . $bannerImage) }}')">
