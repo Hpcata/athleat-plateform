@@ -120,7 +120,7 @@
                                         </div>
                                     </div>
                                     <h3 class="plan-placeholder-title">
-                                        Your personalized plan is being prepared
+                                        Your personalised plan is being prepared
                                     </h3>
                                     <p class="plan-placeholder-message">
                                         Our nutrition experts are crafting your custom meal plan. It
