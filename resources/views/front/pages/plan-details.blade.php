@@ -7,13 +7,13 @@
 
 <main class="main">
      <!-- Loader -->
-    <!-- <div id="loader" class="d-none">
+    <div id="loader" class="d-none">
         <div class="box" id="loader1"></div>
         <div class="box" id="loader2"></div>
         <div class="box" id="loader3"></div>
         <div class="box" id="loader4"></div>
         <div class="box" id="loader5"></div>
-    </div> -->
+    </div>
     <!-- Hero Banner -->
     <div class="hero-container">
         <div class="hero-section">
@@ -853,9 +853,11 @@
                         pdf.text(dateText, dateX, dateY, { align: 'right', baseline: 'middle' });
                     }
                 })
-                .save();
+                .save()
+                .then(() => {
+                    hideLoader();
+                });
         });
-        hideLoader();
     }
 
     // Helper to convert images to base64
