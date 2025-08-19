@@ -470,16 +470,7 @@ $auth = auth()->guard('web')->check();
             navbarToggler.removeAttribute('data-bs-toggle');
             navbarToggler.removeAttribute('data-bs-target');
         }
-        // Function to update navbar background based on scroll position
-        // function updateNavbarBackground() {
-        //     const navbar = document.querySelector(".navbar-custom");
-        //     if (!navbar) return;
-        //     if (window.scrollY > 50) {
-        //         navbar.style.background = "rgba(59, 59, 59, 1)";
-        //     } else {
-        //         navbar.style.background = "transparent";
-        //     }
-        // }
+
         // Function to update navbar background based on scroll position
         function updateNavbarBackground() {
             const navbar = document.querySelector(".navbar-custom");

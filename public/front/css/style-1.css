@@ -14461,7 +14461,7 @@ span.border-heading:after {
 .booking-type-box { position: relative; overflow: hidden; }
 .booking-desc-box { background: rgba(21, 94, 92,0.9); position: absolute; top: 0; left: 0; right: 0; bottom: 0; padding: 1.5rem; color: #fff; display: flex; align-items: center; transform: translateY(50%); opacity: 0; visibility: hidden; transition: 0.35s all; flex-direction: column;justify-content: center;}
 .booking-desc-box p:last-child { margin: 0; }
-.booking-type-box:hover .booking-desc-box { opacity: 1; visibility: visible; transform: translateY(0); }
+.booking-type-box:hover .booking-desc-box { opacity: 1; visibility: visible; transform: translateY(0);}
 
 #header { background-color: #3B3B3B; padding: 0.8rem 0; }
 /* .navbar-brand { max-width: 300px; width: 100%; margin: 0 1rem 0 0; padding: 0; }
