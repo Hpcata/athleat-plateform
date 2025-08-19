@@ -2548,10 +2548,12 @@ textarea.form-control-lg {
   }
 }
 .form-select:focus {
-  border-color: #f8bca2;
-  outline: 0;
+  outline: none;
+ border-color: #ced4da;
+ box-shadow: none;
+    /*outline: 0;
   -webkit-box-shadow: 0 0 0 0.25rem rgba(241, 121, 69, 0.25);
-  box-shadow: 0 0 0 0.25rem rgba(241, 121, 69, 0.25);
+  box-shadow: 0 0 0 0.25rem rgba(241, 121, 69, 0.25); */
 }
 .form-select[multiple],
 .form-select[size]:not([size="1"]) {
@@ -2860,6 +2862,8 @@ box-shadow: none;
 .form-floating > .form-control:not(:placeholder-shown) {
   padding-top: 1.625rem;
   padding-bottom: 0.625rem;
+  outline: none;
+  border-color: rgb(0 0 0 / 10%);
 }
 .form-floating > .form-control:-webkit-autofill {
   padding-top: 1.625rem;
@@ -2873,14 +2877,14 @@ box-shadow: none;
 .form-floating > .form-control:not(:placeholder-shown) ~ label,
 .form-floating > .form-select ~ label {
   opacity: 0.65;
-  -webkit-transform: scale(0.85) translateY(-0.5rem) translateX(0.15rem);
-  -ms-transform: scale(0.85) translateY(-0.5rem) translateX(0.15rem);
-  transform: scale(0.85) translateY(-0.5rem) translateX(0.15rem);
+  -webkit-transform: scale(0.85) translateY(-15px) translateX(0.15rem);
+  -ms-transform: scale(0.85) translateY(-15px) translateX(0.15rem);
+  transform: scale(0.85) translateY(-15px) translateX(0.15rem);
 }
 .form-floating > .form-control:-webkit-autofill ~ label {
   opacity: 0.65;
-  -webkit-transform: scale(0.85) translateY(-0.5rem) translateX(0.15rem);
-  transform: scale(0.85) translateY(-0.5rem) translateX(0.15rem);
+  -webkit-transform: scale(0.85) translateY(-15px) translateX(0.15rem);
+  transform: scale(0.85) translateY(-15px) translateX(0.15rem);
 }
 
 .input-group {
@@ -4515,7 +4519,7 @@ fieldset:disabled .btn {
   display: block;
 }
 
-.navbar {
+/* .navbar {
   position: relative;
   display: -webkit-box;
   display: -ms-flexbox;
@@ -5159,7 +5163,7 @@ fieldset:disabled .btn {
 .navbar-dark .navbar-text a:hover,
 .navbar-dark .navbar-text a:focus {
   color: #fff;
-}
+} */
 
 .card {
   position: relative;
@@ -12066,7 +12070,7 @@ body.offcanvas-menu:before {
   visibility: visible;
 }
 
-h1,
+/* h1,
 .h1,
 h2,
 .h2,
@@ -12080,7 +12084,7 @@ h5,
   font-family: "sans-serif", Helvetica, Arial;
   font-weight: 700;
   color: #3b3b3b;
-}
+} */
 
 a {
   -webkit-transition: 0.3s all ease;
@@ -14457,10 +14461,10 @@ span.border-heading:after {
 .booking-type-box { position: relative; overflow: hidden; }
 .booking-desc-box { background: rgba(21, 94, 92,0.9); position: absolute; top: 0; left: 0; right: 0; bottom: 0; padding: 1.5rem; color: #fff; display: flex; align-items: center; transform: translateY(50%); opacity: 0; visibility: hidden; transition: 0.35s all; flex-direction: column;justify-content: center;}
 .booking-desc-box p:last-child { margin: 0; }
-.booking-type-box:hover .booking-desc-box { opacity: 1; visibility: visible; transform: translateY(0); }
+.booking-type-box:hover .booking-desc-box { opacity: 1; visibility: visible; transform: translateY(0);}
 
 #header { background-color: #3B3B3B; padding: 0.8rem 0; }
-.navbar-brand { max-width: 300px; width: 100%; margin: 0 1rem 0 0; padding: 0; }
+/* .navbar-brand { max-width: 300px; width: 100%; margin: 0 1rem 0 0; padding: 0; }
 .navbar-brand img { width: 100%; height: auto; }
 .header-navbar li a { color: #fff; padding: 0; display: block; }
 .header-navbar li { margin: 0 0.5rem; }
@@ -14472,7 +14476,7 @@ span.border-heading:after {
 .navbar-toggler .navbar-toggler-icon::after { bottom: -20px; }
 .navbar-toggler:not(.collapsed) .navbar-toggler-icon { background: transparent; }
 .navbar-toggler:not(.collapsed) .navbar-toggler-icon::before { top: 0; transform: rotate(45deg); }
-.navbar-toggler:not(.collapsed) .navbar-toggler-icon::after { bottom: 0; transform: rotate(-45deg); }
+.navbar-toggler:not(.collapsed) .navbar-toggler-icon::after { bottom: 0; transform: rotate(-45deg); } */
 .nav-breadcrumb .breadcrumb { margin: 0; padding: 0; list-style: none; }
 .nav-breadcrumb { background: rgba(59, 59, 59,0.6); padding: 1.3rem 0; }
 .nav-breadcrumb .breadcrumb-item.active { color: #fff; } 
@@ -15103,7 +15107,7 @@ div#linkedin-carousel .carousel-inner {
     font-weight: 500;
 }
 
-img { max-width: 100%; height: auto; width: auto; }
+img { max-width: 100%; height: auto; }
 .plate-img {
     height: auto;
 }
@@ -15322,4 +15326,8 @@ img { max-width: 100%; height: auto; width: auto; }
 }
 .scroll-arrow-left:active {
     background: #eee;
+}
+.pre-plan-section{
+      min-height: calc(100vh - 109px - 176px);
+    padding: 165px 0 56px 0;
 }

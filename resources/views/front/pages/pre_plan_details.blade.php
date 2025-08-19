@@ -29,7 +29,7 @@
         vertical-align: middle;
     }
 </style>
-    <div class="section">
+    <div class="section pre-plan-section">
         <div class="container">
             <div class="steps-list mb-4">
                 <div class="wizard-inner">

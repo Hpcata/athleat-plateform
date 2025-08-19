@@ -1,6 +1,6 @@
 <link rel="stylesheet" href="{{ frontAssets('css/bootstrap/bootstrap-5.3.min.css') }}" />
-<link rel="stylesheet" href="{{ frontAssets('css/styles.css') }}" />
 <link rel="stylesheet" href="{{ frontAssets('css/style-1.css') }}" />
+<link rel="stylesheet" href="{{ frontAssets('css/styles.css') }}" />
 <link rel="stylesheet" href="{{ frontAssets('css/profile_landing.css') }}" />
 
 <!-- Preconnect for Google Fonts -->
