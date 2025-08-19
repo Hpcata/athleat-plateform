@@ -201,16 +201,16 @@ $auth = auth()->guard('web')->check();
                                 <a class="dropdown-item" href="{{ route('front.training.nutrition.plan') }}">Training Nutrition Plan</a>
                             </li>
                             <li>
-                                <a class="scroll-to-plans dropdown-item competition-plan-link" href="#choose-plan-section">Competition plan</a>
+                                <a class="scroll-to-plans dropdown-item competition-plan-link" href="">Competition plan</a>
                             </li>
                             <li>
-                                <a class="scroll-to-plans dropdown-item competition-plan-link" href="#choose-plan-section">Injury & Recovery Plan</a>
+                                <a class="scroll-to-plans dropdown-item competition-plan-link" href="">Injury & Recovery Plan</a>
                             </li>
                             <li>
-                                <a class="scroll-to-plans dropdown-item competition-plan-link" href="#choose-plan-section">Pre & Post Surgery Plan </a>
+                                <a class="scroll-to-plans dropdown-item competition-plan-link" href="">Pre & Post Surgery Plan </a>
                             </li>
                             <li>
-                                <a class="scroll-to-plans dropdown-item competition-plan-link" href="#choose-plan-section">Private Consultations </a>
+                                <a class="scroll-to-plans dropdown-item competition-plan-link" href="">Private Consultations </a>
                             </li>
                         </ul>
                     </li>
@@ -573,7 +573,17 @@ $auth = auth()->guard('web')->check();
                 // Check if current URL is not homepage
                 if (window.location.pathname !== '/') {
                     // Redirect to homepage and scroll to plans section
-                    window.location.href = '/#choose-plan-section';
+                    window.location.href = '/';
+                    setTimeout(function() {
+                        const targetSection = document.querySelector('.choose-plan-section');
+                        if (targetSection) {
+                            targetSection.scrollIntoView({
+                                behavior: 'smooth',
+                                block: 'start'
+                            });
+                            window.location.replace(window.location.href.split('#')[0]);
+                        }
+                    }, 100);
                 } else {
                     // Find the target section
                     const targetSection = document.querySelector('.choose-plan-section');
