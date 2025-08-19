@@ -77,17 +77,6 @@
                                         </div>
                                     </div>
 
-                                    <!-- <div class="col-md-6 col-lg-4">
-                                        <input type="hidden" name="questions[personal_details][sport_game]" value="Sport Game">
-                                        <div class="form-floating my-3">
-                                            <select class="form-select" id="sport_game" name="ans[personal_details][sport_game]" required>
-                                                <option value="">Select Sport Game</option>
-                                                {{-- Games will be populated here via JavaScript --}}
-                                            </select>
-                                            <label for="sport_game">Sport Game<small class="text-danger">*</small></label>
-                                        </div>
-                                    </div> -->
-
                                     <div class="col-md-6 col-lg-4">
                                         <input type="hidden" name="questions[personal_details][occupation]" value="Occupation">
                                         <div class="form-floating my-3">
