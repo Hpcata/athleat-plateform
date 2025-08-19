@@ -4341,3 +4341,20 @@ button:focus,
 .training-load-dropdown {
     position: relative !important;
 }
+.btn.btn-login.mob-hide{
+    padding:0 !important;
+    color:#d1d1d1;
+}
+.btn.btn-login.mob-hide:hover{
+    background: transparent;
+    color: #fff;
+}
+
+.buttons-mobile .btn.btn-login{
+     padding:0 !important;
+    color:#d1d1d1;
+}
+.buttons-mobile .btn.btn-login:hover{
+     background: transparent;
+     color: #fff;
+}

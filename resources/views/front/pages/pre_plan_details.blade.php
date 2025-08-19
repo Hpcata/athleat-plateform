@@ -29,7 +29,7 @@
         vertical-align: middle;
     }
 </style>
-    <div class="section">
+    <div class="section pre-plan-section">
         <div class="container">
             <div class="steps-list mb-4">
                 <div class="wizard-inner">
@@ -76,17 +76,6 @@
                                             <label for="sport_category">Sport Category<small class="text-danger required-asterisk">*</small></label>
                                         </div>
                                     </div>
-
-                                    <!-- <div class="col-md-6 col-lg-4">
-                                        <input type="hidden" name="questions[personal_details][sport_game]" value="Sport Game">
-                                        <div class="form-floating my-3">
-                                            <select class="form-select" id="sport_game" name="ans[personal_details][sport_game]" required>
-                                                <option value="">Select Sport Game</option>
-                                                {{-- Games will be populated here via JavaScript --}}
-                                            </select>
-                                            <label for="sport_game">Sport Game<small class="text-danger">*</small></label>
-                                        </div>
-                                    </div> -->
 
                                     <div class="col-md-6 col-lg-4">
                                         <input type="hidden" name="questions[personal_details][occupation]" value="Occupation">

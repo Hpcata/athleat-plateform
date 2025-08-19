@@ -253,9 +253,8 @@
         .then(data => {
             if (data.success) {
                 const pageId = data.section.page_id;
-                const message = encodeURIComponent('Section updated successfully!');
                 let redirectUrl = "{{ route('sections.index', ['page' => '__ID__']) }}".replace('__ID__', pageId);
-                window.location.href = `${redirectUrl}?message=${message}`;
+                window.location.href = `${redirectUrl}`;
             } else {
                 alert(data.message || 'Something went wrong.');
             }
