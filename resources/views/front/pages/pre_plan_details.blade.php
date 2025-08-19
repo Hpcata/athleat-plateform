@@ -1595,7 +1595,7 @@
                     <input type="hidden" name="redirect_url" id="thankYouModalRedirectUrl" value="">
                     <p class="mb-2">Your form is submitted.</p>
                     <p class="mb-4">Your plan will be created by Kez and sent via email in the coming days.</p>
-                    <button type="button" class="btn btn-primary w-50" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
