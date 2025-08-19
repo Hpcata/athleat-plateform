@@ -136,7 +136,7 @@ body {
 }
 
 .homepage-navbar .navbar-brand img {
-    width: 202px;
+    width: 170px;
     height: auto;
 }
 
@@ -2258,7 +2258,7 @@ body {
 
 .otp-input:focus {
     border-color: #a0aec0;
-    box-shadow: 0 0 0 3px rgba(160, 174, 192, 0.3);
+    box-shadow: none;
 }
 
 .otp-resend-text {

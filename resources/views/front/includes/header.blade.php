@@ -13,7 +13,7 @@ $auth = auth()->guard('web')->check();
     <header class="mobile-header">
         <img src="{{ frontAssets('images/logo.svg') }}" alt="athleat logo" class="mobile-logo-img" width="140"height="30" />
         <button class="mobile-menu-toggle" aria-label="Toggle mobile menu" onclick="toggleMobileMenu()"
-            style="background: none; border: none; color: #fff; font-size: 2rem; cursor: pointer;margin: 0 !important;">
+            style="background: none; border: none; color: #fff; cursor: pointer;margin: 0 !important;">
             <span id="mobile-menu-icon">
                 <!-- This will be replaced by JS -->
                  <img src="{{ frontAssets('images/bars.svg') }}" alt="hamburger" class=""  id="hamburger-icon"/>
@@ -201,16 +201,16 @@ $auth = auth()->guard('web')->check();
                                 <a class="dropdown-item" href="{{ route('front.training.nutrition.plan') }}">Training Nutrition Plan</a>
                             </li>
                             <li>
-                                <a class="scroll-to-plans dropdown-item" href="#choose-plan-section">Competition plan</a>
+                                <a class="scroll-to-plans dropdown-item competition-plan-link" href="#choose-plan-section">Competition plan</a>
                             </li>
                             <li>
-                                <a class="scroll-to-plans dropdown-item" href="#choose-plan-section">Injury & Recovery Plan</a>
+                                <a class="scroll-to-plans dropdown-item competition-plan-link" href="#choose-plan-section">Injury & Recovery Plan</a>
                             </li>
                             <li>
-                                <a class="scroll-to-plans dropdown-item" href="#choose-plan-section">Pre & Post Surgery Plan </a>
+                                <a class="scroll-to-plans dropdown-item competition-plan-link" href="#choose-plan-section">Pre & Post Surgery Plan </a>
                             </li>
                             <li>
-                                <a class="scroll-to-plans dropdown-item" href="#choose-plan-section">Private Consultations </a>
+                                <a class="scroll-to-plans dropdown-item competition-plan-link" href="#choose-plan-section">Private Consultations </a>
                             </li>
                         </ul>
                     </li>
@@ -471,6 +471,16 @@ $auth = auth()->guard('web')->check();
             navbarToggler.removeAttribute('data-bs-target');
         }
         // Function to update navbar background based on scroll position
+        // function updateNavbarBackground() {
+        //     const navbar = document.querySelector(".navbar-custom");
+        //     if (!navbar) return;
+        //     if (window.scrollY > 50) {
+        //         navbar.style.background = "rgba(59, 59, 59, 1)";
+        //     } else {
+        //         navbar.style.background = "transparent";
+        //     }
+        // }
+        // Function to update navbar background based on scroll position
         function updateNavbarBackground() {
             const navbar = document.querySelector(".navbar-custom");
             if (!navbar) return;
@@ -481,11 +491,17 @@ $auth = auth()->guard('web')->check();
             }
         }
 
-        // Check initial scroll position on page load
-        updateNavbarBackground();
+        // Check if current URL is /training-nutrition-plan or /
+        if (window.location.pathname === '/training-nutrition-plan' || window.location.pathname === '/') {
+            // Check initial scroll position on page load
+            updateNavbarBackground();
 
-        // Smooth navbar background change on scroll
-        window.addEventListener("scroll", updateNavbarBackground);
+            // Smooth navbar background change on scroll
+            window.addEventListener("scroll", updateNavbarBackground);
+        } else {
+            const navbar = document.querySelector(".navbar-custom");
+            navbar.style.background = "#3b3b3b";
+        }
 
         // Custom select arrow rotation and enhanced styling
         const customSelects = document.querySelectorAll('.custom-select-wrapper select');
@@ -563,20 +579,26 @@ $auth = auth()->guard('web')->check();
                     }
                 }
 
-                // Find the target section
-                const targetSection = document.querySelector('.choose-plan-section');
-                if (targetSection) {
-                    // Smooth scroll to the section
-                    targetSection.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
+                // Check if current URL is not homepage
+                if (window.location.pathname !== '/') {
+                    // Redirect to homepage and scroll to plans section
+                    window.location.href = '/#choose-plan-section';
                 } else {
-                    // Fallback: scroll to top if section not found
-                    window.scrollTo({
-                        top: 0,
-                        behavior: 'smooth'
-                    });
+                    // Find the target section
+                    const targetSection = document.querySelector('.choose-plan-section');
+                    if (targetSection) {
+                        // Smooth scroll to the section
+                        targetSection.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    } else {
+                        // Fallback: scroll to top if section not found
+                        window.scrollTo({
+                            top: 0,
+                            behavior: 'smooth'
+                        });
+                    }
                 }
             });
         });
