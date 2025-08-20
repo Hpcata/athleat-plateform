@@ -67,7 +67,7 @@
                                 <img src="{{ frontAssets('images/training-nutrition-plan/trophy.svg') }}" alt="trophy" class="web-hide card-logo"
                                     width="36" height="36" />
                                 <h3 class="card-title">Training Nutrition Plan</h3>
-                                <p class="card-description">Train to perform at your peak with a personalised meal plan tailored to your sport and lifestyle - designed by Extreme Sports Dietitian Kerry O'Bryan.</p>
+                                <p class="card-description">Optimise your training gains by eating with purpose. Perform at your peak with a personalised meal plan tailored to you & your preferences - designed by Extreme Sports Dietitian Kerry O’Bryan.</p>
                                 <button class="btn-signup">Learn more</button>
                                 <img src="{{ frontAssets('images/training-nutrition-plan/card-1.webp') }}" alt="Competition Plan"
                                     class="left-card-image card-image">
@@ -77,8 +77,10 @@
                                 <img src="{{ frontAssets('images/training-nutrition-plan/insurance.svg') }}" alt="trophy"
                                     class="web-hide card-logo" width="36" height="36" />
                                 <h3 class="card-title">Injury & Recovery Plan</h3>
-                                <p class="card-description">A targeted mix of healing meals, expert tips, and supplement guidance to
-                                    speed recovery, reduce inflammation, and rebuild strength.</p>
+                                <p class="card-description">Optimised nutrition to support soft tissue injury. Hold muscle, reduce 
+                                    inflammation & limit fat gain with a 
+                                    personalised plan that caters to where you're at. Faster recovery is the goal & nutrition is too often overlooked!
+                                </p>
                                 <button class="btn-signup">Learn more</button>
                                 <img src="{{ frontAssets('images/training-nutrition-plan/card-2.webp') }}" alt="Injury & Recovery Plan"
                                     class="right-card-image card-image">

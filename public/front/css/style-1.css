@@ -271,9 +271,7 @@ a {
   color: #649ef7;
   text-decoration: underline;
 }
-a:hover {
-  color: #c16137;
-}
+
 
 a:not([href]):not([class]),
 a:not([href]):not([class]):hover {
@@ -5638,11 +5636,14 @@ fieldset:disabled .btn {
 }
 
 .alert {
-  position: relative;
+  position: absolute;
   padding: 1rem 1rem;
   margin-bottom: 1rem;
   border: 1px solid transparent;
   border-radius: 0.25rem;
+  z-index: 99999;
+  right: 30px;
+  top: 20px;
 }
 
 .alert-heading {
