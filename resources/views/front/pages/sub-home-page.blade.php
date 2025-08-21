@@ -576,10 +576,7 @@
                                         </div>
                                         <h3 class="card-title">Training Nutrition Plan</h3>
                                         <p class="card-text">
-                                            Optimise your training gains by eating with purpose. Perform
-                                            at your peak with a personalised meal plan tailored to you &
-                                            your preferences - designed by Extreme Sports Dietitian Kerry
-                                            O'Bryan.
+                                            Optimise your training gains by eating with purpose. Perform at your peak with a personalised meal plan tailored to you & your preferences - designed by Extreme Sports Dietitian Kerry O’Bryan.
                                         </p>
                                     </div>
                                     <a href="{{ route('front.training.nutrition.plan') }}" class="btn-signup">Learn more</a>
@@ -620,9 +617,7 @@
                                         </div>
                                         <h3 class="card-title">Competition Plan</h3>
                                         <p class="card-text">
-                                            Unlock your peak performance with a 24-hour Competition
-                                            Nutrition Plan - Ensuring you’re hydrated, fuelled & ON when
-                                            it’s game time so that nutrition is never your weakness!
+                                            Unlock your peak performance with a 24-hour Competition Nutrition Plan - Ensuring you’re hydrated, fuelled & ON when it’s game time so that nutrition is never your weakness!
                                         </p>
                                     </div>
                                     <button class="btn-signup" onclick="showLearnMoreTooltip(this, 'Coming Soon')">Learn more</button>
@@ -647,10 +642,9 @@
                                         </div>
                                         <h3 class="card-title">Injury & Recovery Nutrition Plan</h3>
                                         <p class="card-text">
-                                            Optimised nutrition to support soft tissue injury. Hold
-                                            muscle, reduce inflammation & limit fat gain with a
-                                            personalised plan that caters to where you're at. Faster
-                                            recovery is the goal & nutrition is too often overlooked!
+                                            Optimised nutrition to support soft tissue injury. Hold muscle, reduce 
+                                            inflammation & limit fat gain with a 
+                                            personalised plan that caters to where you're at. Faster recovery is the goal & nutrition is too often overlooked!
                                         </p>
                                     </div>
                                     <button class="btn-signup" onclick="showLearnMoreTooltip(this, 'Coming Soon')">Learn more</button>
@@ -669,18 +663,14 @@
                                         </div>
                                         <h3 class="card-title">Pre & Post Surgery Nutrition Plan</h3>
                                         <p class="card-text">
-                                            Poor nutritional status before surgery will delay your
-                                            recovery. The Pre & Post Surgery Nutrition Plan will ensure
-                                            you are well organised with specific food, snacks &
-                                            supplements that will speed up healing, hold muscle, limit fat
-                                            gain & get you back in the game!
+                                            Poor nutritional status before surgery will delay your recovery. The Pre & Post Surgery Nutrition Plan will ensure you are well organised with specific food, snacks & supplements that will speed up healing, hold muscle, limit fat gain & get you back in the game!
                                         </p>
                                     </div>
                                     <button class="btn-signup" onclick="showLearnMoreTooltip(this, 'Coming Soon')">Learn more</button>
                                 </div>
                             </div>
                         </div>
-                        <label class="choose-plan-label">Consults</label>
+                        <label class="choose-plan-label">Consultations</label>
                         <div class="row">
                             <div class="col-md-4 mob-hide">
                                 <div class="plan-card">
@@ -695,11 +685,7 @@
                                         </div>
                                         <h3 class="card-title">Pre & Post Surgery Nutrition Plan</h3>
                                         <p class="card-text">
-                                            Poor nutritional status before surgery will delay your
-                                            recovery. The Pre & Post Surgery Nutrition Plan will ensure
-                                            you are well organised with specific food, snacks &
-                                            supplements that will speed up healing, hold muscle, limit fat
-                                            gain & get you back in the game!
+                                            Poor nutritional status before surgery will delay your recovery. The Pre & Post Surgery Nutrition Plan will ensure you are well organised with specific food, snacks & supplements that will speed up healing, hold muscle, limit fat gain & get you back in the game!
                                         </p>
                                     </div>
                                     <button class="btn-signup" onclick="showLearnMoreTooltip(this, 'Coming Soon')">Learn more</button>
@@ -716,13 +702,10 @@
                                                     fill="#080808" />
                                             </svg>
                                         </div>
-                                        <h3 class="card-title">Consultations (1 on 1)</h3>
+                                        <h3 class="card-title">Private consultations</h3>
                                         <p class="card-text">
-                                            An in-depth session to review your current approach, identify
-                                            key opportunities, and give you practical, tailored strategies
-                                            to reach your sporting goals. Get expert support that meets
-                                            you where you’re at, with relevant education and answers to
-                                            the questions that matter most.
+                                            Get answers from a real-life expert coaching Elite Athletes and Olympians. 
+                                            An in-depth session to review your current approach, identify key opportunities, and give you practical, tailored strategies to reach your sporting goals. Get expert support that meets you where you’re at, with relevant education and answers to the questions that matter most.
                                         </p>
                                     </div>
                                     <a href="https://booking.biohealthpassport.com.au/kerry-obryan" target="_blank" class="btn-signup">Learn more</a>

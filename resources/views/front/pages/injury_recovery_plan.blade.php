@@ -66,8 +66,8 @@
                             <div class="card">
                                 <img src="{{ frontAssets('images/training-nutrition-plan/trophy.svg') }}" alt="trophy" class="web-hide card-logo"
                                     width="36" height="36" />
-                                <h3 class="card-title">Surgery Recovery Plan</h3>
-                                <p class="card-description">Personalised, expert nutrition support Pre + Post surgery with meals, snacks and supplement guidance to ensure your recovery goals are sorted.</p>
+                                <h3 class="card-title">Pre & Post Surgery Plan</h3>
+                                <p class="card-description">Poor nutritional status before surgery will delay your recovery. The Pre & Post Surgery Nutrition Plan will ensure you are well organised with specific food, snacks & supplements that will speed up healing, hold muscle, limit fat gain & get you back in the game!</p>
                                 <button class="btn-signup">Learn more</button>
                                 <img src="{{ frontAssets('images/training-nutrition-plan/card-2.webp') }}" alt="Injury & Recovery Plan"
                                     class="right-card-image card-image">
@@ -76,7 +76,7 @@
                                 <img src="{{ frontAssets('images/training-nutrition-plan/insurance.svg') }}" alt="trophy"
                                     class="web-hide card-logo" width="36" height="36" />
                                 <h3 class="card-title">Training Nutrition Plan</h3>
-                                <p class="card-description">Train to perform at your peak with a personalised meal plan tailored to your sport and lifestyle - designed by Extreme Sports Dietitian Kerry O'Bryan.</p>
+                                <p class="card-description">Optimise your training gains by eating with purpose. Perform at your peak with a personalised meal plan tailored to you & your preferences - designed by Extreme Sports Dietitian Kerry O’Bryan.</p>
                                 <button class="btn-signup">Learn more</button>
                                 <img src="{{ frontAssets('images/training-nutrition-plan/card-1.webp') }}" alt="Competition Plan"
                                     class="left-card-image card-image">

@@ -72,8 +72,7 @@
                                 <img src="{{ frontAssets('images/training-nutrition-plan/trophy.svg') }}" alt="trophy" class="web-hide card-logo"
                                     width="36" height="36" />
                                 <h3 class="card-title">Competition Plan</h3>
-                                <p class="card-description">A personalised 24-hour competition plan designed to fuel peak
-                                    performance when it matters most.</p>
+                                <p class="card-description">Unlock your peak performance with a 24-hour Competition Nutrition Plan - Ensuring you’re hydrated, fuelled & ON when it’s game time so that nutrition is never your weakness!</p>
                                 <button class="btn-signup" onclick="showLearnMoreTooltip(this, 'Coming Soon')">Learn more</button>
                                 <img src="{{ frontAssets('images/training-nutrition-plan/card-1.webp') }}" alt="Competition Plan"
                                     class="left-card-image card-image">
@@ -83,8 +82,10 @@
                                 <img src="{{ frontAssets('images/training-nutrition-plan/insurance.svg') }}" alt="trophy"
                                     class="web-hide card-logo" width="36" height="36" />
                                 <h3 class="card-title">Injury & Recovery Plan</h3>
-                                <p class="card-description">A targeted mix of healing meals, expert tips, and supplement guidance to
-                                    speed recovery, reduce inflammation, and rebuild strength.</p>
+                                <p class="card-description">Optimised nutrition to support soft tissue injury. Hold muscle, reduce 
+                                    inflammation & limit fat gain with a 
+                                    personalised plan that caters to where you're at. Faster recovery is the goal & nutrition is too often overlooked!
+                                </p>
                                 <button class="btn-signup" onclick="showLearnMoreTooltip(this, 'Coming Soon')">Learn more</button>
                                 <img src="{{ frontAssets('images/training-nutrition-plan/card-2.webp') }}" alt="Injury & Recovery Plan"
                                     class="right-card-image card-image">

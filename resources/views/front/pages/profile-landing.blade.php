@@ -389,9 +389,7 @@
                         <div class="">
                             <div class="plan-title">Competition Plan</div>
                             <div class="plan-desc">
-                                Unlock your best performance with a fully customised 24-hour competition day meal
-                                plan—designed to you from the night before through recovery, tailored to your sport,
-                                your preferences, and your game-day goals.
+                                Unlock your peak performance with a 24-hour Competition Nutrition Plan - Ensuring you’re hydrated, fuelled & ON when it’s game time so that nutrition is never your weakness!
                             </div>
                             <div class="consult-user-row">
                                 <img src="{{ $mealImage1 }}" class="consult-avatar"
@@ -406,11 +404,11 @@
                     </div>
                     <div class="plan-card-custom plan-injury">
                         <div class="">
-                        <div class="plan-title">Injury</div>
+                        <div class="plan-title">Injury & Recovery Plan</div>
                         <div class="plan-desc">
-                            Add the Injury Recovery Upgrade to your Sports Training Plan—a targeted selection of
-                            healing-focused meals, expert tips, and supplement guidance to accelerate recovery, reduce
-                            inflammation, and get you back to full strength, faster—all built on a food-first approach.
+                            Optimised nutrition to support soft tissue injury. Hold muscle, reduce 
+                            inflammation & limit fat gain with a 
+                            personalised plan that caters to where you're at. Faster recovery is the goal & nutrition is too often overlooked!
                         </div>
                         <div class="consult-user-row">
                             <img src="{{ $mealImage1 }}" class="consult-avatar"
@@ -430,7 +428,8 @@
                     <div class="consultation-card-custom">
                         <div class="consult-title">Private Consultations</div>
                         <div class="consult-desc">
-                            Live, one-on-one access to Extreme Sports Expert, trusted by Olympians and Pro Athletes.
+                            Get answers from a real-life expert coaching Elite Athletes and Olympians. 
+                            An in-depth session to review your current approach, identify key opportunities, and give you practical, tailored strategies to reach your sporting goals. Get expert support that meets you where you’re at, with relevant education and answers to the questions that matter most.
                         </div>
                         <div class="consult-user-row">
                             <img src="https://booking.biohealthpassport.com.au/public/uploads/hero01.png"
