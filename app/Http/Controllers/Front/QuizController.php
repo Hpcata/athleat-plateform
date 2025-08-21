@@ -274,7 +274,7 @@ class QuizController extends Controller
                     // $adminEmail = 'kartikvadhaiya6656@gmail.com'; // Set admin email address
                     Mail::to($adminEmail)->send(new QuizSubmittedMail($user, $quiz));
 
-                    Mail::to($user->email)->send(new FreeTestResultMail($user, $quiz));
+                    // Mail::to($user->email)->send(new FreeTestResultMail($user, $quiz));
 
                 } catch (\Exception $e) {
                     Log::error('Quiz completed mail send error. ' . $e->getMessage());
