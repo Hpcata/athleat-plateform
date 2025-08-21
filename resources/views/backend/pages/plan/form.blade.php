@@ -6,9 +6,7 @@
         <div class="border-0 mb-4">
             <div class="card-header pb-3 no-bg bg-transparent d-flex align-items-center px-0 justify-content-between border-bottom">
                 <h3 class="fw-bold mb-0">{{ isset($plan) ? 'Edit Plan' : 'Create Plan' }}</h3>
-              
                     <a href="{{ route('admin.plans.index') }}" class="btn btn-primary btn-set-task">Back</a>
-             
             </div>
         </div>
     </div>
@@ -53,7 +51,7 @@
                                 <label for="meal_times" class="form-label">Meal Timesss</label>
                                 <select id="meal_times" name="meal_times[]" class="form-select select2 form-control-multiple" multiple>
                                     @foreach ($categories as $category)
-                                        <option value="{{ $category->id }}" 
+                                        <option value="{{ $category->id }}"
                                             {{ isset($plan) && $plan->categories->contains($category->id) ? 'selected' : '' }}>
                                             {{ $category->title }}
                                         </option>
@@ -66,7 +64,7 @@
                                 <label for="sub_plan_ids" class="form-label">Sub Plans(Child Plans)</label>
                                 <select id="sub_plan_ids" name="sub_plan_ids[]" class="form-select select2 form-control-multiple" multiple>
                                     @foreach ($subPlans as $subPlan)
-                                        <option value="{{ $subPlan->id }}" 
+                                        <option value="{{ $subPlan->id }}"
                                             {{ isset($plan) && $plan->subPlans->contains($subPlan->id) ? 'selected' : '' }}>
                                             {{ $subPlan->name }}
                                         </option>

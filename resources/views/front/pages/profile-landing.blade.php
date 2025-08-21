@@ -26,7 +26,7 @@
 
             </section>
 
-            @if (!isset($userPlan?->plan) && $userPlan?->free_user && $userPlan?->free_user_plan)
+            @if (!$isQuestionnaireSubmitted->is_complete && !$payment && !isset($userPlan?->plan) && $userPlan?->free_user && $userPlan?->free_user_plan)
                 <section class="challenges">
                     <div class="section-header">
                         <h2>My Nutrition Plan</h2>
@@ -35,7 +35,7 @@
                     <div class="slider-container">
                         <div class="challenge-cards horizontal-scroll" style="overflow-x:auto;scroll-behavior:smooth; position:relative;">
                             <div class="purchase-plan-overlay">
-                                <a href="{{ route('front.my-plans') }}" class="purchase-plan-btn">
+                                <a href="{{ !$isQuestionnaireSubmitted ? route('front.pre-plan-details', ['id' => $payment->id ?? null, 'user_id' => $payment->user_id ?? null]) : route('front.my-plans') }}" class="purchase-plan-btn">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="22" height="21"
                                         viewBox="0 0 22 21" fill="none">
                                         <path
@@ -48,7 +48,7 @@
                                             d="M5.95184 2.56593L4.45816 2.0133L3.90553 0.519616C3.86078 0.398536 3.78001 0.294072 3.67409 0.220294C3.56817 0.146515 3.44219 0.106963 3.31311 0.106963C3.18402 0.106963 3.05804 0.146515 2.95212 0.220294C2.8462 0.294072 2.76543 0.398536 2.72069 0.519616L2.16742 2.0133L0.67437 2.56593C0.553291 2.61068 0.448828 2.69145 0.37505 2.79737C0.301271 2.90329 0.261719 3.02927 0.261719 3.15835C0.261719 3.28744 0.301271 3.41342 0.37505 3.51934C0.448828 3.62526 0.553291 3.70603 0.67437 3.75077L2.16742 4.3034L2.72069 5.79709C2.76516 5.91844 2.84582 6.02321 2.95178 6.09723C3.05773 6.17125 3.18386 6.21094 3.31311 6.21094C3.44235 6.21094 3.56848 6.17125 3.67444 6.09723C3.78039 6.02321 3.86106 5.91844 3.90553 5.79709L4.45816 4.3034L5.95184 3.75077C6.07292 3.70603 6.17739 3.62526 6.25116 3.51934C6.32494 3.41342 6.36449 3.28744 6.36449 3.15835C6.36449 3.02927 6.32494 2.90329 6.25116 2.79737C6.17739 2.69145 6.07292 2.61068 5.95184 2.56593Z"
                                             fill="#A2C5FA" />
                                     </svg>
-                                    Purchase a personalised plan
+                                    {{ !$isQuestionnaireSubmitted->is_complete ? 'Continue your Questionnaire' : 'Purchase a personalised plan' }}
                                 </a>
                             </div>
                             <div class="fade-full"></div>
@@ -71,7 +71,7 @@
                         </div>
                     </div>
                 </section>
-            @elseif($payment && $payment->plan_id && isset($userPlan->is_mail_sent) && $userPlan->is_mail_sent == 0)
+            @elseif(!$isAdminView && $payment && $payment->plan_id && $isQuestionnaireSubmitted->is_complete && $userPlan && $userPlan->is_mail_sent == 0)
                 <section class="challenges">
                     <div class="section-header">
                         <h2>My Nutrition Plan</h2>
@@ -136,7 +136,7 @@
                         </div>
                     </div>
                 </section>
-            @elseif ($userPlan && isset($userPlan->is_mail_sent) && $userPlan->is_mail_sent == 1 && isset($userPlan->mail_sent_at) && $userPlan->mail_sent_at != null)
+            @elseif (($isAdminView && $userPlan) || ($userPlan && isset($userPlan->is_mail_sent) && $userPlan->is_mail_sent == 1 && isset($userPlan->mail_sent_at) && $userPlan->mail_sent_at != null))
                 <section class="training-plan">
                     @if (isset($userPlan->plan))
                         <div class="section-header">
@@ -207,11 +207,9 @@
             <section class="challenges">
                 <div class="section-header">
                     <h2>Challenges</h2>
-                    <!-- <label class="see-all" style="cursor:pointer;" onclick="showLearnMoreTooltip(this, 'Coming Soon')">See all</label> -->
                     <a href="#" class="see-all coming-soon-popup">See all</a>
                 </div>
                 <div class="slider-container">
-
                     <div class="challenge-cards horizontal-scroll" style="overflow-x:auto;scroll-behavior:smooth;position:relative;">
                         @if ($userPlan && $userPlan->free_user)
                             <div class="purchase-plan-overlay">
@@ -304,7 +302,7 @@
                     <div class="resource-card-custom resource-tip">
                         <div class="tip-title">Kez's Tip of the Day</div>
                         <div class="tip-text">
-                            “Supplements can support your goals, but they’re not shortcuts. Prioritise food first, and always choose batch-tested products to reduce your risk.”
+                            "Supplements can support your goals, but they're not shortcuts. Prioritise food first, and always choose batch-tested products to reduce your risk."
                         </div>
                     </div>
                 </div>
@@ -441,142 +439,6 @@
                     </div>
                 </div>
             </section>
-
-            <!-- Surfing Videos -->
-            <!-- <section class="surfing-videos">
-                <div class="section-header">
-                    <h2>What's hot in... Surfing</h2>
-                </div>
-
-                <div class="video-grid">
-                    <div class="video-card">
-                        <div class="video-thumbnail hover-card">
-                            <div class="video-player" id="video-player-1">
-                                <img src="{{ frontAssets('images/instaimg1.webp') }}" alt="Surfing video thumbnail"
-                                    class="video-backdrop" width="372" height="249" />
-                                <video style="display: none">
-                                    <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4" />
-                                </video>
-                                <button class="play-btn" aria-label="Play video" onclick="playVideoInCard(1)">
-                                   <img
-                                src="{{ frontAssets('images/play.svg') }}"
-                                class="video-thumb"
-                                alt="play icon" style="width:38px; height:38px;"/>
-                                </button>
-                                <label class="insta-text">Watch on Instagram</label>
-                            </div>
-                        </div>
-                        <div class="video-info">
-                            <div class="top">
-                                <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=30&h=30&fit=crop&crop=face"
-                                    alt="Channel avatar for surfboard_co" class="channel-avatar" />
-                                <div class="channel-name">
-                                    <div class="channel-name-main">
-                                        <label class="insta-handle-name">surfboard_co</label>
-                                        <img src="{{ frontAssets('images/verified.svg') }}" alt="Verified badge" width="16" height="16" />
-                                    </div>
-                                    <label>Turnstile . LIGHT DESIGN</label>
-                                </div>
-                            </div>
-                            <div class="video-details">
-                                <p class="truncate-one-line">
-                                    Learn about the best surfboard techniques for beginners and
-                                    pros alike.
-                                </p>
-                                <div class="insta-like-wrapper">
-                                    <img src="{{ frontAssets('images/like.webp') }}" alt="Like icon" width="20"
-                                        height="18" style="width:20px;" />
-                                    <span class="likes">892 likes</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="video-card">
-                        <div class="video-thumbnail hover-card">
-                            <div class="video-player" id="video-player-2">
-                                <img src="{{ frontAssets('images/instaimg2.webp') }}" alt="Surfing video thumbnail"
-                                    class="video-backdrop" width="372" height="249" />
-                                <video style="display: none">
-                                    <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4" />
-                                </video>
-                                <button class="play-btn" aria-label="Play video" onclick="playVideoInCard(2)">
-                                    <img
-                                src="{{ frontAssets('images/play.svg') }}"
-                                class="video-thumb"
-                                alt="play icon" style="width:38px; height:38px;"/>
-                                </button>
-                                <label class="insta-text">Watch on Instagram</label>
-                            </div>
-                        </div>
-                        <div class="video-info">
-                            <div class="top">
-                                <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=30&h=30&fit=crop&crop=face"
-                                    alt="Channel avatar for surfboard_co" class="channel-avatar" />
-                                <div class="channel-name">
-                                    <div class="channel-name-main">
-                                        <label class="insta-handle-name">surfboard_co</label>
-                                        <img src="{{ frontAssets('images/verified.svg') }}" alt="Verified badge" width="16" height="16" />
-                                    </div>
-                                    <label>Turnstile . LIGHT DESIGN</label>
-                                </div>
-                            </div>
-                            <div class="video-details">
-                                <p class="truncate-one-line">
-                                    Learn about the best surfboard techniques for beginners and
-                                    pros alike.
-                                </p>
-                                <div class="insta-like-wrapper">
-                                    <img src="{{ frontAssets('images/like.webp') }}" alt="Like icon" width="20"
-                                        height="18" style="width:20px;" />
-                                    <span class="likes">892 likes</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="video-card">
-                        <div class="video-thumbnail hover-card">
-                            <div class="video-player" id="video-player-3">
-                                <img src="{{ frontAssets('images/instaimg1.webp') }}" alt="Surfing video thumbnail"
-                                    class="video-backdrop" width="372" height="249" />
-                                <video style="display: none">
-                                    <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4" />
-                                </video>
-                                <button class="play-btn" aria-label="Play video" onclick="playVideoInCard(3)">
-                                    <img
-                                src="{{ frontAssets('images/play.svg') }}"
-                                class="video-thumb"
-                                alt="play icon" style="width:38px; height:38px;"/>
-                                </button>
-                                <label class="insta-text">Watch on Instagram</label>
-                            </div>
-                        </div>
-                        <div class="video-info">
-                            <div class="top">
-                                <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=30&h=30&fit=crop&crop=face"
-                                    alt="Channel avatar for surfboard_co" class="channel-avatar" />
-                                <div class="channel-name">
-                                    <div class="channel-name-main">
-                                        <label class="insta-handle-name">surfboard_co</label>
-                                        <img src="{{ frontAssets('images/verified.svg') }}" alt="Verified badge" width="16" height="16" />
-                                    </div>
-                                    <label>Turnstile . LIGHT DESIGN</label>
-                                </div>
-                            </div>
-                            <div class="video-details">
-                                <p class="truncate-one-line">
-                                    Learn about the best surfboard techniques for beginners and
-                                    pros alike.
-                                </p>
-                                <div class="insta-like-wrapper">
-                                    <img src="{{ frontAssets('images/like.webp') }}" alt="Like icon" width="20"
-                                        height="18" style="width:20px;" />
-                                    <span class="likes">892 likes</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section> -->
         </div>
         @include('front.modal.shopping-list')
         @include('front.modal.print-shopping-list')

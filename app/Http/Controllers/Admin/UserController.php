@@ -13,7 +13,7 @@ class UserController extends Controller
     public function index()
     {
         $users = User::where('is_superadmin', 0)
-            ->orderBy('created_at', 'desc')
+            ->orderBy('id', 'asc')
             ->get();
 
         // Get quiz submissions and plan purchases
