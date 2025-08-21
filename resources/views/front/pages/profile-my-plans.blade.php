@@ -15,7 +15,7 @@ and performance goals with expert guidance from Australia’s leading sports nut
 <main class="main">
     <div class="container">
         <!-- Resources and Tools -->
-        <section class="resources my-plans-main">
+        <section class="my-plans-main resources">
             <div class="section-header">
                 <h2>My Plans</h2>
             </div>
@@ -33,7 +33,10 @@ and performance goals with expert guidance from Australia’s leading sports nut
         <!-- Recommended plan -->
         <section class="optimize-performance x">
             <div class="card-row">
-                <label class="choose-plan-label" style="margin-bottom:8px;">Recommended plan</label>
+            <div class="section-header">
+                <h2>Recommended plan</h2>
+            </div>
+                <!-- <label class="choose-plan-label" style="margin-bottom:8px;">Recommended plan</label> -->
                 <div class="plan-cards-wrap">
                     <div class="plan-card-custom plan-injury">
                         <div class="">
@@ -60,7 +63,7 @@ and performance goals with expert guidance from Australia’s leading sports nut
             </div>
 
             <div class="card-row">
-                <label class="choose-plan-label" style="margin-bottom:8px;">Nutrition plans</label>
+                <!-- <label class="choose-plan-label" style="margin-bottom:8px;">Nutrition plans</label> -->
                 <div class="plan-cards-wrap">
                     <div class="plan-card-custom plan-injury">
                         <div class="">
@@ -119,7 +122,10 @@ and performance goals with expert guidance from Australia’s leading sports nut
             </div>
 
             <div class="card-row">
-                <label class="choose-plan-label" style="margin-bottom:8px;">Consultations</label>
+            <div class="section-header">
+                <h2>Consultations</h2>
+            </div>
+                <!-- <label class="choose-plan-label" style="margin-bottom:8px;">Consultations</label> -->
                 <div class="plan-cards-wrap">
                     <div class="plan-card orange-card">
                         <div class="plan-card-wrapper">
@@ -137,7 +143,7 @@ and performance goals with expert guidance from Australia’s leading sports nut
                             <span style="padding-left:0;">Kerry O’Bryan • 60 min</span>
                         </div>
                         <a href="https://booking.biohealthpassport.com.au/kerry-obryan" target="_blank"
-                            class="btn-learn-more ">Learn more</a>
+                            class="btn-learn-more">Learn more</a>
                     </div>
                 </div>
             </div>
@@ -169,7 +175,7 @@ and performance goals with expert guidance from Australia’s leading sports nut
                             <span>21 meals customised for you</span>
                         </div>
                         <a href="https://booking.biohealthpassport.com.au/kerry-obryan" target="_blank"
-                            class="btn-learn-more ">View plan</a>
+                            class="btn-learn-more">View plan</a>
                     </div>
                 </div>
 
@@ -198,7 +204,7 @@ and performance goals with expert guidance from Australia’s leading sports nut
                             <span>21 meals customised for you</span>
                         </div>
                         <a href="https://booking.biohealthpassport.com.au/kerry-obryan" target="_blank"
-                            class="btn-learn-more ">View plan</a>
+                            class="btn-learn-more">View plan</a>
                     </div>
                 </div>
             </div> -->

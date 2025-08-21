@@ -321,7 +321,7 @@
                         </div>
                         <div class="video-info">
                             <div class="video-title">
-                                Understand why whey protein post-training results in better muscle gain
+                                At what age should supplements be on the table?
                             </div>
                             <div class="video-meta">
                                 <span>
@@ -338,7 +338,7 @@
                         </div>
                         <div class="video-info">
                             <div class="video-title">
-                                Understand why whey protein post-training results in better muscle gain
+                                How to build systems that maximise gains
                             </div>
                             <div class="video-meta">
                                 <span>
