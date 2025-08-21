@@ -49,6 +49,8 @@
                     @csrf
                     <input type="hidden" name="user_id" value="{{ $userId }}" />
                     <input type="hidden" name="payment_id" value="{{ $paymentId }}" />
+
+                    {{-- screen 1 --}}
                     <div class="step-tab-box" id="div1">
                         <div class="card">
                             <div class="bg-white card-header p-4">
@@ -108,6 +110,7 @@
                         </div>
                     </div>
 
+                    {{-- screen 2 --}}
                     <div class="step-tab-box " id="div2">
                         <div class="card">
                             <div class="bg-white card-header p-4">
@@ -279,6 +282,7 @@
                         </div>
                     </div>
 
+                    {{-- screen 3 --}}
                     <div class="step-tab-box " id="div3">
                         <div class="card">
                             <div class="bg-white card-header p-4">
@@ -380,6 +384,7 @@
                         </div>
                     </div>
 
+                    {{-- screen 4 --}}
                     <div class="step-tab-box" id="div4">
                         <div class="card">
                             <div class="bg-white card-header p-4">
@@ -415,12 +420,6 @@
                                                     Friends
                                                 </label>
                                             </div>
-                                            <!-- <div class="form-check my-2">
-                                                <input class="form-check-input" type="radio" name="ans[social_information][livingwith]" value="Other" id="livingwith5">
-                                                <label class="form-check-label" for="livingwith5">
-                                                    Other:
-                                                </label>
-                                            </div> -->
                                         </div>
                                     </div>
                                     <div class="col-md-12">
@@ -493,12 +492,6 @@
                                                     Excellent: I enjoy cooking and often take on detailed recipes
                                                 </label>
                                             </div>
-                                            <!-- <div class="form-check my-2">
-                                                <input class="form-check-input" type="radio" name="ans[social_information][cookingskills]" value="Other" id="cookingskills6">
-                                                <label class="form-check-label" for="cookingskills6">
-                                                    Other:
-                                                </label>
-                                            </div> -->
                                         </div>
                                     </div>
                                 </div>
@@ -509,6 +502,8 @@
                             </div>
                         </div>
                     </div>
+
+                    {{-- screen 5 --}}
                     <div class="step-tab-box " id="div5">
                         <div class="card">
                             <div class="bg-white card-header p-4">
@@ -773,6 +768,8 @@
                             </div>
                         </div>
                     </div>
+
+                    {{-- screen 6 --}}
                     <div class="step-tab-box" id="div6">
                         <div class="card">
                             <div class="bg-white card-header p-4 pb-3">
@@ -853,13 +850,6 @@
                                                     </div>
                                                     <div class="food-dropdown-wrapper" data-wrapper-for="Legumes & Beans"></div>
                                                 </div>
-                                                <!-- <div class="col">
-                                                    <div class="form-check my-2">
-                                                        <input class="form-check-input food-checkbox" type="checkbox" name="ans[food_preference][legumes_beans_and_pulses][Beans][]" value="" id="protect2" data-food-key="Beans" data-food-group="legumes_beans_and_pulses">
-                                                        <label class="form-check-label" for="protect2">Beans</label>
-                                                    </div>
-                                                    <div class="food-dropdown-wrapper" data-wrapper-for="Beans"></div>
-                                                </div> -->
                                             </div>
                                         </div>
                                     </div>
@@ -875,13 +865,6 @@
                                                     </div>
                                                     <div class="food-dropdown-wrapper" data-wrapper-for="Nuts"></div>
                                                 </div>
-                                                <!-- <div class="col">
-                                                    <div class="form-check my-2">
-                                                        <input class="form-check-input food-checkbox" type="checkbox" name="ans[food_preference][nuts_and_seeds][Seeds][]" value="" id="protect4" data-food-key="Seeds" data-food-group="nuts_and_seeds">
-                                                        <label class="form-check-label" for="protect4">Seeds</label>
-                                                    </div>
-                                                    <div class="food-dropdown-wrapper" data-wrapper-for="Seeds"></div>
-                                                </div> -->
                                             </div>
                                         </div>
                                     </div>
@@ -890,13 +873,6 @@
                                         <input type="hidden" name="questions[food_preference][seeds]" value="Seeds" />
                                         <div class="form-floating my-3">
                                              <div class="row row-cols-1 row-cols-md-4 g-2">
-                                                <!-- <div class="col">
-                                                    <div class="form-check my-2">
-                                                        <input class="form-check-input food-checkbox" type="checkbox" name="ans[food_preference][nuts_and_seeds][Nuts][]" value="" id="protect3" data-food-key="Nuts" data-food-group="nuts_and_seeds">
-                                                        <label class="form-check-label" for="protect3">Nuts</label>
-                                                    </div>
-                                                    <div class="food-dropdown-wrapper" data-wrapper-for="Nuts"></div>
-                                                </div> -->
                                                 <div class="col">
                                                     <div class="form-check my-2">
                                                         <input class="form-check-input food-checkbox" type="checkbox" name="ans[food_preference][Seeds][]" value="" id="protect4" data-food-key="Seeds" data-food-group="seeds">
@@ -1035,10 +1011,6 @@
 
                                         <h5>10. Fruit</h5>
                                         <input type="hidden" name="questions[food_preference][fruit]" value="Fruit" />
-                                        <!-- <div class="form-check">
-                                            <input class="form-check-input food-checkbox" type="checkbox" id="selectAllFruits">
-                                            <label class="form-check-label fw-bold" for="selectAllFruits">Select All</label>
-                                        </div> -->
                                         <div class="form-floating my-3">
                                             <div class="row row-cols-1 row-cols-md-3 g-2">
                                                 <div class="col">
@@ -1053,10 +1025,6 @@
                                         <hr>
                                         <h5>11. Vegetables</h5>
                                         <input type="hidden" name="questions[food_preference][vegetables]" value="Vegetables" />
-                                        <!-- <div class="form-check">
-                                            <input class="form-check-input food-checkbox" type="checkbox" id="selectAllVegetables">
-                                            <label class="form-check-label fw-bold" for="selectAllVegetables">Select All</label>
-                                        </div> -->
                                         <div class="form-floating my-3">
                                             <div class="row row-cols-1 row-cols-md-3 g-2">
                                                 <div class="col">
@@ -1099,6 +1067,8 @@
                             </div>
                         </div>
                     </div>
+
+                    {{-- screen 7 --}}
                     <div class="step-tab-box" id="div7">
                         <div class="card">
                             <div class="bg-white card-header p-4 pb-3">
@@ -1116,13 +1086,11 @@
                                                 <input class="form-check-input food-checkbox" type="checkbox" name="ans[food_preference][snacks][Fruit & Nut bars][]" value="" id="snack_fruit_nut_bars_checkbox" data-food-key="Fruit & Nut bars" data-food-group="snacks">
                                                 <label for="snack_fruit_nut_bars_checkbox" class="form-label">Fruit & Nut bars</label>
                                                 <div class="food-dropdown-wrapper" data-wrapper-for="Fruit & Nut bars"></div>
-                                                <!-- <input type="text" id="snack_fruit_nut_bars" name="ans[food_preference][snacks][fruit_nut_bars]" class="form-control" placeholder=""> -->
                                             </div>
                                             <div class="col-md-6">
                                                 <input class="form-check-input food-checkbox" type="checkbox" name="ans[food_preference][snacks][Muesli bars][]" value="" id="snack_muesli_bars_checkbox" data-food-key="Muesli bars" data-food-group="snacks">
                                                 <label for="snack_muesli_bars_checkbox" class="form-label">Muesli bars</label>
                                                 <div class="food-dropdown-wrapper" data-wrapper-for="Muesli bars"></div>
-                                                <!-- <input type="text" id="snack_muesli_bars" name="ans[food_preference][snacks][muesli_bars]" class="form-control" placeholder=""> -->
                                             </div>
                                         </div>
                                         <div class="row mb-3">
@@ -1130,20 +1098,17 @@
                                                 <input class="form-check-input food-checkbox" type="checkbox" name="ans[food_preference][snacks][Other Snacks][]" value="" id="snack_popcorn_checkbox" data-food-key="Other Snacks" data-food-group="snacks">
                                                 <label for="snack_popcorn_checkbox" class="form-label">Other Snacks</label>
                                                 <div class="food-dropdown-wrapper" data-wrapper-for="Other Snacks"></div>
-                                                <!-- <input type="text" id="snack_popcorn" name="ans[food_preference][snacks][popcorn]" class="form-control" placeholder=""> -->
                                             </div>
 
                                         </div>
                                         <div class="row mb-3">
                                             <div class="col-md-6">
-                                                <!-- <input class="form-check-input" type="checkbox" name="ans[food_preference][snacks][Chocolate bars]" value="" id="snack_chocolate_bars_checkbox" data-food-key="Chocolate bars" data-food-group="snacks"> -->
                                                 <label for="snack_chocolate_bars_checkbox" class="form-label">Chocolate bars</label>
                                                 <div class="food-dropdown-wrapper" data-wrapper-for="Chocolate bars"></div>
                                                 <input type="text" id="snack_chocolate_bars" name="ans[food_preference][snacks][Chocolate Bars]" class="form-control" placeholder="Eg: Mars Bar, Picnic, Chocolate mud cake">
                                                 <small class="form-text text-muted">(Use commas to separate items. Eg: Mars Bar, Picnic, Chocolate mud cake.)</small>
                                             </div>
                                             <div class="col-md-6">
-                                                <!-- <input class="form-check-input" type="checkbox" name="ans[food_preference][snacks][Lollies]" value="" id="snack_lollies_checkbox" data-food-key="Lollies" data-food-group="snacks"> -->
                                                 <label for="snack_lollies_checkbox" class="form-label">Lollies</label>
                                                 <div class="food-dropdown-wrapper" data-wrapper-for="Lollies"></div>
                                                 <input type="text" id="snack_lollies" name="ans[food_preference][snacks][Lollies]" class="form-control" placeholder="Eg: Snakes, Sour Worms">
@@ -1155,7 +1120,6 @@
                                     <!-- Drinks Section -->
                                     <div class="col-12 mb-4">
                                         <h5>Drinks</h5>
-                                        <!-- <h6>Cold Drinks</h6> -->
                                         <input type="hidden" name="questions[food_preference][drink]" value="Drinks" />
 
                                         <div class="row mb-3">
@@ -1163,13 +1127,11 @@
                                                 <input class="form-check-input food-checkbox" type="checkbox" name="ans[food_preference][drink][Cold Drinks][]" value="" id="drink_iced_coffee_checkbox" data-food-key="Cold Drinks" data-food-group="drink">
                                                 <label for="drink_iced_coffee" class="form-label">Cold Drinks</label>
                                                 <div class="food-dropdown-wrapper" data-wrapper-for="Cold Drinks"></div>
-                                                <!-- <input type="text" id="drink_iced_coffee" name="ans[food_preference][cold_drink][iced_coffee]" class="form-control" placeholder=""> -->
                                             </div>
                                             <div class="col-md-6">
                                                 <input class="form-check-input food-checkbox" type="checkbox" name="ans[food_preference][drink][Hot Drinks][]" value="" id="drink_iced_tea_checkbox" data-food-key="Hot Drinks" data-food-group="drink">
                                                 <label for="drink_iced_tea" class="form-label">Hot Drinks</label>
                                                 <div class="food-dropdown-wrapper" data-wrapper-for="Hot Drinks"></div>
-                                                <!-- <input type="text" id="drink_iced_tea" name="ans[food_preference][cold_drink][iced_tea]" class="form-control" placeholder="> -->
                                             </div>
                                         </div>
 
@@ -1231,7 +1193,6 @@
                                                 <input type="text" id="cuisine_greek" name="ans[food_preference][cuisines][Greek]" class="form-control" placeholder="">
                                             </div>
                                             <div class="col-md-6">
-                                                <!-- <input class="form-check-input cuisines-checkbox" type="checkbox" name="ans[food_preference][cuisines][other]" value="Others" id="cuisine_other_checkbox"> -->
                                                 <label for="cuisine_other" class="form-label">Other</label>
                                                 <input type="text" id="cuisine_other" name="ans[food_preference][cuisines][other]" class="form-control" placeholder="What are your favourite dishes?">
                                             </div>
@@ -1245,6 +1206,8 @@
                             </div>
                         </div>
                     </div>
+
+                    {{-- screen 8 --}}
                     <div class="step-tab-box " id="div8">
                         <div class="card">
                             <div class="bg-white card-header p-4">
@@ -1450,13 +1413,6 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <!-- <div class="col-md-6 col-lg-6">
-                                        <div class="no-form-floating form-floating my-3">
-                                            <label>What are the 3 top things you want to obtain from the consultation? </label>
-                                            <input type="hidden" name="questions[nutrition_goals][topthings]" value="What are the 3 top things you want to obtain from the consultation?" />
-                                            <input type="text" class="form-control" name="ans[nutrition_goals][topthings]" id="topthings" placeholder="">
-                                        </div>
-                                    </div> -->
                                 </div>
                             </div>
                             <div class="bg-white text-end py-3 card-footer d-flex px-4">
@@ -1465,6 +1421,8 @@
                             </div>
                         </div>
                     </div>
+
+                    {{-- screen 9 --}}
                     <div class="step-tab-box" id="div9">
                         <div class="card">
                             <div class="bg-white card-header p-4">
@@ -1611,7 +1569,6 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body" style="overflow-x: hidden; overflow-y: auto; max-height: 70vh;">
-
                     <div class="row" id="foodListContainer">
                     <!-- Items inserted here -->
                     </div>
@@ -1642,7 +1599,6 @@
 
         $('#sport_category').on('change', function () {
             let categoryId = $(this).val();
-            console.log(categoryId);
             $('#sport_game').html('<option value="">Loading...</option>');
 
             if (categoryId) {
@@ -1702,13 +1658,6 @@
             otherInput.id = otherInputId;
             otherInput.placeholder = 'Please specify...';
             input.parentNode.appendChild(otherInput);
-
-            console.log(`🟠 Created "Other" Input for [${input.name}]`);
-
-            // otherInput.addEventListener('keyup', function () {
-            //     const inputValue = this.value.trim().toLowerCase();
-            //     handleTrackingDetailsVisibility(inputValue);
-            // });
         }
 
         otherInput.value = value;
@@ -1840,7 +1789,8 @@
         let targetStep = null;
 
         const startingStep = {{ $nextStep ?? 1 }};
-        const stepDataRaw = @json($stepData->toArray());
+        const stepDataRaw = @json($stepData ?? []);
+        // stepDataRaw is already grouped by step, so we need to flatten it properly
         const stepData = Object.values(stepDataRaw).flat();
         currentStep = startingStep - 1;
 
@@ -1848,17 +1798,26 @@
         showStep(currentStep);
         prefillData(currentStep);
 
-        const alcoholData = stepData.find(item => {
-            if (item.question === "If 18+, do you drink alcohol?" && item.answer) {
-                try {
-                    const parsedAnswer = JSON.parse(item.answer);
-                    return parsedAnswer && 'days' in parsedAnswer && 'drinks' in parsedAnswer;
-                } catch (e) {
-                    return false;
+        // Mark completed steps as active and update progress
+        updateStepCircles();
+
+        // Find alcohol data from all steps
+        let alcoholData = null;
+        for (const stepNum in stepDataRaw) {
+            const stepItems = stepDataRaw[stepNum];
+            alcoholData = stepItems.find(item => {
+                if (item.question === "If 18+, do you drink alcohol?" && item.answer) {
+                    try {
+                        const parsedAnswer = JSON.parse(item.answer);
+                        return parsedAnswer && 'days' in parsedAnswer && 'drinks' in parsedAnswer;
+                    } catch (e) {
+                        return false;
+                    }
                 }
-            }
-            return false;
-        });
+                return false;
+            });
+            if (alcoholData) break;
+        }
 
         if (alcoholData && alcoholData.answer) {
             // Try to parse the answer string
@@ -1906,10 +1865,16 @@
             }
         });
 
-        const trackerUsage = stepData.find(item =>
-            item.question === "Do you CURRENTLY use any exercise or nutrition trackers/apps?" &&
-            item.answer
-        );
+        // Find tracker usage data from all steps
+        let trackerUsage = null;
+        for (const stepNum in stepDataRaw) {
+            const stepItems = stepDataRaw[stepNum];
+            trackerUsage = stepItems.find(item =>
+                item.question === "Do you CURRENTLY use any exercise or nutrition trackers/apps?" &&
+                item.answer
+            );
+            if (trackerUsage) break;
+        }
 
         if (trackerUsage) {
             let trackerAnswer = trackerUsage.answer;
@@ -1931,9 +1896,15 @@
             }
         }
 
-        const bloodTestData = stepData.find(item =>
-            item.question === "Have you recently had a blood test?" && item.answer
-        );
+        // Find blood test data from all steps
+        let bloodTestData = null;
+        for (const stepNum in stepDataRaw) {
+            const stepItems = stepDataRaw[stepNum];
+            bloodTestData = stepItems.find(item =>
+                item.question === "Have you recently had a blood test?" && item.answer
+            );
+            if (bloodTestData) break;
+        }
 
         if (bloodTestData) {
             let bloodAnswer = bloodTestData.answer;
@@ -1954,7 +1925,6 @@
                     $('#fileUploadSection').show();
 
                     if (bloodAnswer.date) {
-                        console.log("Setting bloodTestDate to:", bloodAnswer.date);
                         $('#bloodTestDate').val(bloodAnswer.date.trim().toLowerCase());
                     }
                 } else if (bloodAnswer.answer === "No") {
@@ -1967,9 +1937,15 @@
             }
         }
 
-        const bodyCompositionData = stepData.find(item =>
-            item.question === "Have you recently undertaken a body composition assessment (measure of muscle, body fat)?" && item.answer
-        );
+        // Find body composition data from all steps
+        let bodyCompositionData = null;
+        for (const stepNum in stepDataRaw) {
+            const stepItems = stepDataRaw[stepNum];
+            bodyCompositionData = stepItems.find(item =>
+                item.question === "Have you recently undertaken a body composition assessment (measure of muscle, body fat)?" && item.answer
+            );
+            if (bodyCompositionData) break;
+        }
 
         if (bodyCompositionData) {
             let bodyCompositionAnswer = bodyCompositionData.answer;
@@ -2013,40 +1989,27 @@
                 if (targetStep > currentStep && !validateStep(currentStep)) return;
 
                 if (targetStep > currentStep) {
+                    // Moving forward - save current step first
                     saveStepData(currentStep, function (success) {
                         if (success) {
                             currentStep = targetStep;
                             showStep(currentStep);
                             prefillData(currentStep);
                             prefillFoodInputsOnStep(currentStep);
+
+                            // Ensure step circles are updated after forward navigation
+                            updateStepCircles();
                         }
                     });
                 } else {
+                    // Moving backward - no need to save, just navigate
                     currentStep = targetStep;
                     showStep(currentStep);
                     prefillData(currentStep);
                     prefillFoodInputsOnStep(currentStep);
-                }
-            }
 
-            if (button) {
-                const targetStep = parseInt(button.getAttribute("target")) - 1;
-                if (targetStep > currentStep && !validateStep(currentStep)) return;
-
-                if (targetStep > currentStep) {
-                    saveStepData(currentStep, function (success) {
-                        if (success) {
-                            currentStep = targetStep;
-                            showStep(currentStep);
-
-                            // ✅ Immediately prefill step data from server/database
-                            prefillData(currentStep);
-                        }
-                    });
-                } else {
-                    currentStep = targetStep;
-                    showStep(currentStep);
-                    prefillData(currentStep); // ✅ Even on back
+                    // Ensure step circles are updated after backward navigation
+                    updateStepCircles();
                 }
             }
 
@@ -2055,12 +2018,17 @@
                 const steps = Array.from(document.querySelectorAll('.tab-steps'));
                 const targetStep = steps.indexOf(stepCircle);
 
-                // Only allow navigating to a previously completed step
+                // Allow navigating to any previously completed step or the current step
+                // This enables users to review and edit previous steps
                 if (targetStep <= currentStep) {
                     currentStep = targetStep;
+
                     showStep(currentStep);
                     prefillData(currentStep);
                     prefillFoodInputsOnStep(currentStep);
+
+                    // Ensure step circles are updated after navigation
+                    updateStepCircles();
                 }
             }
         });
@@ -2203,10 +2171,8 @@
                             stepTabs.forEach((tab, i) => {
                                 tab.style.display = i === targetStep ? "block" : "none";
                             });
-                            stepCircles.forEach((circle, i) => {
-                                circle.classList.toggle("active", i <= targetStep);
-                            });
                             currentStep = targetStep;
+                            updateStepCircles();
                             window.scrollTo({ top: 0, behavior: "smooth" });
                         }
                         callback(true);
@@ -2224,19 +2190,36 @@
         }
 
         function showStep(stepIndex) {
-            console.log("Showing Step:", stepIndex);
-            console.log(stepTabs);
             stepTabs.forEach((tab, index) => {
                 tab.style.display = index === stepIndex ? "block" : "none";
             });
 
-            stepCircles.forEach((circle, index) => {
-                circle.classList.toggle("active", index <= stepIndex);
-            });
+            // Update step circles to show progress correctly
+            updateStepCircles();
 
             window.scrollTo({ top: 0, behavior: "smooth" });
         }
 
+        function updateStepCircles() {
+            // Get the highest completed step from stepDataRaw (grouped by step)
+            const completedSteps = Object.keys(stepDataRaw).length > 0 ?
+                Math.max(...Object.keys(stepDataRaw).map(step => parseInt(step))) : 0;
+
+            stepCircles.forEach((circle, index) => {
+                const stepNumber = index + 1;
+                // A step should be active if:
+                // 1. It's the current step (stepNumber === currentStep + 1)
+                // 2. It's a previously completed step (stepNumber < currentStep + 1)
+                const shouldBeActive = stepNumber <= (currentStep + 1);
+
+                // Mark steps as active if they are completed OR if they are the current step
+                if (shouldBeActive) {
+                    circle.classList.add("active");
+                } else {
+                    circle.classList.remove("active");
+                }
+            });
+        }
 
         function normalizeString(str) {
             return String(str).trim().toLowerCase().replace(/\s+/g, " ");
@@ -2244,7 +2227,8 @@
 
         function prefillData(stepIndex) {
             const currentStepNum = stepIndex + 1;
-            const currentStepData = stepData.filter(item => parseInt(item.step) === currentStepNum);
+            // Get data for the current step from the grouped structure
+            const currentStepData = stepDataRaw[currentStepNum] || [];
 
             const stepTab = stepTabs[stepIndex];
             const stepFields = stepTab.querySelectorAll("input, select, textarea");
@@ -2259,7 +2243,6 @@
                 if (!matchedItem) return;
 
                 let baseFieldName = questionName.replace(/^questions/, "ans");
-                console.log("Matched Item:", baseFieldName);
                 let answer;
                 try {
                     answer = JSON.parse(matchedItem.answer);
@@ -2326,7 +2309,6 @@
                 return;
             }
 
-            console.log('Saving final step...');
             saveStepData(currentStep, function (success) {
                 if (!success) {
                     alert("Final step failed to save. Please try again.");
@@ -2418,40 +2400,40 @@
 
                 // Check if groupData is an array or an object
                 if (Array.isArray(groupData)) {
-                // If groupData is a simple array, key is the same as group (or no key)
-                groupData.forEach(name => {
-                    // Set UI selection for this group and item (you'll need to implement setSelection)
-                    setSelection(group, null, name);
+                    // If groupData is a simple array, key is the same as group (or no key)
+                    groupData.forEach(name => {
+                        // Set UI selection for this group and item (you'll need to implement setSelection)
+                        setSelection(group, null, name);
 
-                    // Create hidden input with the correct name format
-                    const input = document.createElement('input');
-                    input.type = 'hidden';
-                    input.name = `ans[food_preference][${group}][]`;
-                    input.value = name;
-                    wrapper.appendChild(input);
-                });
-                } else if (typeof groupData === 'object') {
-                // If groupData is an object, iterate keys
-                Object.keys(groupData).forEach(key => {
-                    const items = groupData[key];
-                    items.forEach(name => {
-                    // Set UI selection for group, key, and item
-                    setSelection(group, key, name);
-
-                    // Create hidden input with the correct name format
-                    const input = document.createElement('input');
-                    input.type = 'hidden';
-
-                    if (group.toLowerCase() !== key.toLowerCase()) {
-                        input.name = `ans[food_preference][${group}][${key}][]`;
-                    } else {
+                        // Create hidden input with the correct name format
+                        const input = document.createElement('input');
+                        input.type = 'hidden';
                         input.name = `ans[food_preference][${group}][]`;
-                    }
-
-                    input.value = name;
-                    wrapper.appendChild(input);
+                        input.value = name;
+                        wrapper.appendChild(input);
                     });
-                });
+                } else if (typeof groupData === 'object') {
+                    // If groupData is an object, iterate keys
+                    Object.keys(groupData).forEach(key => {
+                        const items = groupData[key];
+                        items.forEach(name => {
+                            // Set UI selection for group, key, and item
+                            setSelection(group, key, name);
+
+                            // Create hidden input with the correct name format
+                            const input = document.createElement('input');
+                            input.type = 'hidden';
+
+                            if (group.toLowerCase() !== key.toLowerCase()) {
+                                input.name = `ans[food_preference][${group}][${key}][]`;
+                            } else {
+                                input.name = `ans[food_preference][${group}][]`;
+                            }
+
+                            input.value = name;
+                            wrapper.appendChild(input);
+                        });
+                    });
                 }
             });
         }
@@ -2462,7 +2444,6 @@
                 if (this.checked) {
                     activeFoodCheckbox = this;
                     selectedFoodKey = this.dataset.foodKey;
-                    console.log(selectedFoodKey);
                     selectedFoodGroup = this.dataset.foodGroup;
                     targetWrapper = document.querySelector(`.food-dropdown-wrapper[data-wrapper-for="${selectedFoodKey}"]`);
 
@@ -2545,7 +2526,6 @@
 
         // Confirm button in modal
         document.getElementById('confirmFoodSelection').addEventListener('click', function () {
-            console.log('main');
             if (!selectedFoodKey || !selectedFoodGroup) return;
 
             const selectedItems = document.querySelectorAll('.sub-food-checkbox:checked');
@@ -2591,8 +2571,6 @@
 
         // Prefill food checkboxes + hidden inputs on page load
         function prefillFoodDataFromPrevious(previousData) {
-            console.log("Prefilling food data from previous answers...");
-            console.log(previousData);
             if (!previousData || !previousData.food_preference) return;
 
             const foodPreference = previousData.food_preference;
@@ -2600,7 +2578,6 @@
            Object.keys(foodPreference).forEach(group => {
                 const groupData = foodPreference[group];
                 const groupLower = group.toLowerCase(); // convert once for reuse
-                console.log(`Processing group: ${group}`, groupData);
 
                 if (Array.isArray(groupData)) {
                     const wrapper = document.querySelector(`.food-dropdown-wrapper[data-wrapper-for="${group}"]`);
@@ -2615,7 +2592,6 @@
                         input.value = name;
                         wrapper.appendChild(input);
                     });
-                    console.log(`Prefilled ${group} with items:`, groupData);
 
                 } else if (typeof groupData === 'object') {
                     Object.keys(groupData).forEach(key => {
@@ -2635,7 +2611,6 @@
                             input.value = name;
                             wrapper.appendChild(input);
                         });
-                        console.log(`Prefilled ${group} - ${key} with items:`, items);
                     });
                 }
             });
@@ -2670,44 +2645,49 @@
             }
         }
 
-        // Extract previous answers from stepData for food preference
+        // Extract previous answers from stepDataRaw for food preference
         function getPreviousAnswers() {
-            if (!Array.isArray(stepData)) return null;
+            if (!stepDataRaw || Object.keys(stepDataRaw).length === 0) return null;
 
             const foodPreference = {};
 
-            stepData.forEach(item => {
-                if (item.form_slug !== 'food_preference') return;
+            // Iterate through all steps
+            for (const stepNum in stepDataRaw) {
+                const stepItems = stepDataRaw[stepNum];
+                if (!Array.isArray(stepItems)) continue;
 
-                const group = item.question?.trim();
-                if (!group) return;
+                stepItems.forEach(item => {
+                    if (item.form_slug !== 'food_preference') return;
 
-                let value = item.answer;
+                    const group = item.question?.trim();
+                    if (!group) return;
 
-                try {
-                    value = JSON.parse(value);
-                } catch (e) {
-                    value = [];
-                }
+                    let value = item.answer;
 
-                if (Array.isArray(value)) {
-                    foodPreference[group] = value.filter(Boolean);
-                } else if (value && typeof value === 'object') {
-                    foodPreference[group] = {};
-                    Object.keys(value).forEach(key => {
-                        foodPreference[group][key] = Array.isArray(value[key])
-                            ? value[key].filter(Boolean)
-                            : [];
-                    });
-                }
-            });
+                    try {
+                        value = JSON.parse(value);
+                    } catch (e) {
+                        value = [];
+                    }
+
+                    if (Array.isArray(value)) {
+                        foodPreference[group] = value.filter(Boolean);
+                    } else if (value && typeof value === 'object') {
+                        foodPreference[group] = {};
+                        Object.keys(value).forEach(key => {
+                            foodPreference[group][key] = Array.isArray(value[key])
+                                ? value[key].filter(Boolean)
+                                : [];
+                        });
+                    }
+                });
+            }
 
             return { food_preference: foodPreference };
         }
 
         // Call this when the current step is 5 or 6
         function prefillFoodInputsOnStep(currentStep) {
-            console.log("Prefilling food inputs for step:", currentStep);
             if (currentStep === 5 || currentStep === 6) {
                 const previousData = getPreviousAnswers();
                 prefillFoodDataFromPrevious(previousData);
@@ -2729,7 +2709,6 @@
     // Add edit icon to labels when checkbox is checked
     document.querySelectorAll('.food-checkbox').forEach(checkbox => {
         const label = checkbox.nextElementSibling;
-        console.log('label');
         const editIcon = document.createElement('i');
         editIcon.className = 'fas fa-edit edit-icon d-none';
         editIcon.title = 'Edit selection';
@@ -2842,7 +2821,6 @@
 
     // Modify the confirm button click handler
     document.getElementById('confirmFoodSelection').addEventListener('click', function() {
-        console.log('second');
         if (!selectedFoodKey || !selectedFoodGroup || !activeFoodCheckbox) return;
 
         const selectedItems = document.querySelectorAll('.sub-food-checkbox:checked');
@@ -2934,15 +2912,6 @@
     });
 
     $(document).ready(function () {
-        // Check if a value is already selected on page load (in case of form pre-population)
-        // if ($('#bloodTest1').prop('checked')) {
-        //     $('#fileUploadSection').show();
-        //     $('#bloodTestDateSection').show();
-        // } else {
-        //     $('#fileUploadSection').hide();
-        //     $('#bloodTestDateSection').hide();
-        // }
-
         $('input[name="ans[physical_activity_and_exercise][tracking_device]"]').on('change', function () {
             const selectedValue = $(this).val();
 

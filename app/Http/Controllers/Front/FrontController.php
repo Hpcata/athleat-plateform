@@ -1736,6 +1736,7 @@ class FrontController extends Controller
         try {
             $user    = User::select('id', 'free_user')->find($userId);
             $payment = Payment::where('user_id', $userId)->first();
+            $isQuestionnaireSubmitted = UserPrePlan::where('user_id', $userId)->where('is_complete', 1)->first();
 
             if (auth()->user() && ! auth()->user()->is_superadmin && auth()->user()?->id != $userId) {
                 return redirect()->route('front.index')->with('error', 'You are not authorized to access this page.');
@@ -1745,12 +1746,10 @@ class FrontController extends Controller
                 return redirect()->back()->with('error', 'Plan not purchased.');
             }
 
-            $userPlan = UserPlan::with([
-                'plan',
-            ])->where('user_id', $userId)->first();
+            $userPlan = UserPlan::with(['plan'])->where('user_id', $userId)->first();
 
             // Also fetch the free_user column from the user table
-            if (! $userPlan && $user->free_user) {
+            if (!$payment && !$userPlan && $user->free_user) {
                 $userPlan                 = new UserPlan();
                 $plans                    = Plan::all();
                 $userPlan->free_user_plan = $plans;
@@ -1760,7 +1759,9 @@ class FrontController extends Controller
                 $userPlan->free_user = $user->free_user ?? null;
             }
 
-            return view('front.pages.profile-landing', compact('userPlan', 'payment'));
+            $isAdminView = $request->get('admin_view') ?? false;
+
+            return view('front.pages.profile-landing', compact('userPlan', 'payment', 'isQuestionnaireSubmitted', 'isAdminView'));
         } catch (Exception $e) {
             // Log the error for debugging
             Log::error('Error fetching user profile: ' . $e->getMessage());

@@ -7,15 +7,16 @@ use App\Models\User;
 use App\Models\SportGame;
 use Illuminate\Support\Str;
 use App\Constants\AgeGroups;
+use App\Models\TrackingType;
 use App\Services\OtpService;
 use Illuminate\Http\Request;
+use App\Services\ActivityTracker;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use App\Services\ActivityTracker;
-use App\Models\TrackingType;
 
 class OtpRegistrationController extends Controller
 {
@@ -243,7 +244,7 @@ class OtpRegistrationController extends Controller
                     if ($request->input('userType') === 'athlete') {
                         if (empty($value)) {
                             $fail('The sport field is required when user type is athlete.');
-                        } elseif (!\DB::table('sport_games')->where('id', $value)->exists()) {
+                        } elseif (!DB::table('sport_games')->where('id', $value)->exists()) {
                             $fail('Please select a valid sport game.');
                         }
                     }
