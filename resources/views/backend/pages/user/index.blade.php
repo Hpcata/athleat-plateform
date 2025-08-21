@@ -124,16 +124,6 @@
 @push('custom_scripts')
 <script>
 $(document).ready(function() {
-    // Initialize DataTable
-    // $('#myDataTable').DataTable({
-    //     "paging": true,
-    //     "ordering": true,
-    //     "info": true,
-    //     "searching": true,
-    //     "pageLength": 10
-    // });
-
-    // Handle user details view
     $('.view-user-details').click(function() {
         const userId = $(this).data('user-id');
 
