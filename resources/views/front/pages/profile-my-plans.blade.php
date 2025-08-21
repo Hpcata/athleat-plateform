@@ -39,16 +39,14 @@ and performance goals with expert guidance from Australia’s leading sports nut
                         <div class="">
                             <div class="plan-title">Training Nutrition Plan</div>
                             <div class="plan-desc">
-                                Optimise your training gains by eating with purpose. Perform at your peak with a
-                                personalised meal plan tailored to you & your preferences - designed by Extreme Sports
-                                Dietitian Kerry O’Bryan.
+                                Optimise your training gains by eating with purpose. Perform at your peak with a personalised meal plan tailored to you & your preferences - designed by Extreme Sports Dietitian Kerry O’Bryan.
                             </div>
                             <div class="consult-user-row">
                                 <img src="{{ asset('front/images/circled-meal-1.svg') }}"
                                     class="consult-avatar" alt="Kerry O'Bryan, expert coach avatar" />
                                 <img src="{{ asset('front/images/circled-meal-2.svg') }}"
                                     class="consult-avatar overlap1" alt="Kerry O'Bryan, expert coach avatar" />
-                                <span>12 meals</span>
+                                <span>21 meals customised for you  </span>
                             </div>
                         </div>
                         <button class="btn-consult" onclick="window.location.href='{{ route('front.training.nutrition.plan') }}'">Learn
@@ -68,8 +66,7 @@ and performance goals with expert guidance from Australia’s leading sports nut
                         <div class="">
                             <div class="plan-title">Competition Plan</div>
                             <div class="plan-desc">
-                                Unlock your peak performance with a 24-hour Competition Nutrition Plan - Ensuring you’re
-                                hydrated, fuelled & ON when it’s game time so that nutrition is never your weakness!
+                                Unlock your peak performance with a 24-hour Competition Nutrition Plan - Ensuring you’re hydrated, fuelled & ON when it’s game time so that nutrition is never your weakness!
                             </div>
                             <div class="consult-user-row">
                                 <img src="{{ asset('front/images/circled-meal-1.svg') }}"
@@ -86,10 +83,9 @@ and performance goals with expert guidance from Australia’s leading sports nut
                         <div class="">
                             <div class="plan-title">Injury & Recovery Plan</div>
                             <div class="plan-desc">
-                                Optimised nutrition to support soft tissue injury. Hold muscle, reduce
-                                inflammation & limit fat gain with a
-                                personalised plan that caters to where you're at. Faster recovery is the goal &
-                                nutrition is too often overlooked!
+                               Optimised nutrition to support soft tissue injury. Hold muscle, reduce 
+                                inflammation & limit fat gain with a 
+                                personalised plan that caters to where you're at. Faster recovery is the goal & nutrition is too often overlooked!
                             </div>
                             <div class="consult-user-row">
                                 <img src="{{ asset('front/images/circled-meal-1.svg') }}"
@@ -106,30 +102,7 @@ and performance goals with expert guidance from Australia’s leading sports nut
                         <div class="">
                             <div class="plan-title">Pre & Post Surgery Plan</div>
                             <div class="plan-desc">
-                                Poor nutritional status before surgery will delay your recovery. The Pre & Post Surgery
-                                Nutrition Plan will ensure you are well organised with specific food, snacks &
-                                supplements that will speed up healing, hold muscle, limit fat gain & get you back in
-                                the game!
-                            </div>
-                            <div class="consult-user-row">
-                                <img src="{{ asset('front/images/circled-meal-1.svg') }}"
-                                    class="consult-avatar" alt="Kerry O'Bryan, expert coach avatar" />
-                                <img src="{{ asset('front/images/circled-meal-2.svg') }}"
-                                    class="consult-avatar overlap1" alt="Kerry O'Bryan, expert coach avatar" />
-                                <span>21 meals customised for you</span>
-                            </div>
-                        </div>
-                        <button class="btn-consult" onclick="showLearnMoreTooltip(this, 'Coming Soon')">Learn
-                            more</button>
-                    </div>
-                    <div class="plan-card-custom plan-injury">
-                        <div class="">
-                            <div class="plan-title">Pre & Post Surgery Plan</div>
-                            <div class="plan-desc">
-                                Poor nutritional status before surgery will delay your recovery. The Pre & Post Surgery
-                                Nutrition Plan will ensure you are well organised with specific food, snacks &
-                                supplements that will speed up healing, hold muscle, limit fat gain & get you back in
-                                the game!
+                                Poor nutritional status before surgery will delay your recovery. The Pre & Post Surgery Nutrition Plan will ensure you are well organised with specific food, snacks & supplements that will speed up healing, hold muscle, limit fat gain & get you back in the game!
                             </div>
                             <div class="consult-user-row">
                                 <img src="{{ asset('front/images/circled-meal-1.svg') }}"
@@ -153,11 +126,8 @@ and performance goals with expert guidance from Australia’s leading sports nut
 
                             <h3 class="card-title">Private consultations</h3>
                             <p class="card-text">
-                                Get answers from a real-life expert coaching Elite Athletes and Olympians.
-                                An in-depth session to review your current approach, identify key opportunities, and
-                                give you practical, tailored strategies to reach your sporting goals. Get expert support
-                                that meets you where you’re at, with relevant education and answers to the questions
-                                that matter most.
+                                Get answers from a real-life expert coaching Elite Athletes and Olympians. 
+                                An in-depth session to review your current approach, identify key opportunities, and give you practical, tailored strategies to reach your sporting goals. Get expert support that meets you where you’re at, with relevant education and answers to the questions that matter most.
                             </p>
                         </div>
                         <div class="consult-user-row">
@@ -187,9 +157,7 @@ and performance goals with expert guidance from Australia’s leading sports nut
                                 <h3 class="card-title">Training Nutrition Plan</h3>
                             </div>
                             <p class="card-text">
-                                Optimise your training gains by eating with purpose. Perform at your peak with a
-                                personalised meal plan tailored to you & your preferences - designed by Extreme Sports
-                                Dietitian Kerry O’Bryan.
+                                Optimise your training gains by eating with purpose. Perform at your peak with a personalised meal plan tailored to you & your preferences - designed by Extreme Sports Dietitian Kerry O’Bryan.
                             </p>
                         </div>
                         <div class="consult-user-row">
@@ -198,7 +166,7 @@ and performance goals with expert guidance from Australia’s leading sports nut
                             <img src="{{ asset('front/images/circled-meal-1.svg') }}"
                                 class="consult-avatar overlap1" alt="Kerry O'Bryan, expert coach avatar" />
 
-                            <span style="padding-left:0;">21 meals customised for you</span>
+                            <span>21 meals customised for you</span>
                         </div>
                         <a href="https://booking.biohealthpassport.com.au/kerry-obryan" target="_blank"
                             class="btn-learn-more ">View plan</a>
@@ -218,8 +186,7 @@ and performance goals with expert guidance from Australia’s leading sports nut
                                 <h3 class="card-title">Competition Plan</h3>
                             </div>
                             <p class="card-text">
-                                Unlock your peak performance with a 24-hour Competition Nutrition Plan - Ensuring you’re
-                                hydrated, fuelled & ON when it’s game time so that nutrition is never your weakness!
+                                Unlock your peak performance with a 24-hour Competition Nutrition Plan - Ensuring you’re hydrated, fuelled & ON when it’s game time so that nutrition is never your weakness!
                             </p>
                         </div>
                         <div class="consult-user-row">
@@ -228,7 +195,7 @@ and performance goals with expert guidance from Australia’s leading sports nut
                             <img src="{{ asset('front/images/circled-meal-1.svg') }}"
                                 class="consult-avatar overlap1" alt="Kerry O'Bryan, expert coach avatar" />
 
-                            <span style="padding-left:0;">21 meals customised for you</span>
+                            <span>21 meals customised for you</span>
                         </div>
                         <a href="https://booking.biohealthpassport.com.au/kerry-obryan" target="_blank"
                             class="btn-learn-more ">View plan</a>
