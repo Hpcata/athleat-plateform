@@ -21,12 +21,10 @@
                         <img src="{{ frontAssets('images/profile.svg') }}" alt="Profile" class="profile-avatar-overlap" />
                         <div class="welcome-arrow"></div>
                     </div>
-
                 </div>
-
             </section>
 
-            @if (!$isQuestionnaireSubmitted->is_complete && !$payment && !isset($userPlan?->plan) && $userPlan?->free_user && $userPlan?->free_user_plan)
+            @if (isset($isQuestionnaireSubmitted) && !$isQuestionnaireSubmitted->is_complete && !$payment && !isset($userPlan?->plan) && (isset($userPlan) && $userPlan->free_user && $userPlan->free_user_plan))
                 <section class="challenges">
                     <div class="section-header">
                         <h2>My Nutrition Plan</h2>
@@ -71,7 +69,7 @@
                         </div>
                     </div>
                 </section>
-            @elseif(!$isAdminView && $payment && $payment->plan_id && $isQuestionnaireSubmitted->is_complete && $userPlan && $userPlan->is_mail_sent == 0)
+            @elseif(!$isAdminView && $payment && isset($payment->plan_id) && isset($isQuestionnaireSubmitted) && $isQuestionnaireSubmitted->is_complete && isset($userPlan) && $userPlan->is_mail_sent == 0)
                 <section class="challenges">
                     <div class="section-header">
                         <h2>My Nutrition Plan</h2>
@@ -136,7 +134,7 @@
                         </div>
                     </div>
                 </section>
-            @elseif (($isAdminView && $userPlan) || ($userPlan && isset($userPlan->is_mail_sent) && $userPlan->is_mail_sent == 1 && isset($userPlan->mail_sent_at) && $userPlan->mail_sent_at != null))
+            @elseif (($isAdminView && isset($userPlan)) || (isset($userPlan) && isset($userPlan->is_mail_sent) && $userPlan->is_mail_sent == 1 && isset($userPlan->mail_sent_at) && $userPlan->mail_sent_at != null))
                 <section class="training-plan">
                     @if (isset($userPlan->plan))
                         <div class="section-header">
