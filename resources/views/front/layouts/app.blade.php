@@ -95,51 +95,54 @@
     @stack('scripts')
 
     <script id="delphi-bubble-script">
-    window.delphi = {...(window.delphi ?? {}) };
-    window.delphi.bubble = {
-        config: "663f5909-3622-47c9-9287-28233409948f",
-        overrides: {
-        landingPage: "CHAT",
-        },
-        trigger: {
-        color: "#0090FF",
-        },
-    };
+        window.delphi = {...(window.delphi ?? {}) };
+        window.delphi.bubble = {
+            config: "663f5909-3622-47c9-9287-28233409948f",
+            overrides: {
+                landingPage: "CHAT",
+            },
+            trigger: {
+                color: "#0090FF",
+            },
+            container: {
+                width: "100%",
+                height: "800px",
+            },
+        };
 
-    $(document).ready(function() {
-        let isOpen = false;
+        $(document).ready(function() {
+            let isOpen = false;
 
-        function loadCustomDelphi() {
-            // alert('1');
-            $(document).find('#delphi-bubble-trigger').trigger("click");
-            isOpen = true;
-        }
-        // Handle click event to open Delphi chat
-        $(document).on('click', '.chat-widget, #chat-to-virtual-kez-btn, .start-chat', function() {
-            // alert('2');
-            loadCustomDelphi();
-        });
-
-        document.addEventListener('click', function(event) {
-            if (event.target.closest('.chat-widget')) {
-                return;
-            }
-
-            if (event.target.closest('.start-chat')) {
-                return;
-            }
-
-            if (event.target.closest('#chat-to-virtual-kez-btn')) {
-                return;
-            }
-
-            if (isOpen) {
+            function loadCustomDelphi() {
+                // alert('1');
                 $(document).find('#delphi-bubble-trigger').trigger("click");
-                isOpen = false;
+                isOpen = true;
             }
-        });
-    });
+            // Handle click event to open Delphi chat
+            $(document).on('click', '.chat-widget, #chat-to-virtual-kez-btn, .start-chat', function() {
+                // alert('2');
+                loadCustomDelphi();
+            });
 
+            document.addEventListener('click', function(event) {
+                if (event.target.closest('.chat-widget')) {
+                    return;
+                }
+
+                if (event.target.closest('.start-chat')) {
+                    return;
+                }
+
+                if (event.target.closest('#chat-to-virtual-kez-btn')) {
+                    return;
+                }
+
+                if (isOpen) {
+                    $(document).find('#delphi-bubble-trigger').trigger("click");
+                    isOpen = false;
+                }
+            });
+        });
     </script>
 
     <script id="delphi-bubble-bootstrap" src="https://embed.delphi.ai/loader.js"></script>
