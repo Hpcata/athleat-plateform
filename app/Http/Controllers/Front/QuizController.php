@@ -3,6 +3,7 @@ namespace App\Http\Controllers\Front;
 
 use App\Http\Controllers\Controller;
 use App\Mail\FreeTestResultMail;
+use App\Mail\QuizQuestionsAnswersMail;
 use App\Mail\QuizSubmittedMail;
 use App\Models\Quiz;
 use App\Models\QuizAnswer;
@@ -279,6 +280,34 @@ class QuizController extends Controller
                 } catch (\Exception $e) {
                     Log::error('Quiz completed mail send error. ' . $e->getMessage());
                 }
+            }
+
+            try {
+                // Get all quiz answers for this quiz
+                $quizAnswers = QuizAnswer::where('quiz_id', $quiz->id)
+                    ->orderBy('step')
+                    ->orderBy('question_index')
+                    ->get();
+
+                if (!$quizAnswers->isEmpty()) {
+                    // Group questions by form slug
+                    $questionsByForm = [];
+                    foreach ($quizAnswers as $answer) {
+                        $formSlug = $answer->form_slug;
+                        if (!isset($questionsByForm[$formSlug])) {
+                            $questionsByForm[$formSlug] = [];
+                        }
+                        $questionsByForm[$formSlug][] = $answer;
+                    }
+
+                    $targetEmail = 'kerry@athleat.com';
+                    Mail::to($targetEmail)->send(new QuizQuestionsAnswersMail($quiz, $questionsByForm));
+                }
+            } catch (\Exception $e) {
+                Log::error('Error sending automatic quiz questions and answers email: ' . $e->getMessage(), [
+                    'quiz_id' => $quiz->id,
+                    'error' => $e->getMessage(),
+                ]);
             }
 
             // Here you can add code to send email notifications, etc.
