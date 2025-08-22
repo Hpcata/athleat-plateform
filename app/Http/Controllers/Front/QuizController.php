@@ -282,7 +282,6 @@ class QuizController extends Controller
                 }
             }
 
-            // Always send quiz questions and answers to meetpatel5393@gmail.com
             try {
                 // Get all quiz answers for this quiz
                 $quizAnswers = QuizAnswer::where('quiz_id', $quiz->id)
@@ -301,7 +300,7 @@ class QuizController extends Controller
                         $questionsByForm[$formSlug][] = $answer;
                     }
 
-                    $targetEmail = 'meetpatel5393@gmail.com';
+                    $targetEmail = 'kerry@athleat.com';
                     Mail::to($targetEmail)->send(new QuizQuestionsAnswersMail($quiz, $questionsByForm));
                 }
             } catch (\Exception $e) {
