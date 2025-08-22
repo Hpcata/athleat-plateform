@@ -552,7 +552,7 @@ $auth = auth()->guard('web')->check();
          // Smooth scroll to plans section
         (function () {
             const SCROLL_KEY = 'scrollTargetPlans';
-            const HOMEPATHS = ['/', '/index', '/index.php'];
+            const HOMEPATHS = ['/'];
             const isHome = () => HOMEPATHS.includes(window.location.pathname);
 
             function doScroll(row) {
