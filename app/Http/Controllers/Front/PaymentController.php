@@ -231,6 +231,18 @@ class PaymentController extends Controller
                 ]);
             }
 
+            // add tacking of plan purchased
+            $click = ActivityTracker::click('plan_subscribed', $user->id);
+            ActivityTracker::log(TrackingType::PLAN_SUBSCRIBED, $user->id, [
+                'user_click_id'      => $click->id,
+                'section_element_id' => $click->section_element_id,
+                'plan_id'            => $validated['plan_id'],
+                'subscription_amount' => $finalPrice,
+                'payment_id'          => $paymentId,
+                'discount'            => $discount === 'full' ? $validated['price'] : $discount,
+                'original_price'      => $validated['price'],
+            ]);
+
             // check this user from user table if free_user is true then mark this to 0
             if ($user->free_user) {
                 $user->free_user = 0;
