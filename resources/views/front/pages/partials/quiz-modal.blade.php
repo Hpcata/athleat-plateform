@@ -1128,8 +1128,7 @@
                                 style="display: flex!important;flex-direction: column; justify-content: space-between;">
                                 <!-- Question 1 -->
                                 <div class="question-container">
-                                    <div class="question-header">Approximately how many decisions do we make every
-                                        day about what we eat?</div>
+                                    <div class="question-header">Approximately how many decisions do we make every day about what we eat?</div>
                                     <div class="radio-options">
                                         <div class="radio-option">
                                             <input type="radio" id="q1-option1" name="q1" value="50-100">
