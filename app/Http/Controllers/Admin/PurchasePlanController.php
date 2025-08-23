@@ -287,7 +287,7 @@ class PurchasePlanController extends Controller
                 foreach ($request->plan_id as $planId) {
                     $userPlan = DB::table('user_plans')->updateOrInsert(
                         ['user_id' => $request->user_id, 'plan_id' => $planId],
-                        ['status' => 'active', 'modified_by' => auth()->id(), 'updated_at' => now()]
+                        ['status' => 'active', 'modified_by' => auth()->id(), 'updated_at' => now(), 'created_at' => now()]
                     );
 
                     $userPlan = DB::table('user_plans')

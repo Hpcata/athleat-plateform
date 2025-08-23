@@ -604,23 +604,76 @@ class QuizController extends Controller
      */
     private function trackQuizActivity(Quiz $quiz, Request $request, ?QuizQuestion $quizQuestion, string $questionText, string $formSlug, $selectedValue, array $answerStats): void
     {
-        $click = ActivityTracker::click('quiz_question_answer', null);
+        $quizQuestionData = $quizQuestion->toArray();
+        $correctAnswer = $quizQuestionData['correct_answer'];
+        $stepData = $request->get('stepData');
+        $stepData = json_decode($stepData, true);
+        $stepData = reset($stepData);
 
-        ActivityTracker::log(TrackingType::QUIZ_QUESTION_ANSWER, null, [
-            'user_click_id'          => $click->id,
-            'section_element_id'     => $click->section_element_id,
-            'quiz_id'                => $quiz->id,
-            'step'                   => $request->step,
-            'question_id'            => $quizQuestion?->question_index ?? 0,
-            'question_text'          => $questionText,
-            'form_slug'              => $formSlug,
-            'selected'               => $selectedValue,
-            'correct_answer_percent' => $answerStats['percent_correct'],
-            'unsure_answer_percent'  => $answerStats['percent_unsure'],
-            'option_total'           => $answerStats['total_count'],
-            'option_correct'         => $answerStats['correct_count'],
-            'option_unsure'          => $answerStats['unsure_count'],
-            'correct_answer_unsure'  => $answerStats['correct_answer_unsure'],
-        ]);
+        if(in_array($request->step, [2,3,4,5])) {
+            $trackingDataToInsert = [];
+            $click = ActivityTracker::click('quiz_question_answer', null);
+            foreach($stepData as $question => $subQuestions) {
+                foreach($subQuestions as $subQuestion => $answer) {
+                    $correctAnsForTheQuestion = null;
+                    foreach($correctAnswer as $c => $val) {
+                        if(
+                            strtolower($subQuestion) == strtolower($c)
+                            || strtolower($subQuestion) == str_replace(' ', '-', strtolower($c))
+                            || str_contains(strtolower($c), strtolower($subQuestion))
+                        ) {
+                            $correctAnsForTheQuestion = $val['option'];
+                            break;
+                        }
+                    }
+
+                    ActivityTracker::log(TrackingType::QUIZ_QUESTION_ANSWER, null, [
+                        "question_text" => $question.' ('.ucwords(str_replace('-', ' ', $subQuestion)).')',
+                        "sub_question" => $subQuestion,
+                        "value" => $answer['value'],
+                        "option" => $answer['option'],
+                        "correct" => $answer['option'] == $correctAnsForTheQuestion ? 1 : 0,
+                        'section_element_id' => $click->section_element_id,
+                        'user_click_id' => $click->id,
+                        'unsure' => $answer['option'] == 'Unsure' ? 1 : 0
+                    ]);
+                }
+            }
+        } else if(in_array($request->step, [6,7,8])) {
+            $questionText = array_keys($stepData)[0];
+            $selectedAnswer = array_keys(array_values($stepData)[0])[0];
+            $answer = reset($stepData);
+            $answer = reset($answer);
+
+            $click = ActivityTracker::click('quiz_question_answer', null);
+            ActivityTracker::log(TrackingType::QUIZ_QUESTION_ANSWER, null, [
+                "question_text" => $questionText,
+                "value" => $answer['value'],
+                "option" => $answer['option'],
+                "correct" => array_key_exists($selectedAnswer, $correctAnswer) ? 1 : 0,
+                'section_element_id' => $click->section_element_id,
+                'user_click_id' => $click->id,
+                'unsure' => $selectedAnswer == 'Unsure' ? 1 : 0
+            ]);
+        } else if(in_array($request->step, [9])) {
+            $questionTextData = $quizQuestionData['question_text'];
+            foreach($stepData as $question => $answer){
+                if(trim(str_replace('\n', '', strtolower($question))) != trim(str_replace('\n', '', strtolower($questionTextData)))) {
+                    continue;
+                }
+                // echo '1<br>';
+
+                $click = ActivityTracker::click('quiz_question_answer', null);
+                ActivityTracker::log(TrackingType::QUIZ_QUESTION_ANSWER, null, [
+                    "question_text" => $question,
+                    "value" => $answer['value'],
+                    "option" => $answer['option'],
+                    "correct" => array_key_exists($answer['option'], $correctAnswer) ? 1 : 0,
+                    'section_element_id' => $click->section_element_id,
+                    'user_click_id' => $click->id,
+                    'unsure' => $answer['option'] == 'Unsure' ? 1 : 0
+                ]);
+            }
+        }
     }
 }
