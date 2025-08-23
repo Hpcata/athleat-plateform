@@ -231,6 +231,17 @@ class PaymentController extends Controller
                 ]);
             }
 
+            $couponSource = null;
+            if (isset($validated['coupon_code']) && !empty($validated['coupon_code'])) {
+                // 🔹 Split coupon code by "_", get the source slug (e.g., FB from FB_Athlete20)
+                $couponParts = explode('_', $validated['coupon_code']);
+                $sourceSlug  = $couponParts[0] ?? null;
+
+                if ($sourceSlug) {
+                    $couponSource = DB::table('coupon_source')->select('id', 'name')->where('slug', $sourceSlug)->first();
+                }
+            }
+
             // add tacking of plan purchased
             $click = ActivityTracker::click('plan_subscribed', $user->id);
             ActivityTracker::log(TrackingType::PLAN_SUBSCRIBED, $user->id, [
@@ -241,6 +252,8 @@ class PaymentController extends Controller
                 'payment_id'          => $paymentId,
                 'discount'            => $discount === 'full' ? $validated['price'] : $discount,
                 'original_price'      => $validated['price'],
+                'coupon_id' => $coupon ? $coupon->id : 0,
+                'coupon_source_id' => $couponSource ? $couponSource->id : 0,
             ]);
 
             // check this user from user table if free_user is true then mark this to 0
