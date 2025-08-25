@@ -118,6 +118,11 @@ class User extends Authenticatable
         return $this->hasMany(UserPlan::class);
     }
 
+    public function payments()
+    {
+        return $this->hasMany(Payment::class);
+    }
+
     /**
      * Check if the user is a superadmin
      *
@@ -132,12 +137,17 @@ class User extends Authenticatable
     {
         return $this->hasMany(UserPrePlan::class);
     }
-    
+
     /**
      * Get the sport game associated with the user
      */
     public function sportGame()
     {
         return $this->belongsTo(SportGame::class, 'sport_game_id');
+    }
+
+    public function hasPurchasedPlan()
+    {
+        return $this->payments()->where('plan_id', '!=', null)->exists();
     }
 }
