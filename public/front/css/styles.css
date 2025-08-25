@@ -168,7 +168,7 @@ body {
     border: none;
     border-radius: 8px;
     padding: 16px;
-    min-width: 210px;
+    min-width: 230px;
 }
 
 .homepage-navbar .dropdown-item {
@@ -179,7 +179,7 @@ body {
 }
 
 .homepage-navbar .dropdown-item:hover {
-    background: white;
+    background: transparent;
     color: #4fc3f7;
 }
 

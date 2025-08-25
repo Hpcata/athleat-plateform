@@ -538,7 +538,7 @@ class FrontController extends Controller
             'userCategories.userSubCategories.subCategory:id,title',
             'userCategories.userSubCategories.userMeals' => function ($q) use ($userId) {
                 $q->with([
-                    'meal'           => function ($mealQuery) use ($userId) {
+                    'meal' => function ($mealQuery) use ($userId) {
                         $mealQuery->with(['userMealItems' => function ($q2) use ($userId) {
                             $q2->wherePivot('user_id', $userId)
                                 ->select('items.id', 'items.title', 'items.image', 'items.category_id')
@@ -551,9 +551,7 @@ class FrontController extends Controller
                     },
                 ]);
             },
-        ])
-            ->where('id', $request->user_plan_id)
-            ->first();
+        ])->where('id', $request->user_plan_id)->first();
 
         $result = [];
 

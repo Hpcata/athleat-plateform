@@ -197,21 +197,14 @@ $auth = auth()->guard('web')->check();
                             </svg>
                         </a>
                         <ul class="dropdown-menu">
-                            <li>
-                                <a class="dropdown-item" href="{{ route('front.training.nutrition.plan') }}">Training Nutrition Plan</a>
-                            </li>
-                            <li>
-                                <a class="scroll-to-plans dropdown-item competition-plan-link" href="">Competition plan</a>
-                            </li>
-                            <li>
-                                <a class="scroll-to-plans dropdown-item competition-plan-link" href="">Injury & Recovery Plan</a>
-                            </li>
-                            <li>
-                                <a class="scroll-to-plans dropdown-item competition-plan-link" href="">Pre & Post Surgery Plan </a>
-                            </li>
-                            <li>
-                                <a class="scroll-to-plans dropdown-item competition-plan-link" href="">Private Consultations </a>
-                            </li>
+                        <li>
+                            <a class="dropdown-item" href="{{ route('front.training.nutrition.plan') }}">Training Nutrition Plan</a>
+                        </li>
+                        <li><a class="scroll-to-plans dropdown-item competition-plan-link row1" href="">Competition plan</a></li>
+                        <li><a class="scroll-to-plans dropdown-item competition-plan-link row1" href="">Injury & Recovery Plan</a></li>
+                        <li><a class="scroll-to-plans dropdown-item competition-plan-link row2" href="">Pre & Post Surgery Plan</a></li>
+                        <li><a class="scroll-to-plans dropdown-item competition-plan-link row2" href="">Private Consultations</a></li>
+                        <li><a class="scroll-to-plans dropdown-item competition-plan-link row2" href="">Clubs and Group bookings</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -556,52 +549,63 @@ $auth = auth()->guard('web')->check();
             });
         });
 
-        // Smooth scroll to plans section
-        document.querySelectorAll('.scroll-to-plans').forEach(function(link) {
-            link.addEventListener('click', function(e) {
+         // Smooth scroll to plans section
+        (function () {
+            const SCROLL_KEY = 'scrollTargetPlans';
+            const HOMEPATHS = ['/'];
+            const isHome = () => HOMEPATHS.includes(window.location.pathname);
+
+            function doScroll(row) {
+                const section = document.querySelector('.choose-plan-section');
+                if (!section) return false;
+
+                const sticky = document.querySelector('.navbar.fixed-top, .navbar.sticky-top');
+                const stickyH = sticky ? sticky.offsetHeight : 0;
+
+                const extra = row === 'row2' ? window.innerHeight / 2 : 0; // reveal second row
+                const top = section.getBoundingClientRect().top + window.scrollY - stickyH + extra;
+
+                window.scrollTo({ top, behavior: 'smooth' });
+                return true;
+            }
+
+            function scrollWithRetry(row, attempts = 15) {
+                if (doScroll(row)) return;
+                if (attempts <= 0) return;
+                setTimeout(() => scrollWithRetry(row, attempts - 1), 100);
+            }
+
+            document.querySelectorAll('.scroll-to-plans').forEach((link) => {
+                link.addEventListener('click', function (e) {
                 e.preventDefault();
 
-                // Close mobile menu if open
-                const navbarCollapse = document.querySelector('.navbar-collapse');
-                if (navbarCollapse && navbarCollapse.classList.contains('show')) {
-                    const navbarToggler = document.querySelector('.navbar-toggler');
-                    if (navbarToggler) {
-                        navbarToggler.click();
-                    }
+                const navCol = document.querySelector('.navbar-collapse');
+                if (navCol && navCol.classList.contains('show')) {
+                    document.querySelector('.navbar-toggler')?.click();
                 }
 
-                // Check if current URL is not homepage
-                if (window.location.pathname !== '/') {
-                    // Redirect to homepage and scroll to plans section
-                    window.location.href = '/';
-                    setTimeout(function() {
-                        const targetSection = document.querySelector('.choose-plan-section');
-                        if (targetSection) {
-                            targetSection.scrollIntoView({
-                                behavior: 'smooth',
-                                block: 'start'
-                            });
-                            window.location.replace(window.location.href.split('#')[0]);
-                        }
-                    }, 100);
+                const row = link.classList.contains('row2') ? 'row2' : 'row1';
+
+                if (!isHome()) {
+                    sessionStorage.setItem(SCROLL_KEY, row);
+                    window.location.assign('/'); // redirect to homepage
                 } else {
-                    // Find the target section
-                    const targetSection = document.querySelector('.choose-plan-section');
-                    if (targetSection) {
-                        // Smooth scroll to the section
-                        targetSection.scrollIntoView({
-                            behavior: 'smooth',
-                            block: 'start'
-                        });
-                    } else {
-                        // Fallback: scroll to top if section not found
-                        window.scrollTo({
-                            top: 0,
-                            behavior: 'smooth'
-                        });
-                    }
+                    scrollWithRetry(row);
                 }
+                });
             });
-        });
-    });
+
+            // After redirect to home, perform the scroll
+            if (isHome()) {
+                const row = sessionStorage.getItem(SCROLL_KEY);
+                if (row) {
+                sessionStorage.removeItem(SCROLL_KEY);
+                window.addEventListener('load', () => {
+                    requestAnimationFrame(() => requestAnimationFrame(() => scrollWithRetry(row)));
+                });
+                }
+            }
+            })();
+});
 </script>
+

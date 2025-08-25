@@ -460,6 +460,12 @@ class PaymentController extends Controller
                     ->where('id', $prePlanId)
                     ->update(['is_complete' => 1]);
 
+                // Add blank entry into user_plans table
+                DB::table('user_plans')->updateOrInsert(
+                    ['user_id' => $user->id, 'plan_id' => $payment->plan_id],
+                    ['status' => 'created', 'modified_by' => auth()->id(), 'updated_at' => now(), 'created_at' => now()]
+                );
+
                 // Log the user in after questionnaire completion
                 Auth::guard('web')->login($user);
             }
