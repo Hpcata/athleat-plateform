@@ -1,10 +1,11 @@
 <?php
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Item extends Model
+class SwapItem extends Model
 {
     use HasFactory;
 
@@ -17,8 +18,8 @@ class Item extends Model
 
     public function swapItems()
     {
-        return $this->belongsToMany(Item::class, 'item_swaps', 'item_id', 'swap_item_id')
-        ->wherePivot('item_id', '<>', \DB::raw('swap_item_id'));
+        return $this->belongsToMany(SwapItem::class, 'item_swaps', 'item_id', 'swap_item_id')
+        ->wherePivot('item_id', '<>', DB::raw('swap_item_id'));
     }
 
 }
