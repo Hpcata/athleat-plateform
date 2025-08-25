@@ -4184,7 +4184,9 @@ button:focus,
     max-width: max-content;
     text-align: left;
 }
-
+.purchase-plan-overlay.complete-questionnaire .purchase-plan-btn{
+    background: #1751aa;
+}
 .fade-full {
     position: absolute;
     top: 0;
