@@ -94,10 +94,14 @@
 
     @stack('scripts')
 
+    @php
+        $delphiConfig = auth()->check() && auth()->user()->hasPurchasedPlan() ? '663f5909-3622-47c9-9287-28233409948f' : '1ec65786-eafc-4dbb-a617-57b8d81c9856';
+    @endphp
+
     <script id="delphi-bubble-script">
         window.delphi = {...(window.delphi ?? {}) };
         window.delphi.bubble = {
-            config: "663f5909-3622-47c9-9287-28233409948f",
+            config: "{{ $delphiConfig }}",
             overrides: {
                 landingPage: "CHAT",
             },
@@ -114,13 +118,11 @@
             let isOpen = false;
 
             function loadCustomDelphi() {
-                // alert('1');
                 $(document).find('#delphi-bubble-trigger').trigger("click");
                 isOpen = true;
             }
             // Handle click event to open Delphi chat
             $(document).on('click', '.chat-widget, #chat-to-virtual-kez-btn, .start-chat', function() {
-                // alert('2');
                 loadCustomDelphi();
             });
 
