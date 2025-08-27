@@ -474,7 +474,7 @@
             });
 
             $('.scanner-btn').click(function() {
-                location.href = "https://phenomenal-torrone-cee914.netlify.app/";
+                location.href = "{{ route('front.supplement-scanner') }}";
             });
 
             // This is now handled in the DOMContentLoaded event below
