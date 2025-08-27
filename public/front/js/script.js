@@ -242,16 +242,16 @@ window.addEventListener('resize', () => {
     }
     initMealCardsSlider();
 });
-        (s.style.display = "flex"),
-        (s.style.alignItems = "center"),
-        (s.style.justifyContent = "center"),
-        (s.onclick = function () {
-            o.remove();
-        }),
-        o.appendChild(n),
-        o.appendChild(s),
-        document.body.appendChild(o);
-}
+//         (s.style.display = "flex"),
+//         (s.style.alignItems = "center"),
+//         (s.style.justifyContent = "center"),
+//         (s.onclick = function () {
+//             o.remove();
+//         }),
+//         o.appendChild(n),
+//         o.appendChild(s),
+//         document.body.appendChild(o);
+// }
 document.querySelectorAll("section").forEach((e) => {
     (e.style.opacity = "0"),
         (e.style.transform = "translateY(20px)"),
