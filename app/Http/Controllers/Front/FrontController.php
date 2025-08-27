@@ -1767,9 +1767,10 @@ class FrontController extends Controller
                 $userPlan->free_user = $user->free_user ?? null;
             }
 
-            $isAdminView = $request->get('admin_view') ?? false;
+            $isSuperAdmin = Auth::guard('admin')->user()?->is_superadmin ?? false;
+            $isAdminView  = $request->get('admin_view') && $isSuperAdmin;
 
-            return view('front.pages.profile-landing', compact('userPlan', 'payment', 'isQuestionnaireSubmitted', 'isAdminView'));
+            return view('front.pages.profile-landing', compact('userPlan', 'payment', 'isQuestionnaireSubmitted', 'isAdminView', 'isSuperAdmin'));
         } catch (Exception $e) {
             // Log the error for debugging
             Log::error('Error fetching user profile: ' . $e->getMessage());

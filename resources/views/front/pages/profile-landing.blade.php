@@ -25,10 +25,10 @@
             </section>
 
             @php
-                $showFreePlan = !$payment && isset($userPlan) && $userPlan->free_user && $userPlan->free_user_plan && !isset($userPlan?->plan);
-                $needsQuestionnaire = isset($payment) && (!isset($isQuestionnaireSubmitted) || !$isQuestionnaireSubmitted->is_complete);
+                $showFreePlan = !$isAdminView && !$payment && isset($userPlan) && $userPlan->free_user && $userPlan->free_user_plan && !isset($userPlan?->plan);
+                $needsQuestionnaire = !$isAdminView && isset($payment) && (!isset($isQuestionnaireSubmitted) || !$isQuestionnaireSubmitted->is_complete);
                 $waitingPlan = !$isAdminView && isset($payment->plan_id, $isQuestionnaireSubmitted, $userPlan) && $isQuestionnaireSubmitted->is_complete && !$userPlan->is_mail_sent;
-                $showFinalPlan = $isAdminView || isset($userPlan);
+                $showFinalPlan = $isAdminView || (isset($userPlan) && $userPlan->status == 'active');
             @endphp
 
             @if ($showFreePlan)
@@ -51,9 +51,9 @@
                 ])
             @elseif ($waitingPlan)
                 @include('front.pages.partials.plan-preparation-section')
-            @elseif ($showFinalPlan && $userPlan->status == 'active')
+            @elseif ($showFinalPlan)
                 @include('front.pages.partials.active-plan-section', [
-                    'userPlan' => $userPlan,
+                    'userPlan' => $userPlan ?? null,
                     'isAdminView' => $isAdminView ?? false
                 ])
             @endif
@@ -259,8 +259,8 @@
                         <div class="">
                         <div class="plan-title">Injury & Recovery Plan</div>
                         <div class="plan-desc">
-                            Optimised nutrition to support soft tissue injury. Hold muscle, reduce 
-                            inflammation & limit fat gain with a 
+                            Optimised nutrition to support soft tissue injury. Hold muscle, reduce
+                            inflammation & limit fat gain with a
                             personalised plan that caters to where you're at. Faster recovery is the goal & nutrition is too often overlooked!
                         </div>
                         <div class="consult-user-row">
@@ -281,7 +281,7 @@
                     <div class="consultation-card-custom">
                         <div class="consult-title">Private Consultations</div>
                         <div class="consult-desc">
-                            Get answers from a real-life expert coaching Elite Athletes and Olympians. 
+                            Get answers from a real-life expert coaching Elite Athletes and Olympians.
                             An in-depth session to review your current approach, identify key opportunities, and give you practical, tailored strategies to reach your sporting goals. Get expert support that meets you where you’re at, with relevant education and answers to the questions that matter most.
                         </div>
                         <div class="consult-user-row">
