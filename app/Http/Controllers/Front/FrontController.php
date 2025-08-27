@@ -87,6 +87,16 @@ class FrontController extends Controller
         return view('front.pages.sub-home-page', compact('page', 'plans', 'isAuthenticated', 'sportCategories', 'testimonials', 'ageGroups', 'sports'));
     }
 
+    /**
+     * Show the supplement scanner page
+     *
+     * @return \Illuminate\View\View
+     */
+    public function supplementScanner()
+    {
+        return view('front.pages.scanner.supplement-scanner');
+    }
+
     public function save(QueryRequest $request)
     {
         try {

@@ -361,6 +361,8 @@ Route::group(['middleware' => 'auth'], function () {
 	// My Plans page - accessible only to authenticated users
 	Route::get('/my-plans', [FrontController::class, 'myPlans'])->name('front.my-plans');
 
+	Route::get('/supplement-scanner', [FrontController::class, 'supplementScanner'])->name('front.supplement-scanner');
+
 });
 Route::get('/set-user-session/{id}', [FrontController::class, 'setUserSession'])->name('front.set-user-session');
 
