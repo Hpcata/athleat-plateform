@@ -410,7 +410,7 @@ $auth = auth()->guard('web')->check();
         });
 
         $('.scanner-btn').click(function() {
-            location.href = "https://phenomenal-torrone-cee914.netlify.app/";
+            location.href = "{{ route('front.supplement-scanner') }}";
         });
     });
 
