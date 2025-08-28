@@ -244,7 +244,18 @@
             const preview = document.getElementById(type + '-preview');
             const container = preview.parentElement;
             preview.src = e.target.result;
-            container.style.display = 'block';
+           // Hide upload UI and show preview (match script.js behavior)
+            const uploadArea = document.getElementById(type + '-upload-area');
+            const uploadIcon = uploadArea.querySelector('.upload-icon');
+            const uploadButton = uploadArea.querySelector('.upload-button');
+            const dragDropText = uploadArea.querySelectorAll('p');
+            const previewContainer = uploadArea.querySelector('.image-preview-container');
+
+            if (uploadIcon) uploadIcon.style.display = 'none';
+            if (uploadButton) uploadButton.style.display = 'none';
+            dragDropText.forEach(p => p.style.display = 'none');
+            if (previewContainer) previewContainer.style.display = 'flex';
+            uploadArea.classList.add('has-image');
         };
         reader.readAsDataURL(file);
     }
@@ -258,8 +269,19 @@
             backImage = null;
             document.getElementById('back-label-input').value = '';
         }
-        
+         const uploadArea = document.getElementById(type + '-upload-area');
+        const uploadIcon = uploadArea.querySelector('.upload-icon');
+        const uploadButton = uploadArea.querySelector('.upload-button');
+        const dragDropText = uploadArea.querySelectorAll('p');
+        const previewContainer = uploadArea.querySelector('.image-preview-container');
         const container = document.querySelector(`#${type}-upload-area .image-preview-container`);
+        if (previewContainer) previewContainer.style.display = 'none';
+        if (uploadIcon) uploadIcon.style.display = '';
+        if (uploadButton) uploadButton.style.display = '';
+        dragDropText.forEach(p => p.style.display = '');
+        uploadArea.classList.remove('has-image');
+
+        
         container.style.display = 'none';
     }
 
