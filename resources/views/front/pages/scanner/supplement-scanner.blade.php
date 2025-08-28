@@ -131,6 +131,57 @@
                 </div>
                 </div>
             </div>
+            <div class="upload-section">
+                <h2>Additional Image (Optional)</h2>
+                <div class="upload-area" id="additional-image-upload-area">
+                <svg xmlns="http://www.w3.org/2000/svg" width="37" height="37" viewBox="0 0 37 37" fill="none"
+                    class="upload-icon">
+                    <g clip-path="url(#clip0_2916_5137)">
+                    <path
+                        d="M30.4336 7.66406H5.68359C5.06227 7.66406 4.55859 8.16774 4.55859 8.78906V29.0391C4.55859 29.6604 5.06227 30.1641 5.68359 30.1641H30.4336C31.0549 30.1641 31.5586 29.6604 31.5586 29.0391V8.78906C31.5586 8.16774 31.0549 7.66406 30.4336 7.66406Z"
+                        stroke="#626262" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" />
+                    <path
+                        d="M4.55859 24.5379L11.6381 17.4584C11.7425 17.3539 11.8666 17.2711 12.0031 17.2145C12.1395 17.158 12.2858 17.1289 12.4336 17.1289C12.5813 17.1289 12.7276 17.158 12.8641 17.2145C13.0006 17.2711 13.1246 17.3539 13.2291 17.4584L19.5131 23.7424C19.6175 23.8469 19.7416 23.9298 19.8781 23.9863C20.0145 24.0428 20.1608 24.0719 20.3086 24.0719C20.4563 24.0719 20.6026 24.0428 20.7391 23.9863C20.8756 23.9298 20.9996 23.8469 21.1041 23.7424L24.0131 20.8334C24.1175 20.7289 24.2416 20.6461 24.3781 20.5895C24.5145 20.533 24.6608 20.5039 24.8086 20.5039C24.9563 20.5039 25.1026 20.533 25.2391 20.5895C25.3756 20.6461 25.4996 20.7289 25.6041 20.8334L31.5586 26.7879"
+                        stroke="#626262" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" />
+                    <path
+                        d="M21.9961 16.6641C22.9281 16.6641 23.6836 15.9085 23.6836 14.9766C23.6836 14.0446 22.9281 13.2891 21.9961 13.2891C21.0641 13.2891 20.3086 14.0446 20.3086 14.9766C20.3086 15.9085 21.0641 16.6641 21.9961 16.6641Z"
+                        fill="#626262" />
+                    </g>
+                    <defs>
+                    <clipPath id="clip0_2916_5137">
+                        <rect width="36" height="36" fill="white" transform="translate(0.0585938 0.914062)" />
+                    </clipPath>
+                    </defs>
+                </svg>
+                <button class="upload-button" onclick="document.getElementById('additional-image-input').click()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 17 17" fill="none">
+                    <g clip-path="url(#clip0_2916_5147)">
+                        <path
+                        d="M0.947266 8.41335V14.2315C0.947266 14.6173 1.13457 14.9873 1.46796 15.2601C1.80136 15.5328 2.25355 15.6861 2.72504 15.6861H13.3917C13.8632 15.6861 14.3154 15.5328 14.6488 15.2601C14.9822 14.9873 15.1695 14.6173 15.1695 14.2315V8.41335M11.6139 4.04972L8.05838 1.14062M8.05838 1.14062L4.50282 4.04972M8.05838 1.14062V10.5952"
+                        stroke="white" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+                    </g>
+                    <defs>
+                        <clipPath id="clip0_2916_5147">
+                        <rect width="16" height="16" fill="white" transform="translate(0.0585938 0.414062)" />
+                        </clipPath>
+                    </defs>
+                    </svg>
+                    Upload image
+                </button>
+                <input type="file" id="additional-image-input" accept="image/jpeg, image/png" hidden />
+                <p>or drag and drop</p>
+                <p>JPG, PNG</p>
+                <div class="image-preview-container" style="display: none;">
+                    <img id="additional-image-preview" class="image-preview" src="" alt="Image Preview" />
+                    <button class="remove-image-btn" onclick="removeImage('additional-image')">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                        <path d="M12 4L4 12M4 4L12 12" stroke="#666" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                    </svg>
+                    </button>
+                </div>
+                </div>
+            </div>
             </div>
             <button class="scan-button" onclick="scanNow()">
             <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 17 17" fill="none">
@@ -218,6 +269,7 @@
     // Global variables to store uploaded images
     let frontImage = null;
     let backImage = null;
+    let additionalImage = null;
 
     // Handle front label image upload
     document.getElementById('front-label-input').addEventListener('change', function(e) {
@@ -234,6 +286,15 @@
         if (file) {
             backImage = file;
             displayImagePreview(file, 'back-label');
+        }
+    });
+
+    // Handle additional image upload
+    document.getElementById('additional-image-input').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            additionalImage = file;
+            displayImagePreview(file, 'additional-image');
         }
     });
 
@@ -265,9 +326,12 @@
         if (type === 'front-label') {
             frontImage = null;
             document.getElementById('front-label-input').value = '';
-        } else {
+        } else if (type === 'back-label') {
             backImage = null;
             document.getElementById('back-label-input').value = '';
+        } else if (type === 'additional-image') {
+            additionalImage = null;
+            document.getElementById('additional-image-input').value = '';
         }
          const uploadArea = document.getElementById(type + '-upload-area');
         const uploadIcon = uploadArea.querySelector('.upload-icon');
@@ -297,6 +361,11 @@
         const formData = new FormData();
         formData.append('front_image', frontImage);
         formData.append('back_image', backImage);
+        
+        // Add additional image if it exists
+        if (additionalImage) {
+            formData.append('additional_image', additionalImage);
+        }
 
         // Show loading state
         const scanButton = document.querySelector('.scan-button');
@@ -310,6 +379,7 @@
             body: formData
         })
         .then(response => {
+            console.log('API Response:', response);
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
@@ -428,7 +498,7 @@
         .catch(error => {
             $('#scan-result-section').addClass('d-none');
             console.error('Error:', error);
-            alert('Invalid upload image');
+            alert('Invalid image format OR response error from OpenAI');
         })
         .finally(() => {
             // Reset button state
@@ -441,8 +511,9 @@
     function setupDragAndDrop() {
         const frontArea = document.getElementById('front-label-upload-area');
         const backArea = document.getElementById('back-label-upload-area');
+        const additionalArea = document.getElementById('additional-image-upload-area');
 
-        [frontArea, backArea].forEach(area => {
+        [frontArea, backArea, additionalArea].forEach(area => {
             area.addEventListener('dragover', (e) => {
                 e.preventDefault();
                 area.style.borderColor = '#1751AA';
@@ -464,9 +535,12 @@
                         if (area === frontArea) {
                             frontImage = file;
                             displayImagePreview(file, 'front-label');
-                        } else {
+                        } else if (area === backArea) {
                             backImage = file;
                             displayImagePreview(file, 'back-label');
+                        } else if (area === additionalArea) {
+                            additionalImage = file;
+                            displayImagePreview(file, 'additional-image');
                         }
                     }
                 }
