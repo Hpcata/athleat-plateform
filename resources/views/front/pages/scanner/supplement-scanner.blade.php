@@ -283,7 +283,7 @@
         scanButton.disabled = true;
 
         // Make API call
-        fetch('https://meetpatel5383.app.n8n.cloud/webhook/upload-image-test', {
+        fetch('https://athleat.app.n8n.cloud/webhook/upload-image-test', {
             method: 'POST',
             body: formData
         })
