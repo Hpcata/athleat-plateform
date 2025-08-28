@@ -4374,7 +4374,7 @@ button:focus,
 /* supplemet scanner section css starts */
 .supplement-scanner-section {
     /* min-height: calc(100vh - 78px - 116px); */
-    padding: 56px 0;
+    padding: 147px 0 56px 0
 }
 
 .supplement-scanner-section h1 {
@@ -4820,12 +4820,12 @@ button:focus,
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
-    .scanner-container {
+    .supplement-scanner-section .scanner-container {
         grid-template-columns: 1fr;
     }
 
     .supplement-scanner-section {
-        padding: 24px 0;
+        padding: 92px 0;
     }
 
     .scan-results {
