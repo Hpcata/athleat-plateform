@@ -69,7 +69,7 @@
                                 </div>
 
                                 <div class="col-md-12">
-                                    <label for="note" class="form-label">Notes</label>
+                                    <label for="note" class="form-label">Instructions</label>
                                     <textarea name="note" class="form-control" rows="2">{{ old('note', $meal->note ?? '') }}</textarea>
                                 </div>
 

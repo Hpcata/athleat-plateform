@@ -2454,63 +2454,91 @@
                         url: url,
                         method: 'GET',
                         success: function (data) {
-                            $('#foodListContainer').empty();
+                            // --- helpers ---
+                            const sanitizeId = (str) =>
+                                String(str ?? '')
+                                .toLowerCase()
+                                .trim()
+                                .replace(/\s+/g, '-')
+                                .replace(/[^\w\-]/g, '')
+                                .replace(/\-+/g, '-');
 
+                            const $container = $('#foodListContainer');
+                            $container.empty();
+
+                            // Select All row
+                            $container.append(`
+                                <div class="form-check mb-3 mx-3">
+                                <input type="checkbox" class="form-check-input" id="selectAllSubFoods">
+                                <label class="form-check-label" for="selectAllSubFoods"><strong>Select All</strong></label>
+                                </div>
+                            `);
+
+                            // Items
                             if (Array.isArray(data) && data.length > 0) {
-                                $('#foodListContainer').append(`
-                                    <div class="form-check mb-3 mx-3">
-                                        <input type="checkbox" class="form-check-input" id="selectAllSubFoods">
-                                        <label class="form-check-label" for="selectAllSubFoods"><strong>Select All</strong></label>
-                                    </div>
-                                `);
-
-                                data.forEach(item => {
-                                    $('#foodListContainer').append(`
-                                        <div class="col-md-12 mb-3">
-                                            <div class="card h-100 p-2">
-                                                <div class="d-flex justify-content-between align-items-center flex-wrap">
-                                                    <div class="d-flex align-items-center flex-grow-1">
-                                                        <input type="checkbox" class="form-check-input me-2 sub-food-checkbox" id="sub-${item.name}" value="${item.name}">
-                                                        <label class="form-check-label mb-0" for="sub-${item.name}">${item.name}</label>
-                                                    </div>
-                                                    <div>
-                                                        <img src="${item.image}" class="img-fluid rounded" alt="" style="width: 50px; height: auto;">
-                                                    </div>
-                                                </div>
-                                            </div>
+                                const itemsHtml = data.map(item => {
+                                const value = String(item?.name ?? '');
+                                const idSafe = `sub-${sanitizeId(value)}`;
+                                const img = item?.image ? `<img src="${item.image}" class="img-fluid rounded" alt="" style="width: 50px; height: auto;">` : '';
+                                return `
+                                    <div class="col-md-12 mb-3">
+                                    <div class="card h-100 p-2">
+                                        <div class="d-flex justify-content-between align-items-center flex-wrap">
+                                        <div class="d-flex align-items-center flex-grow-1">
+                                            <input type="checkbox" class="form-check-input me-2 sub-food-checkbox" id="${idSafe}" value="${value}">
+                                            <label class="form-check-label mb-0" for="${idSafe}">${value}</label>
                                         </div>
-                                    `);
-                                });
+                                        <div>${img}</div>
+                                        </div>
+                                    </div>
+                                    </div>
+                                `;
+                                }).join('');
+                                $container.append(itemsHtml);
                             } else {
-                                $('#foodListContainer').append(`<div class="col-md-12 mb-3"><p>No Food Found.</p></div>`);
+                                $container.append(`<div class="col-md-12 mb-3"><p>No Food Found.</p></div>`);
                             }
 
-                            // Prefill modal checkboxes from hidden inputs in wrapper
+                            // Prefill from hidden inputs in wrapper
                             const hiddenInputs = targetWrapper.querySelectorAll('input[type="hidden"]');
-                            const savedValues = Array.from(hiddenInputs).map(input => input.value);
-
+                            const savedValues = Array.from(hiddenInputs).map(i => i.value);
                             savedValues.forEach(val => {
-                                $(`.sub-food-checkbox[value="${val}"]`).prop('checked', true);
+                                $container.find(`.sub-food-checkbox[value="${val}"]`).prop('checked', true);
                             });
 
-                            // Set modal title using the checkbox's data-food-key attribute
+                            // Title
                             document.getElementById('foodModalLabel').textContent = `Select ${selectedFoodKey} Food Items`;
-                            // Set select all checkbox state
-                            const allChecked = $('.sub-food-checkbox').length === $('.sub-food-checkbox:checked').length;
-                            $('#selectAllSubFoods').prop('checked', allChecked);
 
-                            $('#foodModal').modal('show');
+                            // ===== Delegated handlers (bind BEFORE showing the modal) =====
+                            $container.off('.foods'); // only our namespace
 
-                            // Select all toggle
-                            $(document).off('change', '#selectAllSubFoods').on('change', '#selectAllSubFoods', function () {
-                                $('.sub-food-checkbox').prop('checked', this.checked);
+                            // Select All
+                            $container.on('change.foods', '#selectAllSubFoods', function () {
+                                // alert('select all');
+                                const isChecked = this.checked;
+                                $container.find('.sub-food-checkbox').prop('checked', isChecked);
                             });
 
-                            // Sub-food checkbox toggle to update select all
-                            $(document).off('change', '.sub-food-checkbox').on('change', '.sub-food-checkbox', function () {
-                                const allChecked = $('.sub-food-checkbox').length === $('.sub-food-checkbox:checked').length;
-                                $('#selectAllSubFoods').prop('checked', allChecked);
+                            // Individual checkbox -> update Select All
+                            $container.on('change.foods', '.sub-food-checkbox', function () {
+                                // alert('sub food checkbox');
+                                const total = $container.find('.sub-food-checkbox').length;
+                                const checked = $container.find('.sub-food-checkbox:checked').length;
+                                $('#selectAllSubFoods').prop('checked', total > 0 && total === checked);
                             });
+
+                            // Initial Select All state
+                            (function syncInitialSelectAll() {
+                                const total = $container.find('.sub-food-checkbox').length;
+                                const checked = $container.find('.sub-food-checkbox:checked').length;
+                                $('#selectAllSubFoods').prop('checked', total > 0 && total === checked);
+                            })();
+
+                            // ===== Show modal (Bootstrap 5 way) =====
+                            const modalEl = document.getElementById('foodModal');
+                            // If you already constructed it elsewhere, reuse that instance.
+                            const modal = bootstrap.Modal.getOrCreateInstance(modalEl); // BS5 API
+                            modal.show();
                         },
                         error: function () {
                             console.error('Failed to load sub food items.');

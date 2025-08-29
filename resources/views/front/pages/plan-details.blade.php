@@ -57,45 +57,9 @@
                 </svg>
                     Share
             </button>
-            
-        </div>    
-        <!-- <div class="dropdown action-buttons">
-            <button class="btn btn-share dropdown-toggle" type="button" id="shareDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="17" viewBox="0 0 16 17" fill="none">
-                <g clip-path="url(#clip0_3008_7695)">
-                    <path d="M0.888672 8.50124V14.3194C0.888672 14.7052 1.07597 15.0752 1.40937 15.3479C1.74277 15.6207 2.19495 15.774 2.66645 15.774H13.3331C13.8046 15.774 14.2568 15.6207 14.5902 15.3479C14.9236 15.0752 15.1109 14.7052 15.1109 14.3194V8.50124M11.5553 4.13761L7.99978 1.22852M7.99978 1.22852L4.44423 4.13761M7.99978 1.22852V10.6831" stroke="#3B3B3B" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
-                </g>
-                <defs>
-                    <clipPath id="clip0_3008_7695">
-                    <rect width="16" height="16" fill="white" transform="translate(0 0.5)"/>
-                    </clipPath>
-                </defs>
-            </svg>
-                Share
-            </button>
-            <ul class="dropdown-menu share-dropdown" aria-labelledby="shareDropdown" style="min-width: 270px;">
-                <li>
-                    <div class="d-flex align-items-center justify-content-between px-3 py-2 share-dropdown-header">
-                        <span>Share</span>
-                        <button class="btn-close" data-bs-toggle="dropdown" aria-label="Close"></button>
-                    </div>
-                </li>
-                <li><hr class="dropdown-divider"></li>
-                <li>
-                    <div class="d-flex align-items-center share-dropdown-item">
-                        <img src="{{ frontAssets('images/dialog/Artboard.svg') }}" alt="Invite" class="me-2 share-dropdown-icon" />
-                        Invite a friend, parent or club
-                    </div>
-                </li>
-                <li>
-                    <div class="d-flex align-items-center share-dropdown-item">
-                        <img src="{{ frontAssets('images/dialog/download.svg') }}" alt="Download" class="me-2 share-dropdown-icon" />
-                        <a href="#" class="ms-0 print-plan-btn" data-user-id="{{ $user->id}}" data-plan-id="{{ $plan->id}}" style="text-decoration:none; color:#3b3b3b">Download plan</a>
-                    </div>
-                </li>
-            </ul>
-            <button class="btn-outline btn" id="shoppingList" data-bs-toggle="modal" data-bs-target="#shoppingListModal">Shopping list</button>
-        </div> -->
+
+        </div>
+
         <!-- Meal Sections -->
         <section aria-label="Meal Plan Categories">
             <!-- Sweet Breakfast -->
@@ -196,9 +160,9 @@
                 <h2>Main Meal Plate Portions</h2>
             </div>
             <p>
-                Your carb and veggie portions vary by meal type and training 
-                load for peak performance. Your protein, however, stays the 
-                same. Select your training load below to view: 
+                Your carb and veggie portions vary by meal type and training
+                load for peak performance. Your protein, however, stays the
+                same. Select your training load below to view:
             </p>
             <div class="dropdown dropdown-container training-load-dropdown">
                 <!-- <label class="dropdown-label">Training load</label> -->
@@ -287,7 +251,6 @@
                             <br />Lightly cooked or peeled vegetables are easier on the gut. Go for colorful but low-fiber options like carrots, zucchini, or bell peppers.
                         </div>
                     </li>
-                   
                 </ul>
             </div>
         </section>
@@ -340,7 +303,6 @@
     </div>
 </div>
 
-@include('front.modal.shopping-list')
 @include('front.modal.print-shopping-list')
 @include('front.modal.meal-detail')
 @include('front.modal.smart-swap')
@@ -404,7 +366,7 @@
         $('#loader').removeClass('d-none');
     }
     function hideLoader() {
-         $('#loader').addClass('d-none');
+        $('#loader').addClass('d-none');
     }
 
     $(document).ready(function() {
@@ -677,20 +639,6 @@
                     ${content.innerHTML}
                 </div>
             `;
-            // console.log(container.innerHTML);
-            // PDF generation options
-            // const options = {
-            //     margin: [0.5], // top, right, bottom, left (in inches)
-            //     filename: 'shopping_list.pdf',
-            //     html2canvas: {
-            //         scale: 2
-            //     },
-            //     jsPDF: {
-            //         unit: 'in',
-            //         format: 'letter',
-            //         orientation: 'portrait'
-            //     }
-            // };
 
             // Generate and download the PDF
             // html2pdf().set(options).from(container).save();
@@ -925,23 +873,29 @@
                         if (!item) return;
 
                         const selectedUnits = item.selected_qty_unit || [];
-                        const selected = selectedUnits.find(u => u.checked) || null;
 
-                        let qty = '';
-                        let unit = '';
+                        // ✅ get all checked units
+                        const checkedUnits = selectedUnits.filter(u => u.checked);
 
-                        if (selected) {
-                            qty = selected.qty;
-                            unit = selected.unit?.trim();
+                        let qtyUnitText = '';
+                        if (checkedUnits.length > 0) {
+                            // format each unit (e.g. "250mL", "1 cup")
+                            qtyUnitText = checkedUnits.map(u => {
+                                const unit = u.unit?.trim() || '';
+                                const noSpaceUnits = ['g', 'ml', 'mL'];
+                                const space = noSpaceUnits.includes(unit) ? '' : ' ';
+                                return `${u.qty}${space}${unit}`;
+                            }).join(' or ');
                         } else {
-                            qty = item.qty;
-                            unit = item.unit?.trim();
+                            // fallback to default
+                            const unit = item.unit?.trim() || '';
+                            const noSpaceUnits = ['g', 'ml', 'mL'];
+                            const space = noSpaceUnits.includes(unit) ? '' : ' ';
+                            qtyUnitText = `${item.qty}${space}${unit}`;
                         }
 
-                        const noSpaceUnits = ['g', 'ml', 'mL'];
-                        const space = noSpaceUnits.includes(unit) ? '' : ' ';
-
-                        ingredientsHtml += `<li>${qty}${space}${unit} ${item.title}</li>`;
+                        // ✅ final ingredient line
+                        ingredientsHtml += `<li>${qtyUnitText} ${item.title}</li>`;
                     });
 
                     $('#recipeDialogModal .modal-body ul').html(ingredientsHtml);
@@ -949,7 +903,7 @@
                     // 📝 Instructions / Note
                     if (meal.meal.note && meal.meal.note.trim() !== '') {
                         $('#recipeDialogModal .modal-body .note').html(
-                            `<strong>Note:</strong> ${meal.meal.note}`
+                            `${meal.meal.note}`
                         ).show();
                         $('#recipeDialogModal .modal-body h3:contains("Instructions")').show();
                     } else {
