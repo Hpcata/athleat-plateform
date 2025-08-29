@@ -23,9 +23,7 @@
         <div class="border-0 mb-4">
             <div class="card-header pb-3 no-bg bg-transparent d-flex align-items-center px-0 justify-content-between border-bottom">
                 <h3 class="fw-bold mb-0">{{ isset($meal) ? 'Edit Meal' : 'Create Meal' }}</h3>
-              
-                    <a type="button" href="{{ route('admin.meals.index') }}" class="btn btn-primary btn-set-task">Back</a>
-              
+                <a type="button" href="{{ route('admin.meals.index') }}" class="btn btn-primary btn-set-task">Back</a>
             </div>
         </div>
     </div>
@@ -54,7 +52,7 @@
             </div>
             <div class="modal-body">
                 <div id="dynamicQtyMeasurementContainer"></div>
-          
+
                 <div class="nutrition-info mt-3">
                 <p><strong>Protein:</strong> <span id="modalProtein">0g </span>, <strong>Carb:</strong> <span id="modalCarbs">0g </span>, <strong>Fat:</strong> <span id="modalFat">0g </span></p>
                 </div>
