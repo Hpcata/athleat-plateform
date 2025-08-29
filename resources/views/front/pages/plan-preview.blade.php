@@ -11,8 +11,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 
     <style>
-        button { display: block; margin: 20px auto; }
-
         /* =Box Sizing
         ========================================================================================*/
         * { -webkit-box-sizing:border-box; -moz-box-sizing: border-box; -o-box-sizing: border-box; -ms-box-sizing: border-box; box-sizing: border-box; }
