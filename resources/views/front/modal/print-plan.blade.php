@@ -8,11 +8,11 @@
     <div style="flex: 1 1 auto; overflow-y: auto; padding: 36px;">
       <div id="pdf-preview" style="width: 100%; height: 100%; max-height: 500px; " >
         <div id="pdf-content" style="background: #fff; max-width: 940px; width: 100%; font-family: 'Inter', Arial, sans-serif;" >
-          
+
         </div>
       </div>
     </div>
 
-    
+
   </div>
 </div>
