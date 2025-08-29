@@ -137,11 +137,11 @@ class PlanController extends Controller
             'userCategories.category',                     // still eager‑load the Category model
             'userCategories.userSubCategories.userMeals'
         ])->where('id', $plan_id)->first();
-        
+
         $userMealTime = UserCategory::with('userSubCategories.userMeals')->where('id', $id)
         ->where('user_plan_id', $plan_id)
         ->first();
-       
+
         // $mealtime = MealTime::with('categories','categories.subcategories')->findOrFail($id);
         return view('front.pages.sub-category-details', compact('userMealTime','userPlan'));
     }
@@ -329,7 +329,7 @@ class PlanController extends Controller
         // Prepare swap items list
         $swapItems = $userItem->userSwapItems->map(function ($swapItem) use ($userId) {
             $item = $swapItem->swapItem;
-           
+
             $userSwapItem = UserItemSwap::where('user_id', $userId)
                         ->where('item_id', $swapItem->user_item_id)
                         ->where('swap_item_id', $swapItem->id)
@@ -534,7 +534,7 @@ class PlanController extends Controller
                                 'id' => $swap['swap_id'],
                                 'user_item_id' => $swap['main_id'],
                             ]);
-                        
+
                         $b = \DB::table('user_swap_items')
                             ->where('id', $swapItem->id)
                             ->where('user_item_id', $userItem->id)
@@ -545,7 +545,7 @@ class PlanController extends Controller
                             ->update([
                                 'user_item_id' => $swap['main_id'],
                             ]);
-                            
+
                     }
                     $userItem = UserItem::where('id', $swap['swap_id'])
                     ->where('user_plan_id', $userPlanId)
@@ -553,7 +553,7 @@ class PlanController extends Controller
                     ->where('user_sub_category_id', $subCategoryId)
                     ->where('user_meal_id', $userMealId)
                     ->update(['id' => $swap['main_id']]);
-                   
+
                 } else {
                     throw new \Exception("Item to swap not found in the meal for swap_id {$swap['swap_id']}");
                 }
@@ -587,7 +587,7 @@ class PlanController extends Controller
                 'message' => 'All swaps applied successfully!',
             ]);
         } catch (\Exception $e) {
-        
+
             \DB::rollBack();
             Log::error('Error fetching apply swaps : ' . $e->getMessage());
 
@@ -619,7 +619,7 @@ class PlanController extends Controller
                 ->sortBy(fn($mt) => $mt->category->order ?? 0)
                 ->values(); // reindex
         });
-       
+
         $pdf = Pdf::loadView('front.pages.plan-pdf', compact('userPlans', 'groupedData'))
         ->setPaper('A4', 'portrait'); // Set page size and layout
 
@@ -639,8 +639,7 @@ class PlanController extends Controller
             ->where(function ($query) use ($id, $subPlans) {
                 $query->where('plan_id', $id)
                     ->orWhereIn('plan_id', $subPlans);
-            })
-            ->get();
+            })->get();
 
         $userPlans->each(function ($userPlan) {
             $userPlan->userCategories = $userPlan->userCategories->where('user_plan_id', $userPlan->id)
@@ -651,10 +650,10 @@ class PlanController extends Controller
         $userPrePlan = UserPrePlan::where('user_id', $request->user_id)->where('payment_id', $payment->id)->first();
 
         $sportImagePath = null;
-       
+
         if (isset($userPrePlan) && isset($userPrePlan->occupation)) {
             $occupation = strtolower(trim($userPrePlan->occupation));
-            
+
             // Step 1: Full match
             $sportGame = SportGame::with('categories')
                 ->whereRaw('LOWER(name) = ?', [$occupation])
@@ -662,7 +661,7 @@ class PlanController extends Controller
 
             // Step 2: If no full match, try keyword match
             if (!$sportGame) {
-                $keywords = explode(' ', $occupation);
+                $keywords = explode(' ', $occupation);  
 
                 foreach ($keywords as $keyword) {
                     $sportGame = SportGame::with('categories')
@@ -682,7 +681,7 @@ class PlanController extends Controller
                 $sportImagePath = $category->pivot->image_path;
             }
         }
-        
+
         $printAllmeal = true;
         return view('front.pages.plan-preview', compact('userPlans', 'printAllmeal', 'sportImagePath'));
     }
@@ -713,10 +712,10 @@ class PlanController extends Controller
         $userPrePlan = UserPrePlan::where('user_id', $request->user_id)->where('payment_id', $payment->id)->first();
 
         $sportImagePath = null;
-       
+
         if (isset($userPrePlan) && isset($userPrePlan->occupation)) {
             $occupation = strtolower(trim($userPrePlan->occupation));
-            
+
             // Step 1: Full match
             $sportGame = SportGame::with('categories')
                 ->whereRaw('LOWER(name) = ?', [$occupation])
@@ -1045,7 +1044,7 @@ class PlanController extends Controller
                         'image' => isset($swap->swapItem->image)
                             ? webAssets('storage/' . $swap->swapItem->image)
                             : 'https://via.placeholder.com/300x200?text=No+Image',
-                        
+
                     ];
                 }),
             ];
