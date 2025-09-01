@@ -277,6 +277,7 @@ Route::get('/get-default-plan-details/{id}', [FrontPlanController::class, 'getDe
 Route::get('/training-nutrition-plan', [FrontController::class, 'trainingNutritionPlan'])->name('front.training.nutrition.plan');
 Route::get('/competition-plan', [FrontController::class, 'competitionPlan'])->name('front.competition.plan');
 Route::get('/injury-recovery-plan', [FrontController::class, 'injuryRecoveryPlan'])->name('front.injury.recovery.plan');
+Route::get('/surgery-plan', [FrontController::class, 'surgeryPlan'])->name('front.surgery.plan');
 
 // Front auth
 Route::post('front/register', [FrontController::class, 'register'])->name('front.register');

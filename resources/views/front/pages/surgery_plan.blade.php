@@ -1,38 +1,38 @@
 @extends(frontView('layouts.app'))
 
-@section('title', 'Training Nutrition Plan & Diet for Athletes | Performance Health')
-@section('meta_description', 'Get a personalized athlete meal plan with Performance Health Support. Expert sports nutrition plans and diet strategies tailored to fuel performance and recovery.')
+@section('title', 'Surgery Plan & Diet for Athletes | Performance Health')
+@section('meta_description', 'Get a personalised pre & post surgery nutrition plan with Performance Health Support. Expert sports nutrition plans and diet strategies tailored for fast healing and recovery.')
 
 @php
     $intresetsmallimg1 = $intresetsmallimg2 = $intrestimg1 = $intrestimg2 = '';
 @endphp
+<meta name="csrf-token" content="{{ csrf_token() }}">
 @section('content')
     @if(isset($page->sections))
         @foreach($page->sections as $section)
-            @if($section->section_type == \App\Models\Section::TYPE_TRAINING_PLAN_MAIN_BANNER && $section->enabled == 1) <!-- done -->
-                    @php
-                        $bannerImage = '';
-                        if (isset($section->banner_image[0])) {
-                            $bannerImage = $section->banner_image[0];
-                        }
-                    @endphp
-                    <div class="hero-section-landing"
-                        style="background-image: url('{{ webAssets('storage/' . $bannerImage) }}')">
-                        <div class="container-homepage">
-                            <div class="hero-content-fixed">
-                                <h1 class="hero-title-landing">{{ $section->title }}</h1>
-                                <button class="btn-signup purchase-now-btn"
+            @if($section->section_type == \App\Models\Section::TYPE_SURGERY_MAIN_BANNER && $section->enabled == 1) <!-- done -->
+                @php
+                    $bannerImage = '';
+                    if (isset($section->banner_image[0])) {
+                        $bannerImage = $section->banner_image[0];
+                    }
+                @endphp
+                <div class="hero-section-landing"
+                    style="background-image: url('{{ webAssets('storage/' . $bannerImage) }}')">
+                    <div class="container-homepage">
+                        <div class="hero-content-fixed">
+                            {!! $section->content !!}
+                            <button class="btn-signup purchase-now-btn"
                                     data-plan-id="{{ $planDetails?->id }}"
                                     data-plan-name="{{ $planDetails?->name }}"
                                     data-plan-price="{{ $planDetails?->price }}">
                                     Purchase plan
-                                </button>
-                            </div>
+                            </button>
                         </div>
                     </div>
+                </div>
             @endif
-
-            @if($section->section_type == \App\Models\Section::TYPE_BUILT_FOR_REAL_RESULT && $section->enabled == 1) <!-- done -->
+            @if($section->section_type == \App\Models\Section::TYPE_BUILT_FOR_FAST_HEALING && $section->enabled == 1) <!-- done -->
                 <section class="about-section training-nutrition-landing">
                     <div class="container-homepage">
                         <div class="about-content-wrapper">
@@ -46,8 +46,7 @@
                     </div>
                 </section>
             @endif
-
-            @if($section->section_type == \App\Models\Section::TYPE_PLAN_INCLUSIONS && $section->enabled == 1) <!-- done -->
+            @if($section->section_type == \App\Models\Section::TYPE_SURGERY_PLAN_INCLUSIONS && $section->enabled == 1) <!-- done -->
                 @php
                     $backgroundImage = '';
                     if (isset($section->banner_image[0])) {
@@ -60,11 +59,17 @@
                             <h2 class="title">{{ $section->title }}</h2>
                         </div>
                         {!! $section->content !!}
+
+                        <button id="TPMAIU-purchase-plan-btn" class="purchase-now-btn d-none"
+                                    data-plan-id="{{ $planDetails?->id }}"
+                                    data-plan-name="{{ $planDetails?->name }}"
+                                    data-plan-price="{{ $planDetails?->price }}">
+                                    Purchase plan
+                            </button>
                     </div>
                 </section>
             @endif
-
-            @if($section->section_type == \App\Models\Section::TYPE_PLAN_INTERESTS && $section->enabled == 1) <!-- done -->
+            @if($section->section_type == \App\Models\Section::TYPE_SURGERY_PLAN_INTERESTS && $section->enabled == 1) <!-- done -->
                 @php
                     if (isset($section->banner_image[0])) {
                         $intresetsmallimg1 = asset('storage/' . $section->banner_image[0]);
@@ -91,7 +96,6 @@
 
     @include('front.pages.partials.purchase-plan-register')
     @include('front.pages.partials.purchase-plan-login')
-
 @endsection
 
 @push('scripts')
@@ -113,7 +117,6 @@
             env: "{{ env('APP_ENV') }}"
         };
 
-        
         var intresetsmallimg1 = "{{ $intresetsmallimg1 }}";
         var intresetsmallimg2 = "{{ $intresetsmallimg2 }}";
         var intrestimg1 = "{{ $intrestimg1 }}";
@@ -153,4 +156,3 @@
 
     <script src="{!! frontAssets('js/purchase-plan.js') !!}"></script>
 @endpush
-

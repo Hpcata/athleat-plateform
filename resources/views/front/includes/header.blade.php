@@ -200,9 +200,12 @@ $auth = auth()->guard('web')->check();
                         <li>
                             <a class="dropdown-item" href="{{ route('front.training.nutrition.plan') }}">Training Nutrition Plan</a>
                         </li>
-                        <li><a class="scroll-to-plans dropdown-item competition-plan-link row1" href="">Competition plan</a></li>
-                        <li><a class="scroll-to-plans dropdown-item competition-plan-link row1" href="">Injury & Recovery Plan</a></li>
-                        <li><a class="scroll-to-plans dropdown-item competition-plan-link row2" href="">Pre & Post Surgery Plan</a></li>
+                        <li>
+                            <a class="dropdown-item" href="{{ route('front.competition.plan') }}">Competition Plan</a>
+                        <li>
+                            <a class="dropdown-item" href="{{ route('front.injury.recovery.plan') }}">Injury & Recovery Plan</a>
+                        </li>
+                        <li><a class="scroll-to-plans dropdown-item competition-plan-link row2" href="{{ route('front.surgery.plan') }}">Pre & Post Surgery Plan</a></li>
                         <li><a class="scroll-to-plans dropdown-item competition-plan-link row2" href="">Private Consultations</a></li>
                         <li><a class="scroll-to-plans dropdown-item competition-plan-link row2" href="">Clubs and Group bookings</a></li>
                         </ul>
