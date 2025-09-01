@@ -1,5 +1,7 @@
 @extends('backend.layouts.app')
 
+@section('title', 'Plan')
+
 @section('content')
 <div class="container-xxl">
     <div class="row align-items-center">

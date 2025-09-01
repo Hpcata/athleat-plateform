@@ -231,7 +231,7 @@ function openFullscreenVideoPopup(e) {
 
 // Call the initialization function when the DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
-    initMealCardsSlider();
+    // initMealCardsSlider();
 });
 
 // Re-initialize slider on window resize if needed
@@ -240,7 +240,7 @@ window.addEventListener('resize', () => {
         mealCardsSlider.destroy();
         mealCardsSlider = null;
     }
-    initMealCardsSlider();
+    // initMealCardsSlider();
 });
 //         (s.style.display = "flex"),
 //         (s.style.alignItems = "center"),
@@ -258,14 +258,22 @@ document.querySelectorAll("section").forEach((e) => {
         (e.style.transition = "opacity 0.6s ease, transform 0.6s ease"),
         observer.observe(e);
 });
-const selectWrapper = document.querySelector(".select-wrapper"),
-    select = document.querySelector(".two-line-select");
-select.addEventListener("focus", () => {
-    selectWrapper.classList.add("open");
-}),
-    select.addEventListener("blur", () => {
-        selectWrapper.classList.remove("open");
+document.addEventListener("DOMContentLoaded", () => {
+  const selectWrapper = document.querySelector(".select-wrapper");
+  const select = document.querySelector(".two-line-select");
+
+  if (select && selectWrapper) {
+    select.addEventListener("focus", () => {
+      selectWrapper.classList.add("open");
     });
+
+    select.addEventListener("blur", () => {
+      selectWrapper.classList.remove("open");
+    });
+  } else {
+    console.warn("select-wrapper or two-line-select not found in DOM");
+  }
+});
 
 // Dialog open/close logic for recipe-dialog modal removed. Bootstrap modal will be used instead.
 

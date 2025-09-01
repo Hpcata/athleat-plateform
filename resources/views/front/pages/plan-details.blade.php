@@ -265,11 +265,8 @@
             </div>
             <div class="modal-body" style="padding: 0;    overflow: auto;">
                 <div style="flex: 1 1 auto; padding: 16px 16px 0 16px;">
-                    <div id="pdf-preview" style="width: 100%; height: 100%; display: flex; justify-content: center;" class="downloadplan-inner-content">
-
-                    </div>
+                    <div id="pdf-preview" style="width: 100%; height: 100%; display: flex; justify-content: center;" class="downloadplan-inner-content"></div>
                 </div>
-
             </div>
              <div class="modal-footer" style="text-align: end; padding: 12px 16px; border-top: 1px solid #d8d8d8; border-radius:0 0 12px 12px; background-color:#fff;">
                 <button id="download-plan-btn" class="btn btn-primary" onclick="downloadPDF()">
@@ -283,21 +280,21 @@
 <!-- Bootstrap Modal for Shopping List -->
 <div class="modal" id="shoppingListModal" tabindex="-1" aria-labelledby="shoppingListModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
-    <div class="modal-content" style="border-radius: 20px;">
-        <div class="modal-header" style="border-bottom: 1px solid #d8d8d8;">
-        <h5 class="modal-title" id="shoppingListModalLabel">Shopping Lists</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div class="modal-content" style="border-radius: 20px;">
+            <div class="modal-header" style="border-bottom: 1px solid #d8d8d8;">
+                <h5 class="modal-title" id="shoppingListModalLabel">Shopping Lists</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Your existing shopping list content will be injected here by JS -->
+                <div id="shopping-list-content-container">
+                    <!-- Content loaded via AJAX or JS -->
+                </div>
+            </div>
+            <div class="modal-footer" style="text-align: end; padding: 12px 16px; border-top: 1px solid #d8d8d8; background-color:#fff; border-radius:0 0 12px 12px; ">
+                <button id="print-shopping-list" class="btn btn-primary">Print Shopping List</button>
+            </div>
         </div>
-        <div class="modal-body">
-        <!-- Your existing shopping list content will be injected here by JS -->
-        <div id="shopping-list-content-container">
-            <!-- Content loaded via AJAX or JS -->
-        </div>
-        </div>
-        <div class="modal-footer" style="text-align: end; padding: 12px 16px; border-top: 1px solid #d8d8d8; background-color:#fff; border-radius:0 0 12px 12px; ">
-        <button id="print-shopping-list" class="btn btn-primary">Print Shopping List</button>
-        </div>
-    </div>
     </div>
 </div>
 
@@ -640,7 +637,7 @@
 
             // Generate and download the PDF
             // html2pdf().set(options).from(container).save();
-              html2pdf().from(container).set({
+            html2pdf().from(container).set({
                 margin: 0.5,
                 filename: 'shopping_list.pdf',
                 html2canvas: { scale: 2 },
@@ -684,7 +681,6 @@
                 .catch(err => {
                     $("#pdf-preview").html('<div class="py-4 text-danger">Error loading preview</div>');
                 });
-
                 hideLoader();
         });
 
@@ -728,8 +724,12 @@
                     filename: 'print-plan.pdf',
                     image: { type: 'jpeg', quality: 1 },
                     html2canvas: { scale: 2, useCORS: true },
-                    jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' },
-                            pagebreak: { mode: ['css', 'legacy'] } // <-- Add this line
+                    jsPDF: {
+                        unit: 'in',
+                        format: 'a4',
+                        orientation: 'portrait'
+                    },
+                    pagebreak: { mode: ['css', 'legacy'] } // <-- Add this line
 
                 })
                 .from(element)
@@ -780,11 +780,6 @@
                             pdf.addImage(window.logoBase64, 'PNG', logoX, logoY, logoWidth, logoHeight);
                         }
 
-                        // Draw blue circle for page number (center)
-                        // pdf.setDrawColor(0, 116, 217); // blue border (optional)
-                        // pdf.setFillColor(0, 116, 217); // blue fill
-                        // pdf.circle(circleCenterX, circleCenterY, circleRadius, 'F');
-
                         // Page number in white, centered in the circle
                         pdf.setTextColor(0, 116, 217);
                         pdf.setFontSize(11);
@@ -808,19 +803,6 @@
     }
 
     // Helper to convert images to base64
-    function toDataURL(url) {
-        return fetch(url, {
-                mode: 'cors'
-            })
-            .then(response => response.blob())
-            .then(blob => new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.onloadend = () => resolve(reader.result);
-                reader.onerror = reject;
-                reader.readAsDataURL(blob);
-            }));
-    }
-
     function toDataURL(url) {
         return fetch(url, {
                 mode: 'cors'
@@ -1429,7 +1411,6 @@
                 var before = $scroll.scrollLeft();
                 $scroll.animate({ scrollLeft: before - cardWidth }, 300, function() {
                     var after = $scroll.scrollLeft();
-                    console.log(`[Slider ${idx}] Left arrow clicked. ScrollLeft before: ${before}, after: ${after}`);
                 });
             });
 
@@ -1438,7 +1419,6 @@
                 var before = $scroll.scrollLeft();
                 $scroll.animate({ scrollLeft: before + cardWidth }, 300, function() {
                     var after = $scroll.scrollLeft();
-                    console.log(`[Slider ${idx}] Right arrow clicked. ScrollLeft before: ${before}, after: ${after}`);
                 });
             });
         });
