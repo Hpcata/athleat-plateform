@@ -14,7 +14,7 @@ script.onload = function () {
                 );
             } else {
                 stripe = Stripe(
-                    "pk_test_51Pfz1YLSisFoEruHJsESsPDWs6hAT5sKbgJrpx3ThRMPIO1pFJCG896zwDiQa34ulhfjHJb6cLErvc9s99air7xf00bfkV8AGc"
+                    "pk_test_51S0FzuRjp1bHoPwPqDUzaxP4SVSsOVlk413KAe0sYS3U1gV5wIMQqL9tvQYRoXNrahxxMiNBaMMtpLir4soZ88kI00pCwDta12"
                 );
             }
 
