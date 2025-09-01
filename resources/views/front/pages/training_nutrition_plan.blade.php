@@ -46,10 +46,10 @@
 
             @if($section->section_type == \App\Models\Section::TYPE_PLAN_INCLUSIONS && $section->enabled == 1) <!-- done -->
                 @php
-            $backgroundImage = '';
-            if (isset($section->banner_image[0])) {
-                $backgroundImage = asset('storage/' . $section->banner_image[0]);
-            }
+                    $backgroundImage = '';
+                    if (isset($section->banner_image[0])) {
+                        $backgroundImage = asset('storage/' . $section->banner_image[0]);
+                    }
                 @endphp
                 <section class="plan-inclusion-section" style="background-image: url('{{ $backgroundImage }}'); background-size: cover; background-position: center; background-repeat: no-repeat;">
                     <div class="container-homepage">
@@ -73,7 +73,7 @@
                                     width="36" height="36" />
                                 <h3 class="card-title">Competition Plan</h3>
                                 <p class="card-description">Unlock your peak performance with a 24-hour Competition Nutrition Plan - Ensuring you’re hydrated, fuelled & ON when it’s game time so that nutrition is never your weakness!</p>
-                                <button class="btn-signup" onclick="showLearnMoreTooltip(this, 'Coming Soon')">Learn more</button>
+                                <button class="btn-signup" onclick="window.location.href='{{ route('front.competition.plan') }}'">Learn more</button>
                                 <img src="{{ frontAssets('images/training-nutrition-plan/card-1.webp') }}" alt="Competition Plan"
                                     class="left-card-image card-image">
                             </div>
@@ -86,7 +86,7 @@
                                     inflammation & limit fat gain with a 
                                     personalised plan that caters to where you're at. Faster recovery is the goal & nutrition is too often overlooked!
                                 </p>
-                                <button class="btn-signup" onclick="showLearnMoreTooltip(this, 'Coming Soon')">Learn more</button>
+                                <button class="btn-signup" onclick="window.location.href='{{ route('front.injury.recovery.plan') }}'">Learn more</button>
                                 <img src="{{ frontAssets('images/training-nutrition-plan/card-2.webp') }}" alt="Injury & Recovery Plan"
                                     class="right-card-image card-image">
                             </div>

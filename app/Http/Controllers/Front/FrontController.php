@@ -1849,22 +1849,21 @@ class FrontController extends Controller
     {
         $page        = Page::with('sections')->where('slug', 'training_nutrition_plan')->first();
         $planDetails = Plan::where('name', 'Training Nutrition Plan')->first();
-
         return view('front.pages.training_nutrition_plan', compact('page', 'planDetails'));
     }
 
     public function competitionPlan(Request $request)
     {
         $page = Page::with('sections')->where('slug', 'competition_plan')->first();
-
-        return view('front.pages.competition_plan', compact('page'));
+        $planDetails = Plan::where('name', 'Competition Plan')->first();
+        return view('front.pages.competition_plan', compact('page', 'planDetails'));
     }
 
     public function injuryRecoveryPlan(Request $request)
     {
         $page = Page::with('sections')->where('slug', 'injury_recovery_nutrition_plan')->first();
-
-        return view('front.pages.injury_recovery_plan', compact('page'));
+        $planDetails = Plan::where('name', 'Injury & Recovery Plan')->first();
+        return view('front.pages.injury_recovery_plan', compact('page', 'planDetails'));
     }
 
     public function aboutUs(Request $request)
