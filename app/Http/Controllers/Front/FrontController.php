@@ -1869,7 +1869,7 @@ class FrontController extends Controller
     public function surgeryPlan(Request $request)
     {
         $page = Page::with('sections')->where('slug', 'surgery_plan')->first();
-        $planDetails = Plan::where('name', 'Pre & Post Surgery Plan')->first();
+        $planDetails = Plan::where('name', 'Injury Recovery + Post Surgery')->first();
         return view('front.pages.surgery_plan', compact('page', 'planDetails'));
     }
 
