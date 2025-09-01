@@ -35,6 +35,10 @@ class Section extends Model
     const TYPE_RECOVER_QUICKER = 'recover_quicker';
     const TYPE_INJURY_PLAN_INCLUSIONS = 'injury_plan_inclusions';
     const TYPE_INJURY_PLAN_INTERESTS = 'injury_plan_interests';
+    const TYPE_SURGERY_MAIN_BANNER = 'surgery_main_banner';
+    const TYPE_BUILT_FOR_FAST_HEALING = 'built_for_fast_healing';
+    const TYPE_SURGERY_PLAN_INCLUSIONS = 'surgery_plan_inclusions';
+    const TYPE_SURGERY_PLAN_INTERESTS = 'surgery_plan_interests';
 
     // Get all available section types
     public static function getSectionTypes()
@@ -65,6 +69,10 @@ class Section extends Model
             self::TYPE_RECOVER_QUICKER => 'Recover Quicker',
             self::TYPE_INJURY_PLAN_INCLUSIONS => 'Injury Plan Inclusions',
             self::TYPE_INJURY_PLAN_INTERESTS => 'Injury Plan Interests',
+            self::TYPE_SURGERY_MAIN_BANNER => 'Surgery Main Banner',
+            self::TYPE_BUILT_FOR_FAST_HEALING => 'Built For Fast Healing',
+            self::TYPE_SURGERY_PLAN_INCLUSIONS => 'Surgery Plan Inclusions',
+            self::TYPE_SURGERY_PLAN_INTERESTS => 'Surgery Plan Interests',
         ];
     }
 
