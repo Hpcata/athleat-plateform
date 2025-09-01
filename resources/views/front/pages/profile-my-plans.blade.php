@@ -36,7 +36,6 @@ and performance goals with expert guidance from Australia’s leading sports nut
             <div class="section-header">
                 <h2>Recommended plan</h2>
             </div>
-                <!-- <label class="choose-plan-label" style="margin-bottom:8px;">Recommended plan</label> -->
                 <div class="plan-cards-wrap">
                     <div class="plan-card-custom plan-injury">
                         <div class="">
@@ -63,7 +62,6 @@ and performance goals with expert guidance from Australia’s leading sports nut
             </div>
 
             <div class="card-row">
-                <!-- <label class="choose-plan-label" style="margin-bottom:8px;">Nutrition plans</label> -->
                 <div class="plan-cards-wrap">
                     <div class="plan-card-custom plan-injury">
                         <div class="">
@@ -86,8 +84,8 @@ and performance goals with expert guidance from Australia’s leading sports nut
                         <div class="">
                             <div class="plan-title">Injury & Recovery Plan</div>
                             <div class="plan-desc">
-                               Optimised nutrition to support soft tissue injury. Hold muscle, reduce 
-                                inflammation & limit fat gain with a 
+                               Optimised nutrition to support soft tissue injury. Hold muscle, reduce
+                                inflammation & limit fat gain with a
                                 personalised plan that caters to where you're at. Faster recovery is the goal & nutrition is too often overlooked!
                             </div>
                             <div class="consult-user-row">
@@ -122,28 +120,23 @@ and performance goals with expert guidance from Australia’s leading sports nut
             </div>
 
             <div class="card-row">
-            <div class="section-header">
-                <h2>Consultations</h2>
-            </div>
-                <!-- <label class="choose-plan-label" style="margin-bottom:8px;">Consultations</label> -->
+                <div class="section-header">
+                    <h2>Consultations</h2>
+                </div>
                 <div class="plan-cards-wrap">
                     <div class="plan-card orange-card">
                         <div class="plan-card-wrapper">
-
                             <h3 class="card-title">Private consultations</h3>
                             <p class="card-text">
-                                Get answers from a real-life expert coaching Elite Athletes and Olympians. 
+                                Get answers from a real-life expert coaching Elite Athletes and Olympians.
                                 An in-depth session to review your current approach, identify key opportunities, and give you practical, tailored strategies to reach your sporting goals. Get expert support that meets you where you’re at, with relevant education and answers to the questions that matter most.
                             </p>
                         </div>
                         <div class="consult-user-row">
-                            <img src="{{ asset('front/images/virtual kez.webp') }}" class="consult-avatar"
-                                alt="Kerry O'Bryan, expert coach avatar" />
-
+                            <img src="{{ asset('front/images/virtual kez.webp') }}" class="consult-avatar" alt="Kerry O'Bryan, expert coach avatar" />
                             <span style="padding-left:0;">Kerry O’Bryan • 60 min</span>
                         </div>
-                        <a href="https://booking.biohealthpassport.com.au/kerry-obryan" target="_blank"
-                            class="btn-learn-more">Learn more</a>
+                        <a href="https://booking.biohealthpassport.com.au/kerry-obryan" target="_blank" class="btn-learn-more">Learn more</a>
                     </div>
                 </div>
             </div>
@@ -213,10 +206,10 @@ and performance goals with expert guidance from Australia’s leading sports nut
 </main>
 
 <script>
-$(document).ready(function() {
-    $('.coming-soon-popup').click(function() {
-        $('#comingSoonModal').modal('show');
+    $(document).ready(function() {
+        $('.coming-soon-popup').click(function() {
+            $('#comingSoonModal').modal('show');
+        });
     });
-});
 </script>
 @endsection

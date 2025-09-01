@@ -10,7 +10,7 @@ script.onload = function () {
             let stripe;
             if (window.purchasePlanConfig.env === "production" || window.purchasePlanConfig.env === "staging") {
                 stripe = Stripe(
-                    "pk_live_51Pfz1YLSisFoEruHvHpdQQZLynQoR3xqBDuBgpb84zTK3EnTlROWMjxVpZhrp1rLmaqCJbusOUNHUoTKBLK7CXru00CkS5tVbt"
+                    "pk_live_51S0FzkDYfzo5K6IrIlEWkNcR6PcWGqnnhEo8nPLVfvUDO0u46I5OXQ9CIjkxYTARlMZAinfwUBgoGvJpVkXHtcRA00fnDFnv1z"
                 );
             } else {
                 stripe = Stripe(
