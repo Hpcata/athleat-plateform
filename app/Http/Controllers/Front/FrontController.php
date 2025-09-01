@@ -1826,7 +1826,7 @@ class FrontController extends Controller
     /**
      * Display the My Plans page for authenticated users
      *
-     * @return \Illuminate\View\View
+     * @return \Illuminate\View\View | \Illuminate\Http\RedirectResponse
      */
     public function myPlans()
     {
@@ -1839,7 +1839,7 @@ class FrontController extends Controller
             }
 
             return view('front.pages.profile-my-plans');
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('Error fetching user plans: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Something went wrong. Please try again later.');
         }

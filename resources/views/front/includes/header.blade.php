@@ -33,9 +33,9 @@ $auth = auth()->guard('web')->check();
                     ])->where('user_id', $userId)->first();
 
                     $myPlanUrl = route('front.my-plans');
-                    if (isset($userPlan)) {
-                        $myPlanUrl = route('front.plans.details', ['id' => $userPlan->plan->id, 'user_id' => $userPlan->user->id]);
-                    }
+                    // if (isset($userPlan)) {
+                    //     $myPlanUrl = route('front.plans.details', ['id' => $userPlan->plan->id, 'user_id' => $userPlan->user->id]);
+                    // }
                 @endphp
                 <li class="mobile-menu-link"><a
                         href="{{ route('front.profile', ['id' => Auth::guard('web')->user()->id]) }}"
@@ -91,9 +91,9 @@ $auth = auth()->guard('web')->check();
                     ])->where('user_id', $userId)->first();
 
                     $myPlanUrl = route('front.my-plans');
-                    if (isset($userPlan)) {
-                        $myPlanUrl = route('front.plans.details', ['id' => $userPlan->plan->id, 'user_id' => $userPlan->user->id]);
-                    }
+                    // if (isset($userPlan)) {
+                    //     $myPlanUrl = route('front.plans.details', ['id' => $userPlan->plan->id, 'user_id' => $userPlan->user->id]);
+                    // }
                 @endphp
                 <nav class="nav-center">
                     <a class="text-decoration-none nav-item" href="{{ route('front.profile', ['id' => Auth::guard('web')->user()->id]) }}">Home</a>
@@ -484,7 +484,9 @@ $auth = auth()->guard('web')->check();
             window.addEventListener("scroll", updateNavbarBackground);
         } else {
             const navbar = document.querySelector(".navbar-custom");
-            navbar.style.background = "#3b3b3b";
+            if (navbar) {
+                navbar.style.background = "#3b3b3b";
+            }
         }
 
         // Custom select arrow rotation and enhanced styling

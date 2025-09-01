@@ -392,32 +392,33 @@
 
             // Show arrows only if 4 or more cards exist
             function updateArrowVisibility() {
+                if (!scrollContainer || !leftArrow || !rightArrow) {
+                    return;
+                }
+
                 const cards = scrollContainer.querySelectorAll(".challenge-card");
                 const shouldShowArrows = cards.length > 4;
 
-                if (shouldShowArrows) {
-                    leftArrow.style.display = 'block';
-                    rightArrow.style.display = 'block';
-                } else {
-                    leftArrow.style.display = 'none';
-                    rightArrow.style.display = 'none';
-                }
+                leftArrow.style.display = shouldShowArrows ? 'block' : 'none';
+                rightArrow.style.display = shouldShowArrows ? 'block' : 'none';
             }
 
             // Scroll behavior
-            leftArrow.addEventListener("click", () => {
-                scrollContainer.scrollBy({
-                    left: -scrollAmount,
-                    behavior: "smooth"
+            if (leftArrow && rightArrow && scrollContainer) {
+                leftArrow.addEventListener("click", () => {
+                    scrollContainer.scrollBy({
+                        left: -scrollAmount,
+                        behavior: "smooth"
+                    });
                 });
-            });
 
-            rightArrow.addEventListener("click", () => {
-                scrollContainer.scrollBy({
-                    left: scrollAmount,
-                    behavior: "smooth"
+                rightArrow.addEventListener("click", () => {
+                    scrollContainer.scrollBy({
+                        left: scrollAmount,
+                        behavior: "smooth"
+                    });
                 });
-            });
+            }
 
             // Call once after load
             updateArrowVisibility();
