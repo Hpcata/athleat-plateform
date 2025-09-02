@@ -116,32 +116,42 @@
 @push('scripts')
    <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Athlete images data from PHP
-            const athleteImages = @json($athleteImages);
+            // Check if athlete images data exists from PHP
+            @if(isset($athleteImages) && is_array($athleteImages) && count($athleteImages) > 0)
+                const athleteImages = @json($athleteImages);
 
-            // Dynamically find all athlete elements and map them to images
-            function updateAthleteImages() {
-                // Find all elements with IDs that start with 'athlete'
-                const athleteElements = document.querySelectorAll('[id^="athlete"]');
+                // Dynamically find all athlete elements and map them to images
+                function updateAthleteImages() {
+                    // Find all elements with IDs that start with 'athlete'
+                    const athleteElements = document.querySelectorAll('[id^="athlete"]');
 
-                // Convert to array and sort by ID to ensure consistent ordering
-                const athleteArray = Array.from(athleteElements).sort((a, b) => {
-                    // Extract numbers from IDs like 'athlete1', 'athlete2', etc.
-                    const numA = parseInt(a.id.replace('athlete', ''));
-                    const numB = parseInt(b.id.replace('athlete', ''));
-                    return numA - numB;
-                });
-
-                // Map each athlete element to an image
-                athleteArray.forEach((athleteElement, index) => {
-                    if (athleteImages[index]) {
-                        athleteElement.src = athleteImages[index];
+                    if (athleteElements.length === 0) {
+                        console.log('No athlete elements found on the page');
+                        return;
                     }
-                });
-            }
 
-            // Execute the dynamic update
-            updateAthleteImages();
+                    // Convert to array and sort by ID to ensure consistent ordering
+                    const athleteArray = Array.from(athleteElements).sort((a, b) => {
+                        // Extract numbers from IDs like 'athlete1', 'athlete2', etc.
+                        const numA = parseInt(a.id.replace('athlete', ''));
+                        const numB = parseInt(b.id.replace('athlete', ''));
+                        return numA - numB;
+                    });
+
+                    // Map each athlete element to an image
+                    athleteArray.forEach((athleteElement, index) => {
+                        if (athleteImages[index]) {
+                            athleteElement.src = athleteImages[index];
+                            console.log(`Updated ${athleteElement.id} with image: ${athleteImages[index]}`);
+                        } else {
+                            console.warn(`No image available for ${athleteElement.id} at index ${index}`);
+                        }
+                    });
+                }
+
+                // Execute the dynamic update
+                updateAthleteImages();
+            @endif
         });
     </script>
 @endpush
