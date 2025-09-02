@@ -3483,7 +3483,7 @@ svg.user-type-icon path {
 }
 
 .plan-inclusion-section .feature-list li:before {
-    content: "•";
+    content: "\2022";
     position: absolute;
     left: 0;
     color: white;
