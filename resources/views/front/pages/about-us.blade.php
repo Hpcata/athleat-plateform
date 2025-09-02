@@ -29,7 +29,7 @@
                             $bannerImage = $section->banner_image[0];
                         }
                     @endphp
-                    <section class="hero-section">
+                    <section class="hero-section overlapping-img-section">
                         <h1 class="hero-title">{{!empty($section->title) ? $section->title : ''}}</h1>
                         {!! $section->content !!}
                         <div class="profile-images">
