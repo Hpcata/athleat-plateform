@@ -3620,7 +3620,16 @@ svg.user-type-icon path {
 .recommended-plans-section .right-card .card-description {
     padding-right: 260px;
 }
-
+.plan-injury {
+    display: flex;
+    gap: 24px;
+    justify-content: space-between;
+  }
+  
+  .pricing-right-section {
+    width: 22%;
+    color: #fff;
+  }
 /* ===== MEDIA QUERIES ===== */
 @media (min-width: 1200px) {
     .testimonial-section .container {
@@ -3805,6 +3814,9 @@ svg.user-type-icon path {
 }
 /* Tablet (768px and below) */
 @media (max-width: 768px) {
+    .pricing-right-section {
+        width: 100%;
+    }
     .custom-select-arrow {
     right: 12px;
 }
@@ -4651,7 +4663,9 @@ svg.user-type-icon path {
     .hero-section-landing {
         height: 520px;
     }
-
+    .hero-section-landing {
+        background-position: 70% center !important;
+    }
     .btn-purchase-plan {
         padding: 12px 24px;
         font-size: 14px;
@@ -4736,6 +4750,9 @@ svg.user-type-icon path {
 
     .recommended-plans-section .card-description {
         font-size: 0.85em;
+    }
+    .plan-injury {
+        flex-direction: column;
     }
 }
 
@@ -5098,7 +5115,7 @@ a.btn-signup{
 
 @media (max-width: 480px) {
     .hero-section-landing {
-        background-position: 70% center;
+        background-position: 70% center !important;
     }
 }
 
@@ -5401,3 +5418,4 @@ a.btn-signup{
         scroll-snap-align: start;
     }
 }
+
