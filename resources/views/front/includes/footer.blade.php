@@ -43,7 +43,7 @@
 
             <!-- Navigation Links -->
             <nav class="nav-links">
-                <a href="javascript:void(0)" onclick="showLearnMoreTooltip(this, 'Coming Soon')" class="footer-link" style="position: relative;">About</a>
+                <a class="footer-link" style="position: relative;" href="{{ route('front.about-us') }}">About</a>
                 <div class="dropdown">
                     <a class="footer-link dropdown-toggle" href="#" role="button" id="servicesDropdown"
                         data-bs-toggle="dropdown" aria-expanded="false">

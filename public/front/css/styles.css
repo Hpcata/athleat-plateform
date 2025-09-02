@@ -216,7 +216,7 @@ body {
     background: white;
     color: #333;
     border-color: white;
-    
+
 }
 
 .btn-signup {
@@ -248,7 +248,7 @@ body {
     background: rgba(23, 81, 170, 1);
     border-color: rgba(23, 81, 170, 1);
     color: white;
-    
+
 }
 
 .btn-white {
@@ -647,7 +647,7 @@ body {
 }
 
 .food-section .food-card:hover {
-    
+
     box-shadow: 0 8px 25px 0 rgba(0, 0, 0, 0.2);
 }
 
@@ -1091,7 +1091,7 @@ body {
 }
 
 .choose-plan-section .plan-card:hover {
-    
+
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
 }
 
@@ -1422,7 +1422,7 @@ body {
         border: 1px solid #ddd !important;
         background-color: #fff !important;
     }
-    
+
     .sport-nutrition-promo__form select[data-custom="true"]::-webkit-option {
         padding: 10px 16px !important;
         font-size: 14px !important;
@@ -1431,7 +1431,7 @@ body {
         margin: 2px 0 !important;
         border-radius: 4px !important;
     }
-    
+
     /* Firefox-specific mobile styling */
     .sport-nutrition-promo__form select[data-custom="true"] option {
         padding: 10px 16px !important;
@@ -1439,12 +1439,12 @@ body {
         line-height: 1.4 !important;
         min-height: 40px !important;
     }
-    
+
     /* Additional mobile optimizations for better scrolling */
     .sport-nutrition-promo__form select[data-custom="true"]:focus {
         max-height: none !important; /* Allow dropdown to expand */
     }
-    
+
     /* Ensure dropdown doesn't overflow viewport on mobile */
     .sport-nutrition-promo__form select[data-custom="true"]:focus::-webkit-listbox {
         max-height: 60vh !important;
@@ -1461,14 +1461,14 @@ body {
         max-height: 40vh !important; /* 40% of viewport height on smaller screens */
         overflow-y: auto !important;
     }
-    
+
     .sport-nutrition-promo__form select[data-custom="true"] option {
         padding: 8px 16px !important; /* Even smaller padding on very small screens */
         font-size: 13px !important; /* Smaller font on very small screens */
         line-height: 1.3 !important;
         min-height: 36px !important;
     }
-    
+
     .sport-nutrition-promo__form select[data-custom="true"]::-webkit-option {
         padding: 8px 16px !important;
         font-size: 13px !important;
@@ -3797,7 +3797,7 @@ svg.user-type-icon path {
         .sport-nutrition-promo__half {
             height: 466px;
         }
-   
+
         .sport-nutrition-promo__half--right {
              height: 366px;
              min-height: 366px;
@@ -4909,7 +4909,7 @@ a.btn-signup{
         -ms-user-select: none !important;
         user-select: none !important;
     }
-    
+
     /* iOS specific select wrapper fixes */
     .custom-select-wrapper {
         position: relative !important;
@@ -4919,7 +4919,7 @@ a.btn-signup{
         border-radius: 6px !important;
         overflow: hidden !important;
     }
-    
+
     /* iOS select option styling */
     .sport-nutrition-promo__form select[data-custom="true"] option {
         padding: 12px 16px !important;
@@ -4935,7 +4935,7 @@ a.btn-signup{
         overflow: visible !important;
         text-overflow: unset !important;
     }
-    
+
     /* iOS webkit specific fixes */
     .sport-nutrition-promo__form select[data-custom="true"]::-webkit-listbox {
         max-height: 50vh !important;
@@ -4946,7 +4946,7 @@ a.btn-signup{
         border: 1px solid #ddd !important;
         background: #fff !important;
     }
-    
+
     .sport-nutrition-promo__form select[data-custom="true"]::-webkit-option {
         padding: 12px 16px !important;
         font-size: 16px !important;
@@ -4960,7 +4960,7 @@ a.btn-signup{
         white-space: normal !important;
         overflow: visible !important;
     }
-    
+
     /* iOS form layout fixes */
     .sport-nutrition-promo__form {
         display: flex !important;
@@ -4973,7 +4973,7 @@ a.btn-signup{
         max-width: 100% !important;
         overflow: visible !important;
     }
-    
+
     /* iOS custom arrow positioning */
     .custom-select-arrow {
         position: absolute !important;
@@ -4984,12 +4984,12 @@ a.btn-signup{
         z-index: 2 !important;
         background: transparent !important;
     }
-    
+
     /* iOS vertical line fixes */
     .vertical-line {
         display: none !important;
     }
-    
+
     /* iOS button fixes */
     .sport-nutrition-promo__form button {
         padding: 14px 16px !important;
@@ -5008,14 +5008,14 @@ a.btn-signup{
         outline: none !important;
         box-sizing: border-box !important;
     }
-    
+
     /* iOS touch target improvements */
     .sport-nutrition-promo__form select[data-custom="true"]:active,
     .sport-nutrition-promo__form button:active {
         transform: scale(0.98) !important;
         transition: transform 0.1s ease !important;
     }
-    
+
     /* iOS focus states */
     .sport-nutrition-promo__form select[data-custom="true"]:focus {
         outline: none !important;
@@ -5023,7 +5023,7 @@ a.btn-signup{
         box-shadow: none !important;
         background: #fff !important;
     }
-    
+
     .sport-nutrition-promo__form button:focus {
         outline: none !important;
         box-shadow: 0 0 0 3px rgba(74, 132, 221, 0.3) !important;
@@ -5037,13 +5037,13 @@ a.btn-signup{
         padding: 12px 16px !important;
         min-height: 44px !important;
     }
-    
+
     .sport-nutrition-promo__form select[data-custom="true"] option {
         padding: 10px 16px !important;
         font-size: 16px !important;
         min-height: 44px !important;
     }
-    
+
     .sport-nutrition-promo__form button {
         padding: 12px 16px !important;
         font-size: 16px !important;
@@ -5057,13 +5057,13 @@ a.btn-signup{
         gap: 8px !important;
         margin-bottom: 16px !important;
     }
-    
+
     .sport-nutrition-promo__form select[data-custom="true"] {
         padding: 10px 16px !important;
         min-height: 40px !important;
         font-size: 16px !important;
     }
-    
+
     .sport-nutrition-promo__form button {
         padding: 10px 16px !important;
         min-height: 40px !important;
@@ -5077,16 +5077,324 @@ a.btn-signup{
         gap: 12px !important;
         margin-bottom: 24px !important;
     }
-    
+
     .sport-nutrition-promo__form select[data-custom="true"] {
         padding: 14px 16px !important;
         min-height: 44px !important;
         font-size: 16px !important;
     }
-    
+
     .sport-nutrition-promo__form button {
         padding: 14px 16px !important;
         min-height: 44px !important;
         font-size: 16px !important;
+    }
+}
+
+/* about page css starts */
+.hero-section-landing {
+    background-position: center;
+}
+
+@media (max-width: 480px) {
+    .hero-section-landing {
+        background-position: 70% center;
+    }
+}
+
+/* Added header section styling */
+.hero-section {
+    text-align: center;
+    padding: 80px 0 60px;
+}
+
+.hero-title {
+    color: #000;
+    text-align: center;
+    font-size: 32px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 48px;
+}
+
+.kerry-section .hero-subtitle {
+    color: var(--kerry-grey-600-main, #3B3B3B);
+    font-family: "Noto Sans";
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+.profile-images {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.profile-img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    position: relative;
+    overflow: hidden;
+}
+
+.profile-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.profile-img:nth-child(2) {
+    margin-left: -15px;
+}
+
+.profile-img:nth-child(3) {
+    margin-left: -15px;
+}
+
+.kerry-section {
+    display: flex;
+    gap: 60px;
+    align-items: flex-start;
+    margin-bottom: 60px;
+}
+
+.kerry-content {
+    flex: 1;
+}
+
+.kerry-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.kerry-text {
+    font-size: 16px;
+    color: #555;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+.kerry-image {
+    flex: 0 0 532px;
+    height: 484px;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.kerry-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.biohealth-section {
+    border-radius: 12px;
+    background: #254D4D;
+    padding: 36px;
+    margin-bottom: 60px;
+    position: relative;
+    color: #fff;
+}
+
+.biohealth-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+
+.biohealth-title {
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.biohealth-text {
+    font-size: 14px;
+    line-height: 1.5;
+    margin-bottom: 25px;
+    opacity: 0.9;
+}
+
+.learn-more-btn {
+    border-radius: 6px;
+    border: 1px solid var(--Kerry-grey-200, #D8D8D8);
+    box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.08);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: var(--White, #FFF);
+    padding: 12px 18px;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+    background-color: transparent;
+}
+
+.learn-more-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.athletes-header {
+    text-align: center;
+    margin-bottom: 40px;
+    padding: 0 20px;
+}
+
+.athletes-title {
+    color: var(--Kerry-grey-700, #080808);
+    text-align: center;
+    font-family: "Poppins";
+    font-size: 36px;
+    font-style: italic;
+    font-weight: 800;
+    line-height: 54px;
+    text-transform: uppercase;
+}
+
+.athletes-grid {
+    display: flex;
+    gap: 0;
+    overflow: hidden;
+}
+
+.athlete-card {
+    flex: 1;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    overflow: hidden;
+    min-height: 474px;
+}
+
+.athlete-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* position: absolute;
+    top: 0;
+    left: 0; */
+}
+
+.athlete-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.22);
+    transition: all 0.3s ease;
+    z-index: 2;
+}
+
+.athlete-card:hover::before {
+    background: rgba(0, 0, 0, 0.6);
+}
+
+.athlete-card:hover .athlete-content {
+    opacity: 1;
+    visibility: visible;
+}
+
+.athlete-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 3;
+    text-align: center;
+    transition: all 0.3s ease;
+    opacity: 0;
+    visibility: hidden;
+}
+
+.athlete-name {
+    color: #FFF;
+    text-align: center;
+    font-family: "Poppins";
+    font-size: 36px;
+    font-style: italic;
+    font-weight: 800;
+    line-height: 42px;
+    text-transform: uppercase;
+}
+
+.athlete-title {
+    color: var(--White, #FFF);
+    text-align: center;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+@media (max-width: 768px) {
+    .hero-section {
+        padding: 36px 0;
+    }
+
+    .hero-title {
+        font-size: 32px;
+        line-height: 40px;
+    }
+
+    .kerry-section {
+        flex-direction: column;
+        gap: 30px;
+        margin-bottom: 36px;
+    }
+    .biohealth-header img{
+        width: 100%;
+    }
+    .athletes-header {
+        margin-bottom: 24px;
+    }
+
+    .athletes-title {
+        line-height: normal;
+    }
+
+    .kerry-image {
+        height: 250px;
+    }
+
+    .biohealth-section {
+        margin-bottom: 36px;
+        padding: 24px;
+    }
+
+    .athlete-card {
+        height: 200px;
+    }
+    .athlete-name {
+        font-size: 20px;
+        line-height: normal;
+    }
+
+    .athlete-title {
+        font-size: 12px;
+        line-height: normal;
+    }
+}
+
+/* Mobile horizontal scroll */
+@media (max-width: 768px) {
+    .athletes-grid {
+        overflow-x: auto;
+        overflow-y: hidden;
+        -webkit-overflow-scrolling: touch;
+        scroll-snap-type: x mandatory;
+    }
+
+    .athlete-card {
+        flex: 0 0 80%; /* card width */
+        scroll-snap-align: start;
     }
 }
