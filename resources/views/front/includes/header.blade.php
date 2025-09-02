@@ -478,8 +478,8 @@ $auth = auth()->guard('web')->check();
             }
         }
 
-        // Check if current URL is /training-nutrition-plan or /
-        if (window.location.pathname === '/training-nutrition-plan' || window.location.pathname === '/') {
+        // Check if current URL is /training-nutrition-plan, /, or /about-us
+        if (window.location.pathname === '/training-nutrition-plan' || window.location.pathname === '/' || window.location.pathname === '/about-us') {
             // Check initial scroll position on page load
             updateNavbarBackground();
 
