@@ -5336,6 +5336,9 @@ a.btn-signup{
 }
 
 @media (max-width: 768px) {
+    .hero-section.overlapping-img-section{
+        background-color: transparent;
+    }
     .hero-section {
         padding: 36px 0;
     }
