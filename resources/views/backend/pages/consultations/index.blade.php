@@ -1,0 +1,79 @@
+@extends(backendView('layouts.app'))
+
+@section('title', 'Consultations List')
+
+@section('content')
+<div class="container-xxl">
+    <!-- Flash Messages -->
+    @if (session('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @elseif (session('error'))
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            {{ session('error') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
+	<div class="row align-items-center">
+		<div class="border-0 mb-4">
+			<div class="card-header pb-3 no-bg bg-transparent d-flex align-items-center px-0 justify-content-between border-bottom">
+				<h3 class="fw-bold mb-0">Consultations List</h3>
+				<a href="{!! backendRoutePut('consultations.create') !!}" class="btn btn-primary py-2 px-2 btn-set-task"><i class="icofont-plus-circle me-2 fs-6"></i> Add Consultation</a>
+			</div>
+		</div>
+	</div> <!-- Row end  -->
+	<div class="row g-3 mb-3">
+		<div class="col-md-12">
+			<div class="card">
+				<div class="card-body">
+					<table id="myDataTable" class="table table-hover align-middle mb-0" style="width: 100%;">
+						<thead>
+							<tr>
+								<th>Id</th>
+								<th>Content</th>
+								<th>Price</th>
+								<th>Time (Minutes)</th>
+								<th>Show on Page</th>
+								<th>Date</th>
+								<th>Action</th>
+							</tr>
+						</thead>
+						<tbody>
+                            @foreach ($consultations as $consultation)
+							<tr>
+								<td><strong>{{ $consultation->id }}</strong></td>
+								<td>{{ Str::limit($consultation->content, 100) }}</td>
+								<td>${{ number_format($consultation->price, 2) }}</td>
+								<td>{{ $consultation->time }} min</td>
+								<td>
+									@if($consultation->show_on_consultation_page)
+										<span class="badge bg-success">Yes</span>
+									@else
+										<span class="badge bg-secondary">No</span>
+									@endif
+								</td>
+								<td>{{ $consultation->created_at->format('M d, Y') }}</td>
+								<td>
+									<div class="btn-group" role="group" aria-label="Basic outlined example">
+										<a href="{!! backendRoutePut('consultations.edit', $consultation->id) !!}" class="btn btn-outline-secondary"><i class="icofont-edit text-success"></i></a>
+                                        <form action="{{ route('backend.consultations.destroy', $consultation->id) }}" method="POST" style="display:inline;">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-outline-secondary" onclick="return confirm('Are you sure you want to delete this consultation?')">
+                                                <i class="icofont-ui-delete text-danger"></i>
+                                            </button>
+                                        </form>
+									</div>
+								</td>
+							</tr>
+                            @endforeach
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+@endsection

@@ -104,6 +104,12 @@
 					<span class="sidebar-mini-text">Blog Page</span>
 				</a>
 			</li>
+			<li>
+				<a class="m-link {{request()->routeIs('backend.consultations.*') ? 'active' : '' }}" href="{{ route('backend.consultations.index') }}">
+					<i class="icofont-support fs-5"></i>
+					<span class="sidebar-mini-text">Consultations</span>
+				</a>
+			</li>
 			
 			<li>
 				<a class="m-link {{request()->routeIs('testimonials.*') ? 'active' : '' }}" href="{!! route('testimonials.index') !!}">

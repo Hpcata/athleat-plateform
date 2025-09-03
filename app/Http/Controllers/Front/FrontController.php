@@ -47,6 +47,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
+use App\Models\Consultation;
 
 class FrontController extends Controller
 {
@@ -1876,7 +1877,8 @@ class FrontController extends Controller
     public function consultations(Request $request)
     {
         $page = Page::with('sections')->where('slug', 'consultations')->first();
-        return view('front.pages.consultations', compact('page'));
+        $consultations = Consultation::where('show_on_consultation_page', true)->get();
+        return view('front.pages.consultations', compact('page', 'consultations'));
     }
 
     public function aboutUs(Request $request)
