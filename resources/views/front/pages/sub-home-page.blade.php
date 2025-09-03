@@ -708,7 +708,7 @@
                                             An in-depth session to review your current approach, identify key opportunities, and give you practical, tailored strategies to reach your sporting goals. Get expert support that meets you where you’re at, with relevant education and answers to the questions that matter most.
                                         </p>
                                     </div>
-                                    <a href="https://booking.biohealthpassport.com.au/kerry-obryan" target="_blank" class="btn-signup">Learn more</a>
+                                    <a href="{{ route('front.consultations') }}" target="_blank" class="btn-signup">Learn more</a>
                                 </div>
                             </div>
                             <div class="col-md-4">

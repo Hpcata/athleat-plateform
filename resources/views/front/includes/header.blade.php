@@ -206,7 +206,7 @@ $auth = auth()->guard('web')->check();
                             <a class="scroll-to-plans dropdown-item competition-plan-link row2" href="#">Injury & Recovery Plan</a>
                         </li>
                         <li><a class="scroll-to-plans dropdown-item competition-plan-link row2" href="#">Pre & Post Surgery Plan</a></li>
-                        <li><a class="scroll-to-plans dropdown-item competition-plan-link row2" href="">Private Consultations</a></li>
+                        <li><a class="dropdown-item" href="{{ route('front.consultations') }}">Private Consultations</a></li>
                         <li><a class="scroll-to-plans dropdown-item competition-plan-link row2" href="">Clubs and Group bookings</a></li>
                         </ul>
                     </li>
