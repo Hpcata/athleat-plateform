@@ -46,6 +46,19 @@
                                     <div class="text-danger mt-1">{{ $message }}</div>
                                 @enderror
                             </div>
+
+                            <!-- Show on Consultation Page Field -->
+                            <div class="col-md-12">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="show_on_consultation_page" name="show_on_consultation_page" value="1" {{ old('show_on_consultation_page', $consultation->show_on_consultation_page) ? 'checked' : '' }}>
+                                    <label class="form-check-label" for="show_on_consultation_page">
+                                        Show on Consultation Page
+                                    </label>
+                                </div>
+                                @error('show_on_consultation_page')
+                                    <div class="text-danger mt-1">{{ $message }}</div>
+                                @enderror
+                            </div>
                         </div>
 
                         <button type="submit" class="btn btn-primary mt-4">Update</button>

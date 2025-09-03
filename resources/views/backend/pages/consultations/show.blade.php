@@ -46,6 +46,17 @@
                         </div>
 
                         <div class="col-md-6">
+                            <label class="form-label fw-bold">Show on Consultation Page:</label>
+                            <div class="p-2">
+                                @if($consultation->show_on_consultation_page)
+                                    <span class="badge bg-success">Yes</span>
+                                @else
+                                    <span class="badge bg-secondary">No</span>
+                                @endif
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
                             <label class="form-label fw-bold">Created At:</label>
                             <div class="p-2">
                                 {{ $consultation->created_at->format('M d, Y H:i A') }}

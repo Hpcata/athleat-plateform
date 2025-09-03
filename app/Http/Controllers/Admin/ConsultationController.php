@@ -54,7 +54,11 @@ class ConsultationController extends Controller
             'content' => 'required|string',
             'price' => 'required|numeric|min:0',
             'time' => 'required|integer|min:1',
+            'show_on_consultation_page' => 'boolean',
         ]);
+
+        // Handle checkbox - if not present, set to false
+        $validated['show_on_consultation_page'] = $request->has('show_on_consultation_page') ? true : false;
 
         $consultation->update($validated);
 

@@ -35,6 +35,7 @@
 								<th>Content</th>
 								<th>Price</th>
 								<th>Time (Minutes)</th>
+								<th>Show on Page</th>
 								<th>Date</th>
 								<th>Action</th>
 							</tr>
@@ -46,6 +47,13 @@
 								<td>{{ Str::limit($consultation->content, 100) }}</td>
 								<td>${{ number_format($consultation->price, 2) }}</td>
 								<td>{{ $consultation->time }} min</td>
+								<td>
+									@if($consultation->show_on_consultation_page)
+										<span class="badge bg-success">Yes</span>
+									@else
+										<span class="badge bg-secondary">No</span>
+									@endif
+								</td>
 								<td>{{ $consultation->created_at->format('M d, Y') }}</td>
 								<td>
 									<div class="btn-group" role="group" aria-label="Basic outlined example">

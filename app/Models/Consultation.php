@@ -17,7 +17,8 @@ class Consultation extends Model
     protected $fillable = [
         'content',
         'price',
-        'time'
+        'time',
+        'show_on_consultation_page'
     ];
 
     /**
@@ -36,6 +37,7 @@ class Consultation extends Model
      */
     protected $casts = [
         'price' => 'decimal:2',
-        'time' => 'integer'
+        'time' => 'integer',
+        'show_on_consultation_page' => 'boolean'
     ];
 }
