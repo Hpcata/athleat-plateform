@@ -3614,7 +3614,7 @@ svg.user-type-icon path {
 }
 
 .recommended-plans-section .card:not(.right-card) .card-description {
-    padding-right: 220px;
+    padding-right: 250px;
 }
 
 .recommended-plans-section .right-card .card-description {
@@ -3630,6 +3630,418 @@ svg.user-type-icon path {
     width: 22%;
     color: #fff;
   }
+
+/* consultaions page css */
+.plan-inclusion-section .plan-features.consultations {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: 40px;
+  margin-top: 36px;
+}
+
+.plan-inclusion-section .plan-features.consultations .feature-column {
+  border-radius: 8px;
+  border: 1px solid var(--White, #fff);
+  padding: 28px 24px;
+  display: flex
+  ;
+      flex-direction: column;
+      justify-content: space-between;
+}
+
+.plan-inclusion-section
+  .plan-features.consultations
+  .feature-column
+  .pricing-section {
+  margin-top: 31px;
+}
+
+.label-title {
+  color: #fff;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  margin-bottom: 8px;
+}
+
+.plan-inclusion-section
+  .plan-features.consultations
+  .feature-column
+  .or-divider {
+  display: flex;
+  align-items: center;
+  margin: 24px 0;
+  width: 100%;
+}
+
+.plan-inclusion-section
+  .plan-features.consultations
+  .feature-column
+  .divider-line {
+  flex-grow: 1;
+  border-top: 1px solid #fff;
+}
+
+.plan-inclusion-section .plan-features.consultations .feature-column .or-text {
+  margin-left: 1rem;
+  margin-right: 1rem;
+  color: #fff;
+  font-size: 1rem;
+}
+
+
+/* Slider Container - parent for arrows */
+.slider-container-plan {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* Remove overflow hidden to show arrows outside */
+  }
+  
+  .slider-wrapper-consult {
+    overflow: hidden;
+    position: relative;
+    flex: 1; /* Take full width of container */
+  }
+  
+  .slider-track {
+    display: flex;
+    transition: transform 0.3s ease;
+  }
+  
+  .slider-track .card {
+    flex: 0 0 48%;
+    min-width: 48%;
+    margin: 0 15px;
+    box-sizing: border-box;
+  }
+  
+  /* Arrows positioned outside container */
+  .slider-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      border: none;
+      background: #fff;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      cursor: pointer;
+      z-index: 10;
+  }
+  
+  .slider-arrow.left-arrows {
+    left: -50px; /* Position outside left edge */
+  }
+  
+  .slider-arrow.right-arrows {
+    right: -50px; /* Position outside right edge */
+  }
+  
+
+
+#paymentModal .modal-content,
+#planChooseModal .modal-content,
+#congratsModalConsultation .modal-content{
+  max-width: 700px;
+}
+  #paymentModal .modal-title{
+  
+  color: var(--Kerry-grey-700, #080808);
+font-family: "Noto Sans";
+font-size: 24px;
+font-style: normal;
+font-weight: 700;
+line-height: normal;
+}
+
+
+  #paymentModal .modal-body .modal-subtitle{
+color: var(--Kerry-grey-700, #080808);
+font-size: 12px;
+font-style: normal;
+font-weight: 400;
+line-height: normal;
+  }
+  #paymentModal .modal-body .amount,
+  #planChooseModal .modal-body .amount{
+color: var(--Blue-700, #1751AA);
+text-align: center;
+font-size: 12px;
+font-style: normal;
+font-weight: 400;
+line-height: normal;
+text-align: left;
+margin-bottom: 0;
+}
+  #paymentModal .modal-body .amount strong,
+  #planChooseModal .modal-body .amount strong{
+font-size: 18px;
+font-weight: 500;
+}
+
+  #paymentModal .modal-body .divider,
+  #planChooseModal .modal-body .divider{
+    display: block;
+    height: 1px;
+    width: 100%;
+background: var(--Kerry-grey-200, #D8D8D8);
+margin: 16px 0;
+}
+  #paymentModal .modal-body .sign-in-text,
+  #planChooseModal .modal-body .sign-in-text{
+color: var(--kerry-grey-600-main, #3B3B3B);
+font-family: "Noto Sans";
+font-size: 14px;
+font-style: normal;
+font-weight: 400;
+line-height: normal;
+}
+  #paymentModal .modal-body .sign-in-text strong{
+font-size: 14px;
+font-weight: 600;
+}
+  #paymentModal .modal-body .coupon-code{
+
+color: var(--Blue-600, #4A84DD);
+font-size: 14px;
+font-style: normal;
+font-weight: 600;
+line-height: normal;
+text-decoration-line: underline;
+text-decoration-style: solid;
+text-decoration-skip-ink: auto;
+text-decoration-thickness: auto;
+text-underline-offset: auto;
+
+}
+
+  #paymentModal .modal-body form .form-wrap,
+  #planChooseModal .modal-body form .form-wrap{
+border-radius: 12px;
+background: rgba(235, 235, 235, 0.50);
+padding: 12px;
+margin-bottom: 16px;
+  }
+
+  #paymentModal .modal-body form label,
+  #planChooseModal .modal-body form label{
+  color: var(--kerry-grey-600-main, #3B3B3B);
+font-family: "Noto Sans";
+font-size: 14px;
+font-style: normal;
+font-weight: 500;
+line-height: normal;
+  }
+    #paymentModal .modal-body form input
+    #planChooseModal .modal-body form input{
+border-radius: 6px;
+border: 1px solid var(--Kerry-grey-200, #D8D8D8);
+background: var(--White, #FFF);
+box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.06);
+padding: 12px;
+  }
+    #paymentModal .modal-body .confirm-text{
+color: var(--kerry-grey-600-main, #3B3B3B);
+text-align: center;
+font-size: 12px;
+font-style: normal;
+font-weight: 400;
+line-height: normal;
+    }
+        #paymentModal .modal-body .terms-link,
+        #planChooseModal .modal-body .terms-link{
+color: var(--kerry-grey-600-main, #3B3B3B);
+font-size: 12px;
+font-style: normal;
+font-weight: 400;
+line-height: normal;
+text-decoration-line: underline;
+text-decoration-style: solid;
+text-decoration-skip-ink: auto;
+text-decoration-thickness: auto;
+text-underline-offset: auto;
+text-underline-position: from-font;
+    }
+
+#congratsModal .modal-dialog{
+max-width: 500px;
+}
+     #paymentModal .btn-close.congrats-modal,
+     #congratsModal .btn-close.congrats-modal,
+     #congratsModalConsultation .btn-close.congrats-modal{
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        border-radius: 100px;
+background: var(--White, #FFF);
+display: flex;
+
+justify-content: center;
+align-items: center;
+z-index: 9999;
+     }
+
+#paymentModal .congrats-title,
+#congratsModal .congrats-title{
+     color: var(--Kerry-grey-700, #080808);
+text-align: center;
+font-size: 24px;
+font-style: normal;
+font-weight: 700;
+line-height: normal;
+}
+#paymentModal .congrats-subtitle,
+#congratsModal .congrats-subtitle{
+color: var(--kerry-grey-600-main, #3B3B3B);
+font-family: "Noto Sans";
+font-size: 14px;
+font-style: normal;
+font-weight: 400;
+line-height: normal;
+}
+#paymentModal .congrats-subtitle strong,
+#congratsModal .congrats-subtitle strong{
+font-weight: 600;
+}
+
+
+#paymentModal .congrats-title strong,
+#planChooseModal .congrats-title strong{
+font-weight: 600;
+}
+#paymentModal .congrats-para,
+#planChooseModal .congrats-para{
+color: var(--kerry-grey-600-main, #3B3B3B);
+text-align: center;
+font-size: 12px;
+font-style: normal;
+font-weight: 400;
+line-height: normal;
+}
+.hero-section-landing.consultations{
+     background-position: top;
+}
+.w-fit {
+  width: fit-content !important;
+}
+.payment-toggle-swich{
+display: flex;
+justify-content: center;
+border-radius: 100px;
+background-color: #ebebeb;
+}
+.toggle-btn{
+background-color: transparent;
+border: none;
+outline: none;
+padding: 10px 24px;
+border-radius: 100px;
+}
+.toggle-btn.active{
+border: 1px solid var(--Kerry-grey-200, #D8D8D8);
+background: var(--White, #FFF);
+box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.08);
+color: var(--kerry-grey-600-main, #3B3B3B);
+font-size: 14px;
+font-style: normal;
+font-weight: 600;
+line-height: normal;
+}
+.badge-discount{
+  border-radius: 100px;
+background: var(--Orange-600, #EF7F00);
+position: absolute;
+color: #fff;
+padding: 3px 5px;
+color: var(--White, #FFF);
+text-align: center;
+font-size: 10px;
+font-style: normal;
+font-weight: 600;
+line-height: normal;
+left: -10px;
+top: -10px;
+}
+#planChooseModal .modal-title{
+  color: var(--Kerry-grey-700, #080808);
+text-align: center;
+font-size: 24px;
+font-style: normal;
+font-weight: 700;
+line-height: normal;
+margin-bottom: 24px;
+}
+#onePaymentPlans .card-body{
+  border-radius: 12px;
+border: 1px solid var(--Cloud-100, #E5EAF4);
+background: var(--White, #FFF);
+box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.08);
+padding: 12px;
+}
+#onePaymentPlans .card-body h6{
+color: var(--Kerry-grey-700, #080808);
+font-size: 18px;
+font-style: normal;
+font-weight: 700;
+line-height: normal;
+}
+#onePaymentPlans .card-body span{
+color: var(--Blue-700, #1751AA);
+text-align: center;
+font-size: 18px;
+font-style: normal;
+font-weight: 500;
+line-height: normal;
+}
+
+#onePaymentPlans .card-body small{
+color: var(--Blue-700, #1751AA);
+text-align: center;
+font-size: 11px;
+font-style: normal;
+font-weight: 400;
+line-height: normal;
+}
+
+#onePaymentPlans .card-body p{
+color: var(--kerry-grey-600-main, #3B3B3B);
+font-size: 12px;
+font-style: normal;
+font-weight: 400;
+line-height: normal;
+margin-bottom: 12px;
+}
+#onePaymentPlans .card-body a{
+color: var(--kerry-grey-600-main, #3B3B3B); 
+font-size: 13px;
+font-style: normal;
+font-weight: 500;
+line-height: normal;
+display: flex;
+justify-content: center;
+align-items: center;
+gap: 4px;
+}
+.popular-badge{
+  border-radius: 100px;
+background: var(--Blue-100, #E0ECFD);
+color: var(--Blue-800, #003891);
+text-align: center;
+padding: 3px 5px;
+font-size: 10px;
+font-style: normal;
+font-weight: 600;
+line-height: normal;
+position: absolute;
+top: -10px;
+left: 18px;
+}
 /* ===== MEDIA QUERIES ===== */
 @media (min-width: 1200px) {
     .testimonial-section .container {
@@ -3814,6 +4226,38 @@ svg.user-type-icon path {
 }
 /* Tablet (768px and below) */
 @media (max-width: 768px) {
+      .plan-inclusion-section .plan-features.consultations {
+    grid-template-columns: repeat(1, 1fr);
+  }
+   .slider-track .card {
+      flex: 0 0 calc(100% - 40px);
+      min-width: calc(100% - 40px);
+      margin: 0 20px;
+    }
+    .slider-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      border: none;
+      background: #fff;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      cursor: pointer;
+      z-index: 10;
+  }
+
+    /* Adjust arrow positioning for mobile */
+    .slider-arrow.left-arrows {
+      left: -8px;
+      
+    }
+    
+    .slider-arrow.right-arrows {
+      right: -8px;
+     
+    }
     .pricing-right-section {
         width: 100%;
     }
@@ -4497,6 +4941,14 @@ svg.user-type-icon path {
 
 /* Mobile (480px and below) */
 @media (max-width: 480px) {
+     .about-section.training-nutrition-landing.consultations {
+      
+        padding-bottom: 48px;
+       
+    }
+    .hero-section-landing.consultations{
+            background-position: 70% center;
+}
     .otp-input-group svg {
         display: none;
     }
