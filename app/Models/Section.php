@@ -39,6 +39,11 @@ class Section extends Model
     const TYPE_BUILT_FOR_FAST_HEALING = 'built_for_fast_healing';
     const TYPE_SURGERY_PLAN_INCLUSIONS = 'surgery_plan_inclusions';
     const TYPE_SURGERY_PLAN_INTERESTS = 'surgery_plan_interests';
+    const TYPE_CONSULTATION_MAIN_BANNER = 'consultation_main_banner';
+    const TYPE_MEET_EXPERT = 'meet_expert';
+    const TYPE_CONSULTATION_INCLUSIONS = 'consultation_inclusions';
+    const TYPE_CONSULTATION_INTERESTS = 'consultation_interests';
+    const TYPE_CONSULTATION_PARTNERS = 'consultation_partners';
 
     // Get all available section types
     public static function getSectionTypes()
@@ -73,6 +78,11 @@ class Section extends Model
             self::TYPE_BUILT_FOR_FAST_HEALING => 'Built For Fast Healing',
             self::TYPE_SURGERY_PLAN_INCLUSIONS => 'Surgery Plan Inclusions',
             self::TYPE_SURGERY_PLAN_INTERESTS => 'Surgery Plan Interests',
+            self::TYPE_CONSULTATION_MAIN_BANNER => 'Consultation Main Banner',
+            self::TYPE_MEET_EXPERT => 'Meet Expert',
+            self::TYPE_CONSULTATION_INCLUSIONS => 'Consultation Inclusions',
+            self::TYPE_CONSULTATION_PARTNERS => 'Consultation Partners',
+            self::TYPE_CONSULTATION_INTERESTS => 'Consultation Interests'
         ];
     }
 
