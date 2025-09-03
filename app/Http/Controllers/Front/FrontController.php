@@ -1873,6 +1873,12 @@ class FrontController extends Controller
         return view('front.pages.surgery_plan', compact('page', 'planDetails'));
     }
 
+    public function consultations(Request $request)
+    {
+        $page = Page::with('sections')->where('slug', 'consultations')->first();
+        return view('front.pages.consultations', compact('page'));
+    }
+
     public function aboutUs(Request $request)
     {
         $page = Page::with('sections')->where('slug', 'about_us')->first();
