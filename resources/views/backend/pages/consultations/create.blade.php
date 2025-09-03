@@ -8,7 +8,7 @@
         <div class="border-0 mb-4">
             <div class="card-header pb-3 no-bg bg-transparent d-flex align-items-center px-0 justify-content-between border-bottom">
                 <h3 class="fw-bold mb-0">Create Consultation</h3>
-                <a type="button" href="{{ route('dashboard') }}" class="btn btn-primary btn-set-task">Back</a>
+                <a type="button" href="{{ route('backend.consultations.index') }}" class="btn btn-primary btn-set-task">Back</a>
             </div>
         </div>
     </div>
