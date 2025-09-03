@@ -282,40 +282,7 @@
 
 @push('scripts')
     <script>
-        // Plan slider functionality
-        let currentSlide = 0;
-        const slides = document.querySelectorAll('#planSlider .card');
-        const totalSlides = slides.length;
 
-        function showSlide(index) {
-            const slider = document.getElementById('planSlider');
-            const slideWidth = slides[0].offsetWidth;
-            slider.style.transform = `translateX(-${index * slideWidth}px)`;
-            currentSlide = index;
-        }
-
-        function nextSlide() {
-            if (currentSlide < totalSlides - 1) {
-                showSlide(currentSlide + 1);
-            } else {
-                showSlide(0);
-            }
-        }
-
-        function prevSlide() {
-            if (currentSlide > 0) {
-                showSlide(currentSlide - 1);
-            } else {
-                showSlide(totalSlides - 1);
-            }
-        }
-
-        // Event listeners for navigation buttons
-        document.getElementById('planNext')?.addEventListener('click', nextSlide);
-        document.getElementById('planPrev')?.addEventListener('click', prevSlide);
-
-        // Auto-advance slides every 5 seconds
-        setInterval(nextSlide, 5000);
 
         // Learn more tooltip function
         function showLearnMoreTooltip(element, message) {
@@ -816,45 +783,7 @@
 
     </script>
 
-    <!-- plan section sldier -->
     <script>
-    document.addEventListener("DOMContentLoaded", () => {
-        const track = document.getElementById("planSlider");
-        const prevBtn = document.getElementById("planPrev");
-        const nextBtn = document.getElementById("planNext");
-        const cards = track.children;
-        let index = 0;
-
-        function getCardWidth() {
-            return cards[0].offsetWidth + parseInt(getComputedStyle(cards[0]).marginRight || 0) + parseInt(getComputedStyle(cards[0]).marginLeft || 0);
-        }
-
-        function updateSlider() {
-            const cardWidth = getCardWidth();
-            track.style.transform = `translateX(-${index * cardWidth}px)`;
-        }
-
-        nextBtn.addEventListener("click", () => {
-            const visible = window.innerWidth <= 768 ? 1 : 2;
-            if (index < cards.length - visible) {
-                index++;
-                updateSlider();
-            }
-        });
-
-        prevBtn.addEventListener("click", () => {
-            if (index > 0) {
-                index--;
-                updateSlider();
-            }
-        });
-
-        window.addEventListener("resize", updateSlider);
-    });
-    </script>
-
-<script>
-
         var intresetsmallimg1 = "{{ $intresetsmallimg1 }}";
         var intresetsmallimg2 = "{{ $intresetsmallimg2 }}";
         var intrestimg1 = "{{ $intrestimg1 }}";
@@ -912,7 +841,7 @@
         });
     </script>
 
-<script>
+    <script>
         const onePaymentBtn = document.getElementById("onePaymentBtn");
         const monthlyPlanBtn = document.getElementById("monthlyPlanBtn");
         const onePaymentPlans = document.getElementById("onePaymentPlans");
@@ -988,4 +917,40 @@
             console.log("Consultation promo code applied");
         });
     </script>
+     <!-- plan section slider -->
+        <script>
+         document.addEventListener("DOMContentLoaded", () => {
+             const track = document.getElementById("planSlider");
+             const prevBtn = document.getElementById("planPrev");
+             const nextBtn = document.getElementById("planNext");
+             const cards = track.children;
+             let index = 0;
+
+             function getCardWidth() {
+                 return cards[0].offsetWidth + parseInt(getComputedStyle(cards[0]).marginRight || 0) + parseInt(getComputedStyle(cards[0]).marginLeft || 0);
+             }
+
+             function updateSlider() {
+                 const cardWidth = getCardWidth();
+                 track.style.transform = `translateX(-${index * cardWidth}px)`;
+             }
+
+             nextBtn.addEventListener("click", () => {
+                 const visible = window.innerWidth <= 768 ? 1 : 2;
+                 if (index < cards.length - visible) {
+                     index++;
+                     updateSlider();
+                 }
+             });
+
+             prevBtn.addEventListener("click", () => {
+                 if (index > 0) {
+                     index--;
+                     updateSlider();
+                 }
+             });
+
+             window.addEventListener("resize", updateSlider);
+         });
+        </script>
 @endpush
