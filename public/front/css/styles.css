@@ -3737,12 +3737,13 @@ svg.user-type-icon path {
   
   .slider-arrow.left-arrows {
     left: -50px; /* Position outside left edge */
+    font-size: 16px;
   }
   
   .slider-arrow.right-arrows {
     right: -50px; /* Position outside right edge */
+    font-size: 16px;
   }
-  
 
 
 #paymentModal .modal-content,
