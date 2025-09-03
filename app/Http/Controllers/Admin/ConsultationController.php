@@ -30,6 +30,9 @@ class ConsultationController extends Controller
             'time' => 'required|integer|min:1',
         ]);
 
+        // Handle checkbox - if not present, set to false
+        $validated['show_on_consultation_page'] = $request->has('show_on_consultation_page') ? true : false;
+
         Consultation::create($validated);
 
         return redirect()->route('backend.consultations.index')->with('success', 'Consultation created successfully.');
