@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\BlogController;
+use App\Http\Controllers\Admin\ConsultationController;
 use App\Http\Controllers\Admin\TestimonialController;
 use App\Http\Controllers\Front\FrontController;
 use App\Http\Controllers\Admin\Auth\LoginController as AdminAuthController;
@@ -123,6 +124,7 @@ Route::group(['middleware' => ['auth:admin', 'admin']], function () {
 
 		Route::as('backend.')->group(function () {
 			Route::resource('blogs', BlogController::class);
+			Route::resource('consultations', ConsultationController::class);
 		});
 
 		Route::as('admin.')->group(function () {

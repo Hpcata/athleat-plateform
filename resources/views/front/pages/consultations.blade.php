@@ -57,7 +57,26 @@
                         <div class="title-content">
                             <h2 class="title">{{ $section->title }}</h2>
                         </div>
-                        {!! $section->content !!}
+                        <!-- {!! $section->content !!} -->
+
+                        <div class="plan-features consultations">
+                            @foreach($consultations as $consultation)
+                                @if($consultation->show_on_consultation_page)
+                                    <div class="feature-column">
+                                        <h3 class="mb-0 feature-title">{{ $consultation->time }} min Consultation</h3>
+
+                                        {!! $consultation->content !!}
+
+                                        <div class="pricing-section">
+                                            <h2 class="pricing-amount">${{ number_format($consultation->price, 2) }} AUD</h2>
+                                            <div class="pricing-buttons">
+                                                <button class="btn-signup" data-consultation-id="{{ $consultation->id }}" data-bs-toggle="modal" data-bs-target="#paymentModal">Book consult</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
+                            @endforeach
+                        </div>
                     </div>
                 </section>
             @endif
@@ -142,6 +161,124 @@
         @endforeach
     @endif
 @endsection
+
+
+<!-- Payment Modal -->
+<div class="modal fade" id="paymentModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <!-- Monthly Payment Content -->
+            <div id="paymentContentConsultation">
+                <div class="pb-0 border-0 modal-header">
+                    <h5 class="modal-title">Consultation</h5>
+
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="modal-subtitle">Consultation
+
+                        XYZ min One on One, online Nutrition Consultation </p>
+                    <p class="amount"><strong>A$120.</strong> <span class="text-muted">one time payment</span></p>
+
+                    <span class="divider"></span>
+                    <p class="mb-2 sign-in-text">Signed in as<br><strong>jordansmith@gmail.com</strong></p>
+                    <a href="#" class="d-block mb-3 coupon-code" id="toggle-coupon-consultation">Add a Coupon
+                        Code</a>
+                    <!-- Coupon Code -->
+                    <div class="mb-3 d-none" id="coupon-details-consultation">
+                        <label for="promo-code-consultation" class="form-label">Coupon Code</label>
+                        <div class="d-flex gap-2">
+                            <input type="text" class="h-auto form-control" id="promo-code-consultation"
+                                placeholder="Enter coupon code">
+                            <input type="hidden" class="form-control" id="discount-consultation">
+                            <button type="button" class="btn btn-signup"
+                                id="apply-promo-code-consultation">Apply</button>
+                        </div>
+                        <small id="promo-message-consultation" class="form-text"></small>
+                    </div>
+
+                    <form>
+                        <div class="form-wrap">
+                            <div class="mb-3">
+                                <label class="form-label">Card number</label>
+                                <input type="text" class="form-control" placeholder="1234 1234 1234 1234">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Name on card</label>
+                                <input type="text" class="form-control" placeholder="Card name">
+                            </div>
+                            <div class="row">
+                                <div class="mb-3 col-6">
+                                    <label class="form-label">Expiry date</label>
+                                    <input type="text" class="form-control" placeholder="MM/YY">
+                                </div>
+                                <div class="mb-3 col-6">
+                                    <label class="form-label">CVV</label>
+                                    <input type="text" class="form-control" placeholder="CVV">
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Button that swaps modal content -->
+                        <button type="button" class="w-100 btn btn-signup" id="monthlyBtn" >
+                            Monthly | $51.25
+                        </button>
+                    </form>
+
+                    <p class="mt-3 text-muted small confirm-text">
+                        By confirming your monthly amount, you allow Athleaf Fuel to charge you for future payments
+                        in accordance with your chosen plan for the next 8 months.
+                    </p>
+                    <p class="text-muted small confirm-text">
+                        By placing your order, you agree to our <a href="#" class="terms-link">Terms of Service</a>
+                        and <a href="#" class="terms-link">Privacy Policy</a>.
+                    </p>
+                </div>
+            </div>
+
+
+
+        </div>
+    </div>
+    </div>
+
+    <!-- Congrats Modal for Consultation -->
+    <div class="modal fade" id="congratsModalConsultation" tabindex="-1"
+    aria-labelledby="congratsModalConsultationLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content" style="border-radius: 12px;">
+            <div id="congratsContentConsultation">
+                <button type="button" class="btn-close congrats-modal" data-bs-dismiss="modal"
+                    aria-label="Close"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12"
+                        viewBox="0 0 12 12" fill="none">
+                        <path
+                            d="M0.219668 1.28033C-0.0732225 0.987438 -0.0732225 0.512558 0.219668 0.219668C0.512558 -0.0732225 0.987438 -0.0732225 1.28033 0.219668L5.999 4.9384L10.7176 0.219798C11.0105 -0.0730923 11.4854 -0.0730923 11.7782 0.219798C12.0711 0.512688 12.0711 0.987568 11.7782 1.28046L7.0597 5.999L11.7782 10.7176C12.0711 11.0105 12.0711 11.4854 11.7782 11.7782C11.4854 12.0711 11.0105 12.0711 10.7176 11.7782L5.999 7.0597L1.28033 11.7784C0.987438 12.0713 0.512558 12.0713 0.219668 11.7784C-0.0732225 11.4855 -0.0732225 11.0106 0.219668 10.7177L4.9384 5.999L0.219668 1.28033Z"
+                            fill="#626262" />
+                    </svg></button>
+                <img src="images/congrats-modal-img.png" alt="Congrats" class="rounded-top w-100">
+                <div class="p-4 text-center modal-body">
+                    <div class="mb-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="61" height="60" viewBox="0 0 61 60"
+                            fill="none">
+                            <path
+                                d="M30.1875 53.75C43.4768 53.75 54.25 42.9768 54.25 29.6875C54.25 16.3981 43.4768 5.625 30.1875 5.625C16.8981 5.625 6.125 16.3981 6.125 29.6875C6.125 42.9768 16.8981 53.75 30.1875 53.75Z"
+                                stroke="#3E8E00" stroke-width="3" />
+                            <path
+                                d="M19.25 30.625C20.2764 31.6514 22.6373 34.0123 25.2945 36.6695C26.2708 37.6458 27.8539 37.6461 28.8302 36.6698L42.375 23.125"
+                                stroke="#3E8E00" stroke-width="3" stroke-linecap="round" />
+                        </svg>
+                    </div>
+                    <h4 class="congrats-title"><strong>Congrats legend!</strong></h4>
+                    <p class="mb-1 congrats-subtitle"><strong>You’re all set for your Consultation</strong><br></p>
+                    <p class="congrats-para">
+                        Lets book in a time 
+                    </p>
+                    <button type="button" class="w-100 btn btn-signup">Book a Time</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 @push('scripts')
     <script>
@@ -319,6 +456,74 @@
     opacity: 1;
     transform: translateY(0);
     }
+    }
+
+    /* Consultation Cards Styles */
+    .consultations-list-section {
+        background-color: #f8f9fa;
+    }
+
+    .consultation-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border: none;
+        border-radius: 12px;
+    }
+
+    .consultation-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+    }
+
+    .consultation-card .card-title {
+        color: #333;
+        font-weight: 600;
+        margin-bottom: 15px;
+    }
+
+    .consultation-card .card-text {
+        color: #666;
+        line-height: 1.6;
+        margin-bottom: 20px;
+    }
+
+    .consultation-details {
+        margin-bottom: 20px;
+    }
+
+    .price-time-info {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 0;
+        border-top: 1px solid #eee;
+    }
+
+    .price {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #28a745;
+    }
+
+    .time {
+        font-size: 0.9rem;
+        color: #666;
+        background-color: #f8f9fa;
+        padding: 4px 8px;
+        border-radius: 4px;
+    }
+
+    .consultation-card .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
+        border-radius: 8px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+    .consultation-card .btn-primary:hover {
+        background-color: #0056b3;
+        border-color: #0056b3;
+        transform: translateY(-2px);
     }
     `;
     document.head.appendChild(tooltipStyle);
@@ -634,8 +839,85 @@
                 scrollTop: $('.plan-inclusion-section').offset().top
             }, 800);
         });
-        </script>
-        <!-- plan section slider -->
+    </script>
+
+    <script>
+        const onePaymentBtn = document.getElementById("onePaymentBtn");
+        const monthlyPlanBtn = document.getElementById("monthlyPlanBtn");
+        const onePaymentPlans = document.getElementById("onePaymentPlans");
+        const monthlyPlans = document.getElementById("monthlyPlans");
+
+        onePaymentBtn.addEventListener("click", () => {
+            onePaymentPlans.classList.remove("d-none");
+            monthlyPlans.classList.add("d-none");
+            onePaymentBtn.classList.add("active");
+            monthlyPlanBtn.classList.remove("active");
+        });
+
+        monthlyPlanBtn.addEventListener("click", () => {
+            onePaymentPlans.classList.add("d-none");
+            monthlyPlans.classList.remove("d-none");
+            monthlyPlanBtn.classList.add("active");
+            onePaymentBtn.classList.remove("active");
+        });
+    </script>
+
+    <script>
+        // Handle monthlyBtn in planChooseModal
+        document.getElementById("monthlyBtn").addEventListener("click", function () {
+            // Hide the current modal
+            const planModal = bootstrap.Modal.getInstance(document.getElementById('planChooseModal'));
+            if (planModal) {
+                planModal.hide();
+            }
+
+            // Show the consultation congrats modal
+            const congratsModalConsultation = new bootstrap.Modal(document.getElementById('congratsModalConsultation'));
+            congratsModalConsultation.show();
+        });
+
+        // Handle consultation booking button
+        const consultationBtn = document.querySelector('#paymentModal .btn-signup');
+        if (consultationBtn) {
+            consultationBtn.addEventListener("click", function () {
+                // Hide the current modal
+                const paymentModal = bootstrap.Modal.getInstance(document.getElementById('paymentModal'));
+                if (paymentModal) {
+                    paymentModal.hide();
+                }
+
+                // Show the consultation congrats modal
+                const congratsModalConsultation = new bootstrap.Modal(document.getElementById('congratsModalConsultation'));
+                congratsModalConsultation.show();
+            });
+        }
+
+    </script>
+    <script>
+        document.getElementById("toggle-coupon").addEventListener("click", function (e) {
+            e.preventDefault();
+            document.getElementById("coupon-details").classList.toggle("d-none");
+        });
+    </script>
+    <script>
+        document.getElementById("toggle-coupon-consultation").addEventListener("click", function (e) {
+            e.preventDefault();
+            document.getElementById("coupon-details-consultation").classList.toggle("d-none");
+        });
+    </script>
+    <script>
+        document.getElementById("apply-promo-code").addEventListener("click", function () {
+            // Add your promo code application logic here
+            console.log("Promo code applied");
+        });
+    </script>
+    <script>
+        document.getElementById("apply-promo-code-consultation").addEventListener("click", function () {
+            // Add your promo code application logic here
+            console.log("Consultation promo code applied");
+        });
+    </script>
+     <!-- plan section slider -->
         <script>
          document.addEventListener("DOMContentLoaded", () => {
              const track = document.getElementById("planSlider");
@@ -671,5 +953,4 @@
              window.addEventListener("resize", updateSlider);
          });
         </script>
-
- @endpush
+@endpush
