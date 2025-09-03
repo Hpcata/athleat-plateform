@@ -63,12 +63,10 @@
                             @foreach($consultations as $consultation)
                                 @if($consultation->show_on_consultation_page)
                                     <div class="feature-column">
-                                        <h3 class="mb-0 feature-title">{{ $consultation->time }} min Consultation</h3>
-
                                         {!! $consultation->content !!}
 
                                         <div class="pricing-section">
-                                            <h2 class="pricing-amount">${{ number_format($consultation->price, 2) }} AUD</h2>
+                                            <h2 class="pricing-amount">${{ number_format($consultation->price, 0) }} AUD</h2>
                                             <div class="pricing-buttons">
                                                 <button class="btn-signup" data-consultation-id="{{ $consultation->id }}" data-bs-toggle="modal" data-bs-target="#paymentModal">Book consult</button>
                                             </div>
