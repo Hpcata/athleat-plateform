@@ -469,17 +469,31 @@ $auth = auth()->guard('web')->check();
 
         // Function to update navbar background based on scroll position
         function updateNavbarBackground() {
-            const navbar = document.querySelector(".navbar-custom");
-            if (!navbar) return;
-            if (window.scrollY > 50) {
-                navbar.style.background = "rgba(59, 59, 59, 1)";
-            } else {
-                navbar.style.background = "transparent";
+            // Check for both navbar types: homepage navbar and consultations header
+            const homepageNavbar = document.querySelector(".navbar-custom");
+            const consultationsHeader = document.querySelector(".header");
+
+            if (homepageNavbar) {
+                // Homepage navbar
+                if (window.scrollY > 50) {
+                    homepageNavbar.style.background = "rgba(59, 59, 59, 1)";
+                } else {
+                    homepageNavbar.style.background = "transparent";
+                }
+            } else if (consultationsHeader) {
+                // Consultations page header
+                if (window.scrollY > 50) {
+                    consultationsHeader.style.background = "rgba(59, 59, 59, 0.95)";
+                    consultationsHeader.style.backdropFilter = "blur(10px)";
+                } else {
+                    consultationsHeader.style.background = "transparent";
+                    consultationsHeader.style.backdropFilter = "none";
+                }
             }
         }
 
         // Check if current URL is /training-nutrition-plan, /, or /about-us
-        if (window.location.pathname === '/training-nutrition-plan' || window.location.pathname === '/' || window.location.pathname === '/about-us' || window.location.pathname === '/competition-plan' || window.location.pathname === '/injury-recovery-plan' || window.location.pathname === '/surgery-plan') {
+        if (window.location.pathname === '/training-nutrition-plan' || window.location.pathname === '/' || window.location.pathname === '/about-us' || window.location.pathname === '/competition-plan' || window.location.pathname === '/injury-recovery-plan' || window.location.pathname === '/surgery-plan' || window.location.pathname === '/consultations') {
 
             // Check initial scroll position on page load
             updateNavbarBackground();
@@ -487,9 +501,15 @@ $auth = auth()->guard('web')->check();
             // Smooth navbar background change on scroll
             window.addEventListener("scroll", updateNavbarBackground);
         } else {
-            const navbar = document.querySelector(".navbar-custom");
-            if (navbar) {
-                navbar.style.background = "#3b3b3b";
+            // For other pages, check if it's a homepage navbar or consultations header
+            const homepageNavbar = document.querySelector(".navbar-custom");
+            const consultationsHeader = document.querySelector(".header");
+
+            if (homepageNavbar) {
+                homepageNavbar.style.background = "#3b3b3b";
+            } else if (consultationsHeader) {
+                // Apply background to consultations header for other pages
+                consultationsHeader.style.background = "rgba(59, 59, 59, 0.95)";
             }
         }
 
