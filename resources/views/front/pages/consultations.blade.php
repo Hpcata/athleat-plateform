@@ -41,7 +41,7 @@
                     </section>
                 </div>
             @endif
-            @if($section->section_type == \App\Models\Section::TYPE_CONSULTATION_INCLUSIONS && $section->enabled == 1)
+            @if($section->section_type == \App\Models\Section::TYPE_CONSULTATION_INCLUSIONS && $section->enabled == 1 && isset($consultations) && $consultations->count() > 0)
                 @php
                     $backgroundImage = '';
                     if (isset($section->banner_image[0])) {
