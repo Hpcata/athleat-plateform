@@ -479,7 +479,8 @@ $auth = auth()->guard('web')->check();
         }
 
         // Check if current URL is /training-nutrition-plan, /, or /about-us
-        if (window.location.pathname === '/training-nutrition-plan' || window.location.pathname === '/' || window.location.pathname === '/about-us') {
+        if (window.location.pathname === '/training-nutrition-plan' || window.location.pathname === '/' || window.location.pathname === '/about-us' || window.location.pathname === '/competition-plan' || window.location.pathname === '/injury-recovery-plan' || window.location.pathname === '/surgery-plan') {
+
             // Check initial scroll position on page load
             updateNavbarBackground();
 
