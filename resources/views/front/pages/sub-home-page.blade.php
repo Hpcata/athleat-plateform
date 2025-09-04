@@ -3079,6 +3079,10 @@
 
         $('#show-new-signup-modal').click(function (e) {
             e.preventDefault(); // remove alert for now
+            // Clear consultation login flag since this is not triggered by consultation booking
+            if (typeof window.clearConsultationLoginFlag === 'function') {
+                window.clearConsultationLoginFlag();
+            }
             if ($('#signupModalathlete').length) {
                 $('#signupModalathlete').modal('hide');
             }
