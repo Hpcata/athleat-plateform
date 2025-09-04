@@ -203,18 +203,38 @@ function verifyOtp() {
             if (data.success) {
                 if (data.action === "login") {
                     // User exists - login successful
-                    showSuccess(
-                        "Login successful! Redirecting to your profile..."
-                    );
+                    if (window.pendingConsultation) {
+                        showSuccess("Login successful! Continuing with your consultation booking...");
+                    } else {
+                        showSuccess("Login successful! Redirecting to your profile...");
+                    }
                     sessionStorage.removeItem("quiz_state");
-                    // Redirect to profile landing page
+                    // Check if there's a pending consultation
                     setTimeout(() => {
-                        if (data.redirectUrl) {
-                            window.location.href = data.redirectUrl;
+                        if (window.pendingConsultation) {
+                            // Close the signup modal
+                            const signupModal = bootstrap.Modal.getInstance(document.getElementById('signupModalathlete'));
+                            if (signupModal) {
+                                signupModal.hide();
+                            }
+                            // Refresh the page to show consultation booking popup
+                            window.location.reload();
                         } else {
-                            window.location.href = "/404";
+                            // Check if user should return to consultation page
+                            const returnToConsultationPage = sessionStorage.getItem('returnToConsultationPage');
+                            if (returnToConsultationPage) {
+                                window.location.href = returnToConsultationPage;
+                                sessionStorage.removeItem('returnToConsultationPage');
+                            } else {
+                                // Redirect to profile landing page
+                                if (data.redirectUrl) {
+                                    window.location.href = data.redirectUrl;
+                                } else {
+                                    window.location.href = "/404";
+                                }
+                            }
                         }
-                    }, 10);
+                    }, 1000);
                 } else {
                     // User doesn't exist - proceed to registration
                     showSuccess(
@@ -271,12 +291,14 @@ function completeRegistration() {
 
     const firstName = firstNameInput.value.trim();
     const email = emailInput.value.trim();
-    const userType = document.querySelector(
+    const userTypeElement = document.querySelector(
         'input[name="userType"]:checked'
-    ).value;
-    const ageGroup = document.querySelector(
+    );
+    const ageGroupElement = document.querySelector(
         'input[name="ageGroup"]:checked'
-    ).value;
+    );
+    const userType = userTypeElement ? userTypeElement.value : null;
+    const ageGroup = ageGroupElement ? ageGroupElement.value : null;
     const sport = $("#sportstype option:selected").val();
 
     // Clear any existing errors first
@@ -329,7 +351,11 @@ function completeRegistration() {
         .then((response) => response.json())
         .then((data) => {
             if (data.success) {
-                showSuccess(data.message);
+                if (window.pendingConsultation) {
+                    showSuccess("Registration successful! Continuing with your consultation booking...");
+                } else {
+                    showSuccess(data.message);
+                }
 
                 // Keep button disabled and change text to indicate success
                 button.textContent =
@@ -345,8 +371,26 @@ function completeRegistration() {
                 // Redirect to profile landing page using the user ID from response
                 setTimeout(() => {
                     if (data.user && data.user.id) {
-                        // Use the redirect URL from the API response
-                        window.location.href = data.redirectUrl;
+                        // Check if there's a pending consultation
+                        if (window.pendingConsultation) {
+                            // Close the signup modal
+                            const signupModal = bootstrap.Modal.getInstance(document.getElementById('signupModalathlete'));
+                            if (signupModal) {
+                                signupModal.hide();
+                            }
+                            // Refresh the page to show consultation booking popup
+                            window.location.reload();
+                        } else {
+                            // Check if user should return to consultation page
+                            const returnToConsultationPage = sessionStorage.getItem('returnToConsultationPage');
+                            if (returnToConsultationPage) {
+                                window.location.href = returnToConsultationPage;
+                                sessionStorage.removeItem('returnToConsultationPage');
+                            } else {
+                                // Use the redirect URL from the API response
+                                window.location.href = data.redirectUrl;
+                            }
+                        }
                     } else {
                         // Fallback to dashboard if user ID is not available
                         window.location.href = "/404";

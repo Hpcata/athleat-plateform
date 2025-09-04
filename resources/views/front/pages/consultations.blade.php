@@ -22,7 +22,7 @@
                     <div class="container-homepage">
                         <div class="hero-content-fixed">
                             {!! $section->content !!}
-                            <button class="btn-signup" id="book-consult-purchase-btn">Purchase plan</button>
+                            <button class="btn-signup" id="book-consult-purchase-btn">View Consults</button>
                         </div>
                     </div>
                 </div>
@@ -68,7 +68,13 @@
                                         <div class="pricing-section">
                                             <h2 class="pricing-amount">${{ number_format($consultation->price, 0) }} AUD</h2>
                                             <div class="pricing-buttons">
-                                                <button class="btn-signup" data-consultation-id="{{ $consultation->id }}" data-bs-toggle="modal" data-bs-target="#paymentModal">Book consult</button>
+                                                <button class="btn-signup book-consult-btn" 
+                                                        data-consultation-id="{{ $consultation->id }}" 
+                                                        data-consultation-price="{{ $consultation->price }}"
+                                                        data-consultation-time="{{ $consultation->time }}"
+                                                        data-consultation-content="{{ $consultation->content }}">
+                                                    Book consult
+                                                </button>
                                             </div>
                                         </div>
                                     </div>
@@ -166,20 +172,19 @@
 
                 <!-- Monthly Payment Content -->
                 <div id="paymentContentConsultation">
-                    <div class="pb-0 border-0 modal-header">
+                    <div class="pt-0 pb-0 border-0 modal-header">
                         <h5 class="modal-title">Consultation</h5>
 
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <p class="modal-subtitle">Consultation
-
-                            XYZ min One on One, online Nutrition Consultation </p>
-                        <p class="amount"><strong>A$120.</strong> <span class="text-muted">one time payment</span></p>
+                        <p class="modal-subtitle" id="consultation-description">30 min One on One, online Nutrition Consultation </p>
+                        <p class="amount"><strong id="consultation-price">A$120.</strong> <span class="">one time payment</span></p>
 
                         <span class="divider"></span>
-                        <p class="mb-2 sign-in-text">Signed in as<br><strong>jordansmith@gmail.com</strong></p>
-                        <a href="#" class="d-block mb-3 coupon-code" id="toggle-coupon-consultation">Add a Coupon
+                        <p class="mb-2 sign-in-text" style="line-height: 22px;">Signed in
+                            as<br><strong id="user-email">{{ Auth::user()->email ?? 'jordansmith@gmail.com' }}</strong></p>
+                        <a href="##" class="d-block mb-3 coupon-code" id="toggle-coupon-consultation">Add a Coupon
                             Code</a>
                         <!-- Coupon Code -->
                         <div class="mb-3 d-none" id="coupon-details-consultation">
@@ -194,38 +199,46 @@
                             <small id="promo-message-consultation" class="form-text"></small>
                         </div>
 
-                        <form>
-                            <div class="form-wrap">
-                                <div class="mb-3">
-                                    <label class="form-label">Card number</label>
-                                    <input type="text" class="form-control" placeholder="1234 1234 1234 1234">
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Name on card</label>
-                                    <input type="text" class="form-control" placeholder="Card name">
-                                </div>
-                                <div class="row">
-                                    <div class="mb-3 col-6">
-                                        <label class="form-label">Expiry date</label>
-                                        <input type="text" class="form-control" placeholder="MM/YY">
-                                    </div>
-                                    <div class="mb-3 col-6">
-                                        <label class="form-label">CVV</label>
-                                        <input type="text" class="form-control" placeholder="CVV">
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Button that swaps modal content -->
-                            <button type="button" class="w-100 btn btn-signup" id="monthlyBtn" >
-                                Monthly | $51.25
-                            </button>
-                        </form>
+                                                 <form id="consultation-payment-form">
+                             <input type="hidden" id="consultation-id" name="consultation_id">
+                             <input type="hidden" id="consultation-final-price" name="price">
+                             <input type="hidden" id="payment-method-id" name="payment_method_id">
+                             <div class="form-wrap">
+                                 <div class="mb-3">
+                                     <label class="form-label">Card number</label>
+                                     <div class="input-with-icon">
+                                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                                             viewBox="0 0 24 24" fill="none" class="input-icon">
+                                             <path
+                                                 d="M22.5 21H1.5C1.10218 21 0.720644 20.842 0.43934 20.5607C0.158035 20.2794 0 19.8978 0 19.5L0 7.5H24V19.5C24 20.3295 23.3295 21 22.5 21ZM13.1355 11.0265C12.579 10.6995 11.94 10.5 11.25 10.5C9.1785 10.5 7.5 12.1785 7.5 14.25C7.5 16.3215 9.1785 18 11.25 18C11.94 18 12.579 17.8005 13.1355 17.4735C12.435 16.5825 12 15.471 12 14.25C12 13.029 12.435 11.9175 13.1355 11.0265ZM17.25 10.5C15.1785 10.5 13.5 12.1785 13.5 14.25C13.5 16.3215 15.1785 18 17.25 18C19.3215 18 21 16.3215 21 14.25C21 12.1785 19.3215 10.5 17.25 10.5ZM0 4.5C0 4.10218 0.158035 3.72064 0.43934 3.43934C0.720644 3.15804 1.10218 3 1.5 3H22.5C23.3295 3 24 3.6705 24 4.5V6H0V4.5Z"
+                                                 fill="#B1B1B1" />
+                                         </svg>
+                                         <div id="card-number-element" class="form-control"></div>
+                                     </div>
+                                 </div>
+                                 <div class="mb-3">
+                                     <label class="form-label">Name on card</label>
+                                     <input type="text" class="form-control" id="card-holder-name" placeholder="Card name">
+                                 </div>
+                                 <div class="row">
+                                     <div class="mb-3 col-6">
+                                         <label class="form-label">Expiry date</label>
+                                         <div id="card-expiry-element" class="form-control"></div>
+                                     </div>
+                                     <div class="mb-3 col-6">
+                                         <label class="form-label">CVV</label>
+                                         <div id="card-cvc-element" class="form-control"></div>
+                                     </div>
+                                 </div>
+                             </div>
+                             <!-- Button that swaps modal content -->
+                             <button type="button" class="w-100 btn btn-signup" id="payConsultationBtn">
+                                 Pay | $<span id="pay-button-price">120</span>
+                             </button>
+                         </form>
+
 
                         <p class="mt-3 text-muted small confirm-text">
-                            By confirming your monthly amount, you allow Athleaf Fuel to charge you for future payments
-                            in accordance with your chosen plan for the next 8 months.
-                        </p>
-                        <p class="text-muted small confirm-text">
                             By placing your order, you agree to our <a href="#" class="terms-link">Terms of Service</a>
                             and <a href="#" class="terms-link">Privacy Policy</a>.
                         </p>
@@ -236,12 +249,12 @@
 
             </div>
         </div>
-        </div>
+    </div>
 
-        <!-- Congrats Modal for Consultation -->
-        <div class="modal fade" id="congratsModalConsultation" tabindex="-1"
+    <!-- Congrats Modal for Consultation -->
+    <div class="modal fade" id="congratsModalConsultation" tabindex="-1"
         aria-labelledby="congratsModalConsultationLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content" style="border-radius: 12px;">
                 <div id="congratsContentConsultation">
                     <button type="button" class="btn-close congrats-modal" data-bs-dismiss="modal"
@@ -251,7 +264,7 @@
                                 d="M0.219668 1.28033C-0.0732225 0.987438 -0.0732225 0.512558 0.219668 0.219668C0.512558 -0.0732225 0.987438 -0.0732225 1.28033 0.219668L5.999 4.9384L10.7176 0.219798C11.0105 -0.0730923 11.4854 -0.0730923 11.7782 0.219798C12.0711 0.512688 12.0711 0.987568 11.7782 1.28046L7.0597 5.999L11.7782 10.7176C12.0711 11.0105 12.0711 11.4854 11.7782 11.7782C11.4854 12.0711 11.0105 12.0711 10.7176 11.7782L5.999 7.0597L1.28033 11.7784C0.987438 12.0713 0.512558 12.0713 0.219668 11.7784C-0.0732225 11.4855 -0.0732225 11.0106 0.219668 10.7177L4.9384 5.999L0.219668 1.28033Z"
                                 fill="#626262" />
                         </svg></button>
-                    <img src="images/congrats-modal-img.png" alt="Congrats" class="rounded-top w-100">
+                    <img src="{{ frontAssets('images/consultation/congrats-modal-img.png') }}" alt="Congrats" class="rounded-top w-100">
                     <div class="p-4 text-center modal-body">
                         <div class="mb-3">
                             <svg xmlns="http://www.w3.org/2000/svg" width="61" height="60" viewBox="0 0 61 60"
@@ -265,11 +278,11 @@
                             </svg>
                         </div>
                         <h4 class="congrats-title"><strong>Congrats legend!</strong></h4>
-                        <p class="mb-1 congrats-subtitle"><strong>You’re all set for your Consultation</strong><br></p>
+                        <p class="mb-1 congrats-subtitle"><strong>You're all set for your Consultation</strong><br></p>
                         <p class="congrats-para">
-                            Lets book in a time 
+                            Lets book in a time
                         </p>
-                        <button type="button" class="w-100 btn btn-signup">Book a Time</button>
+                                                 <button type="button" class="w-100 btn btn-signup" id="book-time-btn">Book a Time</button>
                     </div>
                 </div>
             </div>
@@ -279,6 +292,9 @@
 @endsection
 
 @push('scripts')
+    <!-- Stripe.js -->
+    <script src="https://js.stripe.com/v3/"></script>
+    
     <script>
 
 
@@ -320,214 +336,39 @@
     <script>
 
 
-    // Coming soon tooltip functionality
-    function showComingSoonTooltip(button, platform) {
-        // Remove any existing tooltips
-        const existingTooltip = document.querySelector('.coming-soon-tooltip');
-        if (existingTooltip) {
-            existingTooltip.remove();
+        // Learn more tooltip function
+        function showLearnMoreTooltip(element, message) {
+            // Create tooltip element
+            const tooltip = document.createElement('div');
+            tooltip.className = 'tooltip';
+            tooltip.textContent = message;
+            tooltip.style.cssText = `
+                position: absolute;
+                background: #333;
+                color: white;
+                padding: 8px 12px;
+                border-radius: 4px;
+                font-size: 14px;
+                z-index: 1000;
+                white-space: nowrap;
+                pointer-events: none;
+            `;
+
+            // Position tooltip near the button
+            const rect = element.getBoundingClientRect();
+            tooltip.style.left = rect.left + 'px';
+            tooltip.style.top = (rect.bottom + 5) + 'px';
+
+            // Add to page
+            document.body.appendChild(tooltip);
+
+            // Remove after 3 seconds
+            setTimeout(() => {
+                if (tooltip.parentNode) {
+                    tooltip.parentNode.removeChild(tooltip);
+                }
+            }, 3000);
         }
-
-        // Create tooltip element
-        const tooltip = document.createElement('div');
-        tooltip.className = 'coming-soon-tooltip';
-        tooltip.textContent = 'Coming Soon!';
-
-        // Position tooltip above the button
-        const buttonRect = button.getBoundingClientRect();
-        tooltip.style.position = 'fixed';
-        tooltip.style.top = (buttonRect.top - 40) + 'px';
-        tooltip.style.left = (buttonRect.left + buttonRect.width / 2 - 50) + 'px';
-        tooltip.style.zIndex = '9999';
-
-        // Add tooltip to body
-        document.body.appendChild(tooltip);
-    }
-
-    function hideComingSoonTooltip() {
-        const existingTooltip = document.querySelector('.coming-soon-tooltip');
-        if (existingTooltip) {
-            existingTooltip.remove();
-        }
-    }
-
-    // Learn more tooltip functionality
-    function showLearnMoreTooltip(button, planType) {
-        // Remove any existing learn more tooltips
-        const existingTooltip = document.querySelector('.learn-more-tooltip');
-        if (existingTooltip) {
-            existingTooltip.remove();
-        }
-
-        // Create tooltip element
-        const tooltip = document.createElement('div');
-        tooltip.className = 'learn-more-tooltip';
-        tooltip.textContent = `${planType} `;
-
-        // Position tooltip above the button
-        const buttonRect = button.getBoundingClientRect();
-        tooltip.style.position = 'fixed';
-        tooltip.style.top = (buttonRect.top - 40) + 'px';
-        tooltip.style.left = (buttonRect.left + buttonRect.width / 2 - 80) + 'px';
-        tooltip.style.zIndex = '9999';
-
-        // Add tooltip to body
-        document.body.appendChild(tooltip);
-
-        // Auto-hide tooltip after 3 seconds
-        setTimeout(() => {
-            const tooltipToRemove = document.querySelector('.learn-more-tooltip');
-            if (tooltipToRemove) {
-                tooltipToRemove.remove();
-            }
-        }, 3000);
-    }
-
-    // Scroll to contact section functionality
-    function scrollToContact() {
-        const contactSection = document.querySelector('#contact-section');
-        if (contactSection) {
-            const offset = 80; // Offset in pixels from the top
-            const elementPosition = contactSection.getBoundingClientRect().top;
-            const offsetPosition = elementPosition + window.pageYOffset - offset;
-
-            window.scrollTo({
-                top: offsetPosition,
-                behavior: 'smooth'
-            });
-        }
-    }
-
-    // Add CSS for tooltip
-    const tooltipStyle = document.createElement('style');
-    tooltipStyle.textContent = `
-    .coming-soon-tooltip {
-    background-color: #333;
-    color: white;
-    padding: 8px 12px;
-    border-radius: 6px;
-    font-size: 14px;
-    font-weight: 500;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    animation: tooltipFadeIn 0.3s ease-out;
-    white-space: nowrap;
-    }
-
-    .coming-soon-tooltip::after {
-    content: '';
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    border: 6px solid transparent;
-    border-top-color: #333;
-    }
-
-    .learn-more-tooltip {
-    background-color: #333;
-    color: white;
-    padding: 8px 12px;
-    border-radius: 6px;
-    font-size: 14px;
-    font-weight: 500;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    animation: tooltipFadeIn 0.3s ease-out;
-    white-space: nowrap;
-    }
-
-    .learn-more-tooltip::after {
-    content: '';
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    border: 6px solid transparent;
-    border-top-color: #333;
-    }
-
-    @keyframes tooltipFadeIn {
-    from {
-    opacity: 0;
-    transform: translateY(20px);
-    }
-    to {
-    opacity: 1;
-    transform: translateY(0);
-    }
-    }
-
-    /* Consultation Cards Styles */
-    .consultations-list-section {
-        background-color: #f8f9fa;
-    }
-
-    .consultation-card {
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-        border: none;
-        border-radius: 12px;
-    }
-
-    .consultation-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
-    }
-
-    .consultation-card .card-title {
-        color: #333;
-        font-weight: 600;
-        margin-bottom: 15px;
-    }
-
-    .consultation-card .card-text {
-        color: #666;
-        line-height: 1.6;
-        margin-bottom: 20px;
-    }
-
-    .consultation-details {
-        margin-bottom: 20px;
-    }
-
-    .price-time-info {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 10px 0;
-        border-top: 1px solid #eee;
-    }
-
-    .price {
-        font-size: 1.25rem;
-        font-weight: 700;
-        color: #28a745;
-    }
-
-    .time {
-        font-size: 0.9rem;
-        color: #666;
-        background-color: #f8f9fa;
-        padding: 4px 8px;
-        border-radius: 4px;
-    }
-
-    .consultation-card .btn-primary {
-        background-color: #007bff;
-        border-color: #007bff;
-        border-radius: 8px;
-        font-weight: 500;
-        transition: all 0.3s ease;
-    }
-
-    .consultation-card .btn-primary:hover {
-        background-color: #0056b3;
-        border-color: #0056b3;
-        transform: translateY(-2px);
-    }
-    `;
-    document.head.appendChild(tooltipStyle);
-
-
-
     </script>
 
     <!--  hero section slider script -->
@@ -900,7 +741,45 @@
     <script>
         document.getElementById("toggle-coupon-consultation").addEventListener("click", function (e) {
             e.preventDefault();
-            document.getElementById("coupon-details-consultation").classList.toggle("d-none");
+            const couponDetails = document.getElementById("coupon-details-consultation");
+            const toggleText = this.textContent;
+            
+            if (couponDetails.classList.contains("d-none")) {
+                // Show coupon section
+                couponDetails.classList.remove("d-none");
+                this.textContent = "Remove Coupon Code";
+            } else {
+                // Hide coupon section and clear coupon
+                couponDetails.classList.add("d-none");
+                this.textContent = "Add a Coupon Code";
+
+                // Reset coupon values
+                document.getElementById("promo-code-consultation").value = "";
+                document.getElementById("discount-consultation").value = "";
+                document.getElementById("promo-message-consultation").textContent = "";
+                document.getElementById("promo-message-consultation").className = "form-text";
+
+                // Reset price to original
+                const originalPrice = parseFloat(document.getElementById("consultation-final-price").getAttribute("data-original-price") || "120");
+                document.getElementById("consultation-final-price").value = originalPrice;
+                if(document.getElementById("pay-button-price")) {
+                    document.getElementById("pay-button-price").textContent = originalPrice;
+                }
+                if(document.getElementById("pay-button-price")) {
+                document.getElementById("pay-button-price").textContent = originalPrice;
+                }
+                if(document.getElementById("consultation-price")) {
+                    document.getElementById("consultation-price").innerHTML = `A$${originalPrice}. <span class="">one time payment</span>`;
+                }
+                                 if(document.getElementById("payConsultationBtn")) {
+                     document.getElementById("payConsultationBtn").innerHTML = `Pay | $<span id="pay-button-price">${originalPrice}</span>`;
+                 }
+                 // Ensure the button is not disabled
+                 document.getElementById("payConsultationBtn").disabled = false;
+                 
+                 // Show payment form again when coupon is removed
+                 document.querySelector('#consultation-payment-form .form-wrap').classList.remove('d-none');
+            }
         });
     </script>
     <script>
@@ -911,8 +790,99 @@
     </script>
     <script>
         document.getElementById("apply-promo-code-consultation").addEventListener("click", function () {
-            // Add your promo code application logic here
-            console.log("Consultation promo code applied");
+            const promoCode = document.getElementById("promo-code-consultation").value.trim();
+            const consultationId = document.getElementById("consultation-id").value;
+            const promoMessage = document.getElementById("promo-message-consultation");
+            const discountField = document.getElementById("discount-consultation");
+            const originalPrice = parseFloat(document.getElementById("consultation-final-price").value);
+            const payButton = document.getElementById("payConsultationBtn");
+            const payButtonPrice = document.getElementById("pay-button-price");
+            const consultationPrice = document.getElementById("consultation-price");
+            
+            if (!promoCode) {
+                promoMessage.textContent = "Please enter a coupon code.";
+                promoMessage.className = "form-text text-danger";
+                return;
+            }
+            
+            // Disable apply button during validation
+            this.disabled = true;
+            this.textContent = "Applying...";
+            
+            fetch('{{ route("validate.coupon.code") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({
+                    code: promoCode,
+                    consultation_id: consultationId
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.valid) {
+                    const discount = parseFloat(data.discount);
+                    discountField.value = discount;
+                    
+                    let finalPrice = originalPrice;
+                    let discountText = "";
+                    
+                    if (data.type === 'percentage') {
+                        const discountAmount = (originalPrice * discount) / 100;
+                        finalPrice = originalPrice - discountAmount;
+                        discountText = `${discount}% off`;
+                    } else if (data.type === 'fixed') {
+                        finalPrice = Math.max(0, originalPrice - discount);
+                        discountText = `$${discount} off`;
+                    }
+                    
+                    // Update display
+                    document.getElementById("consultation-final-price").value = finalPrice.toFixed(2);
+                    payButtonPrice.textContent = finalPrice.toFixed(0);
+                    consultationPrice.innerHTML = `A$${finalPrice.toFixed(2)}. <span class="">one time payment</span>`;
+                    
+                    // Update toggle link text
+                    document.getElementById("toggle-coupon-consultation").textContent = `Remove Coupon Code (${discountText})`;
+                    
+                    promoMessage.textContent = `Coupon applied successfully! ${discountText}`;
+                    promoMessage.className = "form-text text-success";
+                    
+                                         // If 100% discount, update button text and hide payment form
+                     if (finalPrice <= 0) {
+                         payButton.innerHTML = 'Get Free Consultation';
+                         // Hide payment form for free consultation
+                         document.querySelector('#consultation-payment-form .form-wrap').classList.add('d-none');
+                     } else {
+                         payButton.innerHTML = `Pay | $<span id="pay-button-price">${finalPrice.toFixed(0)}</span>`;
+                         // Show payment form for paid consultation
+                         document.querySelector('#consultation-payment-form .form-wrap').classList.remove('d-none');
+                     }
+                } else {
+                    promoMessage.textContent = data.message || "Invalid coupon code.";
+                    promoMessage.className = "form-text text-danger";
+                    
+                    // Reset values
+                    discountField.value = "";
+                    document.getElementById("consultation-final-price").value = originalPrice;
+                    payButtonPrice.textContent = originalPrice;
+                    consultationPrice.innerHTML = `A$${originalPrice}. <span class="">one time payment</span>`;
+                    document.getElementById("toggle-coupon-consultation").textContent = "Add a Coupon Code";
+                    payButton.innerHTML = `Pay | $<span id="pay-button-price">${originalPrice}</span>`;
+                    payButton.disabled = false;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                promoMessage.textContent = "Something went wrong. Please try again.";
+                promoMessage.className = "form-text text-danger";
+            })
+            .finally(() => {
+                // Re-enable apply button
+                this.disabled = false;
+                this.textContent = "Apply";
+            });
         });
     </script>
      <!-- plan section slider -->
@@ -951,4 +921,597 @@
              window.addEventListener("resize", updateSlider);
          });
         </script>
+
+        <!-- Consultation Booking Script -->
+    <script>
+        // Stripe configuration
+        let stripe;
+        let elements;
+        let cardNumberElement;
+        let cardExpiryElement;
+        let cardCvcElement;
+        let paymentMethodId = null;
+
+        // Reset consultation flow and show coming soon tooltip
+        function resetConsultationFlow(button) {
+            // Show coming soon tooltip
+            showComingSoonTooltip(button, 'Booking System');
+            
+            // Reset all consultation-related flags and state
+            resetConsultationState();
+            
+            // Hide the coming soon tooltip after 5 seconds (but keep modal open)
+            setTimeout(() => {
+                const existingTooltip = document.querySelector('.coming-soon-tooltip');
+                if (existingTooltip) {
+                    existingTooltip.remove();
+                }
+            }, 5000);
+            
+            // Reset any pending consultation data
+            if (window.pendingConsultation) {
+                delete window.pendingConsultation;
+            }
+            
+            // Reset any stored consultation data in session/local storage
+            if (typeof sessionStorage !== 'undefined') {
+                sessionStorage.removeItem('pending_consultation');
+                sessionStorage.removeItem('consultation_flow_state');
+                sessionStorage.removeItem('consultation_booking_data');
+            }
+            
+            // Reset form fields if they exist
+            resetConsultationForms();
+            
+            // Reset any custom event handlers
+            resetEventHandlers();
+            
+            // Reset any timers or intervals
+            resetTimers();
+            
+            // Reset any AJAX requests
+            resetAjaxRequests();
+            
+            console.log('Consultation flow reset - fresh state restored');
+        }
+        
+        // Reset all consultation state
+        function resetConsultationState() {
+            // Reset any global consultation flags
+            window.consultationBooked = false;
+            window.consultationProcessing = false;
+            window.consultationModalOpen = false;
+            
+            // Reset any jQuery data attributes on consultation buttons
+            $('.book-consult-btn').removeData('processed');
+            $('.book-consult-btn').removeData('clicked');
+            
+            // Reset any active states
+            $('.book-consult-btn').removeClass('active processing disabled');
+            $('.book-consult-btn').prop('disabled', false);
+            
+            // Reset payment button state
+            $('#payConsultationBtn').prop('disabled', false);
+            $('#payConsultationBtn').html('Pay | $<span id="pay-button-price">120</span>');
+        }
+        
+        // Reset consultation forms
+        function resetConsultationForms() {
+            // Reset payment form
+            if (document.getElementById('consultation-payment-form')) {
+                document.getElementById('consultation-payment-form').reset();
+            }
+            
+            // Reset Stripe elements
+            if (cardNumberElement) {
+                cardNumberElement.clear();
+            }
+            if (cardExpiryElement) {
+                cardExpiryElement.clear();
+            }
+            if (cardCvcElement) {
+                cardCvcElement.clear();
+            }
+            
+            // Reset payment method ID
+            paymentMethodId = null;
+            
+            // Reset consultation ID and price fields
+            if (document.getElementById('consultation-id')) {
+                document.getElementById('consultation-id').value = '';
+            }
+            if (document.getElementById('consultation-final-price')) {
+                document.getElementById('consultation-final-price').value = '';
+                document.getElementById('consultation-final-price').removeAttribute('data-original-price');
+            }
+            
+            // Reset coupon fields
+            if (document.getElementById('promo-code-consultation')) {
+                document.getElementById('promo-code-consultation').value = '';
+            }
+            if (document.getElementById('discount-consultation')) {
+                document.getElementById('discount-consultation').value = '';
+            }
+            if (document.getElementById('promo-message-consultation')) {
+                document.getElementById('promo-message-consultation').textContent = '';
+                document.getElementById('promo-message-consultation').className = 'form-text';
+            }
+            
+            // Reset coupon toggle
+            if (document.getElementById('toggle-coupon-consultation')) {
+                document.getElementById('toggle-coupon-consultation').textContent = 'Add a Coupon Code';
+            }
+            
+            // Hide coupon details section
+            const couponDetails = document.getElementById('coupon-details-consultation');
+            if (couponDetails && !couponDetails.classList.contains('d-none')) {
+                couponDetails.classList.add('d-none');
+            }
+        }
+        
+        // Reset modals
+        function resetModals() {
+            // Close any open modals
+            const modals = document.querySelectorAll('.modal.show');
+            modals.forEach(modal => {
+                const modalInstance = bootstrap.Modal.getInstance(modal);
+                if (modalInstance) {
+                    modalInstance.hide();
+                }
+            });
+            
+            // Remove any modal backdrops
+            const backdrops = document.querySelectorAll('.modal-backdrop');
+            backdrops.forEach(backdrop => {
+                backdrop.remove();
+            });
+            
+            // Reset body classes
+            document.body.classList.remove('modal-open');
+            document.body.style.overflow = '';
+            document.body.style.paddingRight = '';
+        }
+        
+        // Reset event handlers
+        function resetEventHandlers() {
+            // Remove any custom event listeners that might have been added during consultation flow
+            // This ensures a clean slate for event handling
+            
+            // Reset any button states
+            const buttons = document.querySelectorAll('.book-consult-btn, #payConsultationBtn');
+            buttons.forEach(button => {
+                // Remove any custom event listeners
+                button.replaceWith(button.cloneNode(true));
+            });
+            
+            // Re-initialize basic event handlers if needed
+            initializeBasicHandlers();
+        }
+        
+        // Reset timers and intervals
+        function resetTimers() {
+            // Clear any setTimeout or setInterval that might be running
+            // Note: This is a global clear, so use with caution
+            const highestTimeoutId = setTimeout(() => {}, 0);
+            for (let i = 0; i < highestTimeoutId; i++) {
+                clearTimeout(i);
+            }
+            
+            const highestIntervalId = setInterval(() => {}, 0);
+            for (let i = 0; i < highestIntervalId; i++) {
+                clearInterval(i);
+            }
+        }
+        
+        // Reset AJAX requests
+        function resetAjaxRequests() {
+            // Abort any ongoing AJAX requests
+            if (window.jQuery && window.jQuery.active) {
+                window.jQuery.active = 0;
+            }
+            
+            // Abort any fetch requests
+            if (window.AbortController) {
+                // This would require storing AbortController instances during requests
+                // For now, we'll just reset the jQuery active count
+            }
+        }
+        
+        // Initialize basic handlers after reset
+        function initializeBasicHandlers() {
+            // Re-attach basic event handlers that should always be present
+            // This ensures the page remains functional after reset
+            
+            // Re-attach book consultation button handlers
+            $('.book-consult-btn').off('click').on('click', function(e) {
+                e.preventDefault();
+                
+                const isAuthenticated = {{ Auth::check() ? 'true' : 'false' }};
+                
+                if (!isAuthenticated) {
+                    // Initialize signup modal content before showing
+                    initializeSignupModal();
+                    // Show login/signup modal
+                    $('#signupModalathlete').modal('show');
+                    // Store consultation data for after login
+                    window.pendingConsultation = {
+                        id: $(this).data('consultation-id'),
+                        price: $(this).data('consultation-price'),
+                        time: $(this).data('consultation-time'),
+                        content: $(this).data('consultation-content')
+                    };
+                    return;
+                }
+                
+                // User is authenticated, show payment modal
+                showPaymentModal($(this));
+            });
+            
+            // Re-attach payment button handler
+            $('#payConsultationBtn').off('click').on('click', function(e) {
+                e.preventDefault();
+                processConsultationPayment();
+            });
+        }
+
+        // Initialize Stripe when DOM is ready
+        $(document).ready(function() {
+            // Initialize Stripe
+            initializeStripe();
+            
+            // Check if user is authenticated
+            const isAuthenticated = {{ Auth::check() ? 'true' : 'false' }};
+            
+            // Check if there's a pending consultation after page refresh
+            if (isAuthenticated && window.pendingConsultation) {
+                // Find the button with the stored consultation data
+                const button = $(`.book-consult-btn[data-consultation-id="${window.pendingConsultation.id}"]`);
+                if (button.length) {
+                    // Show payment modal automatically
+                    setTimeout(() => {
+                        showPaymentModal(button);
+                    }, 500); // Small delay to ensure page is fully loaded
+                }
+                // Clear the pending consultation
+                delete window.pendingConsultation;
+            }
+            
+            // Handle book consult button clicks
+            $('.book-consult-btn').on('click', function(e) {
+                e.preventDefault();
+                
+                if (!isAuthenticated) {
+                    // Store current page URL to return after login
+                    sessionStorage.setItem('returnToConsultationPage', window.location.href);
+                    
+                    // Initialize signup modal content before showing
+                    initializeSignupModal();
+                    // Show login/signup modal
+                    $('#signupModalathlete').modal('show');
+                    // Store consultation data for after login
+                    window.pendingConsultation = {
+                        id: $(this).data('consultation-id'),
+                        price: $(this).data('consultation-price'),
+                        time: $(this).data('consultation-time'),
+                        content: $(this).data('consultation-content')
+                    };
+                    return;
+                }
+                
+                // User is authenticated, show payment modal
+                showPaymentModal($(this));
+            });
+            
+            // Handle payment button click
+            $('#payConsultationBtn').on('click', function(e) {
+                e.preventDefault();
+                processConsultationPayment();
+            });
+            
+                         // Handle book time button click in congrats modal
+             $('#book-time-btn').on('click', function(e) {
+                 e.preventDefault();
+                 resetConsultationFlow(this);
+             });
+             
+             // Handle manual closing of congrats modal (X button or clicking outside)
+             $('#congratsModalConsultation').on('hidden.bs.modal', function() {
+                 // Remove any existing coming soon tooltip when modal is closed manually
+                 const existingTooltip = document.querySelector('.coming-soon-tooltip');
+                 if (existingTooltip) {
+                     existingTooltip.remove();
+                 }
+             });
+            
+            // Handle successful login/signup (this will be called from single-signup.js)
+            window.onConsultationLoginSuccess = function() {
+                if (window.pendingConsultation) {
+                    // Find the button with the stored consultation data
+                    const button = $(`.book-consult-btn[data-consultation-id="${window.pendingConsultation.id}"]`);
+                    if (button.length) {
+                        showPaymentModal(button);
+                    }
+                    delete window.pendingConsultation;
+                }
+                
+                // Clear the stored return URL
+                sessionStorage.removeItem('returnToConsultationPage');
+            };
+        });
+
+        // Initialize Stripe Elements
+        function initializeStripe() {
+            // Initialize Stripe with your publishable key
+            stripe = Stripe('{{ config("services.stripe.key") }}');
+            
+            // Create card elements
+            elements = stripe.elements();
+            
+            // Create card number element
+            cardNumberElement = elements.create('cardNumber', {
+                style: {
+                    base: {
+                        fontSize: '16px',
+                        color: '#424770',
+                        '::placeholder': {
+                            color: '#aab7c4',
+                        },
+                    },
+                    invalid: {
+                        color: '#9e2146',
+                    },
+                },
+            });
+            
+            // Create card expiry element
+            cardExpiryElement = elements.create('cardExpiry', {
+                style: {
+                    base: {
+                        fontSize: '16px',
+                        color: '#424770',
+                        '::placeholder': {
+                            color: '#aab7c4',
+                        },
+                    },
+                    invalid: {
+                        color: '#9e2146',
+                    },
+                },
+            });
+            
+            // Create card CVC element
+            cardCvcElement = elements.create('cardCvc', {
+                style: {
+                    base: {
+                        fontSize: '16px',
+                        color: '#424770',
+                        '::placeholder': {
+                            color: '#aab7c4',
+                        },
+                    },
+                    invalid: {
+                        color: '#9e2146',
+                    },
+                },
+            });
+            
+            // Mount elements when payment modal is shown
+            $('#paymentModal').on('shown.bs.modal', function() {
+                mountStripeElements();
+            });
+        }
+
+        // Mount Stripe Elements
+        function mountStripeElements() {
+            // Unmount existing elements if any
+            if (cardNumberElement) {
+                cardNumberElement.unmount();
+                cardExpiryElement.unmount();
+                cardCvcElement.unmount();
+            }
+            
+            // Mount elements
+            cardNumberElement.mount('#card-number-element');
+            cardExpiryElement.mount('#card-expiry-element');
+            cardCvcElement.mount('#card-cvc-element');
+            
+            // Reset payment method ID
+            paymentMethodId = null;
+        }
+        
+        // Function to initialize signup modal content
+        function initializeSignupModal() {
+            // Show the signup/login content sections
+            $('.signup-login-h2-title').removeClass('d-none');
+            $('.signup-login-h2-img').removeClass('d-none');
+            
+            // Hide quiz-specific content
+            $('.quiz-h2-title').addClass('d-none');
+            $('.quiz-h2-img').addClass('d-none');
+            
+            // Reset to step 1
+            showStep(1);
+            
+            // Clear any previous form data
+            $('#mobile_number').val('');
+            $('#firstname').val('');
+            $('#email').val('');
+            $('input[name="userType"]').prop('checked', false);
+            $('input[name="ageGroup"]').prop('checked', false);
+            $('#sportstype').val('');
+            
+            // Remove selected classes
+            $('.user-type-box').removeClass('selected');
+            $('.age-box').removeClass('selected');
+            
+            // Hide age groups and sports selection by default
+            $('#age-groups-id').addClass('d-none');
+            $('#select-sports-id').addClass('d-none');
+        }
+        
+        function showPaymentModal(button) {
+            const consultationId = button.data('consultation-id');
+            const consultationPrice = button.data('consultation-price');
+            const consultationTime = button.data('consultation-time');
+            const consultationContent = button.data('consultation-content');
+            
+            // Update modal content with consultation details
+            $('#consultation-description').text(`${consultationTime} min One on One, online Nutrition Consultation`);
+            $('#consultation-price').text(`A$${consultationPrice}.`);
+            $('#pay-button-price').text(consultationPrice);
+            $('#consultation-id').val(consultationId);
+            $('#consultation-final-price').val(consultationPrice);
+            $('#consultation-final-price').attr('data-original-price', consultationPrice);
+            $('#user-email').text('{{ Auth::user()->email ?? "" }}');
+            
+            // Reset coupon section
+            $('#coupon-details-consultation').addClass('d-none');
+            $('#toggle-coupon-consultation').text('Add a Coupon Code');
+            $('#promo-code-consultation').val('');
+            $('#discount-consultation').val('');
+            $('#promo-message-consultation').text('').removeClass('text-success text-danger');
+            
+            // Show/hide payment form based on price
+            if (parseFloat(consultationPrice) <= 0) {
+                // Free consultation - hide payment form
+                $('#consultation-payment-form .form-wrap').addClass('d-none');
+                $('#payConsultationBtn').text('Get Free Consultation');
+            } else {
+                // Paid consultation - show payment form
+                $('#consultation-payment-form .form-wrap').removeClass('d-none');
+                $('#payConsultationBtn').html('Pay | $<span id="pay-button-price">' + consultationPrice + '</span>');
+            }
+            
+            // Show the payment modal
+            $('#paymentModal').modal('show');
+        }
+        
+        function processConsultationPayment() {
+            const consultationId = $('#consultation-id').val();
+            const price = $('#consultation-final-price').val();
+            const email = $('#user-email').text();
+            const couponCode = $('#promo-code-consultation').val().trim();
+            const cardHolderName = $('#card-holder-name').val();
+            
+            // Disable button to prevent double submission
+            $('#payConsultationBtn').prop('disabled', true).text('Processing...');
+            
+            // Check if this is a free consultation (price is 0 or less)
+            if (parseFloat(price) <= 0) {
+                // Free consultation - no payment required, skip payment method validation
+                processFreeConsultation();
+                return;
+            }
+            
+            // For paid consultations, validate card holder name
+            if (!cardHolderName.trim()) {
+                alert('Please enter the name on card.');
+                $('#payConsultationBtn').prop('disabled', false).html('Pay | $<span id="pay-button-price">' + price + '</span>');
+                return;
+            }
+            
+            // Create payment method with Stripe for paid consultations
+            stripe.createPaymentMethod({
+                type: 'card',
+                card: cardNumberElement,
+                billing_details: {
+                    name: cardHolderName,
+                    email: email
+                }
+            }).then(function(result) {
+                if (result.error) {
+                    // Handle payment method creation error
+                    $('#payConsultationBtn').prop('disabled', false).html('Pay | $<span id="pay-button-price">' + price + '</span>');
+                    alert('Payment method error: ' + result.error.message);
+                } else {
+                    // Payment method created successfully
+                    paymentMethodId = result.paymentMethod.id;
+                    
+                    // Send payment to server
+                    sendConsultationRequest();
+                }
+            });
+        }
+        
+        // Process free consultation
+        function processFreeConsultation() {
+            const consultationId = $('#consultation-id').val();
+            const price = $('#consultation-final-price').val();
+            const email = $('#user-email').text();
+            const couponCode = $('#promo-code-consultation').val().trim();
+            const cardHolderName = $('#card-holder-name').val() || '{{ Auth::user()->name ?? "" }}';
+            
+            sendConsultationRequest();
+        }
+        
+        // Send consultation request to server
+        function sendConsultationRequest() {
+            const consultationId = $('#consultation-id').val();
+            const price = $('#consultation-final-price').val();
+            const email = $('#user-email').text();
+            const couponCode = $('#promo-code-consultation').val().trim();
+            const cardHolderName = $('#card-holder-name').val() || '{{ Auth::user()->name ?? "" }}';
+            
+            $.ajax({
+                url: '{{ route("front.consultation.book") }}',
+                method: 'POST',
+                data: {
+                    consultation_id: consultationId,
+                    price: price,
+                    name: cardHolderName,
+                    email: email,
+                    phone: '{{ Auth::user()->phone ?? "" }}',
+                    coupon_code: couponCode,
+                    payment_method_id: paymentMethodId,
+                    _token: '{{ csrf_token() }}'
+                },
+                success: function(response) {
+                    if (response.success) {
+                        // Hide payment modal
+                        $('#paymentModal').modal('hide');
+                        // Show congrats modal
+                        $('#congratsModalConsultation').modal('show');
+                    } else if (response.requires_action) {
+                        // Handle 3D Secure authentication
+                        stripe.handleCardAction(response.payment_intent_client_secret).then(function(result) {
+                            if (result.error) {
+                                $('#payConsultationBtn').prop('disabled', false).html('Pay | $<span id="pay-button-price">' + price + '</span>');
+                                alert('Payment failed: ' + result.error.message);
+                            } else {
+                                // Payment succeeded after 3D Secure
+                                $('#paymentModal').modal('hide');
+                                $('#congratsModalConsultation').modal('show');
+                            }
+                        });
+                    } else {
+                        alert(response.message || 'An error occurred while booking the consultation.');
+                        $('#payConsultationBtn').prop('disabled', false).html('Pay | $<span id="pay-button-price">' + price + '</span>');
+                    }
+                },
+                                 error: function(xhr) {
+                     const response = xhr.responseJSON;
+                     if (response && response.requires_auth) {
+                         // User needs to login
+                         $('#paymentModal').modal('hide');
+                         $('#signupModalathlete').modal('show');
+                     } else {
+                         // Show more informative error message
+                         let errorMessage = 'An error occurred while booking the consultation. Please try again.';
+                         if (response && response.message) {
+                             errorMessage = response.message;
+                         }
+                         
+                         // Show error in a more user-friendly way
+                         if (parseFloat(price) > 0) {
+                             alert('Payment was processed but consultation booking failed. Your payment will be refunded automatically. Please try booking again.');
+                         } else {
+                             alert(errorMessage);
+                         }
+                         
+                         $('#payConsultationBtn').prop('disabled', false).html('Pay | $<span id="pay-button-price">' + price + '</span>');
+                     }
+                 }
+            });
+        }
+    </script>
 @endpush

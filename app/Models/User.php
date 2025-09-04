@@ -138,6 +138,11 @@ class User extends Authenticatable
         return $this->hasMany(UserPrePlan::class);
     }
 
+    public function consultations()
+    {
+        return $this->hasMany(UserConsultation::class);
+    }
+
     /**
      * Get the sport game associated with the user
      */

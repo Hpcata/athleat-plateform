@@ -40,4 +40,9 @@ class Consultation extends Model
         'time' => 'integer',
         'show_on_consultation_page' => 'boolean'
     ];
+
+    public function users()
+    {
+        return $this->hasMany(UserConsultation::class);
+    }
 }
