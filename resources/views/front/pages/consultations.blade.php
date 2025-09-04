@@ -1134,12 +1134,14 @@
                     // Show login/signup modal
                     $('#signupModalathlete').modal('show');
                     // Store consultation data for after login
-                    window.pendingConsultation = {
+                    const consultationData = {
                         id: $(this).data('consultation-id'),
                         price: $(this).data('consultation-price'),
                         time: $(this).data('consultation-time'),
                         content: $(this).data('consultation-content')
                     };
+                    sessionStorage.setItem('pendingConsultation', JSON.stringify(consultationData));
+                    window.pendingConsultation = consultationData;
                     return;
                 }
                 
@@ -1163,17 +1165,27 @@
             const isAuthenticated = {{ Auth::check() ? 'true' : 'false' }};
             
             // Check if there's a pending consultation after page refresh
-            if (isAuthenticated && window.pendingConsultation) {
-                // Find the button with the stored consultation data
-                const button = $(`.book-consult-btn[data-consultation-id="${window.pendingConsultation.id}"]`);
-                if (button.length) {
-                    // Show payment modal automatically
-                    setTimeout(() => {
-                        showPaymentModal(button);
-                    }, 500); // Small delay to ensure page is fully loaded
+            const pendingConsultationData = sessionStorage.getItem('pendingConsultation');
+            if (isAuthenticated && pendingConsultationData) {
+                try {
+                    const consultationData = JSON.parse(pendingConsultationData);
+                    // Find the button with the stored consultation data
+                    const button = $(`.book-consult-btn[data-consultation-id="${consultationData.id}"]`);
+                    if (button.length) {
+                        // Show payment modal automatically
+                        setTimeout(() => {
+                            showPaymentModal(button);
+                        }, 500); // Small delay to ensure page is fully loaded
+                    }
+                    // Clear the pending consultation
+                    sessionStorage.removeItem('pendingConsultation');
+                    if (window.pendingConsultation) {
+                        delete window.pendingConsultation;
+                    }
+                } catch (e) {
+                    console.error('Error parsing pending consultation data:', e);
+                    sessionStorage.removeItem('pendingConsultation');
                 }
-                // Clear the pending consultation
-                delete window.pendingConsultation;
             }
             
             // Handle book consult button clicks
@@ -1183,18 +1195,22 @@
                 if (!isAuthenticated) {
                     // Store current page URL to return after login
                     sessionStorage.setItem('returnToConsultationPage', window.location.href);
+                    // Mark that this login was triggered by consultation booking
+                    sessionStorage.setItem('loginTriggeredByConsultation', 'true');
                     
                     // Initialize signup modal content before showing
                     initializeSignupModal();
                     // Show login/signup modal
                     $('#signupModalathlete').modal('show');
                     // Store consultation data for after login
-                    window.pendingConsultation = {
+                    const consultationData = {
                         id: $(this).data('consultation-id'),
                         price: $(this).data('consultation-price'),
                         time: $(this).data('consultation-time'),
                         content: $(this).data('consultation-content')
                     };
+                    sessionStorage.setItem('pendingConsultation', JSON.stringify(consultationData));
+                    window.pendingConsultation = consultationData;
                     return;
                 }
                 
@@ -1225,13 +1241,23 @@
             
             // Handle successful login/signup (this will be called from single-signup.js)
             window.onConsultationLoginSuccess = function() {
-                if (window.pendingConsultation) {
-                    // Find the button with the stored consultation data
-                    const button = $(`.book-consult-btn[data-consultation-id="${window.pendingConsultation.id}"]`);
-                    if (button.length) {
-                        showPaymentModal(button);
+                const pendingConsultationData = sessionStorage.getItem('pendingConsultation');
+                if (pendingConsultationData) {
+                    try {
+                        const consultationData = JSON.parse(pendingConsultationData);
+                        // Find the button with the stored consultation data
+                        const button = $(`.book-consult-btn[data-consultation-id="${consultationData.id}"]`);
+                        if (button.length) {
+                            showPaymentModal(button);
+                        }
+                        sessionStorage.removeItem('pendingConsultation');
+                        if (window.pendingConsultation) {
+                            delete window.pendingConsultation;
+                        }
+                    } catch (e) {
+                        console.error('Error parsing pending consultation data:', e);
+                        sessionStorage.removeItem('pendingConsultation');
                     }
-                    delete window.pendingConsultation;
                 }
                 
                 // Clear the stored return URL

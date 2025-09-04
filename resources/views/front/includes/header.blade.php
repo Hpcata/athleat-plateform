@@ -374,7 +374,17 @@ $auth = auth()->guard('web')->check();
         }
     }
 
+    // Global function to clear consultation login flag
+    window.clearConsultationLoginFlag = function() {
+        sessionStorage.removeItem('loginTriggeredByConsultation');
+    };
+
     function openSingupFreePopup(isLogin = false, isQuiz = false) {
+        // Clear consultation login flag since this is not triggered by consultation booking
+        if (typeof window.clearConsultationLoginFlag === 'function') {
+            window.clearConsultationLoginFlag();
+        }
+        
         if (isQuiz) {
             $('#signupModalathlete .signup-login-h2-title').addClass('d-none');
             $('#signupModalathlete .quiz-h2-title').removeClass('d-none');

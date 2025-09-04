@@ -212,6 +212,8 @@ function verifyOtp() {
                     // Check if there's a pending consultation
                     setTimeout(() => {
                         if (window.pendingConsultation) {
+                            // Store consultation data in sessionStorage before reload
+                            sessionStorage.setItem('pendingConsultation', JSON.stringify(window.pendingConsultation));
                             // Close the signup modal
                             const signupModal = bootstrap.Modal.getInstance(document.getElementById('signupModalathlete'));
                             if (signupModal) {
@@ -222,11 +224,15 @@ function verifyOtp() {
                         } else {
                             // Check if user should return to consultation page
                             const returnToConsultationPage = sessionStorage.getItem('returnToConsultationPage');
-                            if (returnToConsultationPage) {
+                            const loginTriggeredByConsultation = sessionStorage.getItem('loginTriggeredByConsultation');
+                            
+                            if (returnToConsultationPage && loginTriggeredByConsultation === 'true') {
+                                // Login was triggered by consultation booking - return to consultation page
                                 window.location.href = returnToConsultationPage;
                                 sessionStorage.removeItem('returnToConsultationPage');
+                                sessionStorage.removeItem('loginTriggeredByConsultation');
                             } else {
-                                // Redirect to profile landing page
+                                // Login was triggered by other buttons/links - redirect to profile landing page
                                 if (data.redirectUrl) {
                                     window.location.href = data.redirectUrl;
                                 } else {
@@ -373,6 +379,8 @@ function completeRegistration() {
                     if (data.user && data.user.id) {
                         // Check if there's a pending consultation
                         if (window.pendingConsultation) {
+                            // Store consultation data in sessionStorage before reload
+                            sessionStorage.setItem('pendingConsultation', JSON.stringify(window.pendingConsultation));
                             // Close the signup modal
                             const signupModal = bootstrap.Modal.getInstance(document.getElementById('signupModalathlete'));
                             if (signupModal) {
@@ -383,12 +391,20 @@ function completeRegistration() {
                         } else {
                             // Check if user should return to consultation page
                             const returnToConsultationPage = sessionStorage.getItem('returnToConsultationPage');
-                            if (returnToConsultationPage) {
+                            const loginTriggeredByConsultation = sessionStorage.getItem('loginTriggeredByConsultation');
+                            
+                            if (returnToConsultationPage && loginTriggeredByConsultation === 'true') {
+                                // Login was triggered by consultation booking - return to consultation page
                                 window.location.href = returnToConsultationPage;
                                 sessionStorage.removeItem('returnToConsultationPage');
+                                sessionStorage.removeItem('loginTriggeredByConsultation');
                             } else {
-                                // Use the redirect URL from the API response
-                                window.location.href = data.redirectUrl;
+                                // Login was triggered by other buttons/links - redirect to profile landing page
+                                if (data.redirectUrl) {
+                                    window.location.href = data.redirectUrl;
+                                } else {
+                                    window.location.href = "/404";
+                                }
                             }
                         }
                     } else {
