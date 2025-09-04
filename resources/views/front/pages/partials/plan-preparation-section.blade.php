@@ -1,6 +1,6 @@
 <section class="challenges">
     <div class="section-header">
-        <h2>My Nutrition Plan</h2>
+        <h2>My Plans</h2>
     </div>
     <div class="slider-container">
         <div class="challenge-cards horizontal-scroll" style="overflow-x:auto;scroll-behavior:smooth; position:relative;">

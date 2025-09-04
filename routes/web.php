@@ -47,8 +47,8 @@ use App\Http\Controllers\Admin\SportGameController;
 
 Route::get('/check-auth', function () {
     return response()->json([
-        'authenticated' => \Auth::check(),
-        'user' => \Auth::user()
+        'authenticated' => \Illuminate\Support\Facades\Auth::check(),
+        'user' => \Illuminate\Support\Facades\Auth::user()
     ]);
 });
 
