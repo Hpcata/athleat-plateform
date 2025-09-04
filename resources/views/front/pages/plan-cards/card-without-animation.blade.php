@@ -19,11 +19,14 @@
 
                 <div class="consult-user-row" style="margin-top: 15px;">
                     <img src="{{ asset('front/images/circled-meal-1.svg') }}" class="consult-avatar"
-                        alt="Kerry O'Bryan, expert coach avatar" />
+                        alt="meal image" />
                     <img src="{{ asset('front/images/circled-meal-2.svg') }}" class="consult-avatar overlap1"
-                        alt="Kerry O'Bryan, expert coach avatar" />
+                        alt="meal image" />
+                    <img src="{{ asset('front/images/circled-meal-3.svg') }}" class="consult-avatar overlap2"
+                        alt="meal image" />
 
-                    <span>21 meals • 18 Nutrition tips</span>
+
+                    <span style="padding-left: 0px;">21 meals • 18 Nutrition tips</span>
                 </div>
                 <a href="{{ route('front.profile', ['id' => $userPlan->user_id, 'payment_id' => $payment->id]) }}" class="btn-learn-more" style="text-decoration: none;">View plan</a>
             </div>

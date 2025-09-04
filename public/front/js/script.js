@@ -516,33 +516,32 @@ function updateCountdown() {
 setInterval(updateCountdown, 60000); // Update every minute
 
  // Target all horizontal scroll containers
-$(document).ready(function() {
+// $(document).ready(function() {
    
-    $('.challenge-cards, .challenges .challenge-cards, .surfing-videos .video-grid, .training-plan .meal-cards, .consults-plans-grid').each(function() {
-        var $el = $(this);
-        var scrollTimeout;
-        $el.on('scroll', function() {
-            $el.addClass('show-scrollbar');
-            clearTimeout(scrollTimeout);
-            scrollTimeout = setTimeout(function() {
-                $el.removeClass('show-scrollbar');
-            }, 700); // Hide after 700ms of no scroll
-        });
-    });
+//     $('.challenge-cards, .challenges .challenge-cards, .surfing-videos .video-grid, .training-plan .meal-cards, .consults-plans-grid').each(function() {
+//         var $el = $(this);
+//         var scrollTimeout;
+//         $el.on('scroll', function() {
+//             $el.addClass('show-scrollbar');
+//             clearTimeout(scrollTimeout);
+//             scrollTimeout = setTimeout(function() {
+//                 $el.removeClass('show-scrollbar');
+//             }, 700); 
+//         });
+//     });
 
-    // Tiny-Slider initialization for #meal-cards-wrapper
-    var mealCardsSlider = tns({
-        container: '#meal-cards-wrapper',
-        items: 1,
-        slideBy: 'page',
-        autoplay: false,
-        mouseDrag: true,
-        controls: true,
-        nav: false,
-        responsive: {
-            640: { items: 2 },
-            768: { items: 3 },
-            1024: { items: 4 }
-        }
-    });
-});
+//     var mealCardsSlider = tns({
+//         container: '#meal-cards-wrapper',
+//         items: 1,
+//         slideBy: 'page',
+//         autoplay: false,
+//         mouseDrag: true,
+//         controls: true,
+//         nav: false,
+//         responsive: {
+//             640: { items: 2 },
+//             768: { items: 3 },
+//             1024: { items: 4 }
+//         }
+//     });
+// });
