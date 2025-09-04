@@ -11,7 +11,7 @@
     <main class="main">
         <div class="container">
             <!-- Resources and Tools -->
-            <section class="resources" style="margin-top: 56px">
+            <section class="resources myplans-section">
                 <div class="section-header">
                     <h2>My Plans</h2>
                 </div>

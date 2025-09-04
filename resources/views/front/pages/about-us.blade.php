@@ -21,7 +21,7 @@
                     </div>
                 </div>
             @endif
-            <div class="container-homepage">
+            <div class="container-homepage about-us">
                 @if($section->section_type == \App\Models\Section::TYPE_ATHLETE_NUTRITION_FOCUS && $section->enabled == 1) <!-- done -->
                     @php
                         $bannerImage = '';
