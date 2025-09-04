@@ -145,17 +145,12 @@
 
                                                     <!-- Selected Meals and Swap Items -->
                                                     <div class="selected-meals mt-3" id="selectedMeals{{$plan->id}}_{{$mealTime->id}}" style="display: none;">
-                                                        <!-- <h6 class="fw-bold">Selected Meals and Swap Items:</h6> -->
                                                         <ul class="list-group"></ul>
                                                     </div>
                                                 </div>
                                             </li>
                                             @endforeach
                                         </ul>
-
-                                        <!-- <div class="nutrition-details">
-                                            <p style="font-size: 16px; color:grey;"><strong>Plan Total: Energy: <span class="planTotalEnergy" id="allEnergyTotal">0.0kJ</span> | Protein: <span class="planTotalProtein" id="allProteinTotal">0.0g</span> | Carb: <span class="planTotalCarbs" id="allCarbsTotal">0.0g</span> | Fat: <span class="PlanTotalFat" id="allFatTotal">0.0g</span></strong></p>
-                                        </div> -->
                                     </div>
                                 </div>
                             </div>
@@ -179,20 +174,18 @@
 
                                     @foreach($foodPreferences as $mainQuestion => $subGroups)
                                         <h5 class="mt-4">{{ $mainQuestion }}</h5> {{-- Main category/question --}}
-
                                         @php
                                             $hasRenderedFlat = false; // Flag to skip repeated rendering of flat foods
                                         @endphp
 
                                         @foreach($subGroups as $subQuestion => $answers)
                                             @if(!empty($answers) && collect($answers)->filter()->count())
-
                                                 @if (!is_numeric($subQuestion))
                                                     {{-- Normal sub-question --}}
                                                     @if($mainQuestion == 'Cuisines')
-                                                    <h6 class="mt-3 text-muted">{{ ucFirst($subQuestion) }}</h6>
+                                                        <h6 class="mt-3 text-muted">{{ ucFirst($subQuestion) }}</h6>
                                                     @else
-                                                    <h6 class="mt-3 text-muted">{{ $subQuestion }}</h6>
+                                                        <h6 class="mt-3 text-muted">{{ $subQuestion }}</h6>
                                                     @endif
                                                     <div class="row" id="category-row-{{ Str::slug($subQuestion) }}">
                                                         @php
@@ -268,7 +261,6 @@
                                                         @endforeach
                                                     </div>
                                                 @endif
-
                                             @endif
                                         @endforeach
                                     @endforeach
@@ -280,14 +272,9 @@
                     </div>
                     <!-- Submit Button -->
                     <div class="mt-4">
-                        <!-- <button type="submit" class="btn btn-primary">Create</button> -->
                         <button type="submit" class="btn btn-primary" name="action" value="save">Save</button>
                         <button type="submit" class="btn btn-success" name="action" value="save_exit">Save & Exit</button>
-                         <!-- Button to view user profile (with user_id as data attribute) -->
-                        <!-- <button type="button" class="btn btn-success view-user-profile" data-user-id="{{ $payment->user_id }}">View User Profile</button> -->
-                        <a href="{{ route('front.profile', ['id' => $payment->user_id, 'admin_view' => 1]) }}"
-                            target="_blank" class="btn btn-success" >View User Profile
-                        </a>
+                        <a href="{{ route('front.profile', ['id' => $payment->user_id, 'payment_id' => $payment->id, 'admin_view' => 1]) }}" target="_blank" class="btn btn-success" >View User Profile</a>
                     </div>
                 </form>
                 </div>

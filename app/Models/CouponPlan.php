@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class CouponUsage extends Model
+class CouponPlan extends Model
 {
     use HasFactory;
 
