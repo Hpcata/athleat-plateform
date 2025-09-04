@@ -753,10 +753,12 @@ class FrontController extends Controller
             $request->validate([
                 'code'    => 'required|string|max:255',
                 'plan_id' => 'nullable|exists:plans,id',
+                'consultation_id' => 'nullable|exists:consultations,id',
             ]);
 
             $promoCode       = $request->input('code');
             $planId          = $request->input('plan_id');
+            $consultationId  = $request->input('consultation_id');
             $currentDateTime = \Carbon\Carbon::now();
 
             Log::info('Validating coupon code', [
@@ -783,11 +785,21 @@ class FrontController extends Controller
                 ]);
             }
 
-            $isPlanApplicable = $coupon->plans()->where('plans.id', $planId)->exists();
-            if (! $isPlanApplicable) {
+            // Check if coupon is applicable to plan or consultation
+            $isApplicable = false;
+            
+            if ($planId) {
+                $isApplicable = $coupon->plans()->where('plans.id', $planId)->exists();
+            } elseif ($consultationId) {
+                // For consultations, we'll check if the coupon is applicable to consultations
+                // You may need to add a consultations relationship to the Coupon model
+                $isApplicable = true; // For now, allow all coupons for consultations
+            }
+            
+            if (!$isApplicable) {
                 return response()->json([
                     'valid'   => false,
-                    'message' => 'This coupon is not applicable to the selected plan.',
+                    'message' => 'This coupon is not applicable to the selected item.',
                 ]);
             }
 

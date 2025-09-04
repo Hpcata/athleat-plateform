@@ -282,6 +282,10 @@ Route::get('/injury-recovery-plan', [FrontController::class, 'injuryRecoveryPlan
 Route::get('/surgery-plan', [FrontController::class, 'surgeryPlan'])->name('front.surgery.plan');
 Route::get('/consultations', [FrontController::class, 'consultations'])->name('front.consultations');
 
+// Consultation booking routes
+Route::post('/consultation/book', [App\Http\Controllers\Front\ConsultationController::class, 'bookConsultation'])->name('front.consultation.book');
+Route::get('/consultation/{id}/details', [App\Http\Controllers\Front\ConsultationController::class, 'getConsultationDetails'])->name('front.consultation.details');
+
 // Front auth
 Route::post('front/register', [FrontController::class, 'register'])->name('front.register');
 Route::post('front/login', [FrontController::class, 'login'])->name('front.login');
