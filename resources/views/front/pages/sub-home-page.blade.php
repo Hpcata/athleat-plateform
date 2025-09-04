@@ -1078,24 +1078,24 @@
 
         document.addEventListener("DOMContentLoaded", function () {
             const purchaseModal = document.getElementById('purchaseModal');
+            if (purchaseModal) {
+                purchaseModal.addEventListener('hidden.bs.modal', function () {
+                    // Reset the form inside the modal
+                    document.getElementById('payment-form').reset();
 
-            purchaseModal.addEventListener('hidden.bs.modal', function () {
-                // Reset the form inside the modal
-                document.getElementById('payment-form').reset();
+                    // Reset Stripe card element (if applicable)
+                    if (typeof stripe !== "undefined" && typeof card !== "undefined") {
+                        card.clear();
+                    }
 
-                // Reset Stripe card element (if applicable)
-                if (typeof stripe !== "undefined" && typeof card !== "undefined") {
-                    card.clear();
-                }
-
-                // Clear any validation messages or applied promo codes
-                document.getElementById('promo-message').textContent = "";
-                document.getElementById('discount').value = "";
-                document.getElementById('coupon-details').classList.add('d-none'); // Hide coupon details
-                document.getElementById('toggle-coupon-link').classList.remove('active'); // Reset link style
-                document.getElementById('payment-details').style.removeProperty('display');
-
-            });
+                    // Clear any validation messages or applied promo codes
+                    document.getElementById('promo-message').textContent = "";
+                    document.getElementById('discount').value = "";
+                    document.getElementById('coupon-details').classList.add('d-none'); // Hide coupon details
+                    document.getElementById('toggle-coupon-link').classList.remove('active'); // Reset link style
+                    document.getElementById('payment-details').style.removeProperty('display');
+                });
+            }
         });
 
         $('#registerModal').on('hidden.bs.modal', function () {

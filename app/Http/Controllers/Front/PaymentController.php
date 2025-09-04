@@ -262,6 +262,24 @@ class PaymentController extends Controller
                 $user->save();
             }
 
+            // 🔹 Ensure entry in user_plans if questionnaire already complete
+            $hasCompletedQuestionnaire = DB::table('user_pre_plans')
+                ->where('user_id', $user->id)
+                ->where('is_complete', 1)
+                ->exists();
+
+            if ($hasCompletedQuestionnaire) {
+                DB::table('user_plans')->updateOrInsert(
+                    ['user_id' => $user->id, 'plan_id' => $validated['plan_id']],
+                    [
+                        'status'      => 'created',
+                        'modified_by' => auth()->id(),
+                        'updated_at'  => now(),
+                        'created_at'  => now(),
+                    ]
+                );
+            }
+
             DB::commit();
             Log::debug('Payment processed successfully.', ['payment_id' => $paymentId]);
 
@@ -460,11 +478,23 @@ class PaymentController extends Controller
                     ->where('id', $prePlanId)
                     ->update(['is_complete' => 1]);
 
-                // Add blank entry into user_plans table
-                DB::table('user_plans')->updateOrInsert(
-                    ['user_id' => $user->id, 'plan_id' => $payment->plan_id],
-                    ['status' => 'created', 'modified_by' => auth()->id(), 'updated_at' => now(), 'created_at' => now()]
-                );
+                // ✅ Sync ALL past paid plans into user_plans
+                $allPayments = DB::table('payments')
+                    ->where('user_id', $user->id)
+                    ->where('status', '!=', 'failed') // only successful payments
+                    ->get();
+
+                foreach ($allPayments as $pay) {
+                    DB::table('user_plans')->updateOrInsert(
+                        ['user_id' => $user->id, 'plan_id' => $pay->plan_id],
+                        [
+                            'status'      => 'created',
+                            'modified_by' => auth()->id(),
+                            'updated_at'  => now(),
+                            'created_at'  => now(),
+                        ]
+                    );
+                }
 
                 // Log the user in after questionnaire completion
                 Auth::guard('web')->login($user);

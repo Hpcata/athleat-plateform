@@ -194,16 +194,12 @@
 
                                                         <!-- Selected Meals and Swap Items -->
                                                         <div class="selected-meals mt-3" id="selectedMeals{{$plan->id}}_{{$mealTime->id}}" style="display: none;">
-                                                            <!-- <h6 class="fw-bold">Selected Meals and Foods:</h6> -->
                                                             <ul class="list-group"></ul>
                                                         </div>
                                                     </div>
                                                 </li>
                                                 @endforeach
                                             </ul>
-                                            <!-- <div class="nutrition-details">
-                                                <p style="font-size: 16px; color:grey;"><strong>Plan Total: Energy: <span class="planTotalEnergy" id="allEnergyTotal">{{ $totalEnergy }}kJ</span> | Protein: <span class="planTotalProtein" id="allProteinTotal">{{ $totalProtein }}g</span> | Carb: <span class="planTotalCarbs" id="allCarbsTotal">{{ $totalCarbs }}g</span> | Fat: <span class="PlanTotalFat" id="allFatTotal">{{ $totalFat }}g</span></strong></p>
-                                            </div> -->
                                         </div>
                                     </div>
                                 </div>
@@ -334,16 +330,13 @@
                             $firstUserPlan = $userPlans->first(); // Get the first record
                             $isMailSent = ($firstUserPlan && $firstUserPlan->is_mail_sent == 1);
                             $mailSentAt = $firstUserPlan ? $firstUserPlan->mail_sent_at : null;
-                            //dd($firstUserPlan);
                         @endphp
 
 
                         <div class="my-5 d-flex flex-wrap flex-md-nowrap gap-3">
                             <button type="submit" class="btn btn-primary">Update</button>
                             <button type="submit" class="btn btn-success" name="action" value="save_exit">Update & Exit</button>
-                            <!-- <button type="button" class="btn btn-success view-user-profile" data-user-id="{{ $payment->user_id }}">View User Profile</button> -->
-                            <a href="{{ route('front.profile', ['id' => $payment->user_id, 'admin_view' => 1]) }}"
-                            target="_blank" class="btn btn-success">
+                            <a href="{{ route('front.profile', ['id' => $payment->user_id, 'payment_id' => $payment->id, 'admin_view' => 1]) }}" target="_blank" class="btn btn-success">
                                 View User Profile
                             </a>
                             <button
@@ -5732,7 +5725,7 @@
                 bsModal.show();
             }
         });
-    });
+    })
 
 </script>
 

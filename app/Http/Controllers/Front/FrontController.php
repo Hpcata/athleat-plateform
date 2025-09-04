@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers\Front;
 
+use App\Constants\AgeGroups;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\QueryRequest;
 use App\Mail\QueryGenerated;
@@ -80,7 +81,7 @@ class FrontController extends Controller
         $testimonials = Testimonial::with('testimonialImage')->where('user_id', $userId)->get();
 
         // Get age groups from constants
-        $ageGroups = \App\Constants\AgeGroups::getAll();
+        $ageGroups = AgeGroups::getAll();
 
         // Get all sports as an alphabetically sorted array
         $sports = SportGame::orderBy('name', 'asc')->get();
@@ -155,7 +156,7 @@ class FrontController extends Controller
         $testimonials = Testimonial::with('testimonialImage')->where('user_id', $userId)->get();
 
         // Get age groups from constants
-        $ageGroups = \App\Constants\AgeGroups::getAll();
+        $ageGroups = AgeGroups::getAll();
 
         // Get all sports as an alphabetically sorted array
         $sports = SportGame::orderBy('name', 'asc')->get();
@@ -549,7 +550,7 @@ class FrontController extends Controller
             'userCategories.userSubCategories.subCategory:id,title',
             'userCategories.userSubCategories.userMeals' => function ($q) use ($userId) {
                 $q->with([
-                    'meal' => function ($mealQuery) use ($userId) {
+                    'meal'           => function ($mealQuery) use ($userId) {
                         $mealQuery->with(['userMealItems' => function ($q2) use ($userId) {
                             $q2->wherePivot('user_id', $userId)
                                 ->select('items.id', 'items.title', 'items.image', 'items.category_id')
@@ -1752,11 +1753,11 @@ class FrontController extends Controller
         ]);
     }
 
-    public function getProfile(Request $request, $userId)
+    public function getProfile(Request $request, $userId, $paymentId = null)
     {
         try {
-            $user    = User::select('id', 'free_user')->find($userId);
-            $payment = Payment::where('user_id', $userId)->first();
+            $user                     = User::select('id', 'free_user')->find($userId);
+            $payment                  = $paymentId ? Payment::where('user_id', $userId)->where('id', $paymentId)->first() : Payment::where('user_id', $userId)->first();
             $isQuestionnaireSubmitted = UserPrePlan::where('user_id', $userId)->where('is_complete', 1)->first();
 
             if (auth()->user() && ! auth()->user()->is_superadmin && auth()->user()?->id != $userId) {
@@ -1767,10 +1768,10 @@ class FrontController extends Controller
                 return redirect()->back()->with('error', 'Plan not purchased.');
             }
 
-            $userPlan = UserPlan::with(['plan'])->where('user_id', $userId)->first();
+            $userPlan = UserPlan::with(['plan'])->where('user_id', $userId)->where('plan_id', $payment->plan_id)->first();
 
             // Also fetch the free_user column from the user table
-            if (!$payment && !$userPlan && $user->free_user) {
+            if (! $payment && ! $userPlan && $user->free_user) {
                 $userPlan                 = new UserPlan();
                 $plans                    = Plan::all();
                 $userPlan->free_user_plan = $plans;
@@ -1867,21 +1868,21 @@ class FrontController extends Controller
 
     public function competitionPlan(Request $request)
     {
-        $page = Page::with('sections')->where('slug', 'competition_plan')->first();
+        $page        = Page::with('sections')->where('slug', 'competition_plan')->first();
         $planDetails = Plan::where('name', 'Competition Plan')->first();
         return view('front.pages.competition_plan', compact('page', 'planDetails'));
     }
 
     public function injuryRecoveryPlan(Request $request)
     {
-        $page = Page::with('sections')->where('slug', 'injury_recovery_nutrition_plan')->first();
+        $page        = Page::with('sections')->where('slug', 'injury_recovery_nutrition_plan')->first();
         $planDetails = Plan::where('name', 'Injury & Recovery Plan')->first();
         return view('front.pages.injury_recovery_plan', compact('page', 'planDetails'));
     }
 
     public function surgeryPlan(Request $request)
     {
-        $page = Page::with('sections')->where('slug', 'surgery_plan')->first();
+        $page        = Page::with('sections')->where('slug', 'surgery_plan')->first();
         $planDetails = Plan::where('name', 'Injury Recovery + Post Surgery')->first();
         return view('front.pages.surgery_plan', compact('page', 'planDetails'));
     }
