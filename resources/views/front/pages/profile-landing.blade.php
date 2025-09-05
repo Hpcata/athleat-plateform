@@ -50,7 +50,7 @@
                     'overlayRoute' => route('front.pre-plan-details', ['id' => $payment->id ?? null, 'user_id' => $payment->user_id ?? null])
                 ])
             @elseif ($waitingPlan)
-                @include('front.pages.partials.plan-preparation-section')
+                @include('front.pages.partials.plan-preparation-section', ['plan' => $payment->plan ?? null])
             @elseif ($showFinalPlan)
                 @include('front.pages.partials.active-plan-section', [
                     'userPlan' => $userPlan ?? null,
