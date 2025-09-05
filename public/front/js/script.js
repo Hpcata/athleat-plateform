@@ -91,47 +91,37 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 }),
-    document.querySelectorAll('a[href^="#"]').forEach((e) => {
-        e.addEventListener("click", function (e) {
-            e.preventDefault();
-            const t = document.querySelector(this.getAttribute("href"));
+document.querySelectorAll('a[href^="#"]').forEach((e) => {
+    e.addEventListener("click", function (e) {
+        e.preventDefault();
+        const href = this.getAttribute("href");
+        if (href && href !== "#" && href.length > 1) {
+            const t = document.querySelector(href);
             t && t.scrollIntoView({ behavior: "smooth", block: "start" });
-        });
-    }),
-    document.querySelectorAll("button").forEach((e) => {
-        e.onclick &&
-            e.onclick.toString().includes("window.open") &&
-            e.addEventListener("click", function () {
-                const e = this.textContent;
-                (this.textContent = "Loading..."),
-                    (this.disabled = !0),
-                    setTimeout(() => {
-                        (this.textContent = e), (this.disabled = !1);
-                    }, 1e3);
-            });
-    }),
-    document.querySelectorAll(".clickable").forEach((e) => {
-        e.addEventListener("mouseenter", function () {
-            this.style.transform = "translateY(-2px)";
-        }),
-            e.addEventListener("mouseleave", function () {
-                this.style.transform = "translateY(0)";
-            });
+        }
     });
-// document.querySelectorAll(".dropdown").forEach((e) => {
-//     let t;
-//     e.addEventListener("mouseenter", function () {
-//         clearTimeout(t);
-//         const e = this.querySelector(".dropdown-content");
-//         (e.style.opacity = "1"), (e.style.visibility = "visible"), (e.style.transform = "translateY(0)");
-//     }),
-//         e.addEventListener("mouseleave", function () {
-//             const e = this.querySelector(".dropdown-content");
-//             t = setTimeout(() => {
-//                 (e.style.opacity = "0"), (e.style.visibility = "hidden"), (e.style.transform = "translateY(-10px)");
-//             }, 100);
-//         });
-// });
+}),
+document.querySelectorAll("button").forEach((e) => {
+    e.onclick &&
+    e.onclick.toString().includes("window.open") &&
+    e.addEventListener("click", function () {
+        const e = this.textContent;
+        (this.textContent = "Loading..."),
+        (this.disabled = !0),
+        setTimeout(() => {
+            (this.textContent = e), (this.disabled = !1);
+        }, 1e3);
+    });
+}),
+document.querySelectorAll(".clickable").forEach((e) => {
+    e.addEventListener("mouseenter", function () {
+        this.style.transform = "translateY(-2px)";
+    }),
+    e.addEventListener("mouseleave", function () {
+        this.style.transform = "translateY(0)";
+    });
+});
+
 const observerOptions = { threshold: 0.1, rootMargin: "0px 0px -50px 0px" },
     observer = new IntersectionObserver((e) => {
         e.forEach((e) => {
@@ -516,33 +506,32 @@ function updateCountdown() {
 setInterval(updateCountdown, 60000); // Update every minute
 
  // Target all horizontal scroll containers
-$(document).ready(function() {
+// $(document).ready(function() {
    
-    $('.challenge-cards, .challenges .challenge-cards, .surfing-videos .video-grid, .training-plan .meal-cards, .consults-plans-grid').each(function() {
-        var $el = $(this);
-        var scrollTimeout;
-        $el.on('scroll', function() {
-            $el.addClass('show-scrollbar');
-            clearTimeout(scrollTimeout);
-            scrollTimeout = setTimeout(function() {
-                $el.removeClass('show-scrollbar');
-            }, 700); // Hide after 700ms of no scroll
-        });
-    });
+//     $('.challenge-cards, .challenges .challenge-cards, .surfing-videos .video-grid, .training-plan .meal-cards, .consults-plans-grid').each(function() {
+//         var $el = $(this);
+//         var scrollTimeout;
+//         $el.on('scroll', function() {
+//             $el.addClass('show-scrollbar');
+//             clearTimeout(scrollTimeout);
+//             scrollTimeout = setTimeout(function() {
+//                 $el.removeClass('show-scrollbar');
+//             }, 700); 
+//         });
+//     });
 
-    // Tiny-Slider initialization for #meal-cards-wrapper
-    var mealCardsSlider = tns({
-        container: '#meal-cards-wrapper',
-        items: 1,
-        slideBy: 'page',
-        autoplay: false,
-        mouseDrag: true,
-        controls: true,
-        nav: false,
-        responsive: {
-            640: { items: 2 },
-            768: { items: 3 },
-            1024: { items: 4 }
-        }
-    });
-});
+//     var mealCardsSlider = tns({
+//         container: '#meal-cards-wrapper',
+//         items: 1,
+//         slideBy: 'page',
+//         autoplay: false,
+//         mouseDrag: true,
+//         controls: true,
+//         nav: false,
+//         responsive: {
+//             640: { items: 2 },
+//             768: { items: 3 },
+//             1024: { items: 4 }
+//         }
+//     });
+// });

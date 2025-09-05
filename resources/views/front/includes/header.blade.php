@@ -214,7 +214,7 @@ $auth = auth()->guard('web')->check();
 
                 <div class="d-flex">
                     @if (Auth::check())
-                        <a href="{{ route('front.profile', ['id' => Auth::guard('web')?->user()?->id]) }}"
+                        <a href="{{ route('front.my-plans') }}"
                             class="btn btn-signup mob-hide">
                             My Account
                         </a>

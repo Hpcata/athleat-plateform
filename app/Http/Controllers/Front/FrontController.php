@@ -1852,7 +1852,65 @@ class FrontController extends Controller
                 return redirect()->route('front.index')->with('error', 'Please login to access your plans.');
             }
 
-            return view('front.pages.profile-my-plans');
+            // Get all payments for the user
+            $payments = Payment::where('user_id', $user->id)->get();
+
+            // Initialize arrays for different plan states
+            $plansWithAnimation = [];
+            $plansWithoutAnimation = [];
+            $notPurchasedPlans = [];
+
+            foreach ($payments as $payment) {
+                // Get the user plan for this payment
+                $userPlan = UserPlan::where('user_id', $user->id)
+                    ->where('plan_id', $payment->plan_id)
+                    ->first();
+
+                // Get the plan details
+                $plan = Plan::find($payment->plan_id);
+
+                if ($plan) {
+                    // Check if user has completed questionnaire (has UserPrePlan record)
+                    $hasCompletedQuestionnaire = UserPrePlan::where('user_id', $user->id)
+                        ->exists();
+
+                    if ($hasCompletedQuestionnaire) {
+                        // Check if admin has sent meals
+                        if ($userPlan && $userPlan->is_mail_sent == 1) {
+                            // Admin has sent meals - show without animation
+                            $plansWithoutAnimation[] = [
+                                'plan' => $plan,
+                                'userPlan' => $userPlan,
+                                'payment' => $payment
+                            ];
+                        } else {
+                            // Admin hasn't sent meals yet - show with animation
+                            $plansWithAnimation[] = [
+                                'plan' => $plan,
+                                'userPlan' => $userPlan,
+                                'payment' => $payment
+                            ];
+                        }
+                    } else {
+                        // User hasn't completed questionnaire - show with animation
+                        $plansWithAnimation[] = [
+                            'plan' => $plan,
+                            'userPlan' => $userPlan,
+                            'payment' => $payment
+                        ];
+                    }
+                }
+            }
+
+            // Get not purchased plans
+            $purchasedPlanIds = $payments->pluck('plan_id')->toArray();
+            $notPurchasedPlans = Plan::whereNotIn('id', $purchasedPlanIds)->get();
+
+            return view('front.pages.profile-my-plans', compact(
+                'plansWithAnimation',
+                'plansWithoutAnimation',
+                'notPurchasedPlans'
+            ));
         } catch (Exception $e) {
             Log::error('Error fetching user plans: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Something went wrong. Please try again later.');

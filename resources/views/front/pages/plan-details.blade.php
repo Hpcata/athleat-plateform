@@ -32,7 +32,7 @@
 
                     <div class="hero-top">
                         <p class="hero-subtitle-plan">{{ isset($sportGameData['sport_image']) ? $sportGameData['sport_name'] : '' }}</p>
-                        <a href="#" class="view-all-link"> View all plans </a>
+                        <a href="{{ route('front.my-plans') }}" class="view-all-link"> View all plans </a>
                     </div>
                 </div>
             </div>

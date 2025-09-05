@@ -33,7 +33,7 @@
 
             @if ($showFreePlan)
                 @include('front.pages.partials.nutrition-plan-section', [
-                    'title' => 'My Nutrition Plan',
+                    'title' => 'My Plans',
                     'actionText' => 'Purchase Plan',
                     'actionRoute' => 'front.my-plans',
                     'showPurchaseOverlay' => true,
@@ -42,7 +42,7 @@
                 ])
             @elseif ($needsQuestionnaire)
                 @include('front.pages.partials.nutrition-plan-section', [
-                    'title' => 'My Nutrition Plan',
+                    'title' => 'My Plans',
                     'actionText' => 'Purchase Plan',
                     'actionRoute' => 'front.my-plans',
                     'showPurchaseOverlay' => true,
@@ -50,7 +50,7 @@
                     'overlayRoute' => route('front.pre-plan-details', ['id' => $payment->id ?? null, 'user_id' => $payment->user_id ?? null])
                 ])
             @elseif ($waitingPlan)
-                @include('front.pages.partials.plan-preparation-section')
+                @include('front.pages.partials.plan-preparation-section', ['plan' => $payment->plan ?? null])
             @elseif ($showFinalPlan)
                 @include('front.pages.partials.active-plan-section', [
                     'userPlan' => $userPlan ?? null,
@@ -236,7 +236,7 @@
                     $mealImage1 = $latestMealImages[0] ?? frontAssets('images/sports-training/fooditem1.webp');
                     $mealImage2 = $latestMealImages[1] ?? frontAssets('images/sports-training/fooditem6.webp');
                 @endphp
-                  <label class="plan-subtitle-mob">Nutrition plans</label>
+                <label class="plan-subtitle-mob">Nutrition plans</label>
                 <div class="consults-plans-grid">
                     <div class="plan-card-custom plan-competition">
                         <div class="">

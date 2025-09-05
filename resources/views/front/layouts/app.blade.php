@@ -116,30 +116,40 @@
 
         $(document).ready(function() {
             let isOpen = false;
+            let isOpening = false; // Flag to prevent immediate closing
 
             function loadCustomDelphi() {
-                $(document).find('#delphi-bubble-trigger').trigger("click");
-                isOpen = true;
+                if (!isOpen && !isOpening) {
+                    isOpening = true;
+                    $(document).find('#delphi-bubble-trigger').trigger("click");
+                    isOpen = true;
+                    // Reset the opening flag after a short delay
+                    setTimeout(function() {
+                        isOpening = false;
+                    }, 100);
+                }
             }
+
             // Handle click event to open Delphi chat
-            $(document).on('click', '.chat-widget, #chat-to-virtual-kez-btn, .start-chat', function() {
+            $(document).on('click', '.chat-widget, #chat-to-virtual-kez-btn, .start-chat, #start-chat-link', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
                 loadCustomDelphi();
             });
 
             document.addEventListener('click', function(event) {
-                if (event.target.closest('.chat-widget')) {
+                // Check if click is from chat-related elements
+                if (event.target.closest('.chat-widget') ||
+                    event.target.closest('.start-chat') ||
+                    event.target.closest('#chat-to-virtual-kez-btn') ||
+                    event.target.closest('#start-chat-link') ||
+                    event.target.closest('#delphi-bubble-trigger') ||
+                    event.target.closest('.delphi-bubble')) {
                     return;
                 }
 
-                if (event.target.closest('.start-chat')) {
-                    return;
-                }
-
-                if (event.target.closest('#chat-to-virtual-kez-btn')) {
-                    return;
-                }
-
-                if (isOpen) {
+                // Only close if it's open and we're not in the process of opening
+                if (isOpen && !isOpening) {
                     $(document).find('#delphi-bubble-trigger').trigger("click");
                     isOpen = false;
                 }
