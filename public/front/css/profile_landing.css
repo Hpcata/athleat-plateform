@@ -4394,4 +4394,7 @@ button:focus,
     .plan-placeholder-container {
     padding: 12px;
 }
+.consultation-card-custom {
+padding: 12px !important;
+}
 }
