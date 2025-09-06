@@ -4391,4 +4391,7 @@ button:focus,
         width: 100%;
         min-width: 100%;
     }
+    .plan-placeholder-container {
+    padding: 12px;
+}
 }

@@ -2485,7 +2485,7 @@
                                     <div class="card h-100 p-2">
                                         <div class="d-flex justify-content-between align-items-center flex-wrap">
                                         <div class="d-flex align-items-center flex-grow-1">
-                                            <input type="checkbox" class="form-check-input me-2 sub-food-checkbox" id="${idSafe}" value="${value}">
+                                            <input type="checkbox" class="form-check-input me-2 mt-0 sub-food-checkbox" id="${idSafe}" value="${value}">
                                             <label class="form-check-label mb-0" for="${idSafe}">${value}</label>
                                         </div>
                                         <div>${img}</div>
