@@ -1129,10 +1129,16 @@
                 const isAuthenticated = {{ Auth::check() ? 'true' : 'false' }};
                 
                 if (!isAuthenticated) {
-                    // Initialize signup modal content before showing
-                    initializeSignupModal();
-                    // Show login/signup modal
-                    $('#signupModalathlete').modal('show');
+                    // Close any existing modals first
+                    $('.modal').modal('hide');
+                    
+                    // Wait for existing modal to close, then show signup modal
+                    setTimeout(() => {
+                        // Initialize signup modal content before showing
+                        window.initializeSignupModal();
+                        // Show login/signup modal
+                        $('#signupModalathlete').modal('show');
+                    }, 300);
                     // Store consultation data for after login
                     const consultationData = {
                         id: $(this).data('consultation-id'),
@@ -1198,10 +1204,16 @@
                     // Mark that this login was triggered by consultation booking
                     sessionStorage.setItem('loginTriggeredByConsultation', 'true');
                     
-                    // Initialize signup modal content before showing
-                    initializeSignupModal();
-                    // Show login/signup modal
-                    $('#signupModalathlete').modal('show');
+                    // Close any existing modals first
+                    $('.modal').modal('hide');
+                    
+                    // Wait for existing modal to close, then show signup modal
+                    setTimeout(() => {
+                        // Initialize signup modal content before showing
+                        window.initializeSignupModal();
+                        // Show login/signup modal
+                        $('#signupModalathlete').modal('show');
+                    }, 300);
                     // Store consultation data for after login
                     const consultationData = {
                         id: $(this).data('consultation-id'),
@@ -1345,34 +1357,36 @@
             paymentMethodId = null;
         }
         
-        // Function to initialize signup modal content
-        function initializeSignupModal() {
-            // Show the signup/login content sections
-            $('.signup-login-h2-title').removeClass('d-none');
-            $('.signup-login-h2-img').removeClass('d-none');
-            
-            // Hide quiz-specific content
-            $('.quiz-h2-title').addClass('d-none');
-            $('.quiz-h2-img').addClass('d-none');
-            
-            // Reset to step 1
-            showStep(1);
-            
-            // Clear any previous form data
-            $('#mobile_number').val('');
-            $('#firstname').val('');
-            $('#email').val('');
-            $('input[name="userType"]').prop('checked', false);
-            $('input[name="ageGroup"]').prop('checked', false);
-            $('#sportstype').val('');
-            
-            // Remove selected classes
-            $('.user-type-box').removeClass('selected');
-            $('.age-box').removeClass('selected');
-            
-            // Hide age groups and sports selection by default
-            $('#age-groups-id').addClass('d-none');
-            $('#select-sports-id').addClass('d-none');
+        // Use global initializeSignupModal function if available, otherwise define local one
+        if (typeof window.initializeSignupModal !== 'function') {
+            window.initializeSignupModal = function() {
+                // Show the signup/login content sections
+                $('.signup-login-h2-title').removeClass('d-none');
+                $('.signup-login-h2-img').removeClass('d-none');
+                
+                // Hide quiz-specific content
+                $('.quiz-h2-title').addClass('d-none');
+                $('.quiz-h2-img').addClass('d-none');
+                
+                // Reset to step 1
+                showStep(1);
+                
+                // Clear any previous form data
+                $('#mobile_number').val('');
+                $('#firstname').val('');
+                $('#email').val('');
+                $('input[name="userType"]').prop('checked', false);
+                $('input[name="ageGroup"]').prop('checked', false);
+                $('#sportstype').val('');
+                
+                // Remove selected classes
+                $('.user-type-box').removeClass('selected');
+                $('.age-box').removeClass('selected');
+                
+                // Hide age groups and sports selection by default
+                $('#age-groups-id').addClass('d-none');
+                $('#select-sports-id').addClass('d-none');
+            };
         }
         
         function showPaymentModal(button) {

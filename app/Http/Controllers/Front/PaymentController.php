@@ -12,6 +12,9 @@ use App\Models\SportCategory;
 use App\Models\TrackingType;
 use App\Models\User;
 use App\Models\UserPrePlan;
+use App\Models\UserConsultation;
+use App\Models\UserPlan;
+use App\Models\Consultation;
 use App\Services\ActivityTracker;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -544,6 +547,289 @@ class PaymentController extends Controller
             ]);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => 'Mail send failed.']);
+        }
+    }
+
+    /**
+     * Process plan purchase with optional consultation booking
+     */
+    public function processPlanPurchase(Request $request)
+    {
+        // Check if user is authenticated
+        if (!Auth::check()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Please login to purchase a plan',
+                'requires_auth' => true
+            ]);
+        }
+
+        $user = Auth::user();
+
+        // Define validation rules
+        $rules = [
+            'plan_id' => 'required|integer|exists:plans,id',
+            'plan_type' => 'required|string|in:main,powerplay,gameplan',
+            'price' => 'required|numeric|min:0',
+            'final_price' => 'nullable|numeric|min:0',
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'phone' => 'nullable|string|max:20',
+            'payment_method_id' => 'nullable|string',
+            'coupon_code' => 'nullable|string',
+            'is_monthly' => 'required|in:true,false,1,0'
+        ];
+
+        $validated = $request->validate($rules);
+        
+        // Convert is_monthly to proper boolean
+        $validated['is_monthly'] = filter_var($validated['is_monthly'], FILTER_VALIDATE_BOOLEAN);
+
+        DB::beginTransaction();
+
+        try {
+            Log::debug('Plan purchase payment flow started.', [
+                'request' => $request->all(),
+                'plan_type' => $validated['plan_type'] ?? 'not provided',
+                'plan_id' => $validated['plan_id'] ?? 'not provided'
+            ]);
+            Stripe::setApiKey(config('services.stripe.secret'));
+
+            $coupon = null;
+            $discount = 0;
+
+            // Handle coupon validation (exactly like consultation flow)
+            $finalPrice = $validated['price'];
+            $couponCode = $validated['coupon_code'];
+            
+            if ($couponCode) {
+                $coupon = Coupon::where('code', $couponCode)
+                    ->where('status', 1)
+                    ->first();
+                    
+                if ($coupon) {
+                    $currentDateTime = \Carbon\Carbon::now();
+                    
+                    // Check if coupon is valid
+                    if ($currentDateTime->gte($coupon->start_date) && $currentDateTime->lte($coupon->end_date)) {
+                        // Check usage limits
+                        if ($coupon->max_uses == 0 || $coupon->usage_count < $coupon->max_uses) {
+                            // Check user usage
+                            $userUsageCount = CouponUsage::where('coupon_id', $coupon->id)
+                                ->where('user_id', $user->id)
+                                ->count();
+                                
+                            if ($coupon->uses_per_user == 0 || $userUsageCount < $coupon->uses_per_user) {
+                                // Check if coupon is applicable to plan
+                                $isApplicable = $coupon->plans()->where('plans.id', $validated['plan_id'])->exists();
+                                
+                                if ($isApplicable) {
+                                    // Apply discount
+                                    if ($coupon->type === 'percentage') {
+                                        $discountAmount = ($finalPrice * $coupon->value) / 100;
+                                        $finalPrice = max(0, $finalPrice - $discountAmount);
+                                    } elseif ($coupon->type === 'fixed') {
+                                        $finalPrice = max(0, $finalPrice - $coupon->value);
+                                    }
+                                } else {
+                                    return response()->json(['success' => false, 'message' => 'This coupon is not applicable to the selected plan.']);
+                                }
+                            } else {
+                                return response()->json(['success' => false, 'message' => 'You have already used this coupon the maximum allowed times.']);
+                            }
+                        } else {
+                            return response()->json(['success' => false, 'message' => 'Coupon usage limit has been reached.']);
+                        }
+                    } else {
+                        return response()->json(['success' => false, 'message' => 'Coupon is not valid at this time.']);
+                    }
+                } else {
+                    return response()->json(['success' => false, 'message' => 'Invalid coupon code.']);
+                }
+            }
+
+            Log::debug('Final price after discount.', ['final_price' => $finalPrice]);
+
+            // If payment required but no payment method provided
+            if ($finalPrice > 0 && empty($validated['payment_method_id'])) {
+                return response()->json(['success' => false, 'message' => 'Payment method is required.']);
+            }
+
+            $paymentIntentId = null;
+            $status = 'discount_applied';
+
+            // If payment is required, create Stripe payment intent
+            if ($finalPrice > 0) {
+                Log::debug('Creating Stripe payment intent.', ['amount' => $finalPrice * 100]);
+
+                $paymentIntent = PaymentIntent::create([
+                    'amount' => $finalPrice * 100,
+                    'currency' => 'aud',
+                    'payment_method' => $validated['payment_method_id'],
+                    'confirmation_method' => 'manual',
+                    'confirm' => true,
+                    'return_url' => route('payment.success'),
+                ]);
+
+                Log::debug('Stripe PaymentIntent created.', ['status' => $paymentIntent->status]);
+
+                if ($paymentIntent->status === 'requires_action' && $paymentIntent->next_action->type === 'use_stripe_sdk') {
+                    DB::rollBack();
+                    return response()->json([
+                        'requires_action' => true,
+                        'payment_intent_client_secret' => $paymentIntent->client_secret,
+                    ]);
+                } elseif ($paymentIntent->status !== 'succeeded') {
+                    DB::rollBack();
+                    return response()->json(['success' => false, 'message' => 'Payment failed.']);
+                }
+
+                $paymentIntentId = $paymentIntent->id;
+                $status = $paymentIntent->status;
+            }
+
+            // Determine consultation ID based on plan type
+            $consultationId = null;
+            Log::debug('Plan type: ' . $validated['plan_type']);
+            
+            if ($validated['plan_type'] === 'powerplay') {
+                $consultation = Consultation::where('time', 30)->first();
+                Log::debug('Power Play - Looking for 30min consultation', ['consultation' => $consultation]);
+                $consultationId = $consultation ? $consultation->id : null;
+                Log::debug('Power Play - Consultation ID: ' . $consultationId);
+            } elseif ($validated['plan_type'] === 'gameplan') {
+                $consultation = Consultation::where('time', 60)->first();
+                Log::debug('Game Plan - Looking for 60min consultation', ['consultation' => $consultation]);
+                $consultationId = $consultation ? $consultation->id : null;
+                Log::debug('Game Plan - Consultation ID: ' . $consultationId);
+            }
+
+            // Create payment record
+            $payment = Payment::create([
+                'user_id' => $user->id,
+                'plan_id' => $validated['plan_id'],
+                'consultation_id' => $consultationId,
+                'price' => $validated['final_price'] ?? $finalPrice,
+                'original_price' => $validated['price'],
+                'name' => $validated['name'],
+                'email' => $validated['email'],
+                'phone' => $validated['phone'],
+                'payment_intent_id' => $paymentIntentId,
+                'status' => $status,
+                'coupon_code' => $validated['coupon_code']
+            ]);
+
+            // Track coupon usage (exactly like consultation flow)
+            if ($couponCode && isset($coupon)) {
+                CouponUsage::create([
+                    'coupon_id' => $coupon->id,
+                    'user_id' => $user->id,
+                    'payment_id' => $payment->id,
+                    'discount_amount' => $validated['price'] - $finalPrice
+                ]);
+                
+                // Update coupon usage count
+                $coupon->increment('usage_count');
+            }
+
+            // Add tracking of plan purchased
+            $click = ActivityTracker::click('plan_subscribed', $user->id);
+            ActivityTracker::log(TrackingType::PLAN_SUBSCRIBED, $user->id, [
+                'user_click_id' => $click->id,
+                'section_element_id' => $click->section_element_id,
+                'plan_id' => $validated['plan_id'],
+                'subscription_amount' => $finalPrice,
+                'payment_id' => $payment->id,
+                'discount' => $discount,
+                'original_price' => $validated['price'],
+                'coupon_id' => $coupon ? $coupon->id : 0,
+                'plan_type' => $validated['plan_type'],
+                'is_monthly' => $validated['is_monthly'] ?? false
+            ]);
+
+            // Mark user as no longer free user
+            if ($user->free_user) {
+                $user->free_user = 0;
+                $user->save();
+            }
+
+            // Ensure entry in user_plans if questionnaire already complete
+            $hasCompletedQuestionnaire = UserPrePlan::where('user_id', $user->id)
+                ->where('is_complete', 1)
+                ->exists();
+
+            Log::debug('User questionnaire status', [
+                'user_id' => $user->id,
+                'has_completed' => $hasCompletedQuestionnaire,
+                'plan_id' => $validated['plan_id']
+            ]);
+
+            if ($hasCompletedQuestionnaire) {
+                $userPlan = UserPlan::updateOrCreate(
+                    ['user_id' => $user->id, 'plan_id' => $validated['plan_id']],
+                    [
+                        'status' => 'active',
+                        'modified_by' => auth()->id(),
+                        'updated_at' => now(),
+                    ]
+                );
+                Log::debug('UserPlan created/updated (active)', ['user_plan' => $userPlan]);
+            } else {
+                // Create user plan entry even if questionnaire not complete
+                $userPlan = UserPlan::updateOrCreate(
+                    ['user_id' => $user->id, 'plan_id' => $validated['plan_id']],
+                    [
+                        'status' => 'pending',
+                        'modified_by' => auth()->id(),
+                        'updated_at' => now(),
+                    ]
+                );
+                Log::debug('UserPlan created/updated (pending)', ['user_plan' => $userPlan]);
+            }
+
+            // Create consultation booking if plan includes consultation
+            if ($consultationId) {
+                $userConsultation = UserConsultation::create([
+                    'user_id' => $user->id,
+                    'consultation_id' => $consultationId
+                ]);
+                Log::debug('UserConsultation created', ['user_consultation' => $userConsultation]);
+            } else {
+                Log::debug('No consultation ID found, skipping UserConsultation creation');
+            }
+
+            // Send plan purchase email notification
+            try {
+                Mail::to($user->email)->send(new PlanPurchaseMail($user, $payment));
+            } catch (\Exception $e) {
+                Log::warning('Failed to send plan purchase email: ' . $e->getMessage());
+            }
+
+            DB::commit();
+            Log::debug('Plan purchase processed successfully.', [
+                'payment_id' => $payment->id,
+                'user_plan_created' => isset($userPlan) ? $userPlan->id : 'not created',
+                'user_consultation_created' => isset($userConsultation) ? $userConsultation->id : 'not created',
+                'consultation_id' => $consultationId
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Plan purchased successfully!',
+                'data' => [
+                    'user_id' => $user->id,
+                    'payment_id' => $payment->id,
+                    'plan_type' => $validated['plan_type'],
+                    'has_consultation' => $consultationId ? true : false,
+                    'consultation_id' => $consultationId
+                ],
+                'redirect_url' => route('front.pre-plan-details')
+            ]);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Plan purchase error: ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
+            return response()->json(['success' => false, 'message' => 'Plan purchase failed: ' . $e->getMessage()], 500);
         }
     }
 }

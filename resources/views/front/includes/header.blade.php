@@ -379,10 +379,18 @@ $auth = auth()->guard('web')->check();
         sessionStorage.removeItem('loginTriggeredByConsultation');
     };
 
+    // Global function to clear plan purchase login flag
+    window.clearPlanPurchaseLoginFlag = function() {
+        sessionStorage.removeItem('loginTriggeredByPlanPurchase');
+    };
+
     function openSingupFreePopup(isLogin = false, isQuiz = false) {
-        // Clear consultation login flag since this is not triggered by consultation booking
+        // Clear consultation and plan purchase login flags since this is not triggered by booking
         if (typeof window.clearConsultationLoginFlag === 'function') {
             window.clearConsultationLoginFlag();
+        }
+        if (typeof window.clearPlanPurchaseLoginFlag === 'function') {
+            window.clearPlanPurchaseLoginFlag();
         }
         
         if (isQuiz) {

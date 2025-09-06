@@ -310,6 +310,7 @@ Route::get('front/logout-guest', function () {
 
 //Stripe payment
 Route::post('/process-payment', [PaymentController::class, 'processPayment'])->name('process.payment');
+Route::post('/process-plan-purchase', [PaymentController::class, 'processPlanPurchase'])->name('process.plan.purchase');
 Route::get('/payment-success', [PaymentController::class, 'paymentSuccess'])->name('payment.success');
 
 Route::post('/free-test-save', [FrontController::class, 'freeTestSave'])->name('front.submit-free-test');
@@ -391,3 +392,6 @@ Route::prefix('quiz')->group(function () {
 });
 
 Route::get('/about-us', [FrontController::class, 'aboutUs'])->name('front.about-us');
+
+// Stripe Webhook (must be outside middleware to avoid CSRF)
+Route::post('/stripe/webhook', [App\Http\Controllers\StripeWebhookController::class, 'handleWebhook'])->name('stripe.webhook');

@@ -1921,28 +1921,36 @@ class FrontController extends Controller
     {
         $page        = Page::with('sections')->where('slug', 'training_nutrition_plan')->first();
         $planDetails = Plan::where('name', 'Training Nutrition Plan')->first();
-        return view('front.pages.training_nutrition_plan', compact('page', 'planDetails'));
+        $consultations = Consultation::whereIn('time', [30, 60])->get();
+        
+        return view('front.pages.training_nutrition_plan', compact('page', 'planDetails', 'consultations'));
     }
 
     public function competitionPlan(Request $request)
     {
         $page        = Page::with('sections')->where('slug', 'competition_plan')->first();
         $planDetails = Plan::where('name', 'Competition Plan')->first();
-        return view('front.pages.competition_plan', compact('page', 'planDetails'));
+        $consultations = Consultation::whereIn('time', [30, 60])->get();
+        
+        return view('front.pages.competition_plan', compact('page', 'planDetails', 'consultations'));
     }
 
     public function injuryRecoveryPlan(Request $request)
     {
         $page        = Page::with('sections')->where('slug', 'injury_recovery_nutrition_plan')->first();
         $planDetails = Plan::where('name', 'Injury & Recovery Plan')->first();
-        return view('front.pages.injury_recovery_plan', compact('page', 'planDetails'));
+        $consultations = Consultation::whereIn('time', [30, 60])->get();
+        
+        return view('front.pages.injury_recovery_plan', compact('page', 'planDetails', 'consultations'));
     }
 
     public function surgeryPlan(Request $request)
     {
         $page        = Page::with('sections')->where('slug', 'surgery_plan')->first();
         $planDetails = Plan::where('name', 'Injury Recovery + Post Surgery')->first();
-        return view('front.pages.surgery_plan', compact('page', 'planDetails'));
+        $consultations = Consultation::whereIn('time', [30, 60])->get();
+        
+        return view('front.pages.surgery_plan', compact('page', 'planDetails', 'consultations'));
     }
 
     public function consultations(Request $request)

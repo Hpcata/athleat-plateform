@@ -17,6 +17,7 @@ class Payment extends Model
         'plan_id',
         'user_id',
         'price',
+        'original_price',
         'name',
         'email',
         'phone',
