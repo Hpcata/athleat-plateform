@@ -11,13 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('payments', function (Blueprint $table) {
-            $table->unsignedBigInteger('consultation_id')->nullable()->after('plan_id');
-            
-            if (Schema::hasTable('consultations')) {
-                $table->foreign('consultation_id')->references('id')->on('consultations')->onDelete('set null');
-            }
-        });
+        if (!Schema::hasTable('payments')) {
+            Schema::table('payments', function (Blueprint $table) {
+                $table->unsignedBigInteger('consultation_id')->nullable()->after('plan_id');
+
+                if (Schema::hasTable('consultations')) {
+                    $table->foreign('consultation_id')->references('id')->on('consultations')->onDelete('set null');
+                }
+            });
+        }
     }
 
     /**
@@ -25,9 +27,11 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('payments', function (Blueprint $table) {
-            $table->dropForeign(['consultation_id']);
-            $table->dropColumn('consultation_id');
-        });
+        if (Schema::hasTable('payments')) {
+            Schema::table('payments', function (Blueprint $table) {
+                $table->dropForeign(['consultation_id']);
+                $table->dropColumn('consultation_id');
+            });
+        }
     }
 };

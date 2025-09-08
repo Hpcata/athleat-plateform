@@ -4,7 +4,7 @@ $headerData = json_decode($setting['meta_value'], true);
 $auth = auth()->guard('web')->check();
 ?>
 
-@if (Route::is('front.profile') || Route::is('front.plans.details') || Route::is('front.my-plans'))
+@if (Route::is('front.profile') || Route::is('front.plans.details') || Route::is('front.my-plans') || Route::is('front.injury.recovery.plan'))
     <!-- Mobile Menu Overlay -->
     <?php $user = auth()->user();?>
     <div class="mobile-menu-overlay" id="mobile-menu-overlay" onclick="toggleMobileMenu()"
@@ -96,7 +96,8 @@ $auth = auth()->guard('web')->check();
                     // }
                 @endphp
                 <nav class="nav-center">
-                    <a class="text-decoration-none nav-item" href="{{ route('front.profile', ['id' => Auth::guard('web')->user()->id]) }}">Home</a>
+                    {{-- On click of home I want to redirect user to home page and stay logged in if user is logged in --}}
+                    <a class="text-decoration-none nav-item" onclick="event.preventDefault(); window.location.href = '{{ route('front.index') }}';">Home</a>
                     <span class="nav-item coming-soon-popup">Challenges and Rewards</span>
                     <div class="nav-item dropdown">
                         <span>Resources <i class="fas fa-chevron-down"></i></span>
@@ -135,7 +136,11 @@ $auth = auth()->guard('web')->check();
             </div>
         </header>
     @else
-        @php $id = request()->route('id'); @endphp
+        @php
+            $id = request()->route('id');
+            $user = auth()->user();
+            $userId = $user ? $user->id : null;
+        @endphp
         <header class="header">
             <div class="header-content">
                 <div class="logo">
@@ -143,30 +148,29 @@ $auth = auth()->guard('web')->check();
                         height="30" />
                 </div>
                     <nav class="nav-center">
-                        <a class="text-decoration-none nav-item" href="{{ route('front.profile', ['id' => $id]) }}?admin_view=1">Home</a>
+                        @if($userId)
+                            <a class="text-decoration-none nav-item" href="{{ route('front.profile', ['id' => $userId]) }}?admin_view=1">Home</a>
+                        @else
+                            <a class="text-decoration-none nav-item" href="{{ route('front.index') }}">Home</a>
+                        @endif
                         <span class="nav-item coming-soon-popup">Challenges and Rewards</span>
                         <div class="nav-item dropdown">
                             <span>Resources <i class="fas fa-chevron-down"></i></span>
                             <div class="dropdown-content">
                                 <a href="#" id="scanner-btn" class="scanner-btn">Supplement Scanner</a>
                                 <a href="#" class="coming-soon-popup">Level-Up Library</a>
-                                <a href="#" onclick="openBookingAndModal()">BioHealth
-                                    Passport</a>
+                                <a href="#" onclick="openBookingAndModal()">BioHealth Passport</a>
                             </div>
                         </div>
                     </nav>
                     <div class="nav-right">
-                        <button class="btn-login mob-hide" id="login" href="#"
-                        onclick="openSingupFreePopup(true)">Log in</button>
-                        <button class="btn-signup" id="show-new-signup-modal" onclick="openSingupFreePopup()">
-                            Sign up for free
-                        </button>
+                        <button class="btn-login mob-hide" id="login" onclick="openSingupFreePopup(true)">Log in</button>
+                        <button class="btn-signup" id="show-new-signup-modal" onclick="openSingupFreePopup()"> Sign up for free </button>
                     </div>
                 </div>
         </header>
     @endif
 @else
-    <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-custom homepage-navbar">
         <div class="container-homepage">
             <a class="navbar-brand" href="{{ route('front.index') }}">
@@ -190,24 +194,22 @@ $auth = auth()->guard('web')->check();
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
                             Services
-                            <svg width="10" height="7" viewBox="0 0 10 7" fill="none"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path d="M1 1.5L5 5.5L9 1.5" stroke="white" stroke-width="1.5" stroke-linecap="round"
-                                    stroke-linejoin="round" />
+                            <svg width="10" height="7" viewBox="0 0 10 7" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M1 1.5L5 5.5L9 1.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
                             </svg>
                         </a>
                         <ul class="dropdown-menu">
-                        <li>
-                            <a class="dropdown-item" href="{{ route('front.training.nutrition.plan') }}">Training Nutrition Plan</a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="{{ route('front.competition.plan') }}">Competition Plan</a>
-                        <li>
-                            <a class="dropdown-item" href="{{ route('front.injury.recovery.plan') }}">Injury & Recovery Plan</a>
-                        </li>
-                        <li><a class="scroll-to-plans dropdown-item competition-plan-link row2" href="#">Pre & Post Surgery Plan</a></li>
-                        <li><a class="dropdown-item" href="{{ route('front.consultations') }}">Private Consultations</a></li>
-                        <li><a class="scroll-to-plans dropdown-item competition-plan-link row2" href="">Clubs and Group bookings</a></li>
+                            <li>
+                                <a class="dropdown-item" href="{{ route('front.training.nutrition.plan') }}">Training Nutrition Plan</a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="{{ route('front.competition.plan') }}">Competition Plan</a>
+                            <li>
+                                <a class="dropdown-item" href="{{ route('front.injury.recovery.plan') }}">Injury & Recovery Plan</a>
+                            </li>
+                            <li><a class="scroll-to-plans dropdown-item competition-plan-link row2" href="#">Pre & Post Surgery Plan</a></li>
+                            <li><a class="dropdown-item" href="{{ route('front.consultations') }}">Private Consultations</a></li>
+                            <li><a class="scroll-to-plans dropdown-item competition-plan-link row2" href="">Clubs and Group bookings</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -219,11 +221,8 @@ $auth = auth()->guard('web')->check();
                             My Account
                         </a>
                     @else
-                        <button class="btn-login mob-hide" id="login" href="#"
-                            onclick="openSingupFreePopup(true)">Log in</button>
-                        <button class="btn-signup" id="show-new-signup-modal" onclick="openSingupFreePopup()">
-                            Sign up for free
-                        </button>
+                        <button class="btn-login mob-hide" id="login" onclick="openSingupFreePopup(true)">Log in</button>
+                        <button class="btn-signup" id="show-new-signup-modal" onclick="openSingupFreePopup()">Sign up for free </button>
                     @endif
                     <button class="ms-2 btn-login web-hide">Virtual Kez</button>
                 </div>
@@ -384,7 +383,7 @@ $auth = auth()->guard('web')->check();
         if (typeof window.clearConsultationLoginFlag === 'function') {
             window.clearConsultationLoginFlag();
         }
-        
+
         if (isQuiz) {
             $('#signupModalathlete .signup-login-h2-title').addClass('d-none');
             $('#signupModalathlete .quiz-h2-title').removeClass('d-none');

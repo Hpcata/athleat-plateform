@@ -21,8 +21,8 @@
                         @foreach($plansWithAnimation as $planData)
                             @if(isset($planData['plan']) && $planData['plan'])
                                 @include('front.pages.plan-cards.card-with-animation', [
-                                    'plan' => $planData['plan'], 
-                                    'userPlan' => $planData['userPlan'] ?? null, 
+                                    'plan' => $planData['plan'],
+                                    'userPlan' => $planData['userPlan'] ?? null,
                                     'payment' => $planData['payment'] ?? null
                                 ])
                             @endif
@@ -34,8 +34,8 @@
                         @foreach($plansWithoutAnimation as $planData)
                             @if(isset($planData['plan']) && $planData['plan'])
                                 @include('front.pages.plan-cards.card-without-animation', [
-                                    'plan' => $planData['plan'], 
-                                    'userPlan' => $planData['userPlan'] ?? null, 
+                                    'plan' => $planData['plan'],
+                                    'userPlan' => $planData['userPlan'] ?? null,
                                     'payment' => $planData['payment'] ?? null
                                 ])
                             @endif

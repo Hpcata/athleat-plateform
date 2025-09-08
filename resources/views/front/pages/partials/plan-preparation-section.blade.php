@@ -1,6 +1,10 @@
 <section class="challenges">
     <div class="section-header">
-        <h2>My Plans</h2>
+        <h2>My Plan</h2>
     </div>
-    @include('front.pages.plan-cards.card-with-animation', ['plan' => $plan])
+    @if ($isPreparingPlan)
+        @include('front.pages.plan-cards.card-with-animation', ['plan' => $plan])
+    @else
+        @include('front.pages.plan-cards.card-without-animation', ['plan' => $plan])
+    @endif
 </section>

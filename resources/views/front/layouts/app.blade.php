@@ -95,7 +95,7 @@
     @stack('scripts')
 
     @php
-        $delphiConfig = auth()->check() && auth()->user()->hasPurchasedPlan() ? '663f5909-3622-47c9-9287-28233409948f' : '1ec65786-eafc-4dbb-a617-57b8d81c9856';
+$delphiConfig = auth()->check() && auth()->user()->hasPurchasedPlan() ? '663f5909-3622-47c9-9287-28233409948f' : '1ec65786-eafc-4dbb-a617-57b8d81c9856';
     @endphp
 
     <script id="delphi-bubble-script">
@@ -116,17 +116,60 @@
 
         $(document).ready(function() {
             let isOpen = false;
-            let isOpening = false; // Flag to prevent immediate closing
+            let isOpening = false;
+            let delphiInitialized = false;
+
+            // Function to check if Delphi is fully loaded
+            function checkDelphiReady() {
+                return $(document).find('#delphi-bubble-trigger').length > 0 && $(document).find('.delphi-bubble').length > 0;
+            }
+
+            // Wait for Delphi to be fully initialized
+            function waitForDelphi() {
+                let attempts = 0;
+                const maxAttempts = 50; // 5 seconds max wait
+
+                const checkInterval = setInterval(function() {
+                    attempts++;
+                    if (checkDelphiReady()) {
+                        delphiInitialized = true;
+                        clearInterval(checkInterval);
+                    } else if (attempts >= maxAttempts) {
+                        clearInterval(checkInterval);
+                    }
+                }, 100);
+            }
+
+            // Start checking for Delphi initialization
+            waitForDelphi();
 
             function loadCustomDelphi() {
                 if (!isOpen && !isOpening) {
                     isOpening = true;
-                    $(document).find('#delphi-bubble-trigger').trigger("click");
-                    isOpen = true;
-                    // Reset the opening flag after a short delay
-                    setTimeout(function() {
-                        isOpening = false;
-                    }, 100);
+
+                    function tryOpenDelphi() {
+                        if (checkDelphiReady()) {
+                            // Double click to ensure it opens
+                            let trigger = $(document).find('#delphi-bubble-trigger');
+                            trigger.trigger("click");
+
+                            // Small delay then trigger again to ensure it opens
+                            setTimeout(function() {
+                                trigger.trigger("click");
+                                isOpen = true;
+                                isOpening = false;
+                            }, 50);
+                        } else {
+                            // If not ready, wait a bit and try again
+                            setTimeout(function() {
+                                if (isOpening) { // Only retry if still trying to open
+                                    tryOpenDelphi();
+                                }
+                            }, 200);
+                        }
+                    }
+
+                    tryOpenDelphi();
                 }
             }
 
@@ -150,8 +193,11 @@
 
                 // Only close if it's open and we're not in the process of opening
                 if (isOpen && !isOpening) {
-                    $(document).find('#delphi-bubble-trigger').trigger("click");
-                    isOpen = false;
+                    let trigger = $(document).find('#delphi-bubble-trigger');
+                    if (trigger.length > 0) {
+                        trigger.trigger("click");
+                        isOpen = false;
+                    }
                 }
             });
         });

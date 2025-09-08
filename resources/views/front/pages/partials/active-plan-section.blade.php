@@ -12,17 +12,17 @@
             @php $firstTab = true; @endphp
             @foreach ($userPlan->userCategories->where('user_plan_id', $userPlan->id) as $userCategory)
                 @php
-        $category = $userCategory->category;
-        $hasValidMeal = $userCategory
-            ->userSubCategories()
-            ->where('user_plan_id', $userPlan->id)
-            ->whereHas('userMeals', function ($q) use ($userPlan, $userCategory) {
-                $q->where('user_plan_id', $userPlan->id)->where(
-                    'user_category_id',
-                    $userCategory->id,
-                );
-            })
-            ->exists();
+                    $category = $userCategory->category;
+                    $hasValidMeal = $userCategory
+                        ->userSubCategories()
+                        ->where('user_plan_id', $userPlan->id)
+                        ->whereHas('userMeals', function ($q) use ($userPlan, $userCategory) {
+                            $q->where('user_plan_id', $userPlan->id)->where(
+                                'user_category_id',
+                                $userCategory->id,
+                            );
+                        })
+                        ->exists();
                 @endphp
 
                 @if ($hasValidMeal && $category)
