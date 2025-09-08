@@ -214,7 +214,7 @@
                                     style="display:none;">Resend OTP</a>
                             </label>
                         </p>
-                        <label class="security-note">Security note: PIN valid for 5 mins. 3 attempts
+                        <label class="security-note">Security note: PIN valid for 30 seconds. 3 attempts
                             max.</label>
                     </div>
 
