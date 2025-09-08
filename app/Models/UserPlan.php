@@ -15,10 +15,31 @@ class UserPlan extends Model
         'user_id',
         'plan_id',
         'status',
+        'is_recurring',
+        'stripe_subscription_id',
+        'total_payments',
+        'total_payments_expected',
+        'next_payment_date',
+        'last_payment_date',
+        'payment_status',
+        'canceled_at',
+        'cancelation_reason',
         'modified_by',
         'is_mail_sent',
         'mail_sent_at',
         'nutrition_info_flag'
+    ];
+
+    protected $casts = [
+        'is_recurring' => 'boolean',
+        'total_payments' => 'integer',
+        'total_payments_expected' => 'integer',
+        'next_payment_date' => 'datetime',
+        'last_payment_date' => 'datetime',
+        'canceled_at' => 'datetime',
+        'is_mail_sent' => 'boolean',
+        'mail_sent_at' => 'datetime',
+        'nutrition_info_flag' => 'boolean'
     ];
 
     public function user()

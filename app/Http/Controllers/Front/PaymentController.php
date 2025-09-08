@@ -22,8 +22,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
-use Stripe\PaymentIntent;
 use Stripe\Stripe;
+use Stripe\PaymentIntent;
 
 class PaymentController extends Controller
 {
@@ -787,6 +787,11 @@ class PaymentController extends Controller
                 Log::debug('UserPlan created/updated (pending)', ['user_plan' => $userPlan]);
             }
 
+            // Handle monthly recurring payments with Stripe subscription
+            if ($validated['is_monthly']) {
+                $this->createStripeSubscription($userPlan, $user, $validated, $paymentMethodId);
+            }
+
             // Create consultation booking if plan includes consultation
             if ($consultationId) {
                 $userConsultation = UserConsultation::create([
@@ -830,6 +835,121 @@ class PaymentController extends Controller
             DB::rollBack();
             Log::error('Plan purchase error: ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
             return response()->json(['success' => false, 'message' => 'Plan purchase failed: ' . $e->getMessage()], 500);
+        }
+    }
+
+    /**
+     * Create Stripe subscription for monthly recurring payments
+     */
+    private function createStripeSubscription($userPlan, $user, $validated, $paymentMethodId)
+    {
+        try {
+            \Stripe\Stripe::setApiKey(config('services.stripe.secret'));
+
+            // Calculate monthly price (with 10% markup divided by 8 months)
+            $monthlyPrice = ($validated['price'] * 1.1) / 8;
+
+            // Create Stripe customer if not exists
+            $customer = $this->getOrCreateStripeCustomer($user);
+
+            // Create Stripe product and price for this plan
+            $product = \Stripe\Product::create([
+                'name' => $userPlan->plan->name . ' - Monthly Subscription',
+                'description' => 'Monthly subscription for ' . $userPlan->plan->name,
+            ]);
+
+            $price = \Stripe\Price::create([
+                'product' => $product->id,
+                'unit_amount' => round($monthlyPrice * 100), // Convert to cents
+                'currency' => 'aud',
+                'recurring' => [
+                    'interval' => 'month',
+                    'interval_count' => 1,
+                ],
+            ]);
+
+            // Create subscription
+            $subscription = \Stripe\Subscription::create([
+                'customer' => $customer->id,
+                'items' => [
+                    [
+                        'price' => $price->id,
+                    ],
+                ],
+                'payment_behavior' => 'default_incomplete',
+                'payment_settings' => [
+                    'save_default_payment_method' => 'on_subscription',
+                ],
+                'expand' => ['latest_invoice.payment_intent'],
+                'metadata' => [
+                    'user_id' => $user->id,
+                    'plan_id' => $validated['plan_id'],
+                    'plan_type' => $validated['plan_type'],
+                ],
+            ]);
+
+            // Confirm the subscription with the payment method
+            $subscription->confirm();
+
+            // Update UserPlan with subscription details
+            $userPlan->update([
+                'is_recurring' => true,
+                'stripe_subscription_id' => $subscription->id,
+                'total_payments' => 1, // First payment completed
+                'total_payments_expected' => 8,
+                'next_payment_date' => \Carbon\Carbon::createFromTimestamp($subscription->current_period_end),
+                'last_payment_date' => now(),
+                'payment_status' => $subscription->status,
+            ]);
+
+            Log::info('Stripe subscription created successfully', [
+                'user_id' => $user->id,
+                'subscription_id' => $subscription->id,
+                'monthly_price' => $monthlyPrice,
+                'user_plan_id' => $userPlan->id
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Failed to create Stripe subscription: ' . $e->getMessage(), [
+                'user_id' => $user->id,
+                'plan_id' => $validated['plan_id'],
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            // Don't throw exception here to avoid breaking the main flow
+            // The webhook will handle subscription status updates
+        }
+    }
+
+    /**
+     * Get or create Stripe customer for user
+     */
+    private function getOrCreateStripeCustomer($user)
+    {
+        try {
+            // Check if customer already exists
+            $customers = \Stripe\Customer::all([
+                'email' => $user->email,
+                'limit' => 1,
+            ]);
+
+            if (!empty($customers->data)) {
+                return $customers->data[0];
+            }
+
+            // Create new customer
+            return \Stripe\Customer::create([
+                'email' => $user->email,
+                'name' => $user->name,
+                'phone' => $user->phone,
+                'metadata' => [
+                    'user_id' => $user->id,
+                ],
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Failed to get or create Stripe customer: ' . $e->getMessage());
+            throw $e;
         }
     }
 }
