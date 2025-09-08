@@ -8,7 +8,8 @@ html {
 
 /* Scroll target styling */
 #choose-plan-section {
-    scroll-margin-top: 80px; /* Account for fixed navbar */
+    scroll-margin-top: 80px;
+    /* Account for fixed navbar */
 }
 
 * {
@@ -23,6 +24,16 @@ body {
     margin: 0;
     padding: 0;
     overflow-x: hidden;
+}
+
+#planChooseModal .modal-content .modal-body,
+#paymentModal .modal-content #paymentContentConsultation,
+#paymentModalPlan .modal-content #paymentContentConsultation,
+#congratsModal .modal-content #congratsContent,
+#congratsModalConsultation .modal-content #congratsContent {
+    height: 100%;
+    overflow-y: auto;
+    padding-top: 20px !important;
 }
 
 .container-homepage {
@@ -77,7 +88,12 @@ body {
 
     #signupModalathlete .modal-content,
     #loginModalathlete .modal-content,
-    #quizModal .modal-content {
+    #quizModal .modal-content,
+    #planChooseModal .modal-content,
+    #paymentModal .modal-content,
+    #congratsModal .modal-content,
+    #congratsModalConsultation .modal-content,
+    #paymentModalPlan .modal-content {
         max-height: 82vh;
         border-radius: 12px;
     }
@@ -93,7 +109,12 @@ body {
 
     #signupModalathlete .modal-content,
     #loginModalathlete .modal-content,
-    #quizModal .modal-content {
+    #quizModal .modal-content,
+    #planChooseModal .modal-content,
+    #paymentModal .modal-content,
+    #congratsModal .modal-content,
+    #congratsModalConsultation .modal-content,
+    #paymentModalPlan .modal-content {
         max-height: 89vh;
         border-radius: 12px;
     }
@@ -109,7 +130,12 @@ body {
 
     #signupModalathlete .modal-content,
     #loginModalathlete .modal-content,
-    #quizModal .modal-content {
+    #quizModal .modal-content,
+    #planChooseModal .modal-content,
+    #paymentModal .modal-content,
+    #congratsModal .modal-content,
+    #congratsModalConsultation .modal-content,
+    #paymentModalPlan .modal-content {
         max-height: 83vh;
         border-radius: 12px;
     }
@@ -216,7 +242,6 @@ body {
     background: white;
     color: #333;
     border-color: white;
-
 }
 
 .btn-signup {
@@ -248,7 +273,6 @@ body {
     background: rgba(23, 81, 170, 1);
     border-color: rgba(23, 81, 170, 1);
     color: white;
-
 }
 
 .btn-white {
@@ -647,7 +671,6 @@ body {
 }
 
 .food-section .food-card:hover {
-
     box-shadow: 0 8px 25px 0 rgba(0, 0, 0, 0.2);
 }
 
@@ -1037,9 +1060,11 @@ body {
     background-color: #f8f9fa;
     text-align: center;
 }
-.choose-plan-section .row{
+
+.choose-plan-section .row {
     padding-bottom: 24px;
 }
+
 .choose-plan-section .choose-plan-title {
     font-family: "Poppins", sans-serif;
     font-weight: 800;
@@ -1091,7 +1116,6 @@ body {
 }
 
 .choose-plan-section .plan-card:hover {
-
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
 }
 
@@ -1245,6 +1269,7 @@ body {
     width: 100%;
     cursor: pointer;
 }
+
 /* Custom Select Options Styling - Enhanced */
 .sport-nutrition-promo__form select {
     padding: 12px 16px !important;
@@ -1325,8 +1350,8 @@ body {
 }
 
 /* Prevent arrow color change on focus/hover for custom selects */
-.sport-nutrition-promo__form select[data-custom="true"]:focus + .custom-select-arrow svg path,
-.sport-nutrition-promo__form select[data-custom="true"]:hover + .custom-select-arrow svg path {
+.sport-nutrition-promo__form select[data-custom="true"]:focus+.custom-select-arrow svg path,
+.sport-nutrition-promo__form select[data-custom="true"]:hover+.custom-select-arrow svg path {
     stroke: #3b3b3b !important;
 }
 
@@ -1334,7 +1359,6 @@ body {
 .sport-nutrition-promo__form select[data-custom="true"]:hover + .custom-select-arrow {
     transform: translateY(-50%) rotate(0deg) !important;
 } */
-
 /* Custom select styling - selected option without padding, dropdown options with padding */
 .sport-nutrition-promo__form select[data-custom="true"] {
     padding: 0 40px 0 16px !important;
@@ -1403,20 +1427,27 @@ body {
 /* Mobile-specific styling for scrollable select dropdowns */
 @media (max-width: 768px) {
     .sport-nutrition-promo__form select[data-custom="true"] {
-        font-size: 16px !important; /* Prevents zoom on iOS */
+        font-size: 16px !important;
+        /* Prevents zoom on iOS */
         padding: 14px 16px !important;
     }
+
     /* Make dropdown options scrollable on mobile */
     .sport-nutrition-promo__form select[data-custom="true"] option {
-        padding: 10px 16px !important; /* Slightly smaller padding on mobile */
-        font-size: 14px !important; /* Smaller font on mobile */
+        padding: 10px 16px !important;
+        /* Slightly smaller padding on mobile */
+        font-size: 14px !important;
+        /* Smaller font on mobile */
         line-height: 1.4 !important;
         min-height: 40px !important;
     }
+
     /* Webkit-specific mobile styling for scrollable dropdown */
     .sport-nutrition-promo__form select[data-custom="true"]::-webkit-listbox {
-        max-height: 60vh !important; /* Limit dropdown height to 60% of viewport */
-        overflow-y: auto !important; /* Enable vertical scrolling */
+        max-height: 60vh !important;
+        /* Limit dropdown height to 60% of viewport */
+        overflow-y: auto !important;
+        /* Enable vertical scrolling */
         padding: 8px !important;
         border-radius: 6px !important;
         border: 1px solid #ddd !important;
@@ -1442,14 +1473,16 @@ body {
 
     /* Additional mobile optimizations for better scrolling */
     .sport-nutrition-promo__form select[data-custom="true"]:focus {
-        max-height: none !important; /* Allow dropdown to expand */
+        max-height: none !important;
+        /* Allow dropdown to expand */
     }
 
     /* Ensure dropdown doesn't overflow viewport on mobile */
     .sport-nutrition-promo__form select[data-custom="true"]:focus::-webkit-listbox {
         max-height: 60vh !important;
         overflow-y: auto !important;
-        -webkit-overflow-scrolling: touch !important; /* Smooth scrolling on iOS */
+        -webkit-overflow-scrolling: touch !important;
+        /* Smooth scrolling on iOS */
         line-height: 1.4 !important;
         min-height: 40px !important;
     }
@@ -1458,13 +1491,16 @@ body {
 /* Additional mobile optimization for select dropdowns */
 @media (max-width: 480px) {
     .sport-nutrition-promo__form select[data-custom="true"] {
-        max-height: 40vh !important; /* 40% of viewport height on smaller screens */
+        max-height: 40vh !important;
+        /* 40% of viewport height on smaller screens */
         overflow-y: auto !important;
     }
 
     .sport-nutrition-promo__form select[data-custom="true"] option {
-        padding: 8px 16px !important; /* Even smaller padding on very small screens */
-        font-size: 13px !important; /* Smaller font on very small screens */
+        padding: 8px 16px !important;
+        /* Even smaller padding on very small screens */
+        font-size: 13px !important;
+        /* Smaller font on very small screens */
         line-height: 1.3 !important;
         min-height: 36px !important;
     }
@@ -1480,11 +1516,14 @@ body {
 /* iOS Safari specific fixes */
 @supports (-webkit-touch-callout: none) {
     .sport-nutrition-promo__form select[data-custom="true"] {
-        font-size: 16px !important; /* Prevents zoom on iOS */
-        max-height: 45vh !important; /* Slightly smaller for iOS */
+        font-size: 16px !important;
+        /* Prevents zoom on iOS */
+        max-height: 45vh !important;
+        /* Slightly smaller for iOS */
         overflow-y: auto !important;
     }
 }
+
 .sport-nutrition-promo__form select:focus-visible {
     outline: none;
 }
@@ -1508,8 +1547,6 @@ body {
     background: transparent;
 }
 
-
-
 .custom-select-arrow {
     position: absolute;
     right: 0px;
@@ -1519,12 +1556,12 @@ body {
     transition: transform 0.3s ease;
 }
 
-.custom-select-wrapper select:focus + .custom-select-arrow {
+.custom-select-wrapper select:focus+.custom-select-arrow {
     transform: translateY(-50%) rotate(180deg);
 }
 
 /* Remove hover effect for custom selects only */
-.custom-select-wrapper select:not([data-custom="true"]):hover + .custom-select-arrow svg path {
+.custom-select-wrapper select:not([data-custom="true"]):hover+.custom-select-arrow svg path {
     stroke: #4fc3f7;
 }
 
@@ -3377,6 +3414,7 @@ svg.user-type-icon path {
     line-height: 64px;
     text-transform: uppercase;
     margin-bottom: 16px;
+    text-align: left;
 }
 
 .about-section.training-nutrition-landing .about-content-wrapper {
@@ -3614,22 +3652,467 @@ svg.user-type-icon path {
 }
 
 .recommended-plans-section .card:not(.right-card) .card-description {
-    padding-right: 220px;
+    padding-right: 250px;
 }
 
 .recommended-plans-section .right-card .card-description {
     padding-right: 260px;
 }
+
 .plan-injury {
     display: flex;
     gap: 24px;
     justify-content: space-between;
-  }
-  
-  .pricing-right-section {
+}
+
+.pricing-right-section {
     width: 22%;
     color: #fff;
-  }
+}
+
+/* consultaions page css */
+.plan-inclusion-section .plan-features.consultations {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: 40px;
+    margin-top: 36px;
+}
+
+.plan-inclusion-section .plan-features.consultations .feature-column {
+    border-radius: 8px;
+    border: 1px solid var(--White, #fff);
+    padding: 28px 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.plan-inclusion-section .plan-features.consultations .feature-column .pricing-section {
+    margin-top: 31px;
+}
+
+.label-title {
+    color: #fff;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    margin-bottom: 8px;
+}
+
+.plan-inclusion-section .plan-features.consultations .feature-column .or-divider {
+    display: flex;
+    align-items: center;
+    margin: 24px 0;
+    width: 100%;
+}
+
+.plan-inclusion-section .plan-features.consultations .feature-column .divider-line {
+    flex-grow: 1;
+    border-top: 1px solid #fff;
+}
+
+.plan-inclusion-section .plan-features.consultations .feature-column .or-text {
+    margin-left: 1rem;
+    margin-right: 1rem;
+    color: #fff;
+    font-size: 1rem;
+}
+
+/* Slider Container - parent for arrows */
+.slider-container-plan {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* Remove overflow hidden to show arrows outside */
+}
+
+.slider-wrapper-consult {
+    overflow: hidden;
+    position: relative;
+    flex: 1;
+    /* Take full width of container */
+}
+
+.slider-track {
+    display: flex;
+    transition: transform 0.3s ease;
+}
+
+.slider-track .card {
+    flex: 0 0 48%;
+    min-width: 48%;
+    margin: 0 15px;
+    box-sizing: border-box;
+}
+
+/* Arrows positioned outside container */
+.slider-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    border: none;
+    background: #fff;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    z-index: 10;
+}
+
+.slider-arrow.left-arrows {
+    left: -50px;
+    /* Position outside left edge */
+    font-size: 16px;
+}
+
+.slider-arrow.right-arrows {
+    right: -50px;
+    /* Position outside right edge */
+    font-size: 16px;
+}
+
+#paymentModal .modal-content,
+#planChooseModal .modal-content,
+#paymentModalPlan .modal-content,
+#congratsModalConsultation .modal-content {
+    max-width: 700px;
+}
+
+#paymentModal .modal-title,
+#paymentModalPlan .modal-title {
+    color: var(--Kerry-grey-700, #080808);
+    font-family: "Noto Sans";
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+}
+
+#paymentModal .modal-body .modal-subtitle,
+#paymentModalPlan .modal-body .modal-subtitle {
+    color: var(--Kerry-grey-700, #080808);
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+#paymentModal .modal-body .amount,
+#planChooseModal .modal-body .amount,
+#paymentModalPlan .modal-body .amount {
+    color: var(--Blue-700, #1751AA);
+    text-align: center;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    text-align: left;
+    margin-bottom: 0;
+}
+
+#paymentModal .modal-body .amount strong,
+#planChooseModal .modal-body .amount strong,
+#paymentModalPlan .modal-body .amount strong {
+    font-size: 18px;
+    font-weight: 500;
+}
+
+#paymentModal .modal-body .divider,
+#planChooseModal .modal-body .divider,
+#paymentModalPlan .modal-body .divider {
+    display: block;
+    height: 1px;
+    width: 100%;
+    background: var(--Kerry-grey-200, #D8D8D8);
+    margin: 16px 0;
+}
+
+#paymentModal .modal-body .sign-in-text,
+#planChooseModal .modal-body .sign-in-text,
+#paymentModalPlan .modal-body .sign-in-text {
+    color: var(--kerry-grey-600-main, #3B3B3B);
+    font-family: "Noto Sans";
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+#paymentModal .modal-body .sign-in-text strong,
+#planChooseModal .modal-body .sign-in-text strong {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+#paymentModal .modal-body .coupon-code,
+#paymentModalPlan .modal-body .coupon-code {
+    color: var(--Blue-600, #4A84DD);
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+    text-decoration-line: underline;
+    text-decoration-style: solid;
+    text-decoration-skip-ink: auto;
+    text-decoration-thickness: auto;
+    text-underline-offset: auto;
+}
+
+#paymentModal .modal-body form .form-wrap,
+#planChooseModal .modal-body form .form-wrap,
+#paymentModalPlan .modal-body form .form-wrap {
+    border-radius: 12px;
+    background: rgba(235, 235, 235, 0.50);
+    padding: 12px;
+    margin-bottom: 16px;
+}
+
+#paymentModal .modal-body form label,
+#planChooseModal .modal-body form label,
+#paymentModalPlan .modal-body form label {
+    color: var(--kerry-grey-600-main, #3B3B3B);
+    font-family: "Noto Sans";
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+}
+
+#paymentModal .modal-body form input #planChooseModal .modal-body form input,
+#paymentModalPlan .modal-body form input {
+    border-radius: 6px;
+    border: 1px solid var(--Kerry-grey-200, #D8D8D8);
+    background: var(--White, #FFF);
+    box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.06);
+    padding: 12px;
+}
+
+#paymentModal .modal-body .confirm-text,
+#planChooseModal .modal-body .confirm-text {
+    color: var(--kerry-grey-600-main, #3B3B3B);
+    text-align: center;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+#paymentModal .modal-body .terms-link,
+#planChooseModal .modal-body .terms-link,
+#paymentModalPlan .modal-body .terms-link {
+    color: var(--kerry-grey-600-main, #3B3B3B);
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    text-decoration-line: underline;
+    text-decoration-style: solid;
+    text-decoration-skip-ink: auto;
+    text-decoration-thickness: auto;
+    text-underline-offset: auto;
+    text-underline-position: from-font;
+}
+
+#congratsModal .modal-dialog {
+    max-width: 500px;
+}
+
+#paymentModal .btn-close.congrats-modal,
+#congratsModalPlan .btn-close.congrats-modal,
+#congratsModalConsultation .btn-close.congrats-modal,
+#congratsModalPlan .btn-close.congrats-modal {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    border-radius: 100px;
+    background: var(--White, #FFF);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+#paymentModal .congrats-title,
+#congratsModal .congrats-title {
+    color: var(--Kerry-grey-700, #080808);
+    text-align: center;
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+}
+
+#paymentModal .congrats-subtitle,
+#congratsModal .congrats-subtitle {
+    color: var(--kerry-grey-600-main, #3B3B3B);
+    font-family: "Noto Sans";
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+#paymentModal .congrats-subtitle strong,
+#congratsModal .congrats-subtitle strong {
+    font-weight: 600;
+}
+
+#paymentModal .congrats-title strong,
+#planChooseModal .congrats-title strong {
+    font-weight: 600;
+}
+
+#paymentModal .congrats-para,
+#planChooseModal .congrats-para {
+    color: var(--kerry-grey-600-main, #3B3B3B);
+    text-align: center;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+.hero-section-landing.consultations {
+    background-position: top;
+}
+
+.w-fit {
+    width: fit-content !important;
+}
+
+.payment-toggle-swich {
+    display: flex;
+    justify-content: center;
+    border-radius: 100px;
+    background-color: #ebebeb;
+}
+
+.toggle-btn {
+    background-color: transparent;
+    border: none;
+    outline: none;
+    padding: 10px 24px;
+    border-radius: 100px;
+}
+
+.toggle-btn.active {
+    border: 1px solid var(--Kerry-grey-200, #D8D8D8);
+    background: var(--White, #FFF);
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.08);
+    color: var(--kerry-grey-600-main, #3B3B3B);
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+}
+
+.badge-discount {
+    border-radius: 100px;
+    background: var(--Orange-600, #EF7F00);
+    position: absolute;
+    color: #fff;
+    padding: 3px 5px;
+    color: var(--White, #FFF);
+    text-align: center;
+    font-size: 10px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+    left: -10px;
+    top: -10px;
+}
+
+#planChooseModal .modal-title {
+    color: var(--Kerry-grey-700, #080808);
+    text-align: center;
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    margin-bottom: 24px;
+}
+
+#onePaymentPlans .card-body,
+#monthlyPlans .card-body {
+    border-radius: 12px;
+    border: 1px solid var(--Cloud-100, #E5EAF4);
+    background: var(--White, #FFF);
+    box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.08);
+    padding: 12px;
+}
+
+#onePaymentPlans .card-body h6,
+#monthlyPlans .card-body h6 {
+    color: var(--Kerry-grey-700, #080808);
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+}
+
+#onePaymentPlans .card-body span,
+#monthlyPlans .card-body span {
+    color: var(--Blue-700, #1751AA);
+    text-align: center;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+}
+
+#onePaymentPlans .card-body small,
+#monthlyPlans .card-body small {
+    color: var(--Blue-700, #1751AA);
+    text-align: center;
+    font-size: 11px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+#onePaymentPlans .card-body p,
+#monthlyPlans .card-body p {
+    color: var(--kerry-grey-600-main, #3B3B3B);
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    margin-bottom: 12px;
+}
+
+#onePaymentPlans .card-body a,
+#monthlyPlans .card-body a {
+    color: var(--kerry-grey-600-main, #3B3B3B);
+    font-size: 13px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+}
+
+.popular-badge {
+    border-radius: 100px;
+    background: var(--Blue-100, #E0ECFD);
+    color: var(--Blue-800, #003891);
+    text-align: center;
+    padding: 3px 5px;
+    font-size: 10px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+    position: absolute;
+    top: -10px;
+    left: 18px;
+}
+
 /* ===== MEDIA QUERIES ===== */
 @media (min-width: 1200px) {
     .testimonial-section .container {
@@ -3677,8 +4160,6 @@ svg.user-type-icon path {
         height: 100%;
         min-height: 466px;
     }
-
-
 
     .sport-nutrition-promo__half--left,
     .sport-nutrition-promo__half--right {
@@ -3802,24 +4283,61 @@ svg.user-type-icon path {
         margin-right: 25px;
     }
 }
-    @media (max-width: 767px) {
-        .sport-nutrition-promo__half {
-            height: 466px;
-        }
 
-        .sport-nutrition-promo__half--right {
-             height: 366px;
-             min-height: 366px;
+@media (max-width: 767px) {
+    .sport-nutrition-promo__half {
+        height: 466px;
+    }
+
+    .sport-nutrition-promo__half--right {
+        height: 366px;
+        min-height: 366px;
     }
 }
+
 /* Tablet (768px and below) */
 @media (max-width: 768px) {
+    .plan-inclusion-section .plan-features.consultations {
+        grid-template-columns: repeat(1, 1fr);
+    }
+
+    .slider-track .card {
+        flex: 0 0 calc(100% - 40px);
+        min-width: calc(100% - 40px);
+        margin: 0 20px;
+    }
+
+    .slider-arrow {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        border: none;
+        background: #fff;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        border-radius: 50%;
+        width: 24px;
+        height: 24px;
+        cursor: pointer;
+        z-index: 10;
+    }
+
+    /* Adjust arrow positioning for mobile */
+    .slider-arrow.left-arrows {
+        left: -8px;
+    }
+
+    .slider-arrow.right-arrows {
+        right: -8px;
+    }
+
     .pricing-right-section {
         width: 100%;
     }
+
     .custom-select-arrow {
-    right: 12px;
-}
+        right: 12px;
+    }
+
     .btn-login {
         font-size: 14px;
         padding: 7px 20px;
@@ -3995,7 +4513,7 @@ svg.user-type-icon path {
 
     .why-it-works-section .feature-item {
         border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-                padding-bottom: 16px;
+        padding-bottom: 16px;
     }
 
     .why-it-works-section .feature-content h3 {
@@ -4497,6 +5015,14 @@ svg.user-type-icon path {
 
 /* Mobile (480px and below) */
 @media (max-width: 480px) {
+    .about-section.training-nutrition-landing.consultations {
+        padding-bottom: 48px;
+    }
+
+    .hero-section-landing.consultations {
+        background-position: 70% center;
+    }
+
     .otp-input-group svg {
         display: none;
     }
@@ -4512,8 +5038,31 @@ svg.user-type-icon path {
 
     #signupModalathlete .modal-content,
     #loginModalathlete .modal-content,
-    #quizModal .modal-content {
+    #quizModal .modal-content,
+    #planChooseModal .modal-content,
+    #paymentModal .modal-content,
+    #congratsModalPlan .modal-content,
+    #congratsModalConsultation .modal-content,
+    #paymentModalPlan .modal-content {
         max-height: 80vh;
+    }
+
+    #planChooseModal .modal-content .modal-body,
+    #paymentModal .modal-content #paymentContentConsultation,
+    #congratsModalPlan .modal-content #congratsContentPlan,
+    #congratsModalConsultation .modal-content #congratsContentConsultation,
+    #paymentModalPlan .modal-content #congratsContentConsultation {
+        height: 100%;
+        overflow-y: auto;
+        padding-top: 20px !important;
+    }
+ #congratsModalConsultation .modal-content #congratsContentConsultation,
+    #paymentModalPlan .modal-content #congratsContentConsultation {
+        border-radius:10px;
+    }
+    #congratsModalPlan .modal-content #congratsContentPlan,
+    #congratsModalConsultation .modal-content #congratsContentConsultation {
+        padding-top: 0px !important;
     }
 
     .phone-vertical-line {
@@ -4613,7 +5162,7 @@ svg.user-type-icon path {
 
     .choose-plan-section .col-md-4 {
         scroll-snap-align: start;
-                padding: 0 8px;
+        padding: 0 8px;
     }
 
     .sport-nutrition-promo__title {
@@ -4630,7 +5179,7 @@ svg.user-type-icon path {
     .sport-nutrition-promo__quiz-btn {
         padding: 14px 16px;
         border-radius: 6px;
-                background-color: #fff;
+        background-color: #fff;
         color: var(--kerry-grey-600-main, #3b3b3b);
         font-family: "Noto Sans";
         font-size: 14px;
@@ -4663,9 +5212,11 @@ svg.user-type-icon path {
     .hero-section-landing {
         height: 520px;
     }
+
     .hero-section-landing {
         background-position: 70% center !important;
     }
+
     .btn-purchase-plan {
         padding: 12px 24px;
         font-size: 14px;
@@ -4751,6 +5302,7 @@ svg.user-type-icon path {
     .recommended-plans-section .card-description {
         font-size: 0.85em;
     }
+
     .plan-injury {
         flex-direction: column;
     }
@@ -4772,11 +5324,13 @@ svg.user-type-icon path {
         grid-template-columns: repeat(1, 1fr);
         gap: 12px;
     }
-.quiz-step .food-image-container {
+
+    .quiz-step .food-image-container {
         height: max-content;
         padding: 8px;
         justify-content: flex-end;
     }
+
     .otp-input-group {
         gap: 16px;
     }
@@ -4891,15 +5445,18 @@ ul#quiz-phone-country-list {
 .quiz-step#step-5 .food-image-container {
     cursor: default;
 }
-a.btn-signup{
+
+a.btn-signup {
     text-decoration: none;
 }
 
 /* iOS Safari specific fixes */
 @supports (-webkit-touch-callout: none) {
     .sport-nutrition-promo__form select[data-custom="true"] {
-        font-size: 16px !important; /* Prevents zoom on iOS */
-        max-height: 45vh !important; /* Slightly smaller for iOS */
+        font-size: 16px !important;
+        /* Prevents zoom on iOS */
+        max-height: 45vh !important;
+        /* Slightly smaller for iOS */
         overflow-y: auto !important;
         -webkit-appearance: none !important;
         appearance: none !important;
@@ -5120,12 +5677,12 @@ a.btn-signup{
 }
 
 /* Added header section styling */
-.hero-section {
+.about-us .hero-section {
     text-align: center;
     padding: 80px 0 60px;
 }
 
-.hero-title {
+.hero-title-landing {
     color: #000;
     text-align: center;
     font-size: 32px;
@@ -5225,7 +5782,6 @@ a.btn-signup{
     gap: 15px;
     margin-bottom: 20px;
 }
-
 
 .biohealth-title {
     font-size: 20px;
@@ -5353,14 +5909,14 @@ a.btn-signup{
 }
 
 @media (max-width: 768px) {
-    .hero-section.overlapping-img-section{
+    .hero-section.overlapping-img-section {
         background-color: transparent;
     }
-    .hero-section {
-        padding: 36px 0;
-    }
 
-    .hero-title {
+    /* .hero-section {
+        padding: 36px 0;
+    } */
+    .hero-title-landing {
         font-size: 32px;
         line-height: 40px;
     }
@@ -5370,9 +5926,11 @@ a.btn-signup{
         gap: 30px;
         margin-bottom: 36px;
     }
-    .biohealth-header img{
+
+    .biohealth-header img {
         width: 100%;
     }
+
     .athletes-header {
         margin-bottom: 24px;
     }
@@ -5393,6 +5951,7 @@ a.btn-signup{
     .athlete-card {
         height: 200px;
     }
+
     .athlete-name {
         font-size: 20px;
         line-height: normal;
@@ -5414,8 +5973,33 @@ a.btn-signup{
     }
 
     .athlete-card {
-        flex: 0 0 80%; /* card width */
+        flex: 0 0 80%;
+        /* card width */
         scroll-snap-align: start;
     }
 }
 
+/* Input with icon styles */
+.input-with-icon {
+    position: relative;
+}
+
+.input-with-icon .input-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 2;
+    pointer-events: none;
+    opacity: 0.6;
+}
+
+.input-with-icon .form-control,
+#paymentModalPlan .input-with-icon .form-control {
+    padding-left: 40px;
+    /* Add padding to make space for the icon */
+}
+#consultation-payment-form .btn-signup,
+#congratsContentConsultation .btn-signup{
+    justify-content: center;
+}

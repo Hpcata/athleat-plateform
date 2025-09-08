@@ -47,12 +47,12 @@ class OtpService
                    ->where('is_verified', false)
                    ->update(['is_verified' => true]);
             
-            // Store OTP in database for 5 minutes
+            // Store OTP in database for 30 seconds
             $otpToken = OtpToken::create([
                 'mobile_number' => $mobileNumber,
                 'otp' => $otp,
                 'is_verified' => false,
-                'expires_at' => now()->addMinutes(5)
+                'expires_at' => now()->addSeconds(30)
             ]);
             
             // Log OTP storage
@@ -83,7 +83,7 @@ class OtpService
                 $mobileNumber,
                 [
                     'from' => $this->fromNumber,
-                    'body' => "Your OTP for registration is: {$otp}. Valid for 5 minutes."
+                    'body' => "Your OTP for registration is: {$otp}. Valid for 30 seconds."
                 ]
             );
 
@@ -176,7 +176,7 @@ class OtpService
     {
         return OtpToken::where('mobile_number', $mobileNumber)
                       ->where('is_verified', true)
-                      ->where('expires_at', '>', now()->subMinutes(10)) // Check if verified within last 10 minutes
+                      ->where('expires_at', '>', now()->subMinutes(1)) // Check if verified within last 1 minute
                       ->exists();
     }
 
@@ -221,7 +221,7 @@ class OtpService
         
         $verifiedOtps = OtpToken::where('mobile_number', $mobileNumber)
                                ->where('is_verified', true)
-                               ->where('expires_at', '>', now()->subMinutes(10))
+                               ->where('expires_at', '>', now()->subMinutes(1))
                                ->get();
         
         return [
