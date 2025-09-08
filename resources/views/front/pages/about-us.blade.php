@@ -21,7 +21,7 @@
                     </div>
                 </div>
             @endif
-            <div class="container-homepage">
+            <div class="container-homepage about-us">
                 @if($section->section_type == \App\Models\Section::TYPE_ATHLETE_NUTRITION_FOCUS && $section->enabled == 1) <!-- done -->
                     @php
                         $bannerImage = '';
@@ -29,7 +29,7 @@
                             $bannerImage = $section->banner_image[0];
                         }
                     @endphp
-                    <section class="hero-section overlapping-img-section">
+                    <section class="hero-section  overlapping-img-section">
                         <h1 class="hero-title">{{!empty($section->title) ? $section->title : ''}}</h1>
                         {!! $section->content !!}
                         <div class="profile-images">
