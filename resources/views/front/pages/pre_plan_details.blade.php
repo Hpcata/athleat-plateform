@@ -1562,7 +1562,7 @@
     <!-- Food Selection Modal -->
     <div class="modal" id="foodModal" tabindex="-1" aria-labelledby="foodModalLabel" aria-hidden="true"  data-bs-backdrop="static"
      data-bs-keyboard="false">
-        <div class="modal-dialog modal-lg modal-dialog-scrollable" style="max-width: 50%;">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable modal-dialog-centered">
             <div class="modal-content" style="overflow-x: hidden; overflow-y: auto;">
                 <div class="modal-header">
                     <h5 class="modal-title" id="foodModalLabel">Select Food Items</h5>
