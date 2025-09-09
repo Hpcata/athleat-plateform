@@ -285,6 +285,7 @@ Route::get('/consultations', [FrontController::class, 'consultations'])->name('f
 // Consultation booking routes
 Route::post('/consultation/book', [App\Http\Controllers\Front\ConsultationController::class, 'bookConsultation'])->name('front.consultation.book');
 Route::get('/consultation/{id}/details', [App\Http\Controllers\Front\ConsultationController::class, 'getConsultationDetails'])->name('front.consultation.details');
+Route::get('/consultation/questionnaire-status', [App\Http\Controllers\Front\ConsultationController::class, 'checkQuestionnaireStatus'])->name('front.consultation.questionnaire.status');
 
 // Front auth
 Route::post('front/register', [FrontController::class, 'register'])->name('front.register');
