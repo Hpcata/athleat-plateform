@@ -7,6 +7,7 @@ use App\Models\Consultation;
 use App\Models\Payment;
 use App\Models\UserConsultation;
 use App\Models\User;
+use App\Models\Questionnaire;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -196,6 +197,35 @@ class ConsultationController extends Controller
         return response()->json([
             'success' => true,
             'consultation' => $consultation
+        ]);
+    }
+
+    /**
+     * Check if user has completed the nutrition-form questionnaire
+     */
+    public function checkQuestionnaireStatus()
+    {
+        if (!Auth::check()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'User not authenticated',
+                'requires_auth' => true
+            ]);
+        }
+
+        $user = Auth::user();
+        
+        // Check if user has completed nutrition-form questionnaire
+        $questionnaireCompleted = Questionnaire::where('user_id', $user->id)
+            ->where('question', 'nutrition-form')
+            ->exists();
+
+        return response()->json([
+            'success' => true,
+            'questionnaire_completed' => $questionnaireCompleted,
+            'redirect_url' => $questionnaireCompleted 
+                ? route('front.profile', $user->id) 
+                : route('front.pre-plan-details')
         ]);
     }
 }
