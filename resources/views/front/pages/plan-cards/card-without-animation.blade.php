@@ -31,7 +31,7 @@
                     if (isset($redirectRoute) && isset($userPlan) && isset($plan)) {
                         switch ($plan->name) {
                             case 'Training Nutrition Plan':
-                                $route = route('front.training.nutrition.plan');
+                                $route = route('front.training.nutrition.plan', ['user_id' => $userPlan->user_id, 'plan_id' => $plan->id]);
                                 break;
                             case 'Injury & Recovery Plan':
                                 $route = route('front.injury.recovery.plan', ['user_id' => $userPlan->user_id, 'plan_id' => $plan->id]);

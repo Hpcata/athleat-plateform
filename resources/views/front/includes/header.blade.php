@@ -1,10 +1,10 @@
 <?php
-$setting = \App\Models\SiteSettings::where('page_id', 'general')->where('meta_key', 'header_headermenu')->first();
-$headerData = json_decode($setting['meta_value'], true);
-$auth = auth()->guard('web')->check();
+    $setting = \App\Models\SiteSettings::where('page_id', 'general')->where('meta_key', 'header_headermenu')->first();
+    $headerData = json_decode($setting['meta_value'], true);
+    $auth = auth()->guard('web')->check();
 ?>
 
-@if (Route::is('front.profile') || Route::is('front.plans.details') || Route::is('front.my-plans') || Route::is('front.injury.recovery.plan'))
+@if ($auth && (Route::is('front.profile') || Route::is('front.plans.details') || Route::is('front.my-plans')))
     <!-- Mobile Menu Overlay -->
     <?php $user = auth()->user();?>
     <div class="mobile-menu-overlay" id="mobile-menu-overlay" onclick="toggleMobileMenu()"
@@ -28,14 +28,7 @@ $auth = auth()->guard('web')->check();
             @if (Auth::check() && Auth::guard('web')->user()->is_superadmin == 0)
                 @php
                     $userId = Auth::guard('web')->user()->id;
-                    $userPlan = \App\Models\UserPlan::with([
-                        'plan',
-                    ])->where('user_id', $userId)->first();
-
                     $myPlanUrl = route('front.my-plans');
-                    // if (isset($userPlan)) {
-                    //     $myPlanUrl = route('front.plans.details', ['id' => $userPlan->plan->id, 'user_id' => $userPlan->user->id]);
-                    // }
                 @endphp
                 <li class="mobile-menu-link"><a
                         href="{{ route('front.profile', ['id' => Auth::guard('web')->user()->id]) }}"
@@ -48,21 +41,26 @@ $auth = auth()->guard('web')->check();
                         style="color: #fff; text-decoration: none; display: block; padding: 8px 16px;">My Plan</a>
                 </li>
             @endif
-            <li class="mobile-menu-link coming-soon-popup"><a href="#" onclick="toggleMobileMenu()"
-                style="color: #fff; text-decoration: none; display: block; padding: 8px 16px;">Challenges and
-                Rewards</a>
+
+            {{-- Challenges and Rewards button --}}
+            <li class="mobile-menu-link coming-soon-popup">
+                <a href="#" onclick="toggleMobileMenu()" style="color: #fff; text-decoration: none; display: block; padding: 8px 16px;">Challenges and Rewards</a>
             </li>
             <li>
                 <div class="mobile-menu-divider" style="height:1px; background:#555; margin: 12px 16px;"></div>
             </li>
+            {{-- Supplement scanner button --}}
             <li><a href="#" id="scanner-btn" class="scanner-btn">Supplement Scanner</a></li>
+            {{-- Level-Up library button --}}
             <li><a href="#" class="coming-soon-popup">Level-Up Library</a></li>
+            {{-- BioHealth Passport button --}}
             <li><a href="#" onclick="openBookingAndModal()">BioHealth Passport</a></li>
             <li>
                 <div class="mobile-menu-divider" style="height:1px; background:#555; margin: 12px 16px;"></div>
             </li>
             @if (Auth::check() && Auth::guard('web')->user()->is_superadmin == 0)
                 <li class="mobile-menu-link">
+                    {{-- Logout form --}}
                     <form id="logout-form-mobile" action="{{ route('front.logout') }}" method="POST"
                         style="display: none;">@csrf</form>
                     <a href="#"
@@ -75,6 +73,8 @@ $auth = auth()->guard('web')->check();
             @endif
         </ul>
     </div>
+
+    {{-- Desktop menu --}}
     @if (Auth::check() && Auth::guard('web')->user()->is_superadmin == 0)
         <header class="header">
             <div class="header-content">
@@ -86,24 +86,22 @@ $auth = auth()->guard('web')->check();
                 </div>
                 @php
                     $userId = Auth::guard('web')->user()->id;
-                    $userPlan = \App\Models\UserPlan::with([
-                        'plan',
-                    ])->where('user_id', $userId)->first();
 
                     $myPlanUrl = route('front.my-plans');
-                    // if (isset($userPlan)) {
-                    //     $myPlanUrl = route('front.plans.details', ['id' => $userPlan->plan->id, 'user_id' => $userPlan->user->id]);
-                    // }
                 @endphp
                 <nav class="nav-center">
                     {{-- On click of home I want to redirect user to home page and stay logged in if user is logged in --}}
                     <a class="text-decoration-none nav-item" onclick="event.preventDefault(); window.location.href = '{{ route('front.index') }}';">Home</a>
                     <span class="nav-item coming-soon-popup">Challenges and Rewards</span>
                     <div class="nav-item dropdown">
+                        {{-- Resources dropdown --}}
                         <span>Resources <i class="fas fa-chevron-down"></i></span>
                         <div class="dropdown-content">
+                            {{-- Supplement scanner button --}}
                             <a href="#" id="scanner-btn" class="scanner-btn">Supplement Scanner</a>
+                            {{-- Level-Up library button --}}
                             <a href="#" class="coming-soon-popup">Level-Up Library</a>
+                            {{-- BioHealth Passport button --}}
                             <a href="#" onclick="openBookingAndModal()">BioHealth
                                 Passport</a>
                         </div>
@@ -112,6 +110,7 @@ $auth = auth()->guard('web')->check();
                 <div class="nav-right">
                     <div class="nav-item dropdown">
                         <div class="nav-end">
+                            {{-- My account button --}}
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18"
                                 fill="none">
                                 <path
@@ -121,7 +120,9 @@ $auth = auth()->guard('web')->check();
                             <span>My Account <i class="fas fa-chevron-down"></i></span>
                         </div>
                         <div class="dropdown-content">
+                            {{-- My plan button --}}
                             <a href="{{ $myPlanUrl }}">My Plan</a>
+                            {{-- Logout form --}}
                             <form id="logout-form" action="{{ route('front.logout') }}" method="POST"
                                 style="display: none;">
                                 @csrf
@@ -138,7 +139,6 @@ $auth = auth()->guard('web')->check();
     @else
         @php
             $id = request()->route('id');
-            $user = auth()->user();
             $userId = $user ? $user->id : null;
         @endphp
         <header class="header">
@@ -153,6 +153,7 @@ $auth = auth()->guard('web')->check();
                         @else
                             <a class="text-decoration-none nav-item" href="{{ route('front.index') }}">Home</a>
                         @endif
+                        {{-- Challenges and Rewards button --}}
                         <span class="nav-item coming-soon-popup">Challenges and Rewards</span>
                         <div class="nav-item dropdown">
                             <span>Resources <i class="fas fa-chevron-down"></i></span>
@@ -164,6 +165,7 @@ $auth = auth()->guard('web')->check();
                         </div>
                     </nav>
                     <div class="nav-right">
+                        {{-- Login and signup buttons --}}
                         <button class="btn-login mob-hide" id="login" onclick="openSingupFreePopup(true)">Log in</button>
                         <button class="btn-signup" id="show-new-signup-modal" onclick="openSingupFreePopup()"> Sign up for free </button>
                     </div>
@@ -174,18 +176,22 @@ $auth = auth()->guard('web')->check();
     <nav class="navbar navbar-expand-lg navbar-custom homepage-navbar">
         <div class="container-homepage">
             <a class="navbar-brand" href="{{ route('front.index') }}">
-                <img src="{{ frontAssets('images/logo.svg') }}" alt="ATHLEAT Fuel Logo" />
+                <img src="{{ frontAssets('images/logo.svg') }}" alt="ATHLEAT Logo" />
             </a>
+
+            {{-- Mobile menu button --}}
             <div class="mob-btn-wrap">
                 <button class="me-0 btn-login web-hide" onclick="openSingupFreePopup(true)">Log in</button>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                     style="border: none">
                     <span class="menu-icon" style="color: white">
-                        <img href="{{ route('front.index') }}" src="{{ frontAssets('images/bars.svg') }}" alt="ATHLEAT Fuel Logo" class="bars-icon" />
+                        <img href="{{ route('front.index') }}" src="{{ frontAssets('images/bars.svg') }}" alt="ATHLEAT Logo" class="bars-icon" />
                         <img href="{{ route('front.index') }}" src="{{ frontAssets('images/cross.svg') }}" alt="Menu" class="cross-icon" />
                     </span>
                 </button>
             </div>
+
+            {{-- Desktop menu --}}
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="mx-auto navbar-nav">
                     <li class="nav-item">
@@ -214,16 +220,21 @@ $auth = auth()->guard('web')->check();
                     </li>
                 </ul>
 
+                {{-- Login and signup buttons --}}
                 <div class="d-flex">
                     @if (Auth::check())
+                        {{-- My plans button --}}
                         <a href="{{ route('front.my-plans') }}"
                             class="btn btn-signup mob-hide">
                             My Account
                         </a>
                     @else
+                        {{-- Login and signup buttons --}}
                         <button class="btn-login mob-hide" id="login" onclick="openSingupFreePopup(true)">Log in</button>
                         <button class="btn-signup" id="show-new-signup-modal" onclick="openSingupFreePopup()">Sign up for free </button>
                     @endif
+
+                    {{-- Virtual Kez button --}}
                     <button class="ms-2 btn-login web-hide">Virtual Kez</button>
                 </div>
             </div>
@@ -352,7 +363,6 @@ $auth = auth()->guard('web')->check();
 
 <script>
     function toggleMobileMenu() {
-        console.log('toggleMobileMenu called');
         var menu = document.getElementById('mobile-menu');
         var overlay = document.getElementById('mobile-menu-overlay');
         var hamburgerIcon = document.getElementById('hamburger-icon');
@@ -503,7 +513,6 @@ $auth = auth()->guard('web')->check();
 
         // Check if current URL is /training-nutrition-plan, /, or /about-us
         if (window.location.pathname === '/training-nutrition-plan' || window.location.pathname === '/' || window.location.pathname === '/about-us' || window.location.pathname === '/competition-plan' || window.location.pathname === '/injury-recovery-plan' || window.location.pathname === '/surgery-plan' || window.location.pathname === '/consultations') {
-
             // Check initial scroll position on page load
             updateNavbarBackground();
 
@@ -612,21 +621,21 @@ $auth = auth()->guard('web')->check();
 
             document.querySelectorAll('.scroll-to-plans').forEach((link) => {
                 link.addEventListener('click', function (e) {
-                e.preventDefault();
+                    e.preventDefault();
 
-                const navCol = document.querySelector('.navbar-collapse');
-                if (navCol && navCol.classList.contains('show')) {
-                    document.querySelector('.navbar-toggler')?.click();
-                }
+                    const navCol = document.querySelector('.navbar-collapse');
+                    if (navCol && navCol.classList.contains('show')) {
+                        document.querySelector('.navbar-toggler')?.click();
+                    }
 
-                const row = link.classList.contains('row2') ? 'row2' : 'row1';
+                    const row = link.classList.contains('row2') ? 'row2' : 'row1';
 
-                if (!isHome()) {
-                    sessionStorage.setItem(SCROLL_KEY, row);
-                    window.location.assign('/'); // redirect to homepage
-                } else {
-                    scrollWithRetry(row);
-                }
+                    if (!isHome()) {
+                        sessionStorage.setItem(SCROLL_KEY, row);
+                        window.location.assign('/'); // redirect to homepage
+                    } else {
+                        scrollWithRetry(row);
+                    }
                 });
             });
 
@@ -640,7 +649,7 @@ $auth = auth()->guard('web')->check();
                 });
                 }
             }
-            })();
-});
+        })();
+    });
 </script>
 
