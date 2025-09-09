@@ -24,7 +24,7 @@
                 @endif
                 <div class="hero-content">
                     <div class="hero-bottom">
-                        <h1 class="hero-title">Injury & Recovery Plan</h1>
+                        <h1 class="hero-title">Training Nutrition Plan</h1>
                         <div class="hero-top">
                             <p class="hero-subtitle-plan">
                                 {{ isset($sportGameData['sport_image']) ? $sportGameData['sport_name'] : '' }}</p>
