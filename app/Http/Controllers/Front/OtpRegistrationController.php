@@ -151,6 +151,17 @@ class OtpRegistrationController extends Controller
             $result = $this->otpService->verifyOtp($mobileNumber, $otp);
 
             if ($result['success']) {
+                // remove +91 or +61 from mobile number based on what exists in the mobile number
+                if (strpos($mobileNumber, '+91') === 0) {
+                    $mobileNumber = str_replace('+91', '', $mobileNumber);
+                }
+                if (strpos($mobileNumber, '+61') === 0) {
+                    $mobileNumber = str_replace('+61', '', $mobileNumber);
+                }
+                if (strpos($mobileNumber, '+') === 0) {
+                    $mobileNumber = str_replace('+', '', $mobileNumber);
+                }
+
                 // Check if user exists with this mobile number
                 $existingUser = User::where('phone', $mobileNumber)->first();
 
