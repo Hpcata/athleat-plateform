@@ -43,11 +43,15 @@
                     @endif
 
                     @if((!isset($plansWithAnimation) || count($plansWithAnimation) == 0) && (!isset($plansWithoutAnimation) || count($plansWithoutAnimation) == 0))
-                        <div class="col-12">
-                            <div class="alert alert-info text-center">
-                                <p>You haven't purchased any plans yet. Explore our nutrition plans below to get started!</p>
-                            </div>
-                        </div>
+                             <div class="consults-plans-grid" style="margin-bottom: 0;">
+                <div class="no-plan-container">
+                    <img src="{{ asset('front/images/my-plan/vector.svg') }}" alt="No Plan Yet" class="no-plan-image" />
+                    <h2 class="no-plan-title">Uh-oh! You don't have a plan yet.</h2>
+                    <p class="no-plan-description">
+                        Get ahead of your competition by signing up for a plan below.
+                    </p>
+                </div>
+            </div>
                     @endif
                 </div>
             </section>
