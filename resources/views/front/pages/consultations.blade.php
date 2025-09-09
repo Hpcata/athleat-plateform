@@ -253,17 +253,18 @@
 
     <!-- Congrats Modal for Consultation -->
     <div class="modal fade" id="congratsModalConsultation" tabindex="-1"
-        aria-labelledby="congratsModalConsultationLabel" aria-hidden="true">
+        aria-labelledby="congratsModalConsultationLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content" style="border-radius: 12px;">
                 <div id="congratsContentConsultation">
-                    <button type="button" class="btn-close congrats-modal" data-bs-dismiss="modal"
+                    <!-- Remove close button to prevent manual closing -->
+                    <!-- <button type="button" class="btn-close congrats-modal" data-bs-dismiss="modal"
                         aria-label="Close"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12"
                             viewBox="0 0 12 12" fill="none">
                             <path
                                 d="M0.219668 1.28033C-0.0732225 0.987438 -0.0732225 0.512558 0.219668 0.219668C0.512558 -0.0732225 0.987438 -0.0732225 1.28033 0.219668L5.999 4.9384L10.7176 0.219798C11.0105 -0.0730923 11.4854 -0.0730923 11.7782 0.219798C12.0711 0.512688 12.0711 0.987568 11.7782 1.28046L7.0597 5.999L11.7782 10.7176C12.0711 11.0105 12.0711 11.4854 11.7782 11.7782C11.4854 12.0711 11.0105 12.0711 10.7176 11.7782L5.999 7.0597L1.28033 11.7784C0.987438 12.0713 0.512558 12.0713 0.219668 11.7784C-0.0732225 11.4855 -0.0732225 11.0106 0.219668 10.7177L4.9384 5.999L0.219668 1.28033Z"
                                 fill="#626262" />
-                        </svg></button>
+                        </svg></button> -->
                     <img src="{{ frontAssets('images/consultation/congrats-modal-img.png') }}" alt="Congrats" class="rounded-top w-100">
                     <div class="p-4 text-center modal-body">
                         <div class="mb-3">
@@ -1273,14 +1274,29 @@
                  $('#calendarBookingModal').modal('show');
              });
              
-             // Handle manual closing of congrats modal (X button or clicking outside)
+             // Prevent page refresh when congrats modal is open
+             $('#congratsModalConsultation').on('shown.bs.modal', function() {
+                 // Add beforeunload event listener when modal opens
+                 window.addEventListener('beforeunload', preventRefreshWhenCongratsOpen);
+             });
+             
              $('#congratsModalConsultation').on('hidden.bs.modal', function() {
-                 // Remove any existing coming soon tooltip when modal is closed manually
+                 // Remove beforeunload event listener when modal closes
+                 window.removeEventListener('beforeunload', preventRefreshWhenCongratsOpen);
+                 // Remove any existing coming soon tooltip when modal is closed
                  const existingTooltip = document.querySelector('.coming-soon-tooltip');
                  if (existingTooltip) {
                      existingTooltip.remove();
                  }
              });
+             
+             // Function to prevent page refresh when congrats modal is open
+             function preventRefreshWhenCongratsOpen(event) {
+                 const message = 'Please complete your consultation booking process first before leaving this page.';
+                 event.preventDefault();
+                 event.returnValue = message;
+                 return message;
+             }
              
              // Handle calendar booking modal close - check questionnaire status and redirect
              $('#calendarBookingModal').on('hidden.bs.modal', function() {
