@@ -25,11 +25,11 @@
             </section>
 
             @php
-                $showFreePlan = !$isAdminView && !$payment && isset($userPlan) && $userPlan->free_user && $userPlan->free_user_plan && !isset($userPlan?->plan);
-                $needsQuestionnaire = !$isAdminView && isset($payment) && (!isset($isQuestionnaireSubmitted) || !$isQuestionnaireSubmitted->is_complete);
-                $waitingPlan = !$isAdminView && isset($payment->plan_id, $isQuestionnaireSubmitted, $userPlan) && $isQuestionnaireSubmitted->is_complete && !$userPlan->is_mail_sent;
-                $showFinalPlan = !$isAdminView && (isset($userPlan) && $userPlan->status == 'active');
-                $showAdminView = $isAdminView;
+                $showFreePlan = !$payment && isset($userPlan) && $userPlan->free_user && $userPlan->free_user_plan && !isset($userPlan?->plan);
+                $needsQuestionnaire = isset($payment) && (!isset($isQuestionnaireSubmitted) || !$isQuestionnaireSubmitted->is_complete);
+                $waitingPlan = isset($payment->plan_id, $isQuestionnaireSubmitted, $userPlan) && $isQuestionnaireSubmitted->is_complete && !$userPlan->is_mail_sent;
+                $showFinalPlan = $isAdminView || (isset($userPlan) && $userPlan->status == 'active');
+                // $showFinalPlan = (isset($userPlan) && $userPlan->status == 'active');
             @endphp
 
             @if ($showFreePlan)
