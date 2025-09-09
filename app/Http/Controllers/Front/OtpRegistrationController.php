@@ -572,7 +572,7 @@ class OtpRegistrationController extends Controller
 
     public function sendAfterQuizEmail($email) {
         try {
-            mail($email, "After Quiz", "Thank you for completing the quiz.");
+            // mail($email, "After Quiz", "Thank you for completing the quiz.");
             return true;
         } catch (\Exception $e) {
             Log::error('Failed to send after quiz email', [
