@@ -22,7 +22,7 @@ return new class extends Migration
                 $table->foreign('consultation_id')->references('id')->on('consultations')->onDelete('cascade');
 
                 // Ensure unique combination of user and consultation
-                $table->unique(['user_id', 'consultation_id']);
+                // $table->unique(['user_id', 'consultation_id']);
             });
         }
     }
