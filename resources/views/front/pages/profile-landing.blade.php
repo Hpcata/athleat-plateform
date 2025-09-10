@@ -53,12 +53,12 @@
                 @include('front.pages.partials.plan-preparation-section', ['plan' => $payment->plan ?? null, 'isPreparingPlan' => true])
             @elseif ($showFinalPlan)
                 @include('front.pages.partials.plan-preparation-section', ['plan' => $payment->plan ?? null, 'isPreparingPlan' => false, 'redirectRoute' => true])
-            @elseif ($showAdminView)
+            {{-- @elseif ($showAdminView)
                 @include('front.pages.partials.active-plan-section', [
                     'userPlan' => $userPlan ?? null,
                     'isAdminView' => $isAdminView ?? false,
                     'plan' => $payment->plan ?? null
-                ])
+                ]) --}}
             @endif
 
             <!-- Challenges -->
