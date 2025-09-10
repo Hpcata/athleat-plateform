@@ -1,65 +1,45 @@
 @extends(frontView('layouts.app'))
 
-@section('title', 'Best Sports Nutritionist & Dietitians Australia | Kerry O’Bryan')
-@section('meta_description',
-    'Performance Health Support offers expert care from top sports nutritionists, strength
-    coaches, and sports dietitians in Australia to boost health and performance.')
+@section('title', 'Injury Plan & Diet for Athletes | Performance Health')
+@section('meta_description', 'Get a personalised athlete meal plan with Performance Health Support. Expert sports nutrition plans and diet strategies tailored to fuel performance and recovery.')
+
+@push('styles')
+    <link rel="stylesheet" href="{!! frontAssets('css/purchase-plans/injury-recovery.css') !!}">
+@endpush
 
 @section('content')
-    <!-- Main Content -->
-    <main class="main">
-        <div class="container">
-            <!-- Welcome Section -->
-            <section class="welcome-section">
-                <div class="welcome-card hover-card">
-                    <div class="welcome-message" style="position: relative;">
-                        <h2>Welcome back legend! How's your week going?</h2>
-                        <div class="welcome-row">
-                            <a class="start-chat" id="start-chat-link">Start chat</a>
-                            <span class="assistant-name">Kerry O'Bryan Virtual</span>
+    <main class="main injury-plan-page">
+        <div class="hero-container">
+            <div class="hero-section">
+                @if (!empty($sportGameData['sport_image']))
+                    <div class="hero-background"
+                        style="background-image: url('{{ webAssets('storage/' . $sportGameData['sport_image']) }}')">
+                        <div class="hero-overlay"></div>
+                    </div>
+                @else
+                    <div class="hero-background"
+                        style="background-image: url('{{ frontAssets('images/hero-section/injury.svg') }}');">
+                        <div class="hero-overlay"></div>
+                    </div>
+                @endif
+                <div class="hero-content">
+                    <div class="hero-bottom">
+                        <h1 class="hero-title">Training Nutrition Plan</h1>
+                        <div class="hero-top">
+                            <p class="hero-subtitle-plan">
+                                {{ isset($sportGameData['sport_image']) ? $sportGameData['sport_name'] : '' }}</p>
+                            <a href="{{ route('front.my-plans') }}" class="view-all-link"> View all plans </a>
                         </div>
-                        <img src="{{ frontAssets('images/profile.svg') }}" alt="Profile" class="profile-avatar-overlap" />
-                        <div class="welcome-arrow"></div>
                     </div>
                 </div>
-            </section>
+            </div>
+        </div>
 
-            @php
-                $showFreePlan = !$payment && isset($userPlan) && $userPlan->free_user && $userPlan->free_user_plan && !isset($userPlan?->plan);
-                $needsQuestionnaire = isset($payment) && (!isset($isQuestionnaireSubmitted) || !$isQuestionnaireSubmitted->is_complete);
-                $waitingPlan = isset($payment->plan_id, $isQuestionnaireSubmitted, $userPlan) && $isQuestionnaireSubmitted->is_complete && !$userPlan->is_mail_sent;
-                $showFinalPlan = $isAdminView || (isset($userPlan) && $userPlan->status == 'active');
-                // $showFinalPlan = (isset($userPlan) && $userPlan->status == 'active');
-            @endphp
-
-            @if ($showFreePlan)
-                @include('front.pages.partials.nutrition-plan-section', [
-                    'title' => 'My Plans',
-                    'actionText' => 'Purchase Plan',
-                    'actionRoute' => 'front.my-plans',
-                    'overlayText' => isset($isQuestionnaireSubmitted) && !$isQuestionnaireSubmitted->is_complete ? 'Continue your Questionnaire' : 'Purchase a personalised plan',
-                    'overlayRoute' => isset($isQuestionnaireSubmitted) && !$isQuestionnaireSubmitted->is_complete ? route('front.pre-plan-details', ['id' => $payment->id ?? null, 'user_id' => $payment->user_id ?? null]) : route('front.my-plans')
-                ])
-            @elseif ($needsQuestionnaire)
-                @include('front.pages.partials.nutrition-plan-section', [
-                    'title' => 'My Plans',
-                    'actionText' => 'Purchase Plan',
-                    'actionRoute' => 'front.my-plans',
-                    'overlayText' => 'Continue your Questionnaire',
-                    'hideActionText' => false,
-                    'overlayRoute' => route('front.pre-plan-details', ['id' => $payment->id ?? null, 'user_id' => $payment->user_id ?? null])
-                ])
-            @elseif ($waitingPlan)
-                @include('front.pages.partials.plan-preparation-section', ['plan' => $payment->plan ?? null, 'isPreparingPlan' => true])
-            @elseif ($showFinalPlan)
-                @include('front.pages.partials.plan-preparation-section', ['plan' => $payment->plan ?? null, 'isPreparingPlan' => false, 'redirectRoute' => true])
-            @elseif ($showAdminView)
-                @include('front.pages.partials.active-plan-section', [
-                    'userPlan' => $userPlan ?? null,
-                    'isAdminView' => $isAdminView ?? false,
-                    'plan' => $payment->plan ?? null
-                ])
-            @endif
+        <div class="container">
+            @include('front.pages.partials.active-plan-section', [
+                'userPlan' => $userPlan ?? null,
+                'plan' => $plan ?? null
+            ])
 
             <!-- Challenges -->
             <section class="challenges">
@@ -169,7 +149,7 @@
                             <img src="{{ frontAssets('images/video-bg.webp') }}" class="video-thumb"
                                 alt="Video thumbnail for whey protein post-training" />
                             <div class="video-icon-overlay">
-                                 <img
+                                    <img
                                 src="{{ frontAssets('images/play.svg') }}"
                                 class="video-thumb"
                                 alt="play icon" />
@@ -239,23 +219,24 @@
                     $mealImage1 = $latestMealImages[0] ?? frontAssets('images/sports-training/fooditem1.webp');
                     $mealImage2 = $latestMealImages[1] ?? frontAssets('images/sports-training/fooditem6.webp');
                 @endphp
+
                 <label class="plan-subtitle-mob">Nutrition plans</label>
                 <div class="consults-plans-grid">
                     <div class="plan-card-custom plan-competition">
                         <div class="">
                             <div class="plan-title">Competition Plan</div>
                             <div class="plan-desc">
-                                Unlock your peak performance with a 24-hour Competition Nutrition Plan - Ensuring you’re hydrated, fuelled & ON when it’s game time so that nutrition is never your weakness!
+                                Unlock your peak performance with a 24-hour Competition Nutrition Plan - Ensuring you’re hydrated,
+                                fuelled & ON when it’s game time so that nutrition is never your weakness!
                             </div>
                             <div class="consult-user-row">
-                                <img src="{{ $mealImage1 }}" class="consult-avatar"
-                                    alt="Kerry O'Bryan, expert coach avatar" />
+                                <img src="{{ $mealImage1 }}" class="consult-avatar" alt="Kerry O'Bryan, expert coach avatar" />
                                 <img src="{{ $mealImage2 }}" class="consult-avatar overlap1"
                                     alt="Kerry O'Bryan, expert coach avatar" />
                                 <span>{{ $mealCount }} meals • 18 Nutrition tips</span>
                             </div>
                         </div>
-                        <button class="btn-consult"  onclick="showLearnMoreTooltip(this, 'Coming Soon')">Learn more</button>
+                        <button class="btn-consult" onclick="showLearnMoreTooltip(this, 'Coming Soon')">Learn more</button>
                     </div>
                     <div class="plan-card-custom plan-injury">
                         <div class="">
@@ -263,17 +244,17 @@
                             <div class="plan-desc">
                                 Optimised nutrition to support soft tissue injury. Hold muscle, reduce
                                 inflammation & limit fat gain with a
-                                personalised plan that caters to where you're at. Faster recovery is the goal & nutrition is too often overlooked!
+                                personalised plan that caters to where you're at. Faster recovery is the goal & nutrition is too
+                                often overlooked!
                             </div>
                             <div class="consult-user-row">
-                                <img src="{{ $mealImage1 }}" class="consult-avatar"
-                                    alt="Kerry O'Bryan, expert coach avatar" />
+                                <img src="{{ $mealImage1 }}" class="consult-avatar" alt="Kerry O'Bryan, expert coach avatar" />
                                 <img src="{{ $mealImage2 }}" class="consult-avatar overlap1"
                                     alt="Kerry O'Bryan, expert coach avatar" />
                                 <span>{{ $mealCount }} meals • 18 Nutrition tips</span>
                             </div>
                         </div>
-                        <button class="btn-consult" onclick="window.location.href='{{ route('front.injury.recovery.plan') }}'">Learn more</button>
+                        <button class="btn-consult" onclick="showLearnMoreTooltip(this, 'Coming Soon')">Learn more</button>
                     </div>
                 </div>
 
@@ -283,11 +264,13 @@
                         <div class="consult-title">Private Consultations</div>
                         <div class="consult-desc">
                             Get answers from a real-life expert coaching Elite Athletes and Olympians.
-                            An in-depth session to review your current approach, identify key opportunities, and give you practical, tailored strategies to reach your sporting goals. Get expert support that meets you where you’re at, with relevant education and answers to the questions that matter most.
+                            An in-depth session to review your current approach, identify key opportunities, and give you practical,
+                            tailored strategies to reach your sporting goals. Get expert support that meets you where you’re at,
+                            with relevant education and answers to the questions that matter most.
                         </div>
                         <div class="consult-user-row">
-                            <img src="https://booking.biohealthpassport.com.au/public/uploads/hero01.png"
-                                class="consult-avatar" alt="Kerry O'Bryan, expert coach avatar" style="border:none;" />
+                            <img src="https://booking.biohealthpassport.com.au/public/uploads/hero01.png" class="consult-avatar"
+                                alt="Kerry O'Bryan, expert coach avatar" style="border:none;" />
                             <span style="padding-left:0">Kerry O'Bryan • 60 min</span>
                         </div>
                         <a href="https://booking.biohealthpassport.com.au/kerry-obryan" target="_blank"
@@ -298,80 +281,6 @@
         </div>
     </main>
 
-    <!-- Custom Congrats Modal -->
-    <div class="modal" id="customCongratsModal" tabindex="-1" aria-labelledby="customCongratsModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
-            <div class="modal-content">
-                <div class="p-0 modal-body">
-                    <div class="recipe-dialog">
-                        <button class="dialog-close" data-bs-dismiss="modal" aria-label="Close">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"
-                                fill="none">
-                                <path
-                                    d="M0.366171 2.13422C-0.122057 1.64599 -0.122057 0.8544 0.366171 0.366171C0.8544 -0.122057 1.64599 -0.122057 2.13422 0.366171L9.99993 8.23198L17.8655 0.366388C18.3538 -0.12184 19.1454 -0.12184 19.6335 0.366388C20.1217 0.854617 20.1217 1.64621 19.6335 2.13444L11.7681 9.99993L19.6335 17.8655C20.1217 18.3538 20.1217 19.1454 19.6335 19.6335C19.1454 20.1217 18.3538 20.1217 17.8655 19.6335L9.99993 11.7681L2.13422 19.6338C1.64599 20.1221 0.8544 20.1221 0.366171 19.6338C-0.122057 19.1456 -0.122057 18.3539 0.366171 17.8657L8.23198 9.99993L0.366171 2.13422Z"
-                                    fill="#3B3B3B" />
-                            </svg>
-                        </button>
-                        <div class="dialog-content">
-                            <div class="dialog-main-view">
-                                <div class="dialog-header" style="position:relative;">
-                                    <div class="custom-popup-main-row">
-                                        <div class="custom-popup-text-section">
-                                            <div class="custom-popup-text">
-                                                <h3>Congrats, you're in!</h3>
-                                                <p>You've just taken the first step toward smarter fuel, stronger
-                                                    performance, and better results. We're stoked to have you - let's get
-                                                    started. 🚀</p>
-                                                <h4>Your quiz score as promised </h4>
-                                            </div>
-                                        </div>
-                                        <div class="custom-popup-gauge-section">
-                                            <div class="custom-popup-gauge">
-                                                <div class="score-meter-box">
-                                                    <div class="score-meter-text">
-                                                        <span class="meter-text-01">Needs <br>work </span>
-                                                        <span class="meter-text-02">Pretty <br>ordinary</span>
-                                                        <span class="meter-text-03">Not bad</span>
-                                                        <span class="meter-text-04">Good</span>
-                                                    </div>
-                                                    <div class="score-meter-box-frame">
-                                                        <svg version="1.1" x="0px" y="0px" viewBox="0 0 500 243"
-                                                            style="enable-background:new 0 0 500 243;"
-                                                            xml:space="preserve">
-                                                            <path
-                                                                d="M0,0v243h500V0H0z M474.7,233.7h-79.1c-4.9,0-9.2-3.6-9.9-8.5c-9.6-65.5-66.1-115.9-134.3-115.9s-124.6,50.3-134.3,115.9c-0.7,4.9-4.9,8.5-9.9,8.5H28.2c-5.9,0-10.5-5.1-10-11c11.3-119,111.4-212,233.2-212s221.9,93.1,233.2,212C485.2,228.6,480.6,233.7,474.7,233.7z"
-                                                                fill="#ffffff" />
-                                                        </svg>
-                                                        <div class="bgradient-bg"
-                                                            style="background: conic-gradient(from -1.65deg at 48.15% 84.72%, #FF9500 -33.16deg, #FFDE48 31.45deg, #03741B 91.78deg, #CF080A 265.07deg, #FF9500 326.84deg, #FFDE48 391.45deg);">
-                                                        </div>
-                                                    </div>
-                                                    <span class="meter-arrow nutrition-result"
-                                                        style="transform: rotate(90deg);">
-                                                        <svg version="1.1" x="0px" y="0px" viewBox="0 0 133 22"
-                                                            style="enable-background:new 0 0 133 22;"
-                                                            xml:space="preserve">
-                                                            <path
-                                                                d="M91.8,0.4L3.4,8.7c-2.5,0.2-2.5,3.8,0,4.1l88.4,8.9c20.5-0.4,12.7-0.4,20.5-0.4c11.8,0,19.2,1.6,19.2-10.1c0-11.8-10-10.2-21.7-10.3C101.9,0.8,112,0.9,91.8,0.4z" />
-                                                        </svg>
-                                                    </span>
-                                                </div>
-                                                <h4 class="mt-4">General Nutrition Knowledge</h4>
-                                                <h3 class="mt-1 text-black nutrition-percentage">--%</h3>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <p>If you have any gaps, we are here to help and will add some tips and info into the
-                                    Level-up library for you.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
     @include('front.modal.shopping-list')
     @include('front.modal.print-shopping-list')
     @include('front.modal.meal-detail')
@@ -379,8 +288,35 @@
     @include('front.modal.smart-swap-items')
 @endsection
 
-@push('script')
-    <script>
+@push('scripts')
+    <script> // Open all accordions by default
+        document.addEventListener('DOMContentLoaded', function () {
+            const accordionHeaders = document.querySelectorAll('.custom-accordion-header');
+
+            accordionHeaders.forEach(header => {
+                header.addEventListener('click', function () {
+                    this.classList.toggle('active');
+                    const content = this.nextElementSibling;
+                    if (content.style.maxHeight) {
+                        content.style.maxHeight = null;
+                    } else {
+                        content.style.maxHeight = content.scrollHeight + 'px';
+                    }
+                });
+            });
+
+
+            accordionHeaders.forEach(header => {
+                setTimeout(() => {
+                    header.classList.add('active');
+                    const content = header.nextElementSibling;
+                    if (content) {
+                        content.style.maxHeight = content.scrollHeight + 'px';
+                    }
+                }, 100);
+            });
+        });
+
         window["profile-landing-page"] = {
             userPlan: @json($userPlan ?? null),
             userId: {{ $userPlan->user_id ?? 0 }},

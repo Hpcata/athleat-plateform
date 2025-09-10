@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class UserPrePlan extends Model
 {
@@ -44,6 +45,12 @@ class UserPrePlan extends Model
     public function PrePlanQuesionFile()
     {
         return $this->hasMany(PrePlanQuesionFile::class);
+    }
+
+    public function getUserAge()
+    {
+        $dob = $this->dob;
+        return Carbon::parse($dob)->age;
     }
 
 }
