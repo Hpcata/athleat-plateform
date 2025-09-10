@@ -68,8 +68,7 @@ class PlanController extends Controller
                                         $mealQ->where('user_plan_id', $userPlan->id)
                                     ]);
                             }
-                            ]);
-                        //   ->orderByRaw('COALESCE(`order`, 0)');
+                        ]);
                 }
             ]);
         }
@@ -83,43 +82,10 @@ class PlanController extends Controller
         ]);
 
         $userPrePlan = $user->userPrePlans()->first();
-
         $sportGameData = null;
         if ($userPrePlan && $userPrePlan->occupation) {
             $occupation = strtolower($userPrePlan->occupation); // "bmx freestyle"
-
-            // Step 1: Try full match first (case-insensitive)
-            $sportGame = SportGame::with('categories')
-                ->whereRaw('LOWER(name) = ?', [$occupation])
-                ->first();
-
-            // Step 2: If no full match, split into keywords and check each
-            if (!$sportGame) {
-                $keywords = explode(' ', $occupation);
-
-                foreach ($keywords as $keyword) {
-                    $sportGame = SportGame::with('categories')
-                        ->whereRaw('LOWER(name) LIKE ?', ['%' . strtolower($keyword) . '%'])
-                        ->first();
-
-                    if ($sportGame) {
-                        break; // first matching keyword wins
-                    }
-                }
-            }
-
-            // Step 3: Extract image if found
-            $sportGameData = null;
-
-            if ($sportGame && $sportGame->categories->isNotEmpty()) {
-                $category = $sportGame->categories->first();
-
-                $sportGameData = [
-                    'sport_name' => $sportGame->name,
-                    'sport_image' => $category->pivot->image_path ?? null,
-                ];
-            }
-
+            $sportGameData = SportGame::getUserPlanSportGameImagePath($occupation);
         }
 
         return view('front.pages.plan-details', compact('userPlans', 'plan', 'user', 'sportGameData'));

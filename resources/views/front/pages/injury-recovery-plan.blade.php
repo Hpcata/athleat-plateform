@@ -1,9 +1,8 @@
 @extends(frontView('layouts.app'))
 
-@section('title', 'Injury Plan & Diet for Athletes | Performance Health')
+@section('title', 'Injury Plan & Diet for Athletes | Athleat')
 @section('meta_description', 'Get a personalised athlete meal plan with Performance Health Support. Expert sports nutrition plans and diet strategies tailored to fuel performance and recovery.')
 
-<meta name="csrf-token" content="{{ csrf_token() }}">
 @php
     $intresetsmallimg1 = $intresetsmallimg2 = $intrestimg1 = $intrestimg2 = $blueBadgeImg = '';
 @endphp

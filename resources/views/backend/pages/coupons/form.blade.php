@@ -105,6 +105,17 @@
                             </div>
 
                             <div class="col-md-12">
+                                <label for="consultations" class="form-label">Select Consultation</label>
+                                <select name="consultations[]" id="consultations" class="form-control select2" multiple>
+                                    @foreach ($consultations as $consultation)
+                                    <option value="{{ $consultation->id }}" @if(isset($coupon) && $coupon->consultations->contains($consultation->id)) selected @endif>
+                                        {{ $consultation->consultation_name }} - ${{ $consultation->price }}
+                                    </option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <div class="col-md-12">
                                 <label for="mealtime_ids" class="form-label">Status</label>
                                 <select name="status" class="form-select select2" id="status" required>
                                     <option value="1">Active</option>
@@ -134,6 +145,11 @@
 $(document).ready(function() {
     $('#plans').select2({
         placeholder: "Select plans",
+        allowClear: true
+    });
+    
+    $('#consultations').select2({
+        placeholder: "Select consultations",
         allowClear: true
     });
 });

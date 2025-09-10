@@ -11,18 +11,20 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('user_consultations', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('consultation_id');
-            $table->timestamps();
+        if (!Schema::hasTable('user_consultations')) {
+            Schema::create('user_consultations', function (Blueprint $table) {
+                $table->id();
+                $table->unsignedBigInteger('user_id');
+                $table->unsignedBigInteger('consultation_id');
+                $table->timestamps();
 
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('consultation_id')->references('id')->on('consultations')->onDelete('cascade');
-            
-            // Ensure unique combination of user and consultation
-            // $table->unique(['user_id', 'consultation_id']);
-        });
+                $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+                $table->foreign('consultation_id')->references('id')->on('consultations')->onDelete('cascade');
+
+                // Ensure unique combination of user and consultation
+                // $table->unique(['user_id', 'consultation_id']);
+            });
+        }
     }
 
     /**
@@ -30,6 +32,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('user_consultations');
+        if (Schema::hasTable('user_consultations')) {
+            Schema::dropIfExists('user_consultations');
+        }
     }
 };

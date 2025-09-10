@@ -151,19 +151,20 @@ class OtpRegistrationController extends Controller
             $result = $this->otpService->verifyOtp($mobileNumber, $otp);
 
             if ($result['success']) {
+                $withoutCountryCodeMobileNumber = $mobileNumber;
                 // remove +91 or +61 from mobile number based on what exists in the mobile number
-                if (strpos($mobileNumber, '+91') === 0) {
-                    $mobileNumber = str_replace('+91', '', $mobileNumber);
+                if (strpos($withoutCountryCodeMobileNumber, '+91') === 0) {
+                    $withoutCountryCodeMobileNumber = str_replace('+91', '', $withoutCountryCodeMobileNumber);
                 }
-                if (strpos($mobileNumber, '+61') === 0) {
-                    $mobileNumber = str_replace('+61', '', $mobileNumber);
+                if (strpos($withoutCountryCodeMobileNumber, '+61') === 0) {
+                    $withoutCountryCodeMobileNumber = str_replace('+61', '', $withoutCountryCodeMobileNumber);
                 }
-                if (strpos($mobileNumber, '+') === 0) {
-                    $mobileNumber = str_replace('+', '', $mobileNumber);
+                if (strpos($withoutCountryCodeMobileNumber, '+') === 0) {
+                    $withoutCountryCodeMobileNumber = str_replace('+', '', $withoutCountryCodeMobileNumber);
                 }
 
                 // Check if user exists with this mobile number
-                $existingUser = User::where('phone', $mobileNumber)->first();
+                $existingUser = User::where('phone', $mobileNumber)->orWhere('phone', $withoutCountryCodeMobileNumber)->first();
 
                 if ($existingUser && $existingUser->email) {
                     $click = ActivityTracker::click('user_logged_in', $existingUser->id);
