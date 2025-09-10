@@ -8,6 +8,8 @@ use App\Models\Payment;
 use App\Models\UserConsultation;
 use App\Models\User;
 use App\Models\Questionnaire;
+use App\Models\TrackingType;
+use App\Services\ActivityTracker;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -79,6 +81,9 @@ class ConsultationController extends Controller
                             } elseif ($coupon->type === 'fixed') {
                                 $finalPrice = max(0, $finalPrice - $coupon->value);
                             }
+                            
+                            // Track coupon usage with same logic as PaymentController
+                            $this->trackCouponUsage($coupon, $user, $consultation, $finalPrice, $couponCode);
                         } else {
                             return response()->json([
                                 'success' => false,
@@ -257,5 +262,60 @@ class ConsultationController extends Controller
                 ? route('front.profile', $user->id) 
                 : route('front.pre-plan-details')
         ]);
+    }
+
+    /**
+     * Track coupon usage for consultation booking - matches PaymentController logic
+     */
+    private function trackCouponUsage($coupon, $user, $consultation, $finalPrice, $couponCode)
+    {
+        try {
+            // 🔹 Split coupon code by "_", get the source slug (e.g., FB from FB_Athlete20)
+            $couponParts = explode('_', $couponCode);
+            $sourceSlug  = $couponParts[0] ?? null;
+
+            $couponSource = null;
+            if ($sourceSlug) {
+                $couponSource = DB::table('coupon_source')->select('id', 'name')->where('slug', $sourceSlug)->first();
+            }
+
+            // 🔹 Determine discount
+            if ($coupon->type === 'percentage' && $coupon->value == 100.00) {
+                $discount       = 'full';
+                $sectionElement = 'consultation_coupon_full_discount';
+                $couponType     = TrackingType::FREE_PLAN_COUPON;
+            } elseif ($coupon->type === 'percentage') {
+                $discount       = ($consultation->price * $coupon->value) / 100;
+                $sectionElement = 'consultation_coupon_percentage_discount';
+                $couponType     = TrackingType::COUPON_APPLIED;
+            } elseif ($coupon->type === 'fixed') {
+                $discount       = $coupon->value;
+                $sectionElement = 'consultation_coupon_fixed_discount';
+                $couponType     = TrackingType::COUPON_APPLIED;
+            }
+
+            // 🔹 Track click
+            $click = ActivityTracker::click($sectionElement, $user->id);
+
+            // 🔹 Log in trackings with extra coupon source info - exact same as PaymentController
+            ActivityTracker::log($couponType, $user->id, [
+                'user_click_id'      => $click->id,
+                'section_element_id' => $click->section_element_id,
+                'coupon_code'        => $couponCode,
+                'coupon_id'          => $coupon->id,
+                'discount'           => $discount,
+                'consultation_id'    => $consultation->id,
+                'coupon_source_id'   => $couponSource->id ?? null,
+                'coupon_source_name' => $couponSource->name ?? null,
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Failed to track coupon usage for consultation', [
+                'coupon_id' => $coupon->id,
+                'user_id' => $user->id,
+                'consultation_id' => $consultation->id,
+                'error' => $e->getMessage()
+            ]);
+        }
     }
 }
