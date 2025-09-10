@@ -25,6 +25,7 @@ class ConsultationController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
+            'consultation_name' => 'required|string|max:255',
             'content' => 'required|string',
             'price' => 'required|numeric|min:0',
             'time' => 'required|integer|min:1',
@@ -54,6 +55,7 @@ class ConsultationController extends Controller
     public function update(Request $request, Consultation $consultation)
     {
         $validated = $request->validate([
+            'consultation_name' => 'required|string|max:255',
             'content' => 'required|string',
             'price' => 'required|numeric|min:0',
             'time' => 'required|integer|min:1',
