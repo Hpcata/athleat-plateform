@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\UserPlan;
+use App\Models\RecurringPayment;
 use Illuminate\Http\Request;
 
 class RecurringPaymentsController extends Controller
@@ -13,12 +14,11 @@ class RecurringPaymentsController extends Controller
      */
     public function index()
     {
-        $recurringPlans = UserPlan::with(['user', 'plan'])
-            ->where('is_recurring', true)
+        $recurringPayments = RecurringPayment::with(['userPlan.user', 'userPlan.plan'])
             ->orderBy('created_at', 'desc')
             ->paginate(20);
 
-        return view('admin.recurring-payments.index', compact('recurringPlans'));
+        return view('admin.recurring-payments.index', compact('recurringPayments'));
     }
 
     /**
@@ -26,11 +26,10 @@ class RecurringPaymentsController extends Controller
      */
     public function show($id)
     {
-        $userPlan = UserPlan::with(['user', 'plan'])
-            ->where('is_recurring', true)
+        $recurringPayment = RecurringPayment::with(['userPlan.user', 'userPlan.plan'])
             ->findOrFail($id);
 
-        return view('admin.recurring-payments.show', compact('userPlan'));
+        return view('admin.recurring-payments.show', compact('recurringPayment'));
     }
 
     /**
@@ -38,18 +37,17 @@ class RecurringPaymentsController extends Controller
      */
     public function cancel(Request $request, $id)
     {
-        $userPlan = UserPlan::where('is_recurring', true)->findOrFail($id);
+        $recurringPayment = RecurringPayment::findOrFail($id);
         
         try {
             \Stripe\Stripe::setApiKey(config('services.stripe.secret'));
             
-            if ($userPlan->stripe_subscription_id) {
-                $subscription = \Stripe\Subscription::retrieve($userPlan->stripe_subscription_id);
+            if ($recurringPayment->stripe_subscription_id) {
+                $subscription = \Stripe\Subscription::retrieve($recurringPayment->stripe_subscription_id);
                 $subscription->cancel();
             }
 
-            $userPlan->update([
-                'status' => 'deactivated',
+            $recurringPayment->update([
                 'payment_status' => 'canceled',
                 'canceled_at' => now(),
                 'cancelation_reason' => 'Canceled by admin: ' . $request->input('reason', 'No reason provided')

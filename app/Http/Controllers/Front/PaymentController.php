@@ -15,6 +15,7 @@ use App\Models\UserPrePlan;
 use App\Models\UserConsultation;
 use App\Models\UserPlan;
 use App\Models\Consultation;
+use App\Models\RecurringPayment;
 use App\Services\ActivityTracker;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -43,12 +44,8 @@ class PaymentController extends Controller
             'coupon_code' => 'nullable',
         ];
 
-        // Conditionally require payment_method_id only if price is > 0
-        if (! $request->has('coupon_code') || ($request->price > 0)) {
-            $rules['payment_method_id'] = 'nullable';
-        } else {
-            $rules['payment_method_id'] = 'nullable';
-        }
+        // Payment method is always optional
+        $rules['payment_method_id'] = 'nullable';
 
         $validated = $request->validate($rules);
 
@@ -56,7 +53,6 @@ class PaymentController extends Controller
 
         try {
             Log::debug('Stripe payment flow started.', ['request' => $request->all()]);
-            Stripe::setApiKey(config('services.stripe.secret'));
 
             $coupon    = null;
             $discount  = 0;
@@ -92,6 +88,16 @@ class PaymentController extends Controller
             }
 
             $submitQuestionnaire = $isNewUser || ! UserPrePlan::where('user_id', $user->id)->exists();
+
+            // Set Stripe API key before customer creation
+            Stripe::setApiKey(config('services.stripe.secret'));
+
+            // Create Stripe customer early in the process
+            $customer = $this->getOrCreateStripeCustomer($user);
+            Log::info('Stripe customer created/retrieved early in process', [
+                'customer_id' => $customer->id,
+                'user_id' => $user->id
+            ]);
 
             $existingPayment = Payment::where('plan_id', $validated['plan_id'])
                 ->where('user_id', $user->id)
@@ -172,10 +178,7 @@ class PaymentController extends Controller
             $finalPrice = ($discount === 'full') ? 0 : max(0, $validated['price'] - $discount);
             Log::debug('Final price after discount.', ['final_price' => $finalPrice]);
 
-            // If payment required but no payment method provided
-            if ($finalPrice > 0 && empty($validated['payment_method_id'])) {
-                return response()->json(['success' => false, 'message' => 'Payment method is required.']);
-            }
+            // Payment method validation removed - payment method is optional
 
             $paymentIntentId = null;
             $status          = 'discount_applied';
@@ -184,26 +187,90 @@ class PaymentController extends Controller
             if ($finalPrice > 0) {
                 Log::debug('Creating Stripe payment intent.', ['amount' => $finalPrice * 100]);
 
-                $paymentIntent = PaymentIntent::create([
-                    'amount'              => $finalPrice * 100,
-                    'currency'            => 'aud',
-                    'payment_method'      => $validated['payment_method_id'],
+                $paymentMethodId = null;
+                
+                // Create Stripe customer with payment method if provided
+                $customer = $this->getOrCreateStripeCustomer($user, $validated['payment_method_id'] ?? null);
+                Log::info('Stripe customer created/retrieved with payment method', [
+                    'customer_id' => $customer->id,
+                    'user_id' => $user->id,
+                    'payment_method_id' => $validated['payment_method_id'] ?? null
+                ]);
+                
+                // Create payment method if provided
+                if (!empty($validated['payment_method_id'])) {
+                    try {
+                        // Retrieve the existing payment method from Stripe
+                        $paymentMethod = \Stripe\PaymentMethod::retrieve($validated['payment_method_id']);
+                        
+                        // Attach payment method to customer if not already attached
+                        if (!$paymentMethod->customer) {
+                            $paymentMethod->attach(['customer' => $customer->id]);
+                        } elseif ($paymentMethod->customer !== $customer->id) {
+                            // Payment method is attached to different customer
+                            throw new \Exception('Payment method is already attached to another customer.');
+                        }
+                        
+                        $paymentMethodId = $paymentMethod->id;
+                        
+                        Log::debug('Payment method retrieved and attached to customer', [
+                            'payment_method_id' => $paymentMethodId,
+                            'customer_id' => $customer->id
+                        ]);
+                        
+                    } catch (\Exception $e) {
+                        Log::error('Failed to handle payment method: ' . $e->getMessage());
+                        DB::rollBack();
+                        return response()->json([
+                            'success' => false,
+                            'message' => 'Failed to handle payment method: ' . $e->getMessage()
+                        ], 400);
+                    }
+                }
+
+                $paymentIntentData = [
+                    'amount' => $finalPrice * 100,
+                    'currency' => 'aud',
                     'confirmation_method' => 'manual',
-                    'confirm'             => true,
-                    'return_url'          => route('payment.success'),
+                ];
+
+                // Add payment method if created
+                if ($paymentMethodId) {
+                    $paymentIntentData['payment_method'] = $paymentMethodId;
+                    $paymentIntentData['confirm'] = true; // Only confirm if we have a payment method
+                    $paymentIntentData['return_url'] = route('payment.success'); // Only add return_url when confirming
+                } else {
+                    $paymentIntentData['confirm'] = false; // Don't confirm without payment method
+                }
+
+                $paymentIntent = PaymentIntent::create($paymentIntentData);
+
+                Log::debug('Stripe PaymentIntent created.', [
+                    'status' => $paymentIntent->status,
+                    'has_payment_method' => !empty($paymentMethodId)
                 ]);
 
-                Log::debug('Stripe PaymentIntent created.', ['status' => $paymentIntent->status]);
-
+                // Handle different PaymentIntent statuses
                 if ($paymentIntent->status === 'requires_action' && $paymentIntent->next_action->type === 'use_stripe_sdk') {
                     DB::rollBack();
                     return response()->json([
                         'requires_action'              => true,
                         'payment_intent_client_secret' => $paymentIntent->client_secret,
                     ]);
+                } elseif ($paymentIntent->status === 'requires_payment_method') {
+                    // PaymentIntent created but needs a payment method
+                    DB::rollBack();
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Payment method is required to complete this payment.',
+                        'payment_intent_id' => $paymentIntent->id
+                    ], 400);
                 } elseif ($paymentIntent->status !== 'succeeded') {
                     DB::rollBack();
-                    return response()->json(['success' => false, 'message' => 'Payment failed.']);
+                    return response()->json([
+                        'success' => false, 
+                        'message' => 'Payment failed with status: ' . $paymentIntent->status
+                    ], 400);
                 }
 
                 $paymentIntentId = $paymentIntent->id;
@@ -566,6 +633,9 @@ class PaymentController extends Controller
 
         $user = Auth::user();
 
+        // Set Stripe API key before customer creation
+        Stripe::setApiKey(config('services.stripe.secret'));
+
         // Define validation rules
         $rules = [
             'plan_id' => 'required|integer|exists:plans,id',
@@ -593,7 +663,6 @@ class PaymentController extends Controller
                 'plan_type' => $validated['plan_type'] ?? 'not provided',
                 'plan_id' => $validated['plan_id'] ?? 'not provided'
             ]);
-            Stripe::setApiKey(config('services.stripe.secret'));
 
             $coupon = null;
             $discount = 0;
@@ -650,10 +719,7 @@ class PaymentController extends Controller
 
             Log::debug('Final price after discount.', ['final_price' => $finalPrice]);
 
-            // If payment required but no payment method provided
-            if ($finalPrice > 0 && empty($validated['payment_method_id'])) {
-                return response()->json(['success' => false, 'message' => 'Payment method is required.']);
-            }
+            // Payment method validation removed - payment method is optional
 
             $paymentIntentId = null;
             $status = 'discount_applied';
@@ -662,26 +728,91 @@ class PaymentController extends Controller
             if ($finalPrice > 0) {
                 Log::debug('Creating Stripe payment intent.', ['amount' => $finalPrice * 100]);
 
-                $paymentIntent = PaymentIntent::create([
+                $paymentMethodId = null;
+                
+                // Create Stripe customer with payment method if provided
+                $customer = $this->getOrCreateStripeCustomer($user, $validated['payment_method_id'] ?? null);
+                Log::info('Stripe customer created/retrieved with payment method', [
+                    'customer_id' => $customer->id,
+                    'user_id' => $user->id,
+                    'payment_method_id' => $validated['payment_method_id'] ?? null
+                ]);
+                
+                // Create payment method if provided
+                if (!empty($validated['payment_method_id'])) {
+                    try {
+                        // Retrieve the existing payment method from Stripe
+                        $paymentMethod = \Stripe\PaymentMethod::retrieve($validated['payment_method_id']);
+                        
+                        // Attach payment method to customer if not already attached
+                        if (!$paymentMethod->customer) {
+                            $paymentMethod->attach(['customer' => $customer->id]);
+                        } elseif ($paymentMethod->customer !== $customer->id) {
+                            // Payment method is attached to different customer
+                            throw new \Exception('Payment method is already attached to another customer.');
+                        }
+                        
+                        $paymentMethodId = $paymentMethod->id;
+                        
+                        Log::debug('Payment method retrieved and attached to customer', [
+                            'payment_method_id' => $paymentMethodId,
+                            'customer_id' => $customer->id
+                        ]);
+                        
+                    } catch (\Exception $e) {
+                        Log::error('Failed to handle payment method: ' . $e->getMessage());
+                        DB::rollBack();
+                        return response()->json([
+                            'success' => false,
+                            'message' => 'Failed to handle payment method: ' . $e->getMessage()
+                        ], 400);
+                    }
+                }
+
+                $paymentIntentData = [
                     'amount' => $finalPrice * 100,
                     'currency' => 'aud',
-                    'payment_method' => $validated['payment_method_id'],
-                    'confirmation_method' => 'manual',
-                    'confirm' => true,
-                    'return_url' => route('payment.success'),
+                    'confirmation_method' => 'automatic',
+                    'customer' => $customer->id,
+                ];
+
+                // Add payment method if created
+                if ($paymentMethodId) {
+                    $paymentIntentData['payment_method'] = $paymentMethodId;
+                    $paymentIntentData['confirm'] = true; // Only confirm if we have a payment method
+                    $paymentIntentData['return_url'] = route('payment.success'); // Only add return_url when confirming
+                } else {
+                    $paymentIntentData['confirm'] = true; // Don't confirm without payment method
+                }
+
+                $paymentIntent = PaymentIntent::create($paymentIntentData);
+
+                Log::debug('Stripe PaymentIntent created.', [
+                    'status' => $paymentIntent->status,
+                    'has_payment_method' => !empty($paymentMethodId)
                 ]);
 
-                Log::debug('Stripe PaymentIntent created.', ['status' => $paymentIntent->status]);
-
+                // Handle different PaymentIntent statuses
                 if ($paymentIntent->status === 'requires_action' && $paymentIntent->next_action->type === 'use_stripe_sdk') {
                     DB::rollBack();
                     return response()->json([
                         'requires_action' => true,
                         'payment_intent_client_secret' => $paymentIntent->client_secret,
                     ]);
+                } elseif ($paymentIntent->status === 'requires_payment_method') {
+                    // PaymentIntent created but needs a payment method
+                    DB::rollBack();
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Payment method is required to complete this payment.',
+                        'payment_intent_id' => $paymentIntent->id
+                    ], 400);
                 } elseif ($paymentIntent->status !== 'succeeded') {
                     DB::rollBack();
-                    return response()->json(['success' => false, 'message' => 'Payment failed.']);
+                    return response()->json([
+                        'success' => false, 
+                        'message' => 'Payment failed with status: ' . $paymentIntent->status
+                    ], 400);
                 }
 
                 $paymentIntentId = $paymentIntent->id;
@@ -789,7 +920,51 @@ class PaymentController extends Controller
 
             // Handle monthly recurring payments with Stripe subscription
             if ($validated['is_monthly']) {
-                $this->createStripeSubscription($userPlan, $user, $validated, $paymentMethodId);
+                // Check if payment method is provided for monthly subscription
+                if (empty($validated['payment_method_id'])) {
+                    DB::rollBack();
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Payment method is required for monthly subscriptions.'
+                    ], 400);
+                }
+                
+                try {
+                    $subscriptionResult = $this->createStripeSubscription($userPlan, $user, $validated, $validated['payment_method_id'], $customer);
+                    
+                    // Check if subscription needs frontend confirmation or action
+                    if (isset($subscriptionResult['requires_confirmation'])) {
+                        DB::rollBack();
+                        return response()->json([
+                            'success' => false,
+                            'requires_confirmation' => true,
+                            'payment_intent_client_secret' => $subscriptionResult['client_secret'],
+                            'subscription_id' => $subscriptionResult['subscription_id'],
+                            'message' => 'Payment confirmation required for subscription.'
+                        ], 200);
+                    } elseif (isset($subscriptionResult['requires_action'])) {
+                        DB::rollBack();
+                        return response()->json([
+                            'success' => false,
+                            'requires_action' => true,
+                            'payment_intent_client_secret' => $subscriptionResult['client_secret'],
+                            'subscription_id' => $subscriptionResult['subscription_id'],
+                            'message' => 'Payment action required for subscription.'
+                        ], 200);
+                    }
+                } catch (\Exception $e) {
+                    // If subscription creation fails, rollback the entire transaction
+                    DB::rollBack();
+                    Log::error('Stripe subscription creation failed, rolling back transaction: ' . $e->getMessage(), [
+                        'user_id' => $user->id,
+                        'plan_id' => $validated['plan_id'],
+                        'payment_method_id' => $validated['payment_method_id']
+                    ]);
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Failed to create recurring subscription: ' . $e->getMessage()
+                    ], 400);
+                }
             }
 
             // Create consultation booking if plan includes consultation
@@ -841,7 +1016,7 @@ class PaymentController extends Controller
     /**
      * Create Stripe subscription for monthly recurring payments
      */
-    private function createStripeSubscription($userPlan, $user, $validated, $paymentMethodId)
+    private function createStripeSubscription($userPlan, $user, $validated, $paymentMethodId, $customer)
     {
         try {
             \Stripe\Stripe::setApiKey(config('services.stripe.secret'));
@@ -849,8 +1024,44 @@ class PaymentController extends Controller
             // Calculate monthly price (with 10% markup divided by 8 months)
             $monthlyPrice = ($validated['price'] * 1.1) / 8;
 
-            // Create Stripe customer if not exists
-            $customer = $this->getOrCreateStripeCustomer($user);
+            // Use the already created customer
+            Log::info('Using existing customer for subscription', [
+                'customer_id' => $customer->id,
+                'user_id' => $user->id
+            ]);
+
+            // Handle payment method for subscription
+            try {
+                Log::info('Retrieving payment method for subscription', [
+                    'payment_method_id' => $paymentMethodId,
+                ]);
+                $paymentMethod = \Stripe\PaymentMethod::retrieve($paymentMethodId);
+                Log::info('Payment method retrieved for subscription', [
+                    'payment_method' => $paymentMethod,
+                ]);
+                
+                // Check if payment method is already attached to a customer
+                if ($paymentMethod->customer && $paymentMethod->customer !== $customer->id) {
+                    // Payment method is attached to different customer, we can't reuse it
+                    throw new \Exception('Payment method is already attached to another customer and cannot be reused for recurring payments. Please use a different payment method.');
+                } elseif (!$paymentMethod->customer) {
+                    // Payment method is not attached to any customer, attach it
+                    $paymentMethod->attach(['customer' => $customer->id]);
+                    Log::info('Payment method attached to customer for subscription', [
+                        'payment_method_id' => $paymentMethodId,
+                        'customer_id' => $customer->id
+                    ]);
+                }
+                // If payment method is already attached to this customer, we can proceed
+                
+            } catch (\Stripe\Exception\InvalidRequestException $e) {
+                // Payment method cannot be reused (already used and detached)
+                Log::error('Payment method cannot be reused for subscription', [
+                    'payment_method_id' => $paymentMethodId,
+                    'error' => $e->getMessage()
+                ]);
+                throw new \Exception('This payment method cannot be reused for recurring payments. Please use a different payment method for monthly subscriptions.');
+            }
 
             // Create Stripe product and price for this plan
             $product = \Stripe\Product::create([
@@ -868,14 +1079,14 @@ class PaymentController extends Controller
                 ],
             ]);
 
-            // Create subscription
-            $subscription = \Stripe\Subscription::create([
+            Log::info('Stripe price created', [
                 'customer' => $customer->id,
                 'items' => [
                     [
                         'price' => $price->id,
                     ],
                 ],
+                'default_payment_method' => $paymentMethodId,
                 'payment_behavior' => 'default_incomplete',
                 'payment_settings' => [
                     'save_default_payment_method' => 'on_subscription',
@@ -888,64 +1099,184 @@ class PaymentController extends Controller
                 ],
             ]);
 
-            // Confirm the subscription with the payment method
-            $subscription->confirm();
+            // Create subscription with the payment method
+            $subscription = \Stripe\Subscription::create([
+                'customer' => $customer->id,
+                'items' => [
+                    [
+                        'price' => $price->id,
+                    ],
+                ],
+                'default_payment_method' => $paymentMethodId,
+                'payment_behavior' => 'default_incomplete',
+                'payment_settings' => [
+                    'save_default_payment_method' => 'on_subscription',
+                ],
+                'expand' => ['latest_invoice.payment_intent'],
+                'metadata' => [
+                    'user_id' => $user->id,
+                    'plan_id' => $validated['plan_id'],
+                    'plan_type' => $validated['plan_type'],
+                ],
+            ]);
+
+            Log::info('Stripe subscription created', [
+                'subscription' => $subscription,
+            ]);
+
+            // Handle the first payment
+            if ($subscription->latest_invoice && $subscription->latest_invoice->payment_intent) {
+                $paymentIntent = $subscription->latest_invoice->payment_intent;
+                
+                if ($paymentIntent->status === 'requires_action') {
+                    // Payment requires additional authentication
+                    Log::info('Subscription payment requires action', [
+                        'subscription_id' => $subscription->id,
+                        'payment_intent_status' => $paymentIntent->status
+                    ]);
+                    
+                    // Return action details to frontend
+                    return [
+                        'requires_action' => true,
+                        'client_secret' => $paymentIntent->client_secret,
+                        'subscription_id' => $subscription->id
+                    ];
+                } elseif ($paymentIntent->status === 'requires_confirmation') {
+                    // Payment requires confirmation from frontend
+                    Log::info('Subscription payment requires confirmation', [
+                        'subscription_id' => $subscription->id,
+                        'payment_intent_status' => $paymentIntent->status
+                    ]);
+                    
+                    // Return confirmation details to frontend
+                    return [
+                        'requires_confirmation' => true,
+                        'client_secret' => $paymentIntent->client_secret,
+                        'subscription_id' => $subscription->id
+                    ];
+                } elseif ($paymentIntent->status === 'succeeded') {
+                    // First payment succeeded
+                    Log::info('Subscription first payment succeeded', [
+                        'subscription_id' => $subscription->id,
+                        'payment_intent_status' => $paymentIntent->status
+                    ]);
+                    $subscriptionStatus = 'active';
+                } else {
+                    // Payment failed
+                    Log::error('Subscription first payment failed', [
+                        'subscription_id' => $subscription->id,
+                        'payment_intent_status' => $paymentIntent->status
+                    ]);
+                    throw new \Exception('First payment failed: ' . $paymentIntent->status);
+                }
+            } else {
+                // No invoice created yet
+                Log::warning('No invoice created for subscription', [
+                    'subscription_id' => $subscription->id
+                ]);
+                $subscriptionStatus = 'incomplete';
+            }
 
             // Update UserPlan with subscription details
             $userPlan->update([
-                'is_recurring' => true,
+                'status' => $subscriptionStatus === 'active' ? 'active' : 'pending'
+            ]);
+
+            // Create RecurringPayment record
+            RecurringPayment::create([
+                'user_plan_id' => $userPlan->id,
                 'stripe_subscription_id' => $subscription->id,
-                'total_payments' => 1, // First payment completed
+                'total_payments' => $subscriptionStatus === 'active' ? 1 : 0, // First payment completed only if active
                 'total_payments_expected' => 8,
                 'next_payment_date' => \Carbon\Carbon::createFromTimestamp($subscription->current_period_end),
-                'last_payment_date' => now(),
-                'payment_status' => $subscription->status,
+                'last_payment_date' => $subscriptionStatus === 'active' ? now() : null,
+                'payment_status' => $subscriptionStatus,
             ]);
 
             Log::info('Stripe subscription created successfully', [
                 'user_id' => $user->id,
                 'subscription_id' => $subscription->id,
                 'monthly_price' => $monthlyPrice,
-                'user_plan_id' => $userPlan->id
+                'user_plan_id' => $userPlan->id,
+                'subscription_status' => $subscriptionStatus
             ]);
 
         } catch (\Exception $e) {
             Log::error('Failed to create Stripe subscription: ' . $e->getMessage(), [
                 'user_id' => $user->id,
                 'plan_id' => $validated['plan_id'],
+                'payment_method_id' => $paymentMethodId,
                 'trace' => $e->getTraceAsString()
             ]);
             
-            // Don't throw exception here to avoid breaking the main flow
-            // The webhook will handle subscription status updates
+            // Re-throw the exception to trigger transaction rollback
+            throw $e;
         }
     }
 
     /**
      * Get or create Stripe customer for user
      */
-    private function getOrCreateStripeCustomer($user)
+    private function getOrCreateStripeCustomer($user, $paymentMethodId = null)
     {
         try {
-            // Check if customer already exists
-            $customers = \Stripe\Customer::all([
-                'email' => $user->email,
-                'limit' => 1,
-            ]);
+            // Check if user already has a Stripe customer ID
+            if ($user->stripe_customer_id) {
+                try {
+                    $customer = \Stripe\Customer::retrieve($user->stripe_customer_id);
+                    
+                    // Update customer metadata with payment method if provided
+                    if ($paymentMethodId) {
+                        $customer->metadata['default_payment_method_id'] = $paymentMethodId;
+                        $customer->save();
+                        Log::info('Updated customer metadata with payment method', [
+                            'customer_id' => $customer->id,
+                            'payment_method_id' => $paymentMethodId
+                        ]);
+                    }
+                    
+                    Log::info('Retrieved existing Stripe customer', [
+                        'customer_id' => $customer->id,
+                        'user_id' => $user->id
+                    ]);
+                    return $customer;
+                } catch (\Stripe\Exception\InvalidRequestException $e) {
+                    // Customer doesn't exist in Stripe, create a new one
+                    Log::info('Stripe customer not found, creating new one', [
+                        'stored_customer_id' => $user->stripe_customer_id,
+                        'user_id' => $user->id
+                    ]);
+                }
+            }
 
-            if (!empty($customers->data)) {
-                return $customers->data[0];
+            // Prepare customer metadata
+            $metadata = [
+                'user_id' => $user->id,
+            ];
+            
+            // Add payment method ID to metadata if provided
+            if ($paymentMethodId) {
+                $metadata['default_payment_method_id'] = $paymentMethodId;
             }
 
             // Create new customer
-            return \Stripe\Customer::create([
+            $customer = \Stripe\Customer::create([
                 'email' => $user->email,
                 'name' => $user->name,
                 'phone' => $user->phone,
-                'metadata' => [
-                    'user_id' => $user->id,
-                ],
+                'metadata' => $metadata,
             ]);
+
+            // Save customer ID to user record
+            $user->update(['stripe_customer_id' => $customer->id]);
+            
+            Log::info('Created new Stripe customer and saved to user', [
+                'customer_id' => $customer->id,
+                'user_id' => $user->id,
+                'payment_method_id' => $paymentMethodId
+            ]);
+
+            return $customer;
 
         } catch (\Exception $e) {
             Log::error('Failed to get or create Stripe customer: ' . $e->getMessage());

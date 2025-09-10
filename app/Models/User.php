@@ -64,7 +64,8 @@ class User extends Authenticatable
         'user_type',
         'sport_game_id',
         'age_group',
-        'phone'
+        'phone',
+        'stripe_customer_id'
     ];
 
     /**

@@ -1940,7 +1940,7 @@ class FrontController extends Controller
         $planDetails = Plan::where('name', 'Training Nutrition Plan')->first();
         $consultations = Consultation::whereIn('time', [30, 60])->get();
 
-        return view('front.pages.training_nutrition_plan', compact('page', 'planDetails', 'consultations'));
+        return view('front.pages.training-nutrition-plan', compact('page', 'planDetails', 'consultations'));
     }
 
     public function competitionPlan(Request $request)
@@ -1981,7 +1981,7 @@ class FrontController extends Controller
         $planDetails = Plan::where('name', 'Injury & Recovery Plan')->first();
         $consultations = Consultation::whereIn('time', [30, 60])->get();
 
-        return view('front.pages.injury_recovery_plan', compact('page', 'planDetails', 'consultations'));
+        return view('front.pages.injury-recovery-plan', compact('page', 'planDetails', 'consultations'));
     }
 
     public function surgeryPlan(Request $request)

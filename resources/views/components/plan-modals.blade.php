@@ -656,8 +656,24 @@ function processPlanPayment() {
         $('#paymentButton').prop('disabled', false).text('One Payment | A$' + finalPrice);
         return;
     }
+
+    // Check if this is a monthly payment
+    const isMonthly = document.getElementById('monthlyPlanBtn').classList.contains('active');
     
-    // Create payment method with Stripe for paid plans
+    if (isMonthly) {
+        // For monthly payments, create payment method first
+        createPaymentMethodForMonthly();
+    } else {
+        // For one-time payments, send request directly
+        sendPlanRequest();
+    }
+}
+
+// Create payment method for monthly payments
+function createPaymentMethodForMonthly() {
+    const cardHolderName = $('#card-holder-name').val() || '{{ Auth::user()->name ?? "" }}';
+    const email = '{{ Auth::user()->email ?? "" }}';
+    
     stripe.createPaymentMethod({
         type: 'card',
         card: cardNumberElement,
@@ -668,7 +684,7 @@ function processPlanPayment() {
     }).then(function(result) {
         if (result.error) {
             // Handle payment method creation error
-            $('#paymentButton').prop('disabled', false).text('One Payment | A$' + finalPrice);
+            $('#paymentButton').prop('disabled', false).text('Monthly | A$' + finalPrice + '/mth');
             alert('Payment method error: ' + result.error.message);
         } else {
             // Payment method created successfully
@@ -689,22 +705,22 @@ function sendPlanRequest() {
     const couponCode = $('#promo-code-consultation').val().trim();
     const cardHolderName = $('#card-holder-name').val() || '{{ Auth::user()->name ?? "" }}';
     
-    $.ajax({
-        url: '{{ route("process.plan.purchase") }}',
-        method: 'POST',
-        data: {
-            plan_id: '{{ $planDetails?->id }}',
-            plan_type: getPlanTypeFromTitle(planType),
-            price: originalPrice,
-            final_price: parseFloat(finalPrice),
-            name: cardHolderName,
-            email: email,
-            phone: '{{ Auth::user()->phone ?? "" }}',
-            coupon_code: couponCode,
-            payment_method_id: paymentMethodId,
-            is_monthly: document.getElementById('monthlyPlanBtn').classList.contains('active'),
-            _token: '{{ csrf_token() }}'
-        },
+        $.ajax({
+            url: '{{ route("process.plan.purchase") }}',
+            method: 'POST',
+            data: {
+                plan_id: '{{ $planDetails?->id }}',
+                plan_type: getPlanTypeFromTitle(planType),
+                price: originalPrice,
+                final_price: parseFloat(finalPrice),
+                name: cardHolderName,
+                email: email,
+                phone: '{{ Auth::user()->phone ?? "" }}',
+                coupon_code: couponCode,
+                payment_method_id: paymentMethodId,
+                is_monthly: document.getElementById('monthlyPlanBtn').classList.contains('active'),
+                _token: '{{ csrf_token() }}'
+            },
         success: function(response) {
             if (response.success) {
                 // Hide payment modal programmatically
