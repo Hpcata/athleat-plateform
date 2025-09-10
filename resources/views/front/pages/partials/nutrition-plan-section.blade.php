@@ -9,7 +9,7 @@
         <div class="challenge-cards horizontal-scroll" style="overflow-x:auto;scroll-behavior:smooth; position:relative;">
             @if($overlayText == 'Continue your Questionnaire')
                 <div class="purchase-plan-overlay complete-questionnaire">
-                    <a href="" class="purchase-plan-btn">
+                    <a href="{{ $overlayRoute }}" class="purchase-plan-btn">
                         <svg xmlns="http://www.w3.org/2000/svg" width="25" height="24" viewBox="0 0 25 24" fill="none">
                             <path
                                 d="M13.5 16C13.5 16.5523 13.0523 17 12.5 17C11.9477 17 11.5 16.5523 11.5 16C11.5 15.4477 11.9477 15 12.5 15C13.0523 15 13.5 15.4477 13.5 16Z"
