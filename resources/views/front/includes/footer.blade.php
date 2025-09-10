@@ -5,11 +5,11 @@
                 <img src="{!! frontAssets('images/logo.svg') !!}" alt="Logo" class="logo-img" />
             </div>
             <nav class="footer-nav">
-                {{-- @if ($userId = optional(auth()->guard('web')->user())->id)
+                @if ($userId = optional(auth()->guard('web')->user())->id)
                     <a href="{{ route('front.profile-old', ['id' => $userId]) }}">My Profile</a>
                 @else
                     <a href="#">My Profile</a>
-                @endif --}}
+                @endif
                 <a href="/challenges">Challenges and Rewards</a>
                 <a href="/resources">Resources and Help</a>
                 <a href="/store">Store</a>

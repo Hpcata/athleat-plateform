@@ -1,7 +1,5 @@
 @extends('backend.layouts.app')
 
-@section('title', isset($meal) ? 'Edit Meal' : 'Create Meal')
-
 @section('content')
     <style>
         #loader {

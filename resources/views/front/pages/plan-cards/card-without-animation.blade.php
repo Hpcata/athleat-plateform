@@ -25,29 +25,10 @@
                     <img src="{{ asset('front/images/circled-meal-3.svg') }}" class="consult-avatar overlap2"
                         alt="meal image" />
 
+
                     <span style="padding-left: 0px;">21 meals • 18 Nutrition tips</span>
                 </div>
-                @php
-                    if (isset($redirectRoute) && isset($userPlan) && isset($plan)) {
-                        switch ($plan->name) {
-                            case 'Training Nutrition Plan':
-                                $route = route('front.training.nutrition.plan', ['user_id' => $userPlan->user_id, 'plan_id' => $plan->id]);
-                                break;
-                            case 'Injury & Recovery Plan':
-                                $route = route('front.injury.recovery.plan', ['user_id' => $userPlan->user_id, 'plan_id' => $plan->id]);
-                                break;
-                            case 'Competition Plan':
-                                $route = route('front.competition.plan');
-                                break;
-                            case 'Injury Recovery + Post Surgery':
-                                $route = route('front.surgery.plan');
-                                break;
-                        }
-                    } else {
-                        $route = route('front.profile', ['id' => $userPlan->user_id, 'payment_id' => $payment->id]);
-                    }
-                @endphp
-                <a href="{{ $route }}" class="btn-learn-more" style="text-decoration: none;">View plan</a>
+                <a href="{{ route('front.profile', ['id' => $userPlan->user_id, 'payment_id' => $payment->id]) }}" class="btn-learn-more" style="text-decoration: none;">View plan</a>
             </div>
         </div>
     </div>
