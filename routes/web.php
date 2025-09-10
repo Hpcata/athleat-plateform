@@ -276,9 +276,9 @@ Route::get('/get-foods/{key}', [FrontController::class, 'getFoodItems'])->name('
 Route::get('/competition-plan/{id}', [FrontController::class, 'getCompetitionPlanDetails'])->name('front.competition-plan-details');
 Route::get('/get-meals-items', [FrontController::class, 'getAllMeals'])->name('front.get.meals.items');
 Route::get('/get-default-plan-details/{id}', [FrontPlanController::class, 'getDefaultPlanDetails'])->name('front.get-default-plan-details');
-Route::get('/training-nutrition-plan', [FrontController::class, 'trainingNutritionPlan'])->name('front.training.nutrition.plan');
+Route::get('/training-nutrition-plan/{user_id?}/{plan_id?}', [FrontController::class, 'trainingNutritionPlan'])->name('front.training.nutrition.plan');
 Route::get('/competition-plan', [FrontController::class, 'competitionPlan'])->name('front.competition.plan');
-Route::get('/injury-recovery-plan', [FrontController::class, 'injuryRecoveryPlan'])->name('front.injury.recovery.plan');
+Route::get('/injury-recovery-plan/{user_id?}/{plan_id?}', [FrontController::class, 'injuryRecoveryPlan'])->name('front.injury.recovery.plan');
 Route::get('/surgery-plan', [FrontController::class, 'surgeryPlan'])->name('front.surgery.plan');
 Route::get('/consultations', [FrontController::class, 'consultations'])->name('front.consultations');
 
@@ -327,7 +327,6 @@ Route::get('/overseas_travel_nutrition_plan', function () {
 
 // Plans
 Route::group(['middleware' => 'auth'], function () {
-	// Route::get('/plans/{id}', [FrontPlanController::class, 'show'])->name('front.plans.details');
 	Route::get('/plans/{id}/details/{user_id}', [FrontPlanController::class, 'show'])->name('front.plans.details');
 	Route::get('/meal-time/{id}/{plan_id}', [FrontPlanController::class, 'mealTimeDetails'])->name('front.meal-time.details');
 	Route::post('/get-meals', [FrontPlanController::class, 'getMealByMealTimes'])->name('front.get-meals');

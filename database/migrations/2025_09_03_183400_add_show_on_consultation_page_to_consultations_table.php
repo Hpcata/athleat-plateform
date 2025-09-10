@@ -13,20 +13,22 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('consultations', function (Blueprint $table) {
-            $table->boolean('show_on_consultation_page')->default(0)->after('time');
-        });
+        if (!Schema::hasTable('consultations')) {
+            Schema::table('consultations', function (Blueprint $table) {
+                $table->boolean('show_on_consultation_page')->default(0)->after('time');
+            });
+        }
     }
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
     public function down()
     {
-        Schema::table('consultations', function (Blueprint $table) {
-            $table->dropColumn('show_on_consultation_page');
-        });
+        if (Schema::hasTable('consultations')) {
+            Schema::table('consultations', function (Blueprint $table) {
+                $table->dropColumn('show_on_consultation_page');
+            });
+        }
     }
 };
