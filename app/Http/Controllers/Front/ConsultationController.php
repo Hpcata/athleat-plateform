@@ -54,6 +54,16 @@ class ConsultationController extends Controller
                 
                 // Check if coupon is valid
                 if ($currentDateTime->gte($coupon->start_date) && $currentDateTime->lte($coupon->end_date)) {
+                    // Check if coupon is applicable to this specific consultation
+                    $isApplicableToConsultation = $coupon->consultations()->where('consultations.id', $consultation->id)->exists();
+                    
+                    if (!$isApplicableToConsultation) {
+                        return response()->json([
+                            'success' => false,
+                            'message' => 'This coupon is not applicable to the selected consultation.'
+                        ]);
+                    }
+                    
                     // Check usage limits
                     if ($coupon->max_uses == 0 || $coupon->usage_count < $coupon->max_uses) {
                         // Check user usage
@@ -69,9 +79,29 @@ class ConsultationController extends Controller
                             } elseif ($coupon->type === 'fixed') {
                                 $finalPrice = max(0, $finalPrice - $coupon->value);
                             }
+                        } else {
+                            return response()->json([
+                                'success' => false,
+                                'message' => 'You have already used this coupon.'
+                            ]);
                         }
+                    } else {
+                        return response()->json([
+                            'success' => false,
+                            'message' => 'Coupon usage limit has been reached.'
+                        ]);
                     }
+                } else {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Coupon is not valid at this time.'
+                    ]);
                 }
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Invalid coupon code.'
+                ]);
             }
         }
 
