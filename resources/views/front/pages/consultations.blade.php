@@ -793,9 +793,6 @@ $intresetsmallimg1 = $intresetsmallimg2 = $intresetsmallimg3 = $intrestimg1 = $i
                 if (document.getElementById("pay-button-price")) {
                     document.getElementById("pay-button-price").textContent = originalPrice;
                 }
-                if (document.getElementById("pay-button-price")) {
-                    document.getElementById("pay-button-price").textContent = originalPrice;
-                }
                 if (document.getElementById("consultation-price")) {
                     document.getElementById("consultation-price").innerHTML = `A$${originalPrice}`;
                 }
@@ -891,7 +888,7 @@ $intresetsmallimg1 = $intresetsmallimg2 = $intresetsmallimg3 = $intrestimg1 = $i
                     promoMessage.textContent = data.message || "Invalid coupon code.";
                     promoMessage.className = "form-text text-danger";
 
-                    // Reset values
+                    // Reset values - DO NOT calculate amount for invalid coupons
                     discountField.value = "";
                     document.getElementById("consultation-final-price").value = originalPrice;
                     payButtonPrice.textContent = originalPrice;
@@ -899,12 +896,27 @@ $intresetsmallimg1 = $intresetsmallimg2 = $intresetsmallimg3 = $intrestimg1 = $i
                     document.getElementById("toggle-coupon-consultation").textContent = "Add a Coupon Code";
                     payButton.innerHTML = `Pay | $<span id="pay-button-price">${originalPrice}</span>`;
                     payButton.disabled = false;
+                    
+                    // Ensure payment form is visible for invalid coupons
+                    document.querySelector('#consultation-payment-form .form-wrap').classList.remove('d-none');
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                promoMessage.textContent = "Something went wrong. Please try again.";
+                promoMessage.textContent = error.message || "Something went wrong. Please try again.";
                 promoMessage.className = "form-text text-danger";
+                
+                // Reset values on error - DO NOT calculate amount
+                discountField.value = "";
+                document.getElementById("consultation-final-price").value = originalPrice;
+                payButtonPrice.textContent = originalPrice;
+                consultationPrice.innerHTML = `A$${originalPrice}`;
+                document.getElementById("toggle-coupon-consultation").textContent = "Add a Coupon Code";
+                payButton.innerHTML = `Pay | $<span id="pay-button-price">${originalPrice}</span>`;
+                payButton.disabled = false;
+                
+                // Ensure payment form is visible on error
+                document.querySelector('#consultation-payment-form .form-wrap').classList.remove('d-none');
             })
             .finally(() => {
                 // Re-enable apply button
