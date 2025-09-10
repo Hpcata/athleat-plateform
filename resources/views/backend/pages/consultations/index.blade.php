@@ -32,7 +32,7 @@
 						<thead>
 							<tr>
 								<th>Id</th>
-								<th>Content</th>
+								<th>Name</th>
 								<th>Price</th>
 								<th>Time (Minutes)</th>
 								<th>Show on Page</th>
@@ -44,7 +44,7 @@
                             @foreach ($consultations as $consultation)
 							<tr>
 								<td><strong>{{ $consultation->id }}</strong></td>
-								<td>{{ Str::limit($consultation->content, 100) }}</td>
+								<td>{{ $consultation->consultation_name ?? 'N/A' }}</td>
 								<td>${{ number_format($consultation->price, 2) }}</td>
 								<td>{{ $consultation->time }} min</td>
 								<td>
