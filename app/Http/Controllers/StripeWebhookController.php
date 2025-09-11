@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\UserPlan;
+use App\Models\RecurringPayment;
 use App\Models\Payment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -62,25 +63,36 @@ class StripeWebhookController extends Controller
             return;
         }
 
-        $userPlan = UserPlan::where('stripe_subscription_id', $invoice->subscription)->first();
+        // Find RecurringPayment record using the new structure
+        $recurringPayment = RecurringPayment::where('stripe_subscription_id', $invoice->subscription)->first();
         
-        if (!$userPlan) {
-            Log::warning('UserPlan not found for subscription: ' . $invoice->subscription);
+        if (!$recurringPayment) {
+            Log::warning('RecurringPayment not found for subscription: ' . $invoice->subscription);
             return;
         }
 
-        // Update payment tracking
-        $userPlan->increment('total_payments');
-        $userPlan->update([
+        // Update RecurringPayment record
+        $recurringPayment->increment('total_payments');
+        
+        // Check if all expected payments are completed
+        $isCompleted = $recurringPayment->total_payments >= $recurringPayment->total_payments_expected;
+        
+        $recurringPayment->update([
             'last_payment_date' => now(),
-            'payment_status' => 'active',
-            'next_payment_date' => $this->getNextPaymentDate($invoice->subscription)
+            'payment_status' => $isCompleted ? 'completed' : 'active',
+            'next_payment_date' => $isCompleted ? null : $this->getNextPaymentDate($invoice->subscription)
         ]);
+
+        // Update UserPlan status to active
+        $userPlan = $recurringPayment->userPlan;
+        if ($userPlan) {
+            $userPlan->update(['status' => 'active']);
+        }
 
         // Create payment record for tracking
         Payment::create([
-            'user_id' => $userPlan->user_id,
-            'plan_id' => $userPlan->plan_id,
+            'user_id' => $recurringPayment->user_id,
+            'plan_id' => $recurringPayment->plan_id,
             'price' => $invoice->amount_paid / 100, // Convert from cents
             'original_price' => $invoice->amount_paid / 100,
             'name' => $invoice->customer_name ?? 'Recurring Payment',
@@ -91,10 +103,15 @@ class StripeWebhookController extends Controller
             'coupon_code' => null
         ]);
 
-        Log::info('Payment tracking updated', [
-            'user_plan_id' => $userPlan->id,
-            'total_payments' => $userPlan->total_payments,
-            'payment_status' => $userPlan->payment_status
+        Log::info('Recurring payment updated', [
+            'recurring_payment_id' => $recurringPayment->id,
+            'user_plan_id' => $userPlan->id ?? null,
+            'total_payments' => $recurringPayment->total_payments,
+            'total_payments_expected' => $recurringPayment->total_payments_expected,
+            'payment_status' => $recurringPayment->payment_status,
+            'is_completed' => $isCompleted,
+            'remaining_payments' => max(0, $recurringPayment->total_payments_expected - $recurringPayment->total_payments),
+            'progress' => $recurringPayment->total_payments . ' of ' . $recurringPayment->total_payments_expected
         ]);
     }
 
@@ -106,20 +123,28 @@ class StripeWebhookController extends Controller
             return;
         }
 
-        $userPlan = UserPlan::where('stripe_subscription_id', $invoice->subscription)->first();
+        // Find RecurringPayment record using the new structure
+        $recurringPayment = RecurringPayment::where('stripe_subscription_id', $invoice->subscription)->first();
         
-        if (!$userPlan) {
-            Log::warning('UserPlan not found for subscription: ' . $invoice->subscription);
+        if (!$recurringPayment) {
+            Log::warning('RecurringPayment not found for subscription: ' . $invoice->subscription);
             return;
         }
 
-        // Update payment status to past_due
-        $userPlan->update([
+        // Update RecurringPayment status to past_due
+        $recurringPayment->update([
             'payment_status' => 'past_due'
         ]);
 
-        Log::warning('Payment failed - plan status updated to past_due', [
-            'user_plan_id' => $userPlan->id,
+        // Update UserPlan status to pending
+        $userPlan = $recurringPayment->userPlan;
+        if ($userPlan) {
+            $userPlan->update(['status' => 'pending']);
+        }
+
+        Log::warning('Payment failed - recurring payment marked as past due', [
+            'recurring_payment_id' => $recurringPayment->id,
+            'user_plan_id' => $userPlan->id ?? null,
             'subscription_id' => $invoice->subscription
         ]);
     }
@@ -128,52 +153,74 @@ class StripeWebhookController extends Controller
     {
         Log::info('Subscription updated', ['subscription_id' => $subscription->id, 'status' => $subscription->status]);
 
-        $userPlan = UserPlan::where('stripe_subscription_id', $subscription->id)->first();
+        // Find RecurringPayment record using the new structure
+        $recurringPayment = RecurringPayment::where('stripe_subscription_id', $subscription->id)->first();
         
-        if (!$userPlan) {
-            Log::warning('UserPlan not found for subscription: ' . $subscription->id);
+        if (!$recurringPayment) {
+            Log::warning('RecurringPayment not found for subscription: ' . $subscription->id);
             return;
         }
 
-        $userPlan->update([
-            'payment_status' => $subscription->status
+        // Update RecurringPayment status
+        $recurringPayment->update([
+            'payment_status' => $subscription->status,
+            'next_payment_date' => \Carbon\Carbon::createFromTimestamp($subscription->current_period_end)
         ]);
 
-        // If subscription is canceled or unpaid, deactivate the plan
-        if (in_array($subscription->status, ['canceled', 'unpaid', 'incomplete_expired'])) {
-            $userPlan->update([
-                'status' => 'deactivated',
-                'canceled_at' => now(),
-                'cancelation_reason' => 'Payment declined or subscription canceled'
-            ]);
-
-            Log::warning('Plan deactivated due to subscription status', [
-                'user_plan_id' => $userPlan->id,
-                'subscription_status' => $subscription->status
-            ]);
+        // Update UserPlan status based on subscription status
+        $userPlan = $recurringPayment->userPlan;
+        if ($userPlan) {
+            if (in_array($subscription->status, ['canceled', 'unpaid', 'incomplete_expired'])) {
+                $userPlan->update([
+                    'status' => 'cancelled',
+                    'canceled_at' => now(),
+                    'cancelation_reason' => 'Payment declined or subscription canceled'
+                ]);
+            } else {
+                $status = $subscription->status === 'active' ? 'active' : 'pending';
+                $userPlan->update(['status' => $status]);
+            }
         }
+
+        Log::info('Recurring payment updated from subscription', [
+            'recurring_payment_id' => $recurringPayment->id,
+            'user_plan_id' => $userPlan->id ?? null,
+            'subscription_status' => $subscription->status
+        ]);
     }
 
     private function handleSubscriptionDeleted($subscription)
     {
         Log::info('Subscription deleted', ['subscription_id' => $subscription->id]);
 
-        $userPlan = UserPlan::where('stripe_subscription_id', $subscription->id)->first();
+        // Find RecurringPayment record using the new structure
+        $recurringPayment = RecurringPayment::where('stripe_subscription_id', $subscription->id)->first();
         
-        if (!$userPlan) {
-            Log::warning('UserPlan not found for subscription: ' . $subscription->id);
+        if (!$recurringPayment) {
+            Log::warning('RecurringPayment not found for subscription: ' . $subscription->id);
             return;
         }
 
-        $userPlan->update([
-            'status' => 'deactivated',
+        // Update RecurringPayment status
+        $recurringPayment->update([
             'payment_status' => 'canceled',
             'canceled_at' => now(),
             'cancelation_reason' => 'Subscription canceled by user or admin'
         ]);
 
-        Log::info('Plan deactivated due to subscription deletion', [
-            'user_plan_id' => $userPlan->id,
+        // Update UserPlan status to cancelled
+        $userPlan = $recurringPayment->userPlan;
+        if ($userPlan) {
+            $userPlan->update([
+                'status' => 'cancelled',
+                'canceled_at' => now(),
+                'cancelation_reason' => 'Subscription canceled by user or admin'
+            ]);
+        }
+
+        Log::info('Recurring payment cancelled', [
+            'recurring_payment_id' => $recurringPayment->id,
+            'user_plan_id' => $userPlan->id ?? null,
             'subscription_id' => $subscription->id
         ]);
     }

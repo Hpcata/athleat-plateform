@@ -371,9 +371,38 @@ class PaymentController extends Controller
         }
     }
 
-    public function paymentSuccess()
+    public function paymentSuccess(Request $request)
     {
-        return view('payment.success'); // Add a success page view
+        // Handle Stripe redirect parameters
+        $paymentIntentId = $request->get('payment_intent');
+        $paymentIntentClientSecret = $request->get('payment_intent_client_secret');
+        
+        Log::info('Payment success page accessed', [
+            'payment_intent_id' => $paymentIntentId,
+            'payment_intent_client_secret' => $paymentIntentClientSecret,
+            'user_id' => Auth::id()
+        ]);
+        
+        // If we have payment intent details, we could verify the payment status
+        if ($paymentIntentId) {
+            try {
+                Stripe::setApiKey(config('services.stripe.secret'));
+                $paymentIntent = \Stripe\PaymentIntent::retrieve($paymentIntentId);
+                
+                Log::info('Payment intent verified', [
+                    'payment_intent_id' => $paymentIntentId,
+                    'status' => $paymentIntent->status,
+                    'amount' => $paymentIntent->amount
+                ]);
+                
+                // You could add additional logic here to update user status, send emails, etc.
+                
+            } catch (\Exception $e) {
+                Log::error('Failed to verify payment intent: ' . $e->getMessage());
+            }
+        }
+        
+        return view('payment.success');
     }
 
     public function prePlanDetails(Request $request)
@@ -1014,7 +1043,13 @@ class PaymentController extends Controller
     }
 
     /**
-     * Create Stripe subscription for monthly recurring payments
+     * Create Stripe subscription following proper hierarchy:
+     * 1. Create Stripe Customer
+     * 2. Create Product and Price in Stripe
+     * 3. Set Up Subscription
+     * 4. Handle Payment Method
+     * 5. Confirm Payment Intent
+     * 6. Handle Webhooks for Subscription Events
      */
     private function createStripeSubscription($userPlan, $user, $validated, $paymentMethodId, $customer)
     {
@@ -1024,49 +1059,30 @@ class PaymentController extends Controller
             // Calculate monthly price (with 10% markup divided by 8 months)
             $monthlyPrice = ($validated['price'] * 1.1) / 8;
 
-            // Use the already created customer
-            Log::info('Using existing customer for subscription', [
-                'customer_id' => $customer->id,
-                'user_id' => $user->id
+            Log::info('Starting Stripe recurring payment flow', [
+                'user_id' => $user->id,
+                'plan_id' => $validated['plan_id'],
+                'monthly_price' => $monthlyPrice,
+                'payment_method_id' => $paymentMethodId
             ]);
 
-            // Handle payment method for subscription
-            try {
-                Log::info('Retrieving payment method for subscription', [
-                    'payment_method_id' => $paymentMethodId,
-                ]);
-                $paymentMethod = \Stripe\PaymentMethod::retrieve($paymentMethodId);
-                Log::info('Payment method retrieved for subscription', [
-                    'payment_method' => $paymentMethod,
-                ]);
-                
-                // Check if payment method is already attached to a customer
-                if ($paymentMethod->customer && $paymentMethod->customer !== $customer->id) {
-                    // Payment method is attached to different customer, we can't reuse it
-                    throw new \Exception('Payment method is already attached to another customer and cannot be reused for recurring payments. Please use a different payment method.');
-                } elseif (!$paymentMethod->customer) {
-                    // Payment method is not attached to any customer, attach it
-                    $paymentMethod->attach(['customer' => $customer->id]);
-                    Log::info('Payment method attached to customer for subscription', [
-                        'payment_method_id' => $paymentMethodId,
-                        'customer_id' => $customer->id
-                    ]);
-                }
-                // If payment method is already attached to this customer, we can proceed
-                
-            } catch (\Stripe\Exception\InvalidRequestException $e) {
-                // Payment method cannot be reused (already used and detached)
-                Log::error('Payment method cannot be reused for subscription', [
-                    'payment_method_id' => $paymentMethodId,
-                    'error' => $e->getMessage()
-                ]);
-                throw new \Exception('This payment method cannot be reused for recurring payments. Please use a different payment method for monthly subscriptions.');
-            }
+            // STEP 1: Create Stripe Customer (already done, but ensure it's properly set up)
+            Log::info('Step 1: Stripe Customer', [
+                'customer_id' => $customer->id,
+                'customer_email' => $customer->email
+            ]);
 
-            // Create Stripe product and price for this plan
+            // STEP 2: Create Product and Price in Stripe
+            Log::info('Step 2: Creating Product and Price');
+            
             $product = \Stripe\Product::create([
                 'name' => $userPlan->plan->name . ' - Monthly Subscription',
                 'description' => 'Monthly subscription for ' . $userPlan->plan->name,
+                'metadata' => [
+                    'user_id' => $user->id,
+                    'plan_id' => $validated['plan_id'],
+                    'plan_type' => $validated['plan_type']
+                ]
             ]);
 
             $price = \Stripe\Price::create([
@@ -1077,29 +1093,25 @@ class PaymentController extends Controller
                     'interval' => 'month',
                     'interval_count' => 1,
                 ],
-            ]);
-
-            Log::info('Stripe price created', [
-                'customer' => $customer->id,
-                'items' => [
-                    [
-                        'price' => $price->id,
-                    ],
-                ],
-                'default_payment_method' => $paymentMethodId,
-                'payment_behavior' => 'default_incomplete',
-                'payment_settings' => [
-                    'save_default_payment_method' => 'on_subscription',
-                ],
-                'expand' => ['latest_invoice.payment_intent'],
                 'metadata' => [
                     'user_id' => $user->id,
                     'plan_id' => $validated['plan_id'],
-                    'plan_type' => $validated['plan_type'],
-                ],
+                    'monthly_price' => $monthlyPrice
+                ]
             ]);
 
-            // Create subscription with the payment method
+            Log::info('Product and Price created', [
+                'product_id' => $product->id,
+                'price_id' => $price->id,
+                'monthly_amount' => $monthlyPrice
+            ]);
+
+            // STEP 3: Set Up Subscription
+            Log::info('Step 3: Setting up Subscription');
+            
+            // Calculate billing cycle anchor (next month) - no immediate payment
+            $billingCycleAnchor = \Carbon\Carbon::now()->addMonth()->timestamp;
+            
             $subscription = \Stripe\Subscription::create([
                 'customer' => $customer->id,
                 'items' => [
@@ -1108,6 +1120,8 @@ class PaymentController extends Controller
                     ],
                 ],
                 'default_payment_method' => $paymentMethodId,
+                'billing_cycle_anchor' => $billingCycleAnchor, // Start billing next month
+                'proration_behavior' => 'none', // Don't prorate
                 'payment_behavior' => 'default_incomplete',
                 'payment_settings' => [
                     'save_default_payment_method' => 'on_subscription',
@@ -1117,25 +1131,47 @@ class PaymentController extends Controller
                     'user_id' => $user->id,
                     'plan_id' => $validated['plan_id'],
                     'plan_type' => $validated['plan_type'],
+                    'user_plan_id' => $userPlan->id,
+                    'first_payment_processed' => 'immediate',
+                    'subscription_start' => 'next_month'
                 ],
             ]);
 
-            Log::info('Stripe subscription created', [
-                'subscription' => $subscription,
+            Log::info('Subscription created with billing cycle anchor', [
+                'subscription_id' => $subscription->id,
+                'status' => $subscription->status,
+                'billing_cycle_anchor' => $billingCycleAnchor,
+                'billing_start_date' => \Carbon\Carbon::createFromTimestamp($billingCycleAnchor)->format('Y-m-d H:i:s')
             ]);
 
-            // Handle the first payment
+            // STEP 4: Handle Payment Method
+            Log::info('Step 4: Handling Payment Method');
+            
+            // Ensure payment method is properly attached to customer
+            $paymentMethod = \Stripe\PaymentMethod::retrieve($paymentMethodId);
+            
+            if (!$paymentMethod->customer) {
+                $paymentMethod->attach(['customer' => $customer->id]);
+                Log::info('Payment method attached to customer', [
+                    'payment_method_id' => $paymentMethodId,
+                    'customer_id' => $customer->id
+                ]);
+            }
+
+            // STEP 5: Confirm Payment Intent
+            Log::info('Step 5: Confirming Payment Intent');
+            
             if ($subscription->latest_invoice && $subscription->latest_invoice->payment_intent) {
                 $paymentIntent = $subscription->latest_invoice->payment_intent;
                 
+                Log::info('Payment Intent status', [
+                    'payment_intent_id' => $paymentIntent->id,
+                    'status' => $paymentIntent->status
+                ]);
+
                 if ($paymentIntent->status === 'requires_action') {
-                    // Payment requires additional authentication
-                    Log::info('Subscription payment requires action', [
-                        'subscription_id' => $subscription->id,
-                        'payment_intent_status' => $paymentIntent->status
-                    ]);
-                    
-                    // Return action details to frontend
+                    // Payment requires additional authentication (3D Secure)
+                    Log::info('Payment requires action - returning to frontend');
                     return [
                         'requires_action' => true,
                         'client_secret' => $paymentIntent->client_secret,
@@ -1143,37 +1179,26 @@ class PaymentController extends Controller
                     ];
                 } elseif ($paymentIntent->status === 'requires_confirmation') {
                     // Payment requires confirmation from frontend
-                    Log::info('Subscription payment requires confirmation', [
-                        'subscription_id' => $subscription->id,
-                        'payment_intent_status' => $paymentIntent->status
-                    ]);
-                    
-                    // Return confirmation details to frontend
+                    Log::info('Payment requires confirmation - returning to frontend');
                     return [
                         'requires_confirmation' => true,
                         'client_secret' => $paymentIntent->client_secret,
                         'subscription_id' => $subscription->id
                     ];
                 } elseif ($paymentIntent->status === 'succeeded') {
-                    // First payment succeeded
-                    Log::info('Subscription first payment succeeded', [
-                        'subscription_id' => $subscription->id,
-                        'payment_intent_status' => $paymentIntent->status
-                    ]);
+                    // Payment succeeded
+                    Log::info('Payment succeeded - subscription active');
                     $subscriptionStatus = 'active';
                 } else {
                     // Payment failed
-                    Log::error('Subscription first payment failed', [
-                        'subscription_id' => $subscription->id,
-                        'payment_intent_status' => $paymentIntent->status
+                    Log::error('Payment failed', [
+                        'payment_intent_status' => $paymentIntent->status,
+                        'subscription_id' => $subscription->id
                     ]);
-                    throw new \Exception('First payment failed: ' . $paymentIntent->status);
+                    throw new \Exception('Payment failed with status: ' . $paymentIntent->status);
                 }
             } else {
-                // No invoice created yet
-                Log::warning('No invoice created for subscription', [
-                    'subscription_id' => $subscription->id
-                ]);
+                Log::warning('No payment intent found for subscription');
                 $subscriptionStatus = 'incomplete';
             }
 
@@ -1186,20 +1211,25 @@ class PaymentController extends Controller
             RecurringPayment::create([
                 'user_plan_id' => $userPlan->id,
                 'stripe_subscription_id' => $subscription->id,
-                'total_payments' => $subscriptionStatus === 'active' ? 1 : 0, // First payment completed only if active
-                'total_payments_expected' => 8,
-                'next_payment_date' => \Carbon\Carbon::createFromTimestamp($subscription->current_period_end),
-                'last_payment_date' => $subscriptionStatus === 'active' ? now() : null,
-                'payment_status' => $subscriptionStatus,
+                'total_payments' => 1, // First payment already processed immediately
+                'total_payments_expected' => 8, // Total 8 payments (1 immediate + 7 monthly)
+                'next_payment_date' => \Carbon\Carbon::createFromTimestamp($billingCycleAnchor), // Next month
+                'last_payment_date' => now(), // First payment was just processed
+                'payment_status' => 'active', // Active because first payment was processed
             ]);
 
-            Log::info('Stripe subscription created successfully', [
-                'user_id' => $user->id,
+            Log::info('Step 6: Subscription setup completed', [
                 'subscription_id' => $subscription->id,
-                'monthly_price' => $monthlyPrice,
+                'subscription_status' => $subscriptionStatus,
                 'user_plan_id' => $userPlan->id,
-                'subscription_status' => $subscriptionStatus
+                'billing_cycle_anchor' => $billingCycleAnchor,
+                'next_payment_date' => \Carbon\Carbon::createFromTimestamp($billingCycleAnchor)->format('Y-m-d H:i:s'),
+                'recurring_payments' => '1 of 8 (first payment processed immediately, 7 monthly payments remaining)'
             ]);
+
+            // Note: Step 6 (Webhooks) will be handled separately via webhook endpoints
+
+            return ['success' => true, 'subscription_id' => $subscription->id, 'status' => 'trialing'];
 
         } catch (\Exception $e) {
             Log::error('Failed to create Stripe subscription: ' . $e->getMessage(), [
@@ -1284,3 +1314,4 @@ class PaymentController extends Controller
         }
     }
 }
+

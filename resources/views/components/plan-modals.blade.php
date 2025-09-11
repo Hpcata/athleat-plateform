@@ -631,7 +631,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-// Function to process plan payment (exactly like consultation flow)
+// Function to process plan payment (single request to backend)
 function processPlanPayment() {
     const planType = document.getElementById('paymentModalTitle').textContent;
     const originalPrice = parseFloat(document.getElementById('paymentModalPrice').getAttribute('data-original-price') || '0');
@@ -657,23 +657,28 @@ function processPlanPayment() {
         return;
     }
 
-    // Check if this is a monthly payment
-    const isMonthly = document.getElementById('monthlyPlanBtn').classList.contains('active');
-    
-    if (isMonthly) {
-        // For monthly payments, create payment method first
-        createPaymentMethodForMonthly();
-    } else {
-        // For one-time payments, send request directly
-        sendPlanRequest();
-    }
+    // Send single request to backend with card details
+    sendPlanRequestWithCardDetails();
 }
 
-// Create payment method for monthly payments
-function createPaymentMethodForMonthly() {
-    const cardHolderName = $('#card-holder-name').val() || '{{ Auth::user()->name ?? "" }}';
+// Send plan request to backend with payment method (single request)
+function sendPlanRequestWithCardDetails() {
+    const planType = document.getElementById('paymentModalTitle').textContent;
+    const originalPrice = parseFloat(document.getElementById('paymentModalPrice').getAttribute('data-original-price') || '0');
+    const finalPrice = document.getElementById('paymentModalPrice').textContent.replace(/[A$,\s]/g, '');
     const email = '{{ Auth::user()->email ?? "" }}';
+    const couponCode = $('#promo-code-consultation').val().trim();
+    const cardHolderName = $('#card-holder-name').val() || '{{ Auth::user()->name ?? "" }}';
+    const isMonthly = document.getElementById('monthlyPlanBtn').classList.contains('active');
     
+    // Check if Stripe Elements are initialized
+    if (!cardNumberElement || !cardExpiryElement || !cardCvcElement) {
+        alert('Payment form is not ready. Please try again.');
+        $('#paymentButton').prop('disabled', false).text(isMonthly ? 'Monthly | A$' + finalPrice + '/mth' : 'One Payment | A$' + finalPrice);
+        return;
+    }
+    
+    // Create payment method using Stripe Elements
     stripe.createPaymentMethod({
         type: 'card',
         card: cardNumberElement,
@@ -684,83 +689,147 @@ function createPaymentMethodForMonthly() {
     }).then(function(result) {
         if (result.error) {
             // Handle payment method creation error
-            $('#paymentButton').prop('disabled', false).text('Monthly | A$' + finalPrice + '/mth');
+            $('#paymentButton').prop('disabled', false).text(isMonthly ? 'Monthly | A$' + finalPrice + '/mth' : 'One Payment | A$' + finalPrice);
             alert('Payment method error: ' + result.error.message);
         } else {
-            // Payment method created successfully
-            paymentMethodId = result.paymentMethod.id;
-            
-            // Send payment to server
-            sendPlanRequest();
-        }
-    });
-}
-
-// Send plan request to server (exactly like consultation flow)
-function sendPlanRequest() {
-    const planType = document.getElementById('paymentModalTitle').textContent;
-    const originalPrice = parseFloat(document.getElementById('paymentModalPrice').getAttribute('data-original-price') || '0');
-    const finalPrice = document.getElementById('paymentModalPrice').textContent.replace(/[A$,\s]/g, '');
-    const email = '{{ Auth::user()->email ?? "" }}';
-    const couponCode = $('#promo-code-consultation').val().trim();
-    const cardHolderName = $('#card-holder-name').val() || '{{ Auth::user()->name ?? "" }}';
-    
-        $.ajax({
-            url: '{{ route("process.plan.purchase") }}',
-            method: 'POST',
-            data: {
-                plan_id: '{{ $planDetails?->id }}',
-                plan_type: getPlanTypeFromTitle(planType),
-                price: originalPrice,
-                final_price: parseFloat(finalPrice),
-                name: cardHolderName,
-                email: email,
-                phone: '{{ Auth::user()->phone ?? "" }}',
-                coupon_code: couponCode,
-                payment_method_id: paymentMethodId,
-                is_monthly: document.getElementById('monthlyPlanBtn').classList.contains('active'),
-                _token: '{{ csrf_token() }}'
-            },
-        success: function(response) {
-            if (response.success) {
-                // Hide payment modal programmatically
-                isPaymentModalClosingProgrammatically = true;
-                $('#paymentModalPlan').modal('hide');
-                // Update congrats modal content based on plan type
-                updateCongratsModal(response.data.plan_type, response.data.has_consultation);
-                // Show congrats modal
-                $('#congratsModalPlan').modal('show');
-            } else if (response.requires_action) {
-                // Handle 3D Secure authentication
-                stripe.handleCardAction(response.payment_intent_client_secret).then(function(result) {
-                    if (result.error) {
-                        $('#paymentButton').prop('disabled', false).text('One Payment | A$' + finalPrice);
-                        alert('Payment failed: ' + result.error.message);
-                    } else {
-                        // Payment succeeded after 3D Secure
+            // Payment method created successfully, send to backend
+            $.ajax({
+                url: '{{ route("process.plan.purchase") }}',
+                method: 'POST',
+                data: {
+                    plan_id: '{{ $planDetails?->id }}',
+                    plan_type: getPlanTypeFromTitle(planType),
+                    price: originalPrice,
+                    final_price: parseFloat(finalPrice),
+                    name: cardHolderName,
+                    email: email,
+                    phone: '{{ Auth::user()->phone ?? "" }}',
+                    coupon_code: couponCode,
+                    is_monthly: isMonthly,
+                    payment_method_id: result.paymentMethod.id,
+                    _token: '{{ csrf_token() }}'
+                },
+                success: function(response) {
+                    if (response.success) {
+                        // Hide payment modal programmatically
                         isPaymentModalClosingProgrammatically = true;
                         $('#paymentModalPlan').modal('hide');
+                        // Update congrats modal content based on plan type
                         updateCongratsModal(response.data.plan_type, response.data.has_consultation);
+                        // Show congrats modal
                         $('#congratsModalPlan').modal('show');
+                    } else if (response.requires_action) {
+                        // Handle 3D Secure authentication
+                        const clientSecret = response.client_secret || response.payment_intent_client_secret;
+                        handlePaymentAction(clientSecret, response.subscription_id);
+                    } else if (response.requires_confirmation) {
+                        // Handle payment confirmation
+                        const clientSecret = response.client_secret || response.payment_intent_client_secret;
+                        handlePaymentConfirmation(clientSecret, response.subscription_id);
+                    } else {
+                        // Handle error
+                        $('#paymentButton').prop('disabled', false).text(isMonthly ? 'Monthly | A$' + finalPrice + '/mth' : 'One Payment | A$' + finalPrice);
+                        alert('Payment failed: ' + (response.message || 'Unknown error'));
                     }
-                });
-            } else {
-                alert(response.message || 'An error occurred while purchasing the plan.');
-                $('#paymentButton').prop('disabled', false).text('One Payment | A$' + finalPrice);
-            }
-        },
-        error: function(xhr) {
-            const response = xhr.responseJSON;
-            alert(response.message || 'An error occurred while purchasing the plan.');
-            $('#paymentButton').prop('disabled', false).text('One Payment | A$' + finalPrice);
+                },
+                error: function(xhr) {
+                    $('#paymentButton').prop('disabled', false).text(isMonthly ? 'Monthly | A$' + finalPrice + '/mth' : 'One Payment | A$' + finalPrice);
+                    const errorMessage = xhr.responseJSON?.message || 'Payment failed. Please try again.';
+                    alert('Payment failed: ' + errorMessage);
+                }
+            });
         }
     });
 }
 
-// Process free plan purchase (exactly like consultation flow)
+// Process free plan purchase (single request)
 function processFreePlanPurchase() {
-    // Free plan purchase - just call sendPlanRequest which will handle the original price
-    sendPlanRequest();
+    // Free plan purchase - send request with empty payment method
+    sendPlanRequestWithCardDetails();
+}
+
+// Handle payment action (3D Secure)
+function handlePaymentAction(clientSecret, subscriptionId) {
+    // Check if this is a subscription (has subscriptionId) or one-time payment
+    if (subscriptionId) {
+        // For subscriptions, use confirmPayment
+        stripe.confirmPayment({
+            clientSecret: clientSecret,
+            confirmParams: {
+                return_url: window.location.origin + '/payment-success',
+            },
+        }).then(function(result) {
+            if (result.error) {
+                const finalPrice = document.getElementById('paymentModalPrice').textContent.replace(/[A$,\s]/g, '');
+                const isMonthly = document.getElementById('monthlyPlanBtn').classList.contains('active');
+                $('#paymentButton').prop('disabled', false).text(isMonthly ? 'Monthly | A$' + finalPrice + '/mth' : 'One Payment | A$' + finalPrice);
+                alert('Payment failed: ' + result.error.message);
+            } else {
+                // Payment succeeded after 3D Secure
+                isPaymentModalClosingProgrammatically = true;
+                $('#paymentModalPlan').modal('hide');
+                updateCongratsModal('main', true);
+                $('#congratsModalPlan').modal('show');
+            }
+        });
+    } else {
+        // For one-time payments, use handleCardAction
+        stripe.handleCardAction(clientSecret).then(function(result) {
+            if (result.error) {
+                const finalPrice = document.getElementById('paymentModalPrice').textContent.replace(/[A$,\s]/g, '');
+                $('#paymentButton').prop('disabled', false).text('One Payment | A$' + finalPrice);
+                alert('Payment failed: ' + result.error.message);
+            } else {
+                // Payment succeeded after 3D Secure
+                isPaymentModalClosingProgrammatically = true;
+                $('#paymentModalPlan').modal('hide');
+                updateCongratsModal('main', true);
+                $('#congratsModalPlan').modal('show');
+            }
+        });
+    }
+}
+
+// Handle payment confirmation
+function handlePaymentConfirmation(clientSecret, subscriptionId) {
+    // Check if this is a subscription (has subscriptionId) or one-time payment
+    if (subscriptionId) {
+        // For subscriptions, use confirmPayment
+        stripe.confirmPayment({
+            clientSecret: clientSecret,
+            confirmParams: {
+                return_url: window.location.origin + '/payment-success',
+            },
+        }).then(function(result) {
+            if (result.error) {
+                const finalPrice = document.getElementById('paymentModalPrice').textContent.replace(/[A$,\s]/g, '');
+                const isMonthly = document.getElementById('monthlyPlanBtn').classList.contains('active');
+                $('#paymentButton').prop('disabled', false).text(isMonthly ? 'Monthly | A$' + finalPrice + '/mth' : 'One Payment | A$' + finalPrice);
+                alert('Payment failed: ' + result.error.message);
+            } else {
+                // Payment succeeded after confirmation
+                isPaymentModalClosingProgrammatically = true;
+                $('#paymentModalPlan').modal('hide');
+                updateCongratsModal('main', true);
+                $('#congratsModalPlan').modal('show');
+            }
+        });
+    } else {
+        // For one-time payments, use confirmCardPayment
+        stripe.confirmCardPayment(clientSecret).then(function(result) {
+            if (result.error) {
+                const finalPrice = document.getElementById('paymentModalPrice').textContent.replace(/[A$,\s]/g, '');
+                $('#paymentButton').prop('disabled', false).text('One Payment | A$' + finalPrice);
+                alert('Payment failed: ' + result.error.message);
+            } else {
+                // Payment succeeded after confirmation
+                isPaymentModalClosingProgrammatically = true;
+                $('#paymentModalPlan').modal('hide');
+                updateCongratsModal('main', true);
+                $('#congratsModalPlan').modal('show');
+            }
+        });
+    }
 }
 
 // Helper function to determine plan type from modal title (moved outside DOMContentLoaded)
