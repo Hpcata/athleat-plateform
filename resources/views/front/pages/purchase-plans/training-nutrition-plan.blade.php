@@ -1,6 +1,6 @@
 @extends(frontView('layouts.app'))
 
-@section('title', 'Injury Plan & Diet for Athletes | Performance Health')
+@section('title', 'Training Nutrition Plan & Diet for Athletes | Performance Health')
 @section('meta_description', 'Get a personalised athlete meal plan with Performance Health Support. Expert sports nutrition plans and diet strategies tailored to fuel performance and recovery.')
 
 @push('styles')
@@ -8,7 +8,7 @@
 @endpush
 
 @section('content')
-    <main class="main injury-plan-page">
+    <main class="main training-nutrition-plan-page">
         <div class="hero-container">
             <div class="hero-section">
                 @if (!empty($sportGameData['sport_image']))
@@ -18,7 +18,7 @@
                     </div>
                 @else
                     <div class="hero-background"
-                        style="background-image: url('{{ frontAssets('images/hero-section/injury.svg') }}');">
+                        style="background-image: url('{{ frontAssets('images/hero-section/training-nutrition.svg') }}');">
                         <div class="hero-overlay"></div>
                     </div>
                 @endif
@@ -26,8 +26,7 @@
                     <div class="hero-bottom">
                         <h1 class="hero-title">Training Nutrition Plan</h1>
                         <div class="hero-top">
-                            <p class="hero-subtitle-plan">
-                                {{ isset($sportGameData['sport_image']) ? $sportGameData['sport_name'] : '' }}</p>
+                            <p class="hero-subtitle-plan">{{ isset($sportGameData['sport_name']) ? $sportGameData['sport_name'] : '' }}</p>
                             <a href="{{ route('front.my-plans') }}" class="view-all-link"> View all plans </a>
                         </div>
                     </div>

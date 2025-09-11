@@ -24,7 +24,7 @@
                     <div class="hero-bottom">
                         <h1 class="hero-title">Injury & Recovery Plan</h1>
                         <div class="hero-top">
-                            <p class="hero-subtitle-plan">{{ isset($sportGameData['sport_image']) ? $sportGameData['sport_name'] : '' }}</p>
+                            <p class="hero-subtitle-plan">{{ isset($sportGameData['sport_name']) ? $sportGameData['sport_name'] : '' }}</p>
                             <a href="{{ route('front.my-plans') }}" class="view-all-link"> View all plans </a>
                         </div>
                     </div>

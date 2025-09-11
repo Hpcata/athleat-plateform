@@ -225,13 +225,13 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Re-initialize slider on window resize if needed
-window.addEventListener('resize', () => {
-    if (mealCardsSlider) {
-        mealCardsSlider.destroy();
-        mealCardsSlider = null;
-    }
-    // initMealCardsSlider();
-});
+// window.addEventListener('resize', () => {
+//     if (mealCardsSlider) {
+//         mealCardsSlider.destroy();
+//         mealCardsSlider = null;
+//     }
+//     // initMealCardsSlider();
+// });
 //         (s.style.display = "flex"),
 //         (s.style.alignItems = "center"),
 //         (s.style.justifyContent = "center"),
