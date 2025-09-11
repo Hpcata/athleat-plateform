@@ -791,9 +791,8 @@ class FrontController extends Controller
             if ($planId) {
                 $isApplicable = $coupon->plans()->where('plans.id', $planId)->exists();
             } elseif ($consultationId) {
-                // For consultations, we'll check if the coupon is applicable to consultations
-                // You may need to add a consultations relationship to the Coupon model
-                $isApplicable = true; // For now, allow all coupons for consultations
+                // Check if the coupon is applicable to the specific consultation
+                $isApplicable = $coupon->consultations()->where('consultations.id', $consultationId)->exists();
             }
 
             if (!$isApplicable) {
@@ -881,6 +880,7 @@ class FrontController extends Controller
             ], 500);
         }
     }
+
     public function fetchWeightData(Request $request)
     {
         $userId           = $request->user_id;

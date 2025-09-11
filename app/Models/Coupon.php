@@ -32,4 +32,9 @@ class Coupon extends Model
     {
         return $this->belongsToMany(Plan::class, 'coupon_plans');
     }
+
+    public function consultations()
+    {
+        return $this->belongsToMany(Consultation::class, 'coupon_consultations');
+    }
 }
