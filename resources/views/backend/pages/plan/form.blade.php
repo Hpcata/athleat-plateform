@@ -44,8 +44,6 @@
                                 <label for="description" class="form-label">Description</label>
                                 <div id="editor" class="form-control" style="min-height: 200px;">{{ $plan->description ?? '' }}</div> <!-- CKEditor will use this div -->
                                 <input type="hidden" name="description" id="description" value="{{ $plan->description ?? '' }}"/>
-
-                                <!-- <textarea id="description" name="description" class="form-control">{{ $plan->description ?? '' }}</textarea> -->
                             </div>
 
                             <!-- Meal Times -->
@@ -116,7 +114,7 @@ $(document).ready(function() {
 
         })
         .then(editor => {
-        // When the form is submitted, transfer the content of CKEditor to the hidden field
+            // When the form is submitted, transfer the content of CKEditor to the hidden field
             $('form').on('submit', function() {
                 $('#description').val(editor.getData().trim());  // Save clean HTML
             });

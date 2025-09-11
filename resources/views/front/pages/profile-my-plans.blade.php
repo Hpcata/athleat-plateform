@@ -71,15 +71,7 @@
             <!-- Recommended plan -->
             <section class="optimize-performance x">
                 <div class="section-header">
-                    <h2>Optimize your performance</h2>
-                </div>
-
-                <!-- Consultations -->
-                <div class="card-row">
-                    <label class="plan-subtitle-mob">Consultations</label>
-                    <div class="consults-plans-grid grid-1">
-                        @include('front.pages.plan-cards.card-consultations')
-                    </div>
+                    <h2>All Plans</h2>
                 </div>
 
                 <!-- Nutrition plans -->
@@ -100,6 +92,14 @@
                             </div>
                         @endif
                     </div>
+                </div>
+
+                <!-- Consultations -->
+                <div class="card-row">
+                    <label class="plan-subtitle-mob">Consultations</label>
+                    <div class="consults-plans-grid grid-1">
+                                @include('front.pages.plan-cards.card-consultations')
+                        </div>
                 </div>
             </section>
         </div>
