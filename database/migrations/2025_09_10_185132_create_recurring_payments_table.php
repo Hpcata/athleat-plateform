@@ -21,7 +21,7 @@ return new class extends Migration
             $table->integer('total_payments_expected')->default(8)->comment('Total number of payments expected (8 months)');
             $table->timestamp('next_payment_date')->nullable()->comment('Next payment due date');
             $table->timestamp('last_payment_date')->nullable()->comment('Last successful payment date');
-            $table->enum('payment_status', ['active', 'past_due', 'canceled', 'incomplete', 'incomplete_expired', 'trialing', 'unpaid'])->default('active')->comment('Current payment status from Stripe');
+            $table->string('payment_status')->default('active')->comment('Current payment status from Stripe');
             $table->timestamp('canceled_at')->nullable()->comment('When the subscription was canceled');
             $table->text('cancelation_reason')->nullable()->comment('Reason for cancellation');
             $table->timestamps();

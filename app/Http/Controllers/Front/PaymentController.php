@@ -1090,27 +1090,59 @@ class PaymentController extends Controller
                 'unit_amount' => round($monthlyPrice * 100), // Convert to cents
                 'currency' => 'aud',
                 'recurring' => [
-                    'interval' => 'month',
+                    'interval' => config('services.stripe.testing_mode', false) ? 'minute' : 'month',
                     'interval_count' => 1,
                 ],
                 'metadata' => [
                     'user_id' => $user->id,
                     'plan_id' => $validated['plan_id'],
-                    'monthly_price' => $monthlyPrice
+                    'monthly_price' => $monthlyPrice,
+                    'testing_mode' => config('services.stripe.testing_mode', false)
                 ]
             ]);
 
             Log::info('Product and Price created', [
                 'product_id' => $product->id,
                 'price_id' => $price->id,
-                'monthly_amount' => $monthlyPrice
+                'monthly_amount' => $monthlyPrice,
+                'interval' => config('services.stripe.testing_mode', false) ? 'minute' : 'month',
+                'testing_mode' => config('services.stripe.testing_mode', false)
             ]);
 
             // STEP 3: Set Up Subscription
             Log::info('Step 3: Setting up Subscription');
             
             // Calculate billing cycle anchor (next month) - no immediate payment
+            // Handle test clocks by ensuring the anchor is in the future relative to test clock
             $billingCycleAnchor = \Carbon\Carbon::now()->addMonth()->timestamp;
+            
+            // Check if we're in test mode and adjust for test clocks
+            if (config('services.stripe.testing_mode', false)) {
+                // For testing, use a shorter interval to avoid test clock issues
+                $billingCycleAnchor = \Carbon\Carbon::now()->addMinutes(2)->timestamp;
+                Log::info('Using test mode billing cycle anchor', [
+                    'billing_cycle_anchor' => $billingCycleAnchor,
+                    'billing_start_date' => \Carbon\Carbon::createFromTimestamp($billingCycleAnchor)->format('Y-m-d H:i:s'),
+                    'current_time' => now()->format('Y-m-d H:i:s')
+                ]);
+            }
+            
+            // Validate the timestamp
+            if ($billingCycleAnchor <= 0) {
+                Log::error('Invalid billing cycle anchor timestamp', [
+                    'timestamp' => $billingCycleAnchor,
+                    'current_time' => now()->format('Y-m-d H:i:s')
+                ]);
+                throw new \Exception('Invalid billing cycle anchor timestamp');
+            }
+            
+            Log::info('Billing cycle anchor calculated', [
+                'billing_cycle_anchor' => $billingCycleAnchor,
+                'billing_start_date' => \Carbon\Carbon::createFromTimestamp($billingCycleAnchor)->format('Y-m-d H:i:s'),
+                'testing_mode' => config('services.stripe.testing_mode', false)
+            ]);
+
+            $cancelAt = \Carbon\Carbon::now()->addMonths(9)->timestamp;
             
             $subscription = \Stripe\Subscription::create([
                 'customer' => $customer->id,
@@ -1135,6 +1167,7 @@ class PaymentController extends Controller
                     'first_payment_processed' => 'immediate',
                     'subscription_start' => 'next_month'
                 ],
+                'cancel_at' => $cancelAt, // Auto-cancel at specific timestamp
             ]);
 
             Log::info('Subscription created with billing cycle anchor', [
@@ -1207,13 +1240,28 @@ class PaymentController extends Controller
                 'status' => $subscriptionStatus === 'active' ? 'active' : 'pending'
             ]);
 
-            // Create RecurringPayment record
+            // Create RecurringPayment record with validation
+            $nextPaymentDate = \Carbon\Carbon::createFromTimestamp($billingCycleAnchor);
+            
+            // Validate the next payment date
+            if (!$nextPaymentDate->isFuture()) {
+                Log::error('Next payment date is not in the future', [
+                    'billing_cycle_anchor' => $billingCycleAnchor,
+                    'next_payment_date' => $nextPaymentDate->format('Y-m-d H:i:s'),
+                    'current_time' => now()->format('Y-m-d H:i:s')
+                ]);
+                throw new \Exception('Next payment date must be in the future');
+            }
+            
+            // Calculate total payments expected based on testing mode
+            $totalPaymentsExpected = config('services.stripe.testing_mode', false) ? 8 : 8; // Same for both modes
+            
             RecurringPayment::create([
                 'user_plan_id' => $userPlan->id,
                 'stripe_subscription_id' => $subscription->id,
                 'total_payments' => 1, // First payment already processed immediately
-                'total_payments_expected' => 8, // Total 8 payments (1 immediate + 7 monthly)
-                'next_payment_date' => \Carbon\Carbon::createFromTimestamp($billingCycleAnchor), // Next month
+                'total_payments_expected' => $totalPaymentsExpected, // Total 8 payments (1 immediate + 7 monthly)
+                'next_payment_date' => $nextPaymentDate, // Next billing cycle
                 'last_payment_date' => now(), // First payment was just processed
                 'payment_status' => 'active', // Active because first payment was processed
             ]);
@@ -1224,7 +1272,9 @@ class PaymentController extends Controller
                 'user_plan_id' => $userPlan->id,
                 'billing_cycle_anchor' => $billingCycleAnchor,
                 'next_payment_date' => \Carbon\Carbon::createFromTimestamp($billingCycleAnchor)->format('Y-m-d H:i:s'),
-                'recurring_payments' => '1 of 8 (first payment processed immediately, 7 monthly payments remaining)'
+                'recurring_payments' => '1 of 8 (first payment processed immediately, 7 recurring payments remaining)',
+                'testing_mode' => config('services.stripe.testing_mode', false),
+                'interval' => config('services.stripe.testing_mode', false) ? 'minute' : 'month'
             ]);
 
             // Note: Step 6 (Webhooks) will be handled separately via webhook endpoints
