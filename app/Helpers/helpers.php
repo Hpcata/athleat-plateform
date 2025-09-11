@@ -84,6 +84,11 @@ if (!function_exists('formatDate')) {
     }
 }
 
+// I want AEST timezone
+function aestTimezone() {
+    return 'Australia/Sydney';
+}
+
 function formatDecimal($value) {
     // Remove known unwanted text
     $cleanedValue = str_replace(['Approx.', '<', 'g'], '', $value);
