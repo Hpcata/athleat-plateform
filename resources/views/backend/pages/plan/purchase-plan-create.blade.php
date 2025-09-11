@@ -274,7 +274,28 @@
                     <div class="mt-4">
                         <button type="submit" class="btn btn-primary" name="action" value="save">Save</button>
                         <button type="submit" class="btn btn-success" name="action" value="save_exit">Save & Exit</button>
-                        <a href="{{ route('front.profile', ['id' => $payment->user_id, 'payment_id' => $payment->id, 'admin_view' => 1]) }}" target="_blank" class="btn btn-success" >View User Profile</a>
+                        @php
+                            $plan = $plans->first();
+                            if (isset($payment) && isset($plan) && isset($plan->name)) {
+                                switch ($plan->name) {
+                                    case 'Training Nutrition Plan':
+                                        $route = route('front.training.nutrition.plan', ['user_id' => $payment->user_id, 'plan_id' => $plan->id]);
+                                        break;
+                                    case 'Injury & Recovery Plan':
+                                        $route = route('front.injury.recovery.plan', ['user_id' => $payment->user_id, 'plan_id' => $plan->id]);
+                                        break;
+                                    case 'Competition Plan':
+                                        $route = route('front.competition.plan');
+                                        break;
+                                    case 'Injury Recovery + Post Surgery':
+                                        $route = route('front.surgery.plan');
+                                        break;
+                                }
+                            } else {
+                                $route = route('front.profile', ['id' => $payment->user_id, 'payment_id' => $payment->id]);
+                            }
+                        @endphp
+                        <a href="{{ $route }}" target="_blank" class="btn btn-success" >View User Profile</a>
                     </div>
                 </form>
                 </div>

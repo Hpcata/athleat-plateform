@@ -1432,6 +1432,12 @@ body {
     align-items: center;
 }
 
+.section-header .view-all-link {
+    color: #4a84dd;
+    font-size: 1rem;
+    font-weight: 600
+}
+
 .view-all-link {
     color: #fff;
     font-size: 14px;

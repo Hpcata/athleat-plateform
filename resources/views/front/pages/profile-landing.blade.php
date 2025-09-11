@@ -28,8 +28,7 @@
                 $showFreePlan = !$payment && isset($userPlan) && $userPlan->free_user && $userPlan->free_user_plan && !isset($userPlan?->plan);
                 $needsQuestionnaire = isset($payment) && (!isset($isQuestionnaireSubmitted) || !$isQuestionnaireSubmitted->is_complete);
                 $waitingPlan = isset($payment->plan_id, $isQuestionnaireSubmitted, $userPlan) && $isQuestionnaireSubmitted->is_complete && !$userPlan->is_mail_sent;
-                $showFinalPlan = $isAdminView || (isset($userPlan) && $userPlan->status == 'active');
-                // $showFinalPlan = (isset($userPlan) && $userPlan->status == 'active');
+                $showFinalPlan = (isset($userPlan) && $userPlan->status == 'active');
             @endphp
 
             @if ($showFreePlan)
@@ -53,12 +52,6 @@
                 @include('front.pages.partials.plan-preparation-section', ['plan' => $payment->plan ?? null, 'isPreparingPlan' => true])
             @elseif ($showFinalPlan)
                 @include('front.pages.partials.plan-preparation-section', ['plan' => $payment->plan ?? null, 'isPreparingPlan' => false, 'redirectRoute' => true])
-            {{-- @elseif ($showAdminView)
-                @include('front.pages.partials.active-plan-section', [
-                    'userPlan' => $userPlan ?? null,
-                    'isAdminView' => $isAdminView ?? false,
-                    'plan' => $payment->plan ?? null
-                ]) --}}
             @endif
 
             <!-- Challenges -->
