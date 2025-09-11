@@ -137,12 +137,12 @@
 
             </div>
         </div>
+
         <div class="row align-item-center">
             <div class="col-md-12">
                 <div class="">
                     <div class="card-body">
-                        <form action="{{ route('admin.purchase-plans.update') }}" method="POST" class="bg-light"
-                            id="editPlanForm">
+                        <form action="{{ route('admin.purchase-plans.update') }}" method="POST" class="bg-light" id="editPlanForm">
                             @csrf
                             @method('PUT')
                             <div class="row">
@@ -228,14 +228,12 @@
                                     @endforeach
                                 </div>
                                 <div class="col-md-4">
-                                    <div
-                                        style="max-height: 90vh; overflow-y: auto; overflow-x: hidden; border: 1px solid #ddd; padding: 10px; border-radius: 8px; position: sticky; top:15px;">
+                                    <div style="max-height: 90vh; overflow-y: auto; overflow-x: hidden; border: 1px solid #ddd; padding: 10px; border-radius: 8px; position: sticky; top:15px;">
                                         <h4>Food Prefrences</h4>
                                         <span class="">
                                             <strong>Key: </strong>
                                             <p class="mb-0" style="color: black; font-size:15px;">Athlete Preferences</p>
-                                            <p class="mb-0" style="color: #7258db; font-size:15px;">Included Preferences
-                                            </p>
+                                            <p class="mb-0" style="color: #7258db; font-size:15px;">Included Preferences</p>
                                             <p class="mb-0" style="color: #198754; font-size:15px;">Recommendations</p>
                                         </span>
                                         <div class="category-section mb-3" id="category-section">
@@ -246,14 +244,12 @@
 
                                             @foreach($foodPreferences as $mainQuestion => $subGroups)
                                                 <h5 class="mt-4">{{ $mainQuestion }}</h5> {{-- Main category/question --}}
-
                                                 @php
                                                     $hasRenderedFlat = false; // Flag to skip repeated rendering of flat foods
                                                 @endphp
 
                                                 @foreach($subGroups as $subQuestion => $answers)
                                                     @if(!empty($answers) && collect($answers)->filter()->count())
-
                                                         @if (!is_numeric($subQuestion))
                                                             {{-- Normal sub-question --}}
                                                             @if($mainQuestion == 'Cuisines')
@@ -336,7 +332,6 @@
                                                                 @endforeach
                                                             </div>
                                                         @endif
-
                                                     @endif
                                                 @endforeach
                                             @endforeach
@@ -346,11 +341,14 @@
                                     </div>
                                 </div>
                             </div>
+
                             <!-- Submit Button -->
-                            <div class="pull-right-bot px-md-3 ">
+                            <div class="pull-right-bot px-md-5 ">
                                 <p>Last Updated:
-                                    {{ isset($activity->updated_at) ? $activity->updated_at->format('d-m-Y H:i:s') : '' }}
-                                    by {{ isset($activity->user) ? $activity->user->name : '' }}</p>
+                                    {{-- Use AEST time zone --}}
+                                    {{ isset($activity->updated_at) ? \Carbon\Carbon::parse($activity->updated_at)->timezone(aestTimezone())->format('d-m-Y H:i:s') : '' }}
+                                    by {{ isset($activity->modifiedBy) ? $activity->modifiedBy->name : '' }}
+                                </p>
                             </div>
 
                             @php
@@ -358,7 +356,6 @@
                                 $isMailSent = ($firstUserPlan && $firstUserPlan->is_mail_sent == 1);
                                 $mailSentAt = $firstUserPlan ? $firstUserPlan->mail_sent_at : null;
                             @endphp
-
 
                             <div class="my-5 d-flex flex-wrap flex-md-nowrap gap-3">
                                 <button type="submit" class="btn btn-primary">Update</button>
@@ -393,12 +390,12 @@
                                 </button>
 
                                 @if($isMailSent && !is_null($mailSentAt))
-                                    <div id="timestamp-{{ $payment->user_id }}-{{ $payment->id }}" class="mt-2 text-muted"
-                                        style="margin-left: 330px;">
-                                        {{ \Carbon\Carbon::parse($mailSentAt)->timezone('UTC')->format('d/m/Y h:i A') }}
+                                    <div id="timestamp-{{ $payment->user_id }}-{{ $payment->id }}" class="mt-2 text-muted">
+                                        <strong>Mail Sent:</strong>
+                                        {{-- Use AEST time zone --}}
+                                        {{ \Carbon\Carbon::parse($mailSentAt)->timezone(aestTimezone())->format('d/m/Y h:i A') }}
                                     </div>
                                 @endif
-
                             </div>
                         </form>
                     </div>
@@ -479,7 +476,6 @@
                     <!-- Buttons for search types -->
                     <div class="form-group">
                         <div class="d-flex justify-content-between mt-3">
-                            <!-- <button type="button" class="btn btn-primary" id="searchFoodBtn" data-plan-id="" data-mealtime-id="" data-meal-id="" data-user-id="">Search Food</button> -->
                             <button type="button" class="btn btn-primary" id="woolworthsSearchBtn" data-plan-id=""
                                 data-mealtime-id="" data-meal-id="" data-user-id="">Woolworths Search Food</button>
                         </div>
@@ -787,8 +783,8 @@
             </div>
         </div>
     </div>
-    <!-- Info Modal -->
 
+    <!-- Info Modal -->
     <div class="modal" id="itemInfoModal" tabindex="-1" role="dialog" aria-labelledby="itemInfoModalLabel"
         aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
@@ -3200,15 +3196,9 @@
 
                     if (isNaN(newQty) || isNaN(originalQty) || !originalUnit || !newUnit) return;
 
-                    ratio = newQty / originalQty;
-
-                    // if (originalUnit !== newUnit && unitRatios?.[originalUnit] && unitRatios?.[newUnit]) {
-                    //     const unitRatio = unitRatios[newUnit] / unitRatios[originalUnit];
-                    //     ratio *= unitRatio;
-                    // }
+                    ratio = (Math.round(newQty / originalQty * 10) / 10);
 
                     $('#editItemModal #ratio').val(ratio);
-                    // Optionally: update nutrition or UI here
                 });
 
                 setupDynamicMeasurementSync('#editItemModal');
@@ -3789,7 +3779,7 @@
                                     title="Edit"><i class="icofont-edit"></i></button>
                                 <button type="button" class="btn btn-sm btn-outline-danger delete-swap-item"
                                     data-swap-item-id="${swapItemId}" data-item-id="${itemId}" data-meal-id="${mealId}"
-                                    data-plan-id="${planId}" data-meal-time-id="${mealTimeId}" title="Delete">
+                                    data-plan-id="${planId}" data-meal-time-id="${mealTimeId}" data-user-id="${userId}" title="Delete">
                                     <i class="icofont-ui-delete"></i></button>
                             </div>
                         </div>
@@ -4291,7 +4281,7 @@
                                     title="Edit"><i class="icofont-edit"></i></button>
                                 <button type="button" class="btn btn-sm btn-outline-danger delete-swap-item"
                                     data-swap-item-id="${swapItemId}" data-item-id="${itemId}" data-meal-id="${mealId}"
-                                    data-plan-id="${planId}" data-meal-time-id="${mealTimeId}" title="Delete">
+                                    data-plan-id="${planId}" data-meal-time-id="${mealTimeId}" data-user-id="${userId}" title="Delete">
                                     <i class="icofont-ui-delete"></i></button>
                             </div>
                         </div>
@@ -4599,7 +4589,7 @@
                                     title="Edit"><i class="icofont-edit"></i></button>
                                 <button type="button" class="btn btn-sm btn-outline-danger delete-swap-item"
                                     data-swap-item-id="${swapItemId}" data-item-id="${itemId}" data-meal-id="${mealId}"
-                                    data-plan-id="${planId}" data-meal-time-id="${mealTimeId}" title="Delete">
+                                    data-plan-id="${planId}" data-meal-time-id="${mealTimeId}" data-user-id="${userId}" title="Delete">
                                     <i class="icofont-ui-delete"></i></button>
                             </div>
                         </div>
@@ -4611,40 +4601,6 @@
                         </div>
                     </li>
                 `;
-
-                const currentItemRow = $(`#itemRow_${planId}_${mealTimeId}_${mealId}_${itemId}`);
-                const swapItemsContainer = currentItemRow.find(`td:nth-child(3)`);
-
-                // Check if there are any existing swap items
-                const existingItems = swapItemsContainer.find('li[data-swap-item-id]');
-
-                if (existingItems.length > 0) {
-                    // If there are existing items, append the new item after them
-                    existingItems.last().after(updatedLI);
-                } else {
-                    // If no existing items, replace the entire content
-                    swapItemsContainer.html(updatedLI);
-                }
-
-                // // Add the + icon button at the end
-                // const addButton = `
-                //     <li class="d-flex justify-content-between align-items-start mb-2">
-                //         <div class="col-9">
-                //             <span class="text-muted"></span>
-                //         </div>
-                //         <div>
-                //             <button type="button" class="btn btn-sm btn-outline-primary add-more-swap-item ms-2"
-                //                 data-item-id="${itemId}" data-meal-id="${mealId}" data-plan-id="${planId}"
-                //                 data-meal-time-id="${mealTimeId}" data-user-id="${userId}"
-                //                 title="Add"><i class="icofont-plus"></i>
-                //             </button>
-                //         </div>
-                //     </li>
-                // `;
-                // swapItemsContainer.append(addButton);
-
-                $('[data-bs-toggle="tooltip"]').tooltip();
-                // updateFoodCount(swapItemId, 1, 'green');
 
                 const modalEl = document.getElementById('addMoreSwapItemModal');
                 const modal = bootstrap.Modal.getInstance(modalEl);
@@ -5774,7 +5730,7 @@
                     bsModal.show();
                 }
             });
-        })
+        });
 
     </script>
 
