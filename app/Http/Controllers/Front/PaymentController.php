@@ -718,8 +718,26 @@ class PaymentController extends Controller
                                 ->count();
                                 
                             if ($coupon->uses_per_user == 0 || $userUsageCount < $coupon->uses_per_user) {
-                                // Check if coupon is applicable to plan
-                                $isApplicable = $coupon->plans()->where('plans.id', $validated['plan_id'])->exists();
+                                // Determine consultation ID based on plan type for coupon validation
+                                $consultationId = null;
+                                if ($validated['plan_type'] === 'powerplay') {
+                                    $consultation = Consultation::where('time', 30)->first();
+                                    $consultationId = $consultation ? $consultation->id : null;
+                                } elseif ($validated['plan_type'] === 'gameplan') {
+                                    $consultation = Consultation::where('time', 60)->first();
+                                    $consultationId = $consultation ? $consultation->id : null;
+                                }
+                                
+                                // Check if coupon is applicable to plan or consultation
+                                $isApplicableToPlan = $coupon->plans()->where('plans.id', $validated['plan_id'])->exists();
+                                $isApplicableToConsultation = false;
+                                
+                                if ($consultationId) {
+                                    $isApplicableToConsultation = $coupon->consultations()->where('consultations.id', $consultationId)->exists();
+                                }
+                                
+                                // Coupon must be applicable to either the plan OR the consultation
+                                $isApplicable = $isApplicableToPlan || $isApplicableToConsultation;
                                 
                                 if ($isApplicable) {
                                     // Apply discount
@@ -730,7 +748,12 @@ class PaymentController extends Controller
                                         $finalPrice = max(0, $finalPrice - $coupon->value);
                                     }
                                 } else {
-                                    return response()->json(['success' => false, 'message' => 'This coupon is not applicable to the selected plan.']);
+                                    $errorMessage = 'This coupon is not applicable to the selected plan';
+                                    if ($consultationId) {
+                                        $errorMessage .= ' or consultation';
+                                    }
+                                    $errorMessage .= '.';
+                                    return response()->json(['success' => false, 'message' => $errorMessage]);
                                 }
                             } else {
                                 return response()->json(['success' => false, 'message' => 'You have already used this coupon the maximum allowed times.']);

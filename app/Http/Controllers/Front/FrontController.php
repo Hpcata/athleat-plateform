@@ -786,19 +786,34 @@ class FrontController extends Controller
             }
 
             // Check if coupon is applicable to plan or consultation
-            $isApplicable = false;
-
+            $isApplicableToPlan = false;
+            $isApplicableToConsultation = false;
+            
             if ($planId) {
-                $isApplicable = $coupon->plans()->where('plans.id', $planId)->exists();
-            } elseif ($consultationId) {
-                // Check if the coupon is applicable to the specific consultation
-                $isApplicable = $coupon->consultations()->where('consultations.id', $consultationId)->exists();
+                $isApplicableToPlan = $coupon->plans()->where('plans.id', $planId)->exists();
             }
+            
+            if ($consultationId) {
+                $isApplicableToConsultation = $coupon->consultations()->where('consultations.id', $consultationId)->exists();
+            }
+            
+            // Coupon must be applicable to either the plan OR the consultation
+            $isApplicable = $isApplicableToPlan || $isApplicableToConsultation;
 
             if (!$isApplicable) {
+                $errorMessage = 'This coupon is not applicable to the selected item';
+                if ($planId && $consultationId) {
+                    $errorMessage .= ' (plan or consultation)';
+                } elseif ($planId) {
+                    $errorMessage .= ' (plan)';
+                } elseif ($consultationId) {
+                    $errorMessage .= ' (consultation)';
+                }
+                $errorMessage .= '.';
+                
                 return response()->json([
                     'valid'   => false,
-                    'message' => 'This coupon is not applicable to the selected item.',
+                    'message' => $errorMessage,
                 ]);
             }
 

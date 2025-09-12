@@ -458,10 +458,24 @@ document.addEventListener('DOMContentLoaded', function() {
             const planId = '{{ $planDetails?->id }}';
             const originalPrice = parseFloat(paymentModalPrice.getAttribute('data-original-price') || '0');
             
+            // Determine consultation ID based on plan type
+            let consultationId = null;
+            const planType = getPlanTypeFromTitle(document.getElementById('paymentModalTitle').textContent);
+            
+            if (planType === 'powerplay') {
+                // For Power Play, we need to get the 30-minute consultation ID
+                consultationId = '{{ $consultations->where("time", 30)->first()?->id }}';
+            } else if (planType === 'gameplan') {
+                // For Game Plan, we need to get the 60-minute consultation ID
+                consultationId = '{{ $consultations->where("time", 60)->first()?->id }}';
+            }
+            
             // Debug logging
             console.log('Coupon application:', {
                 promoCode: promoCode,
                 planId: planId,
+                consultationId: consultationId,
+                planType: planType,
                 originalPrice: originalPrice,
                 dataOriginalPrice: paymentModalPrice.getAttribute('data-original-price'),
                 isNaN: isNaN(originalPrice)
@@ -477,16 +491,24 @@ document.addEventListener('DOMContentLoaded', function() {
             this.disabled = true;
             this.textContent = "Applying...";
             
+            // Prepare request body
+            const requestBody = {
+                code: promoCode,
+                plan_id: planId
+            };
+            
+            // Add consultation_id if applicable
+            if (consultationId) {
+                requestBody.consultation_id = consultationId;
+            }
+            
             fetch('{{ route("validate.coupon.code") }}', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
                 },
-                body: JSON.stringify({
-                    code: promoCode,
-                    plan_id: planId
-                })
+                body: JSON.stringify(requestBody)
             })
             .then(response => response.json())
             .then(data => {
