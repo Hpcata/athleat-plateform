@@ -263,14 +263,15 @@ body {
     font-size: 1rem;
     font-weight: 600;
 }
-.main.injury-plan-page .hero-container{
+.main.injury-plan-page .hero-container,
+.main.training-nutrition-plan-page .hero-container{
 margin-top: 107px;
 }
 .training-plan {
     margin-bottom: 56px;
 }
 .training-plan.plan-detail-page{
-    margin-top: 56px !important;
+    margin-top: 36px !important;
 }
 .challenges,
 .optimize-performance,
@@ -3271,6 +3272,9 @@ button:focus,
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
 }
+.section-header.injury-recovery-head{
+margin-top: 36px;
+}
 @media (max-width: 1800px) {
     .downloadplan-inner-content {
         max-height: 510px;
@@ -3714,10 +3718,14 @@ button:focus,
 }
 
 @media (max-width: 600px) {
+    .section-header.injury-recovery-head{
+        margin-top: 24px;
+        }
     .training-plan.plan-detail-page{
-    margin-top: 36px !important;
+    margin-top: 24px !important;
 }
-.main.injury-plan-page .hero-container{
+.main.injury-plan-page .hero-container,
+.main.training-nutrition-plan-page .hero-container{
 margin-top: 72px;
 }
     .modal-confirm h4 {
