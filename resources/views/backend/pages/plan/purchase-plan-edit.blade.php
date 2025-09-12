@@ -233,9 +233,9 @@
                                                     @if (!is_numeric($subQuestion))
                                                         {{-- Normal sub-question --}}
                                                         @if($mainQuestion == 'Cuisines')
-                                                        <h6 class="mt-3 text-muted">{{ ucFirst($subQuestion) }}</h6>
+                                                            <h6 class="mt-3 text-muted">{{ ucFirst($subQuestion) }}</h6>
                                                         @else
-                                                        <h6 class="mt-3 text-muted">{{ $subQuestion }}</h6>
+                                                            <h6 class="mt-3 text-muted">{{ $subQuestion }}</h6>
                                                         @endif
                                                         <div class="row" id="category-row-{{ Str::slug($subQuestion) }}">
                                                             @php
@@ -336,9 +336,27 @@
                         <div class="my-5 d-flex flex-wrap flex-md-nowrap gap-3">
                             <button type="submit" class="btn btn-primary">Update</button>
                             <button type="submit" class="btn btn-success" name="action" value="save_exit">Update & Exit</button>
-                            <a href="{{ route('front.profile', ['id' => $payment->user_id, 'payment_id' => $payment->id, 'admin_view' => 1]) }}" target="_blank" class="btn btn-success">
-                                View User Profile
-                            </a>
+                            @php
+                                if (isset($firstUserPlan) && isset($firstUserPlan->plan)) {
+                                    switch ($firstUserPlan->plan->name) {
+                                        case 'Training Nutrition Plan':
+                                            $route = route('front.training.nutrition.plan', ['user_id' => $firstUserPlan->user_id, 'plan_id' => $firstUserPlan->plan->id]);
+                                            break;
+                                        case 'Injury & Recovery Plan':
+                                            $route = route('front.injury.recovery.plan', ['user_id' => $firstUserPlan->user_id, 'plan_id' => $firstUserPlan->plan->id]);
+                                            break;
+                                        case 'Competition Plan':
+                                            $route = route('front.competition.plan');
+                                            break;
+                                        case 'Injury Recovery + Post Surgery':
+                                            $route = route('front.surgery.plan');
+                                            break;
+                                    }
+                                } else {
+                                    $route = route('front.profile', ['id' => $firstUserPlan->user_id, 'payment_id' => $payment->id]);
+                                }
+                            @endphp
+                            <a href="{{ $route }}" target="_blank" class="btn btn-success">View User Profile</a>
                             <button
                                 type="button"
                                 name="action"
