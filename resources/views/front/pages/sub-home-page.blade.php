@@ -754,7 +754,7 @@
                                     <p class="sport-nutrition-promo__desc">{!! $section->content !!}</p>
                                     <div class="sport-nutrition-promo__form">
                                         <div class="custom-select-wrapper">
-                                        <select name="sport" id="sport" required data-custom="true">
+                                        <select name="sport" id="sport" data-custom="true">
                                             <option value="">Select Category</option>
                                             @foreach($sportCategories as $category)
                                                 <option value="{{ $category->id }}">{{ $category->name }}</option>
@@ -768,7 +768,7 @@
                                         </div>
                                          <div class="vertical-line"></div>
                                         <div class="custom-select-wrapper">
-                                            <select name="sport_game" id="sport_game" required data-custom="true">
+                                            <select name="sport_game" id="sport_game" data-custom="true">
                                                 <option value="">Sport</option>
                                             </select>
                                             <div class="custom-select-arrow">
@@ -779,7 +779,7 @@
                                         </div>
                                         <div class="vertical-line"></div>
                                         <div class="custom-select-wrapper">
-                                            <select name="state" required data-custom="true">
+                                            <select name="state" data-custom="true">
                                                 <option value="">State</option>
                                                 <option value="New South Wales">New South Wales (NSW)</option>
                                                 <option value="Victoria">Victoria (VIC)</option>
@@ -829,7 +829,6 @@
                         </div>
                     </div>
                 </section>
-
             @endif
             @if($section->section_type == \App\Models\Section::TYPE_REAL_STORIES && $section->enabled == 1)
                 <!-- testimonial slider section -->
@@ -1204,6 +1203,10 @@
 
             $("#sport-form").submit(function (e) {
                 e.preventDefault();
+
+                // TODO: Remove this after testing
+                $('#comingSoonModal').modal('show');
+                return;
 
                 // iOS-specific form handling
                 if (isIOS()) {

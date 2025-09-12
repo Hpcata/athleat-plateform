@@ -83,7 +83,8 @@ body {
 }
 
 .header .nav-center .nav-item,
-.header .nav-right .nav-item {
+.header .nav-right .nav-item,
+.footer .footer-nav .nav-item {
     color: #fff;
     font-size: 1rem;
     font-weight: 500;
@@ -262,11 +263,15 @@ body {
     font-size: 1rem;
     font-weight: 600;
 }
-
+.main.injury-plan-page .hero-container{
+margin-top: 107px;
+}
 .training-plan {
     margin-bottom: 56px;
 }
-
+.training-plan.plan-detail-page{
+    margin-top: 56px !important;
+}
 .challenges,
 .optimize-performance,
 .plans-section,
@@ -3709,6 +3714,12 @@ button:focus,
 }
 
 @media (max-width: 600px) {
+    .training-plan.plan-detail-page{
+    margin-top: 36px !important;
+}
+.main.injury-plan-page .hero-container{
+margin-top: 72px;
+}
     .modal-confirm h4 {
         font-size: 28px;
     }

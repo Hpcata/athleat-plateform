@@ -9,7 +9,7 @@
 </head>
 <body>
     <h2>Hello,</h2>
-    
+
     <p>A new plan has been purchased by {{ $user->name }}</p>
 
     <p>Plan Name : {{ $planName }}</p>
