@@ -287,7 +287,7 @@ class PurchasePlanController extends Controller
                 foreach ($request->plan_id as $planId) {
                     $userPlan = DB::table('user_plans')->updateOrInsert(
                         ['user_id' => $request->user_id, 'plan_id' => $planId],
-                        ['status' => 'active', 'modified_by' => auth()->id(), 'updated_at' => now(), 'created_at' => now()]
+                        ['status' => 'active', 'modified_by' => auth('admin')->user()->id, 'updated_at' => now(), 'created_at' => now()]
                     );
 
                     $userPlan = DB::table('user_plans')
@@ -630,9 +630,7 @@ class PurchasePlanController extends Controller
                 }
             }
 
-            $activity = UserPlan::with([
-                'modifiedBy',
-            ])
+            $activity = UserPlan::with(['modifiedBy'])
                 ->where('user_id', $payment->user_id)
                 ->where('plan_id', $payment->plan_id)
                 ->orderBy('updated_at', 'desc')
@@ -855,7 +853,7 @@ class PurchasePlanController extends Controller
                 foreach ($request->plan_id as $planId) {
                     $userPlan = DB::table('user_plans')->updateOrInsert(
                         ['user_id' => $request->user_id, 'plan_id' => $planId],
-                        ['status' => 'active', 'modified_by' => auth()->id(), 'updated_at' => now()]
+                        ['status' => 'active', 'modified_by' => auth('admin')->user()->id, 'updated_at' => now()]
                     );
 
                     $userPlan = DB::table('user_plans')
@@ -1136,7 +1134,6 @@ class PurchasePlanController extends Controller
                                                 if (! empty($swapItemsToRemove)) {
                                                     $j = DB::table('user_swap_items')
                                                         ->where('user_plan_id', $userPlan->id)
-                                                    // ->where('user_category_id', $userMealTime->id)
                                                         ->where('user_meal_id', $userMealId)
                                                         ->where('user_item_id', $userItem->id)
                                                         ->whereIn('id', $swapItemsToRemove)
