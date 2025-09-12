@@ -148,84 +148,83 @@
                             <div class="row">
                                 <div class="panel-group col-md-8" id="accordion">
                                     @foreach ($userPlans as $userPlan)
-                                                                    <?php
-                                        $plan = $userPlan->plan; ?>
-                                                                    <div class="panel panel-default">
-                                                                        <div class="panel-heading">
-                                                                            <h4 class="panel-title">
-                                                                                <a data-toggle="collapse" data-parent="#accordion"
-                                                                                    href="#collapsePlan{{$plan->id}}">{{ $userPlan->plan->name }}</a>
-                                                                            </h4>
+                                        <?php $plan = $userPlan->plan; ?>
+                                        <div class="panel panel-default">
+                                            <div class="panel-heading">
+                                                <h4 class="panel-title">
+                                                    <a data-toggle="collapse" data-parent="#accordion"
+                                                        href="#collapsePlan{{$plan->id}}">{{ $userPlan->plan->name }}</a>
+                                                </h4>
+                                            </div>
+                                            <div id="collapsePlan{{$plan->id}}" class="panel-collapse collapse in">
+                                                <div class="panel-body">
+                                                    <input type="hidden" name="plan_id[]" value="{{ $plan->id }}">
+                                                    <input type="hidden" name="payment_id" value="{{ $payment->id }}">
+                                                    <input type="hidden" name="user_id" value="{{ $payment->user_id }}">
+
+                                                    <!-- Meal Times (Checkboxes) -->
+                                                    <ul class="list-group mb-4">
+                                                        @foreach ($userPlan->plan->categories as $mealTime)
+                                                            <input type="hidden" name="meal_times[{{$plan->id}}][]"
+                                                                value="{{ $mealTime->id }}" id="hidden-mealtime">
+                                                            <li class="list-group-item border rounded mb-3">
+                                                                <!-- Meal Time Checkbox -->
+                                                                <div
+                                                                    class="form-check d-flex justify-content-between align-items-center px-0">
+                                                                    <div
+                                                                        class="meal-time-label d-flex justify-content-between align-items-center w-100">
+                                                                        <div>
+                                                                            <!-- Arrow toggle aligned to the right -->
+                                                                            <span class="toggle-arrow me-2"
+                                                                                data-toggle-id="{{$plan->id}}_{{$mealTime->id}}"
+                                                                                style="cursor: pointer;">
+                                                                                <i class="fas fa-chevron-down"></i>
+                                                                            </span>
+                                                                            <input type="checkbox"
+                                                                                name="meal_times[{{$plan->id}}][]"
+                                                                                value="{{ $mealTime->id }}"
+                                                                                class="form-check-input meal-time-checkbox hidden-checkbox"
+                                                                                id="mealTime{{$plan->id}}_{{$mealTime->id}}"
+                                                                                data-mealtime-id="{{$mealTime->id}}">
+
+                                                                            <label class="form-check-label fw-bold"
+                                                                                for="mealTime{{$plan->id}}_{{$mealTime->id}}">
+                                                                                {{ $mealTime->title }}
+                                                                            </label>
                                                                         </div>
-                                                                        <div id="collapsePlan{{$plan->id}}" class="panel-collapse collapse in">
-                                                                            <div class="panel-body">
-                                                                                <input type="hidden" name="plan_id[]" value="{{ $plan->id }}">
-                                                                                <input type="hidden" name="payment_id" value="{{ $payment->id }}">
-                                                                                <input type="hidden" name="user_id" value="{{ $payment->user_id }}">
-
-                                                                                <!-- Meal Times (Checkboxes) -->
-                                                                                <ul class="list-group mb-4">
-                                                                                    @foreach ($userPlan->plan->categories as $mealTime)
-                                                                                        <input type="hidden" name="meal_times[{{$plan->id}}][]"
-                                                                                            value="{{ $mealTime->id }}" id="hidden-mealtime">
-                                                                                        <li class="list-group-item border rounded mb-3">
-                                                                                            <!-- Meal Time Checkbox -->
-                                                                                            <div
-                                                                                                class="form-check d-flex justify-content-between align-items-center px-0">
-                                                                                                <div
-                                                                                                    class="meal-time-label d-flex justify-content-between align-items-center w-100">
-                                                                                                    <div>
-                                                                                                        <!-- Arrow toggle aligned to the right -->
-                                                                                                        <span class="toggle-arrow me-2"
-                                                                                                            data-toggle-id="{{$plan->id}}_{{$mealTime->id}}"
-                                                                                                            style="cursor: pointer;">
-                                                                                                            <i class="fas fa-chevron-down"></i>
-                                                                                                        </span>
-                                                                                                        <input type="checkbox"
-                                                                                                            name="meal_times[{{$plan->id}}][]"
-                                                                                                            value="{{ $mealTime->id }}"
-                                                                                                            class="form-check-input meal-time-checkbox hidden-checkbox"
-                                                                                                            id="mealTime{{$plan->id}}_{{$mealTime->id}}"
-                                                                                                            data-mealtime-id="{{$mealTime->id}}">
-
-                                                                                                        <label class="form-check-label fw-bold"
-                                                                                                            for="mealTime{{$plan->id}}_{{$mealTime->id}}">
-                                                                                                            {{ $mealTime->title }}
-                                                                                                        </label>
-                                                                                                    </div>
-                                                                                                    <span class="meal-count ms-2"
-                                                                                                        id="mealCount{{$plan->id}}_{{$mealTime->id}}">0</span>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                            <div class="mealTimeDetailsDiv">
-                                                                                                <!-- Add Meal Dropdown (Multiple Select) -->
-                                                                                                <div class="add-meal-dropdown mt-3"
-                                                                                                    id="addMealDropdown{{$plan->id}}_{{$mealTime->id}}"
-                                                                                                    style="display: none;">
-                                                                                                    <label for="mealItems{{$plan->id}}_{{$mealTime->id}}"
-                                                                                                        class="form-label">Add Meal</label>
-                                                                                                    <select
-                                                                                                        name="selected_meals[{{$plan->id}}][{{$mealTime->id}}][]"
-                                                                                                        id="mealItems{{$plan->id}}_{{$mealTime->id}}"
-                                                                                                        class="form-select meal-items-select select2 form-control-multiple"
-                                                                                                        multiple style="width:100%">
-
-                                                                                                    </select>
-                                                                                                </div>
-
-                                                                                                <!-- Selected Meals and Swap Items -->
-                                                                                                <div class="selected-meals mt-3"
-                                                                                                    id="selectedMeals{{$plan->id}}_{{$mealTime->id}}"
-                                                                                                    style="display: none;">
-                                                                                                    <ul class="list-group"></ul>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                        </li>
-                                                                                    @endforeach
-                                                                                </ul>
-                                                                            </div>
-                                                                        </div>
+                                                                        <span class="meal-count ms-2"
+                                                                            id="mealCount{{$plan->id}}_{{$mealTime->id}}">0</span>
                                                                     </div>
+                                                                </div>
+                                                                <div class="mealTimeDetailsDiv">
+                                                                    <!-- Add Meal Dropdown (Multiple Select) -->
+                                                                    <div class="add-meal-dropdown mt-3"
+                                                                        id="addMealDropdown{{$plan->id}}_{{$mealTime->id}}"
+                                                                        style="display: none;">
+                                                                        <label for="mealItems{{$plan->id}}_{{$mealTime->id}}"
+                                                                            class="form-label">Add Meal</label>
+                                                                        <select
+                                                                            name="selected_meals[{{$plan->id}}][{{$mealTime->id}}][]"
+                                                                            id="mealItems{{$plan->id}}_{{$mealTime->id}}"
+                                                                            class="form-select meal-items-select select2 form-control-multiple"
+                                                                            multiple style="width:100%">
+
+                                                                        </select>
+                                                                    </div>
+
+                                                                    <!-- Selected Meals and Swap Items -->
+                                                                    <div class="selected-meals mt-3"
+                                                                        id="selectedMeals{{$plan->id}}_{{$mealTime->id}}"
+                                                                        style="display: none;">
+                                                                        <ul class="list-group"></ul>
+                                                                    </div>
+                                                                </div>
+                                                            </li>
+                                                        @endforeach
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
                                     @endforeach
                                 </div>
                                 <div class="col-md-4">
