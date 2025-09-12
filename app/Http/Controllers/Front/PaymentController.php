@@ -1079,8 +1079,9 @@ class PaymentController extends Controller
         try {
             \Stripe\Stripe::setApiKey(config('services.stripe.secret'));
 
-            // Calculate monthly price (with 10% markup divided by 8 months)
-            $monthlyPrice = ($validated['price'] * 1.1) / 8;
+            // Use the final price (which is already the correct monthly amount for monthly subscriptions)
+            // The frontend already calculates the correct monthly price and sends it as final_price
+            $monthlyPrice = $validated['final_price'] ?? $validated['price'];
 
             Log::info('Starting Stripe recurring payment flow', [
                 'user_id' => $user->id,
