@@ -709,62 +709,56 @@ $intresetsmallimg1 = $intresetsmallimg2 = $intresetsmallimg3 = $intrestimg1 = $i
     </script>
 
     <script>
-        const onePaymentBtn = document.getElementById("onePaymentBtn");
-        const monthlyPlanBtn = document.getElementById("monthlyPlanBtn");
-        const onePaymentPlans = document.getElementById("onePaymentPlans");
-        const monthlyPlans = document.getElementById("monthlyPlans");
+        // const onePaymentBtn = document.getElementById("onePaymentBtn");
+        // const monthlyPlanBtn = document.getElementById("monthlyPlanBtn");
+        // const onePaymentPlans = document.getElementById("onePaymentPlans");
+        // const monthlyPlans = document.getElementById("monthlyPlans");
 
-        onePaymentBtn.addEventListener("click", () => {
-            onePaymentPlans.classList.remove("d-none");
-            monthlyPlans.classList.add("d-none");
-            onePaymentBtn.classList.add("active");
-            monthlyPlanBtn.classList.remove("active");
-        });
+        // onePaymentBtn.addEventListener("click", () => {
+        //     onePaymentPlans.classList.remove("d-none");
+        //     monthlyPlans.classList.add("d-none");
+        //     onePaymentBtn.classList.add("active");
+        //     monthlyPlanBtn.classList.remove("active");
+        // });
 
-        monthlyPlanBtn.addEventListener("click", () => {
-            onePaymentPlans.classList.add("d-none");
-            monthlyPlans.classList.remove("d-none");
-            monthlyPlanBtn.classList.add("active");
-            onePaymentBtn.classList.remove("active");
-        });
+        // monthlyPlanBtn.addEventListener("click", () => {
+        //     onePaymentPlans.classList.add("d-none");
+        //     monthlyPlans.classList.remove("d-none");
+        //     monthlyPlanBtn.classList.add("active");
+        //     onePaymentBtn.classList.remove("active");
+        // });
     </script>
 
     <script>
         // Handle monthlyBtn in planChooseModal
-        document.getElementById("monthlyBtn").addEventListener("click", function () {
-            // Hide the current modal
-            const planModal = bootstrap.Modal.getInstance(document.getElementById('planChooseModal'));
-            if (planModal) {
-                planModal.hide();
-            }
+        // document.getElementById("monthlyBtn").addEventListener("click", function () {
+        //     // Hide the current modal
+        //     const planModal = bootstrap.Modal.getInstance(document.getElementById('planChooseModal'));
+        //     if (planModal) {
+        //         planModal.hide();
+        //     }
 
-            // Show the consultation congrats modal
-            const congratsModalConsultation = new bootstrap.Modal(document.getElementById('congratsModalConsultation'));
-            congratsModalConsultation.show();
-        });
+        //     // Show the consultation congrats modal
+        //     const congratsModalConsultation = new bootstrap.Modal(document.getElementById('congratsModalConsultation'));
+        //     congratsModalConsultation.show();
+        // });
 
-        // Handle consultation booking button
-        const consultationBtn = document.querySelector('#paymentModal .btn-signup');
-        if (consultationBtn) {
-            consultationBtn.addEventListener("click", function () {
-                // Hide the current modal
-                const paymentModal = bootstrap.Modal.getInstance(document.getElementById('paymentModal'));
-                if (paymentModal) {
-                    paymentModal.hide();
-                }
+        // // Handle consultation booking button
+        // const consultationBtn = document.querySelector('#paymentModal .btn-signup');
+        // if (consultationBtn) {
+        //     consultationBtn.addEventListener("click", function () {
+        //         // Hide the current modal
+        //         const paymentModal = bootstrap.Modal.getInstance(document.getElementById('paymentModal'));
+        //         if (paymentModal) {
+        //             paymentModal.hide();
+        //         }
 
-                // Show the consultation congrats modal
-                const congratsModalConsultation = new bootstrap.Modal(document.getElementById('congratsModalConsultation'));
-                congratsModalConsultation.show();
-            });
-        }
+        //         // Show the consultation congrats modal
+        //         const congratsModalConsultation = new bootstrap.Modal(document.getElementById('congratsModalConsultation'));
+        //         congratsModalConsultation.show();
+        //     });
+        // }
 
-    </script>
-    <script>
-        document.getElementById("toggle-coupon").addEventListener("click", function (e) {
-            e.preventDefault();
-            document.getElementById("coupon-details").classList.toggle("d-none");
-        });
     </script>
     <script>
         document.getElementById("toggle-coupon-consultation").addEventListener("click", function (e) {
@@ -805,12 +799,6 @@ $intresetsmallimg1 = $intresetsmallimg2 = $intresetsmallimg3 = $intrestimg1 = $i
                 // Show payment form again when coupon is removed
                 document.querySelector('#consultation-payment-form .form-wrap').classList.remove('d-none');
             }
-        });
-    </script>
-    <script>
-        document.getElementById("apply-promo-code").addEventListener("click", function () {
-            // Add your promo code application logic here
-            console.log("Promo code applied");
         });
     </script>
     <script>

@@ -208,17 +208,18 @@
 
         <!-- Congrats Modal for Plan Selection -->
     <div class="modal fade" id="congratsModalPlan" tabindex="-1" aria-labelledby="congratsModalPlanLabel"
-        aria-hidden="true">
+        aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content" style="border-radius: 12px;">
                 <div id="congratsContentPlan">
-                    <button type="button" class="btn-close congrats-modal" data-bs-dismiss="modal"
+                    <!-- Remove close button to prevent manual closing, same as consultation -->
+                    <!-- <button type="button" class="btn-close congrats-modal" data-bs-dismiss="modal"
                         aria-label="Close"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12"
                             viewBox="0 0 12 12" fill="none">
                             <path
                                 d="M0.219668 1.28033C-0.0732225 0.987438 -0.0732225 0.512558 0.219668 0.219668C0.512558 -0.0732225 0.987438 -0.0732225 1.28033 0.219668L5.999 4.9384L10.7176 0.219798C11.0105 -0.0730923 11.4854 -0.0730923 11.7782 0.219798C12.0711 0.512688 12.0711 0.987568 11.7782 1.28046L7.0597 5.999L11.7782 10.7176C12.0711 11.0105 12.0711 11.4854 11.7782 11.7782C11.4854 12.0711 11.0105 12.0711 10.7176 11.7782L5.999 7.0597L1.28033 11.7784C0.987438 12.0713 0.512558 12.0713 0.219668 11.7784C-0.0732225 11.4855 -0.0732225 11.0106 0.219668 10.7177L4.9384 5.999L0.219668 1.28033Z"
                                 fill="#626262" />
-                        </svg></button>
+                        </svg></button> -->
                     <img src="images/congrats-modal-img.png" alt="Congrats" class="rounded-top w-100">
                     <div class="p-4 text-center modal-body">
                         <div class="mb-3">
@@ -239,8 +240,48 @@
                             questionnaire prior then Kerry will start working on your personalised nutrition plan and it
                             will appear in your web app, as soon as it's ready.
                         </p>
-                        <button type="button" class="w-100 btn btn-signup" id="completeQuestionnaireBtn">Next - Complete Questionnaire</button>
+                        <!-- Dynamic content based on plan type -->
+                        <div id="congratsPlanContent">
+                            <!-- For Power Play/Game Plan - show Book a time button -->
+                            <div id="powerPlayGamePlanContent" style="display: none;">
+                                <p class="mb-3 congrats-para">
+                                    Let's book in a time for your consultation!
+                                </p>
+                                <button type="button" class="w-100 btn btn-signup" id="book-time-btn-plan">Book a Time</button>
+                            </div>
+                            <!-- For Normal Plan - show questionnaire button -->
+                            <div id="normalPlanContent" style="display: none;">
+                                <button type="button" class="w-100 btn btn-signup" id="completeQuestionnaireBtn">Next - Complete Questionnaire</button>
+                            </div>
+                        </div>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Calendar Booking Modal -->
+    <div class="modal fade" id="calendarBookingModalPlan" tabindex="-1" aria-labelledby="calendarBookingModalPlanLabel"
+        aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content" style="border-radius: 12px;">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="calendarBookingModalPlanLabel">Book Your Consultation</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-0">
+                    <div class="calendar-container" style="height: 600px;">
+                        <!-- Google Calendar Appointment Scheduling begin -->
+                        <iframe id="calendar-iframe-plan" src="" style="border: 0" width="100%" height="600"
+                            frameborder="0"></iframe>
+                        <!-- end Google Calendar Appointment Scheduling -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <p class="text-muted small mb-0">
+                        <i class="fas fa-info-circle me-1"></i>
+                        After booking your consultation, you'll be redirected based on your questionnaire completion status.
+                    </p>
                 </div>
             </div>
         </div>
@@ -651,7 +692,81 @@ document.addEventListener('DOMContentLoaded', function() {
             }, 300); // Small delay to ensure modal is closed
         });
     });
+
+    // Prevent page refresh when congrats modal is open
+    $('#congratsModalPlan').on('shown.bs.modal', function () {
+        // Add beforeunload event listener when modal opens
+        window.addEventListener('beforeunload', preventRefreshWhenCongratsOpen);
+    });
+
+    $('#congratsModalPlan').on('hidden.bs.modal', function () {
+        // Remove beforeunload event listener when modal closes
+        window.removeEventListener('beforeunload', preventRefreshWhenCongratsOpen);
+    });
+
+    // Handle calendar booking modal close - check questionnaire status and redirect
+    $('#calendarBookingModalPlan').on('hidden.bs.modal', function () {
+        checkQuestionnaireStatusAndRedirect();
+    });
+
+    // Prevent page refresh when calendar booking modal is open
+    $('#calendarBookingModalPlan').on('shown.bs.modal', function () {
+        // Add beforeunload event listener when modal opens
+        window.addEventListener('beforeunload', preventRefreshWhenCalendarOpen);
+    });
+
+    $('#calendarBookingModalPlan').on('hidden.bs.modal', function () {
+        // Remove beforeunload event listener when modal closes
+        window.removeEventListener('beforeunload', preventRefreshWhenCalendarOpen);
+    });
+
 });
+
+// Function to prevent page refresh when congrats modal is open (moved outside DOMContentLoaded for global access)
+function preventRefreshWhenCongratsOpen(event) {
+    const message = 'Please complete your plan purchase process first before leaving this page.';
+    event.preventDefault();
+    event.returnValue = message;
+    return message;
+}
+
+// Function to prevent page refresh when calendar is open (moved outside DOMContentLoaded for global access)
+function preventRefreshWhenCalendarOpen(event) {
+    const message = 'Please complete your consultation booking first before leaving this page.';
+    event.preventDefault();
+    event.returnValue = message;
+    return message;
+}
+
+// Check questionnaire status and redirect accordingly (moved outside DOMContentLoaded for global access)
+function checkQuestionnaireStatusAndRedirect() {
+    fetch('{{ route("front.consultation.questionnaire.status") }}', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success && data.redirect_url) {
+            // Redirect to appropriate page based on questionnaire completion
+            window.location.href = data.redirect_url;
+        } else if (data.requires_auth) {
+            // User needs to login
+            $('#signupModalathlete').modal('show');
+        } else {
+            console.error('Error checking questionnaire status:', data.message);
+            // Fallback: redirect to home page
+            window.location.href = '{{ route("front.index") }}';
+        }
+    })
+    .catch(error => {
+        console.error('Error checking questionnaire status:', error);
+        // Fallback: redirect to home page
+        window.location.href = '{{ route("front.index") }}';
+    });
+}
 
 // Function to process plan payment (single request to backend)
 function processPlanPayment() {
@@ -759,9 +874,9 @@ function sendPlanRequestWithCardDetails() {
                     const errorMessage = xhr.responseJSON?.message || 'Payment failed. Please try again.';
                     alert('Payment failed: ' + errorMessage);
                 }
-            });
-        }
-    });
+        });
+    }
+});
 }
 
 // Process free plan purchase (single request)
@@ -870,31 +985,69 @@ function updateCongratsModal(planType, hasConsultation) {
     const planName = '{{ $planDetails?->name }}';
     const congratsPlanName = document.getElementById('congratsPlanName');
     const congratsPlanDescription = document.getElementById('congratsPlanDescription');
+    const powerPlayGamePlanContent = document.getElementById('powerPlayGamePlanContent');
+    const normalPlanContent = document.getElementById('normalPlanContent');
+    
+    // Hide both content sections first
+    if (powerPlayGamePlanContent) powerPlayGamePlanContent.style.display = 'none';
+    if (normalPlanContent) normalPlanContent.style.display = 'none';
     
     if (planType === 'powerplay') {
         congratsPlanName.innerHTML = `<strong>Your Power Play</strong><br>${planName} + 30 min Consultation`;
         congratsPlanDescription.textContent = 'We\'ll send you an email to book your consultation. You will need to complete your questionnaire prior then Kerry will start working on your personalised nutrition plan and it will appear in your web app, as soon as it\'s ready.';
+        // Show Book a time button for Power Play
+        if (powerPlayGamePlanContent) powerPlayGamePlanContent.style.display = 'block';
     } else if (planType === 'gameplan') {
         congratsPlanName.innerHTML = `<strong>Your Game Plan</strong><br>${planName} + 60 min Consultation`;
         congratsPlanDescription.textContent = 'We\'ll send you an email to book your consultation. You will need to complete your questionnaire prior then Kerry will start working on your personalised nutrition plan and it will appear in your web app, as soon as it\'s ready.';
+        // Show Book a time button for Game Plan
+        if (powerPlayGamePlanContent) powerPlayGamePlanContent.style.display = 'block';
     } else {
         congratsPlanName.innerHTML = `<strong>Your ${planName}</strong><br>${planName}`;
         congratsPlanDescription.textContent = 'You will need to complete your questionnaire prior then Kerry will start working on your personalised nutrition plan and it will appear in your web app, as soon as it\'s ready.';
+        // Show questionnaire button for normal plans
+        if (normalPlanContent) normalPlanContent.style.display = 'block';
     }
-    }
+}
 
     // Complete questionnaire button
     const completeQuestionnaireBtn = document.getElementById('completeQuestionnaireBtn');
     if (completeQuestionnaireBtn) {
         completeQuestionnaireBtn.addEventListener('click', function() {
-            // Close the modal and reload the page
-            const congratsModal = bootstrap.Modal.getInstance(document.getElementById('congratsModalPlan'));
-            congratsModal.hide();
+            // Temporarily remove page refresh prevention to avoid confirmation dialog
+            window.removeEventListener('beforeunload', preventRefreshWhenCongratsOpen);
+            window.removeEventListener('beforeunload', preventRefreshWhenCalendarOpen);
             
-            // Reload the page after modal closes
-            setTimeout(() => {
-                window.location.reload();
-            }, 300);
+            // Call the questionnaire function
+            checkQuestionnaireStatusAndRedirect();
+        });
+    }
+
+    // Book a time button for Power Play/Game Plan
+    const bookTimeBtnPlan = document.getElementById('book-time-btn-plan');
+    if (bookTimeBtnPlan) {
+        bookTimeBtnPlan.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Get consultation time from stored data or determine from plan type
+            const planType = getPlanTypeFromTitle(document.getElementById('congratsPlanName').textContent);
+            const consultationTime = (planType === 'powerplay') ? 30 : 60; // Default to 30 for powerplay, 60 for gameplan
+            
+            // Set the appropriate calendar URL based on consultation time
+            const calendarIframe = document.getElementById('calendar-iframe-plan');
+            if (consultationTime === 30) {
+                // 30-minute consultation calendar
+                calendarIframe.src = 'https://calendar.google.com/calendar/appointments/schedules/AcZssZ06hsdgy_YQNWOYK-jUrwBejSClhQehI3ZTeUgD7TKX7PCOZV5xyDfcIOTMPC2YImB4zCr92BYJ?gv=true';
+            } else {
+                // Other consultation types calendar
+                calendarIframe.src = 'https://calendar.google.com/calendar/appointments/schedules/AcZssZ0J7QhuvkeNW899AvG5ODe7rGS92oCSl9nE5Gb4LDh_1SlNDXRaIloRBv9w7ftzOzf1DiAB93li?gv=true';
+            }
+
+            // Hide congrats modal
+            $('#congratsModalPlan').modal('hide');
+
+            // Show calendar booking modal
+            $('#calendarBookingModalPlan').modal('show');
         });
     }
 
