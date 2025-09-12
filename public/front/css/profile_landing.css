@@ -83,7 +83,8 @@ body {
 }
 
 .header .nav-center .nav-item,
-.header .nav-right .nav-item {
+.header .nav-right .nav-item,
+.footer .footer-nav .nav-item {
     color: #fff;
     font-size: 1rem;
     font-weight: 500;

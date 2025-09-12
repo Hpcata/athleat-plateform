@@ -30,7 +30,7 @@
 <body>
     <div class="container">
         <div class="header">New Sports Interest Submission</div>
-        
+
         <div class="details">
             <p><strong>Name:</strong> {{ $interest->name }}</p>
             <p><strong>Email:</strong> {{ $interest->email }}</p>
@@ -44,7 +44,7 @@
 
         <div class="footer">
             <p>Regards,</p>
-            <p>Performancehealthsupport System</p>
+            <p>The Team at ATHLEAT.com</p>
         </div>
     </div>
 </body>

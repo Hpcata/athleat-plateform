@@ -48,7 +48,7 @@
 
                             <!-- Meal Times -->
                             <div class="col-md-12">
-                                <label for="meal_times" class="form-label">Meal Timesss</label>
+                                <label for="meal_times" class="form-label">Meal Times</label>
                                 <select id="meal_times" name="meal_times[]" class="form-select select2 form-control-multiple" multiple>
                                     @foreach ($categories as $category)
                                         <option value="{{ $category->id }}"
@@ -111,12 +111,14 @@ $(document).ready(function() {
             htmlEncodeOutput: false,    // Prevents encoding of HTML entities
             entities: false,            // Disables entity encoding
             basicEntities: false,        // Ensures basic entities like `<`, `>` are not encoded
-
         })
         .then(editor => {
             // When the form is submitted, transfer the content of CKEditor to the hidden field
             $('form').on('submit', function() {
-                $('#description').val(editor.getData().trim());  // Save clean HTML
+                let content = editor.getData().trim();
+                // Remove any remaining <p> tags that might wrap the content
+                content = content.replace(/^<p>(.*)<\/p>$/s, '$1');
+                $('#description').val(content);
             });
         })
         .catch(error => {

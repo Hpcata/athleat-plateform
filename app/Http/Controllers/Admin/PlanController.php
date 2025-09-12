@@ -83,7 +83,7 @@ class PlanController extends Controller
             'meal_times' => 'nullable|array',
             'meal_times.*' => 'exists:categories,id',
         ]);
-        // dd($request->all());
+
         if ($request->hasFile('image')) {
             if ($plan->image) {
                 Storage::disk('public')->delete($plan->image);

@@ -42,19 +42,13 @@
                 </li>
             @endif
 
-            {{-- Challenges and Rewards button --}}
             <li class="mobile-menu-link coming-soon-popup">
-                <a href="#" onclick="toggleMobileMenu()" style="color: #fff; text-decoration: none; display: block; padding: 8px 16px;">Challenges and Rewards</a>
+                <a onclick="toggleMobileMenu()" style="color: #fff; text-decoration: none; display: block; padding: 8px 16px;">Challenges and Rewards</a>
             </li>
-            <li>
-                <div class="mobile-menu-divider" style="height:1px; background:#555; margin: 12px 16px;"></div>
-            </li>
-            {{-- Supplement scanner button --}}
-            <li><a href="#" id="scanner-btn" class="scanner-btn">Supplement Scanner</a></li>
-            {{-- Level-Up library button --}}
-            <li><a href="#" class="coming-soon-popup">Level-Up Library</a></li>
-            {{-- BioHealth Passport button --}}
-            <li><a href="#" onclick="openBookingAndModal()">BioHealth Passport</a></li>
+            <li><div class="mobile-menu-divider" style="height:1px; background:#555; margin: 12px 16px;"></div></li>
+            <li><a id="scanner-btn" class="scanner-btn">Supplement Scanner</a></li>
+            <li><a class="coming-soon-popup">Level-Up Library</a></li>
+            <li><a onclick="openBookingAndModal()">BioHealth Passport</a></li>
             <li>
                 <div class="mobile-menu-divider" style="height:1px; background:#555; margin: 12px 16px;"></div>
             </li>
@@ -68,8 +62,9 @@
                         style="color: #fff; text-decoration: none; display: block; padding: 8px 16px;">Sign out</a>
                 </li>
             @else
-                <li class="mobile-menu-link"><a href="#" onclick="toggleMobileMenu()"
-                        style="color: #fff; text-decoration: none; display: block; padding: 8px 16px;">Sign in</a></li>
+                <li class="mobile-menu-link">
+                    <a onclick="toggleMobileMenu()"style="color: #fff; text-decoration: none; display: block; padding: 8px 16px;">Sign in</a>
+                </li>
             @endif
         </ul>
     </div>
@@ -154,7 +149,7 @@
                             <a class="text-decoration-none nav-item" href="{{ route('front.index') }}">Home</a>
                         @endif
                         {{-- Challenges and Rewards button --}}
-                        <span class="nav-item coming-soon-popup">Challenges and Rewards</span>
+                        <span class="nav-item coming-soon-popup">Challenges and Rewards tests</span>
                         <div class="nav-item dropdown">
                             <span>Resources <i class="fas fa-chevron-down"></i></span>
                             <div class="dropdown-content">
@@ -253,6 +248,7 @@
         registerWithOtp: "{{ route('front.otp.register') }}"
     }
 </script>
+
 <script src="{!! frontAssets('js/jquery-3.6.min.js') !!}"></script>
 <script src="{!! frontAssets('js/otp-registration.js') !!}"></script>
 <script src="{!! frontAssets('js/single-signup.js') !!}"></script>

@@ -131,47 +131,47 @@
             <div class="section-header">
                 {{ ucfirst(str_replace('-', ' ', $formSlug)) }} Questions
             </div>
-            
+
             @foreach($questions as $question)
                 <div class="question-item">
                     <div class="question-text">
                         {{ $question->question }}
                     </div>
-                                         <div class="answer-text">
-                         @php
-                             $answer = $question->answer;
-                             $answer = json_decode($answer, true);
-                         @endphp
-                         <strong>Answer:</strong> 
-                         @if(is_array($answer))
-                             <div class="decoded-answer">
-                                 @if(isset($answer['option']))
-                                     @if($answer['option'] !== null)
-                                         {{ $answer['option'] }}
-                                     @else
-                                         <em>No option selected</em>
-                                     @endif
-                                 @else
-                                     @foreach($answer as $key => $value)
-                                         <div class="answer-item">
-                                             <div class="item-name">{{ ucfirst(str_replace(['-', '_'], ' ', $key)) }}</div>
-                                             <div class="item-details">
-                                                 @if(is_array($value))
+                    <div class="answer-text">
+                        @php
+                            $answer = $question->answer;
+                            $answer = json_decode($answer, true);
+                        @endphp
+                        <strong>Answer:</strong>
+                        @if(is_array($answer))
+                            <div class="decoded-answer">
+                                @if(isset($answer['option']))
+                                    @if($answer['option'] !== null)
+                                        {{ $answer['option'] }}
+                                    @else
+                                        <em>No option selected</em>
+                                    @endif
+                                @else
+                                    @foreach($answer as $key => $value)
+                                        <div class="answer-item">
+                                            <div class="item-name">{{ ucfirst(str_replace(['-', '_'], ' ', $key)) }}</div>
+                                            <div class="item-details">
+                                                @if(is_array($value))
                                                     @if(isset($value['option']) && $value['option'] !== null)
-                                                          {{ $value['option'] }}
+                                                        {{ $value['option'] }}
                                                     @endif
-                                                 @else
+                                                @else
                                                     {{ $value }}
-                                                 @endif
-                                             </div>
-                                         </div>
-                                     @endforeach
-                                 @endif
-                             </div>
-                         @else
-                             {{ $question->answer }}
-                         @endif
-                     </div>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                @endif
+                            </div>
+                        @else
+                            {{ $question->answer }}
+                        @endif
+                    </div>
                     <div class="step-info">
                         Step: {{ $question->step }} | Question Index: {{ $question->question_index }}
                     </div>

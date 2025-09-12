@@ -361,9 +361,11 @@
                                 type="button"
                                 name="action"
                                 value="send"
-                                class="btn {{ $isMailSent ? 'btn-success' : 'btn-secondary' }}"
+                                class="btn {{ $isMailSent ? 'btn-secondary' : 'btn-success' }}"
                                 data-user-id="{{ $payment->user_id }}"
                                 data-payment-id="{{ $payment->id }}"
+                                {{ $isMailSent ? 'disabled' : '' }}
+                                title="{{ $isMailSent ? 'Sent to Customer' : 'Send to Customer' }}"
                             >
                             {{ $isMailSent ? 'Sent to Customer' : 'Send to Customer' }}
                             </button>
