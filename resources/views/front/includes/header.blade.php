@@ -149,7 +149,7 @@
                             <a class="text-decoration-none nav-item" href="{{ route('front.index') }}">Home</a>
                         @endif
                         {{-- Challenges and Rewards button --}}
-                        <span class="nav-item coming-soon-popup">Challenges and Rewards tests</span>
+                        <span class="nav-item coming-soon-popup">Challenges and Rewards</span>
                         <div class="nav-item dropdown">
                             <span>Resources <i class="fas fa-chevron-down"></i></span>
                             <div class="dropdown-content">
