@@ -787,15 +787,14 @@ class FrontController extends Controller
 
             // Check if coupon is applicable to plan or consultation
             $isApplicable = false;
-            
+
             if ($planId) {
                 $isApplicable = $coupon->plans()->where('plans.id', $planId)->exists();
             } elseif ($consultationId) {
-                // For consultations, we'll check if the coupon is applicable to consultations
-                // You may need to add a consultations relationship to the Coupon model
-                $isApplicable = true; // For now, allow all coupons for consultations
+                // Check if the coupon is applicable to the specific consultation
+                $isApplicable = $coupon->consultations()->where('consultations.id', $consultationId)->exists();
             }
-            
+
             if (!$isApplicable) {
                 return response()->json([
                     'valid'   => false,
@@ -881,6 +880,7 @@ class FrontController extends Controller
             ], 500);
         }
     }
+
     public function fetchWeightData(Request $request)
     {
         $userId           = $request->user_id;
@@ -1670,12 +1670,6 @@ class FrontController extends Controller
                 'message' => 'User found',
             ]);
         }
-
-        return response()->json([
-            'status'  => 'error',
-            'user_id' => null,
-            'message' => 'Something went wrong, please try again later.',
-        ]);
     }
 
     public function getFoodItems($key)
@@ -1860,6 +1854,17 @@ class FrontController extends Controller
             $plansWithoutAnimation = [];
             $notPurchasedPlans = [];
 
+
+            $isQuestionnaireSubmitted = UserPrePlan::select('is_complete')->where('user_id', $user->id)->first();
+            // Get not purchased plans
+            $purchasedPlanIds = $payments->pluck('plan_id')->toArray();
+            $notPurchasedPlans = Plan::whereNotIn('id', $purchasedPlanIds)->get();
+
+            if (!$isQuestionnaireSubmitted->is_complete) {
+                $payment = $payments->first();
+                return view('front.pages.profile-my-plans', compact('notPurchasedPlans', 'payments', 'isQuestionnaireSubmitted', 'payment'));
+            }
+
             foreach ($payments as $payment) {
                 // Get the user plan for this payment
                 $userPlan = UserPlan::where('user_id', $user->id)
@@ -1871,9 +1876,7 @@ class FrontController extends Controller
 
                 if ($plan) {
                     // Check if user has completed questionnaire (has UserPrePlan record)
-                    $hasCompletedQuestionnaire = UserPrePlan::where('user_id', $user->id)
-                        ->exists();
-
+                    $hasCompletedQuestionnaire = UserPrePlan::where('user_id', $user->id)->where('is_complete', 1)->exists();
                     if ($hasCompletedQuestionnaire) {
                         // Check if admin has sent meals
                         if ($userPlan && $userPlan->is_mail_sent == 1) {
@@ -1902,26 +1905,40 @@ class FrontController extends Controller
                 }
             }
 
-            // Get not purchased plans
-            $purchasedPlanIds = $payments->pluck('plan_id')->toArray();
-            $notPurchasedPlans = Plan::whereNotIn('id', $purchasedPlanIds)->get();
-
-            return view('front.pages.profile-my-plans', compact(
-                'plansWithAnimation',
-                'plansWithoutAnimation',
-                'notPurchasedPlans'
-            ));
+            return view('front.pages.profile-my-plans', compact('plansWithAnimation','plansWithoutAnimation', 'notPurchasedPlans'));
         } catch (Exception $e) {
             Log::error('Error fetching user plans: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Something went wrong. Please try again later.');
         }
     }
 
-    public function trainingNutritionPlan(Request $request)
+    public function trainingNutritionPlan(Request $request, $userId = null, $planId = null)
     {
+        if ($userId) {
+            $user = User::findOrFail($userId);
+            if ($user->hasPurchasedPlan()) {
+                $userPrePlan = $user->userPrePlans()->first();
+                $sportGameData = SportGame::getUserPlanSportGameImagePath($userPrePlan->occupation);
+
+                $plan = Plan::findOrFail($planId);
+                if (! $plan) {
+                    // redirect back with error
+                    return redirect()->back()->with('error', 'Plan not found.');
+                }
+
+                $userPlan = UserPlan::with(['plan'])->where('user_id', $userId)->where('plan_id', $planId)->first();
+                if (! $userPlan) {
+                    // redirect back with error
+                    return redirect()->back()->with('error', 'User plan not found.');
+                }
+
+                return view('front.pages.purchase-plans.training-nutrition-plan', compact('user', 'plan', 'sportGameData', 'userPlan'));
+            }
+        }
+
         $page        = Page::with('sections')->where('slug', 'training_nutrition_plan')->first();
         $planDetails = Plan::where('name', 'Training Nutrition Plan')->first();
-        return view('front.pages.training_nutrition_plan', compact('page', 'planDetails'));
+        return view('front.pages.training-nutrition-plan', compact('page', 'planDetails'));
     }
 
     public function competitionPlan(Request $request)
@@ -1931,11 +1948,45 @@ class FrontController extends Controller
         return view('front.pages.competition_plan', compact('page', 'planDetails'));
     }
 
-    public function injuryRecoveryPlan(Request $request)
+    public function injuryRecoveryPlan(Request $request, $userId = null, $planId = null)
     {
+        // if user id is not null and user has purchased plan then redirect to profile page
+        if ($userId) {
+            $user = User::findOrFail($userId);
+            if ($user->hasPurchasedPlan()) {
+                $userPrePlan = $user->userPrePlans()->first();
+                $sportGameData = SportGame::getUserPlanSportGameImagePath($userPrePlan->occupation);
+
+                $plan = Plan::findOrFail($planId);
+                if (! $plan) {
+                    // redirect back with error
+                    return redirect()->back()->with('error', 'Plan not found.');
+                }
+
+                $userPlan = UserPlan::with(['plan'])->where('user_id', $userId)->where('plan_id', $planId)->first();
+                if (! $userPlan) {
+                    // redirect back with error
+                    return redirect()->back()->with('error', 'User plan not found.');
+                }
+
+                return view('front.pages.purchase-plans.injury-recovery-plan', compact('user', 'plan', 'sportGameData', 'userPlan'));
+            }
+        }
+
         $page        = Page::with('sections')->where('slug', 'injury_recovery_nutrition_plan')->first();
         $planDetails = Plan::where('name', 'Injury & Recovery Plan')->first();
-        return view('front.pages.injury_recovery_plan', compact('page', 'planDetails'));
+
+        // If page doesn't exist, create a default page object
+        if (!$page) {
+            $page = (object) [
+                'id' => null,
+                'title' => 'Injury & Recovery Plan',
+                'slug' => 'injury_recovery_nutrition_plan',
+                'sections' => collect([])
+            ];
+        }
+
+        return view('front.pages.injury-recovery-plan', compact('page', 'planDetails'));
     }
 
     public function surgeryPlan(Request $request)

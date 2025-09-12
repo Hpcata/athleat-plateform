@@ -16,42 +16,54 @@
                     <h2>My Plans</h2>
                 </div>
                 <div class="card-row">
-                    @if(isset($plansWithAnimation) && count($plansWithAnimation) > 0)
-                        <!-- Plans with animation (questionnaire completed but meals not sent) -->
-                        @foreach($plansWithAnimation as $planData)
-                            @if(isset($planData['plan']) && $planData['plan'])
-                                @include('front.pages.plan-cards.card-with-animation', [
-                                    'plan' => $planData['plan'], 
-                                    'userPlan' => $planData['userPlan'] ?? null, 
-                                    'payment' => $planData['payment'] ?? null
-                                ])
-                            @endif
-                        @endforeach
-                    @endif
+                    @if(isset($isQuestionnaireSubmitted) && !$isQuestionnaireSubmitted->is_complete)
+                        {{-- need to show only once per user if we got multiple payments --}}
+                        @include('front.pages.partials.nutrition-plan-section', [
+                            'title' => 'My Plans',
+                            'actionText' => 'Purchase Plan',
+                            'actionRoute' => 'front.my-plans',
+                            'overlayText' => 'Continue your Questionnaire',
+                            'hideActionText' => true,
+                            'overlayRoute' => route('front.pre-plan-details', ['id' => $payment->id ?? null, 'user_id' => $payment->user_id ?? null])
+                        ])
+                    @else
+                        @if(isset($plansWithAnimation) && count($plansWithAnimation) > 0)
+                            <!-- Plans with animation (questionnaire completed but meals not sent) -->
+                            @foreach($plansWithAnimation as $planData)
+                                @if(isset($planData['plan']) && $planData['plan'])
+                                    @include('front.pages.plan-cards.card-with-animation', [
+                                        'plan' => $planData['plan'],
+                                        'userPlan' => $planData['userPlan'] ?? null,
+                                        'payment' => $planData['payment'] ?? null
+                                    ])
+                                @endif
+                            @endforeach
+                        @endif
 
-                    @if(isset($plansWithoutAnimation) && count($plansWithoutAnimation) > 0)
-                        <!-- Plans without animation (meals sent) -->
-                        @foreach($plansWithoutAnimation as $planData)
-                            @if(isset($planData['plan']) && $planData['plan'])
-                                @include('front.pages.plan-cards.card-without-animation', [
-                                    'plan' => $planData['plan'], 
-                                    'userPlan' => $planData['userPlan'] ?? null, 
-                                    'payment' => $planData['payment'] ?? null
-                                ])
-                            @endif
-                        @endforeach
-                    @endif
+                        @if(isset($plansWithoutAnimation) && count($plansWithoutAnimation) > 0)
+                            <!-- Plans without animation (meals sent) -->
+                            @foreach($plansWithoutAnimation as $planData)
+                                @if(isset($planData['plan']) && $planData['plan'])
+                                    @include('front.pages.plan-cards.card-without-animation', [
+                                        'plan' => $planData['plan'],
+                                        'userPlan' => $planData['userPlan'] ?? null,
+                                        'payment' => $planData['payment'] ?? null
+                                    ])
+                                @endif
+                            @endforeach
+                        @endif
 
-                    @if((!isset($plansWithAnimation) || count($plansWithAnimation) == 0) && (!isset($plansWithoutAnimation) || count($plansWithoutAnimation) == 0))
-                             <div class="consults-plans-grid" style="margin-bottom: 0;">
-                <div class="no-plan-container">
-                    <img src="{{ asset('front/images/my-plan/vector.svg') }}" alt="No Plan Yet" class="no-plan-image" />
-                    <h2 class="no-plan-title">Uh-oh! You don't have a plan yet.</h2>
-                    <p class="no-plan-description">
-                        Get ahead of your competition by signing up for a plan below.
-                    </p>
-                </div>
-            </div>
+                        @if((!isset($plansWithAnimation) || count($plansWithAnimation) == 0) && (!isset($plansWithoutAnimation) || count($plansWithoutAnimation) == 0))
+                            <div class="consults-plans-grid" style="margin-bottom: 0;">
+                                <div class="no-plan-container">
+                                    <img src="{{ asset('front/images/my-plan/vector.svg') }}" alt="No Plan Yet" class="no-plan-image" />
+                                    <h2 class="no-plan-title">Uh-oh! You don't have a plan yet.</h2>
+                                    <p class="no-plan-description">
+                                        Get ahead of your competition by signing up for a plan below.
+                                    </p>
+                                </div>
+                            </div>
+                        @endif
                     @endif
                 </div>
             </section>
@@ -59,15 +71,7 @@
             <!-- Recommended plan -->
             <section class="optimize-performance x">
                 <div class="section-header">
-                    <h2>Optimize your performance</h2>
-                </div>
-
-                <!-- Consultations -->
-                <div class="card-row">
-                    <label class="plan-subtitle-mob">Consultations</label>
-                    <div class="consults-plans-grid grid-1">
-                        @include('front.pages.plan-cards.card-consultations')
-                    </div>
+                    <h2>All Plans</h2>
                 </div>
 
                 <!-- Nutrition plans -->
@@ -88,6 +92,14 @@
                             </div>
                         @endif
                     </div>
+                </div>
+
+                <!-- Consultations -->
+                <div class="card-row">
+                    <label class="plan-subtitle-mob">Consultations</label>
+                    <div class="consults-plans-grid grid-1">
+                                @include('front.pages.plan-cards.card-consultations')
+                        </div>
                 </div>
             </section>
         </div>

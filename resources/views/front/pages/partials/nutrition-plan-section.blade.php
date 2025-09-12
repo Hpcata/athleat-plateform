@@ -1,11 +1,28 @@
 <section class="challenges">
-    <div class="section-header">
-        <h2>{{ $title }}</h2>
-        <a href="{{ route($actionRoute) }}" class="see-all">{{ $actionText }}</a>
-    </div>
+    @if(!$hideActionText)
+        <div class="section-header">
+            <h2>{{ $title }}</h2>
+            <a href="{{ route($actionRoute) }}" class="see-all">{{ $actionText }}</a>
+        </div>
+    @endif
     <div class="slider-container">
         <div class="challenge-cards horizontal-scroll" style="overflow-x:auto;scroll-behavior:smooth; position:relative;">
-            @if($showPurchaseOverlay)
+            @if($overlayText == 'Continue your Questionnaire')
+                <div class="purchase-plan-overlay complete-questionnaire">
+                    <a href="{{ $overlayRoute }}" class="purchase-plan-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="24" viewBox="0 0 25 24" fill="none">
+                            <path
+                                d="M13.5 16C13.5 16.5523 13.0523 17 12.5 17C11.9477 17 11.5 16.5523 11.5 16C11.5 15.4477 11.9477 15 12.5 15C13.0523 15 13.5 15.4477 13.5 16Z"
+                                fill="#FBBC05" />
+                            <path fill-rule="evenodd" clip-rule="evenodd"
+                                d="M2.5 7C2.5 4.23858 4.73858 2 7.5 2H17.5C20.2614 2 22.5 4.23858 22.5 7V17C22.5 19.7614 20.2614 22 17.5 22H7.5C4.73858 22 2.5 19.7614 2.5 17V7ZM7.5 4C5.84315 4 4.5 5.34315 4.5 7V17C4.5 18.6569 5.84315 20 7.5 20H17.5C19.1569 20 20.5 18.6569 20.5 17V7C20.5 5.34315 19.1569 4 17.5 4H7.5ZM12.5 7C13.0523 7 13.5 7.44772 13.5 8V12C13.5 12.5523 13.0523 13 12.5 13C11.9477 13 11.5 12.5523 11.5 12V8C11.5 7.44772 11.9477 7 12.5 7Z"
+                                fill="#FBBC05" />
+                        </svg>
+                        Complete Your Questionnaire
+                    </a>
+                </div>
+                <div class="fade-full"></div>
+            @else
                 <div class="purchase-plan-overlay">
                     <a href="{{ $overlayRoute }}" class="purchase-plan-btn">
                         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="21" viewBox="0 0 22 21" fill="none">

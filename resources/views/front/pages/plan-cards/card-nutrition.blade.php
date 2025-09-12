@@ -8,7 +8,7 @@
             <div class="consult-user-row">
                 <img src="{{ asset('front/images/circled-meal-1.svg') }}" class="consult-avatar" alt="Kerry O'Bryan, expert coach avatar" />
                 <img src="{{ asset('front/images/circled-meal-2.svg') }}" class="consult-avatar overlap1" alt="Kerry O'Bryan, expert coach avatar" />
-                <span>21 meals • 18 Nutrition tips</span>
+                <span>21 meals customised for you</span>
             </div>
         </div>
         @if($plan->name == 'Training Nutrition Plan')

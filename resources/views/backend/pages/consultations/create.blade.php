@@ -19,6 +19,15 @@
                     <form action="{{ route('backend.consultations.store') }}" method="POST">
                         @csrf
                         <div class="row g-3 align-items-center">
+                            <!-- Consultation Name Field -->
+                            <div class="col-md-12">
+                                <label for="consultation_name" class="form-label">Consultation Name</label>
+                                <input type="text" class="form-control" id="consultation_name" name="consultation_name" required placeholder="Enter consultation name..." value="{{ old('consultation_name') }}">
+                                @error('consultation_name')
+                                    <div class="text-danger mt-1">{{ $message }}</div>
+                                @enderror
+                            </div>
+
                             <!-- Content Field -->
                             <div class="col-md-12">
                                 <label for="content" class="form-label">Consultation Content</label>

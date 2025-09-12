@@ -17,7 +17,8 @@ class CouponController extends Controller
     public function create()
     {   
         $plans = \App\Models\Plan::all();
-        return view('backend.pages.coupons.form', compact('plans'));
+        $consultations = \App\Models\Consultation::all();
+        return view('backend.pages.coupons.form', compact('plans', 'consultations'));
     }
 
     public function store(Request $request)
@@ -35,6 +36,8 @@ class CouponController extends Controller
             'description' => 'nullable',
             'plans' => 'nullable|array', // Accept multiple plan IDs
             'plans.*' => 'exists:plans,id', // Ensure each plan ID exists in the 'plans' table
+            'consultations' => 'nullable|array', // Accept multiple consultation IDs
+            'consultations.*' => 'exists:consultations,id', // Ensure each consultation ID exists in the 'consultations' table
     
         ]);
 
@@ -45,13 +48,19 @@ class CouponController extends Controller
             $coupon->plans()->sync($validated['plans']); // Sync adds records to the pivot table
         }
 
+        // Attach the consultations to the coupon
+        if (!empty($validated['consultations'])) {
+            $coupon->consultations()->sync($validated['consultations']); // Sync adds records to the pivot table
+        }
+
         return redirect()->route('admin.coupons.index')->with('success', 'Coupon created successfully!');
     }
 
     public function edit(Coupon $coupon)
     {
         $plans = \App\Models\Plan::all();
-        return view('backend.pages.coupons.form', compact('coupon','plans'));
+        $consultations = \App\Models\Consultation::all();
+        return view('backend.pages.coupons.form', compact('coupon','plans', 'consultations'));
     }
 
     public function update(Request $request, Coupon $coupon)
@@ -66,6 +75,8 @@ class CouponController extends Controller
             'max_uses' => 'nullable|integer',
             'plans' => 'nullable|array', // Accept multiple plan IDs
             'plans.*' => 'exists:plans,id', // Ensure each plan ID exists in the 'plans' table
+            'consultations' => 'nullable|array', // Accept multiple consultation IDs
+            'consultations.*' => 'exists:consultations,id', // Ensure each consultation ID exists in the 'consultations' table
         ]);
 
         $coupon->update($validated);
@@ -73,6 +84,11 @@ class CouponController extends Controller
         // Attach the plans to the coupon
         if (!empty($validated['plans'])) {
             $coupon->plans()->sync($validated['plans']); // Sync adds records to the pivot table
+        }
+
+        // Attach the consultations to the coupon
+        if (!empty($validated['consultations'])) {
+            $coupon->consultations()->sync($validated['consultations']); // Sync adds records to the pivot table
         }
 
         return redirect()->route('admin.coupons.index')->with('success', 'Coupon updated successfully.');

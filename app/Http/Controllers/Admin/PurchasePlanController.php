@@ -68,8 +68,8 @@ class PurchasePlanController extends Controller
         $subPlans = $plan->subPlans()->pluck('sub_plan_id')->toArray();
 
         $plans = Plan::with([
-            'subPlans.categories.subCategories.meals.items.swapItems',
-        ])->where('id', $payment->plan_id)
+                'subPlans.categories.subCategories.meals.items.swapItems',
+            ])->where('id', $payment->plan_id)
             ->when($subPlans, function ($query) use ($subPlans) {
                 return $query->orWhereIn('id', $subPlans);
             })->get();
@@ -82,10 +82,10 @@ class PurchasePlanController extends Controller
 
         $step5Foods = Item::get();
 
-        $userPrePlan = \App\Models\UserPrePlan::with(['prePlanDetails' => function ($query) {
+        $userPrePlan = UserPrePlan::with(['prePlanDetails' => function ($query) {
             $query->where('form_slug', 'food_preference')
                 ->orderBy('id', 'asc');
-        }])
+            }])
             ->where('payment_id', $payment->id)->first();
 
         $foodPreferences = collect();
@@ -104,10 +104,10 @@ class PurchasePlanController extends Controller
                 }
             }
         }
-        $otherFoods = $userPrePlan = \App\Models\UserPrePlan::with(['prePlanDetails' => function ($query) {
+        $otherFoods = $userPrePlan = UserPrePlan::with(['prePlanDetails' => function ($query) {
             $query->where('form_slug', 'food_preference')
                 ->whereIn('question', ['Cuisines', 'Snacks']); // Add your question filters here
-        }])->where('payment_id', $id)->first();
+            }])->where('payment_id', $id)->first();
 
         $groupedAnswers = [];
 
@@ -428,8 +428,8 @@ class PurchasePlanController extends Controller
                                                 ->pluck('id')
                                                 ->toArray();
                                             $currentItems = isset($items[$planId][$mealTimeId][$categoryId][$mealId])
-                                            ? $items[$planId][$mealTimeId][$categoryId][$mealId]
-                                            : [];
+                                                ? $items[$planId][$mealTimeId][$categoryId][$mealId]
+                                                : [];
 
                                             $itemsToRemove = array_diff($existingItems, $currentItems);
                                             if (! empty($itemsToRemove)) {
@@ -489,8 +489,8 @@ class PurchasePlanController extends Controller
                                                     ->toArray();
 
                                                 $currentSwapItems = isset($swapItems[$planId][$mealTimeId][$categoryId][$mealId][$itemId])
-                                                ? $swapItems[$planId][$mealTimeId][$categoryId][$mealId][$itemId]
-                                                : [];
+                                                    ? $swapItems[$planId][$mealTimeId][$categoryId][$mealId][$itemId]
+                                                    : [];
 
                                                 $p = DB::table('user_item_swaps')
                                                     ->where('user_id', $request->user_id)
@@ -662,7 +662,7 @@ class PurchasePlanController extends Controller
 
             $perPlanSelectedFoods = [];
             $step5Foods           = Item::select(['id', 'title'])->get();
-            $otherFoods           = $userPrePlan           = \App\Models\UserPrePlan::with(['prePlanDetails' => function ($query) {
+            $otherFoods           = $userPrePlan           = UserPrePlan::with(['prePlanDetails' => function ($query) {
                 $query->where('form_slug', 'food_preference')->whereIn('question', ['Cuisines', 'Snacks']);
             }])->where('payment_id', $payment->id)->first();
 
@@ -1052,8 +1052,8 @@ class PurchasePlanController extends Controller
 
                                             // Check if items exist for this plan, meal time, category, and meal
                                             $currentItems = isset($items[$planId][$mealTimeId][$categoryId][$mealId])
-                                            ? $items[$planId][$mealTimeId][$categoryId][$mealId]
-                                            : [];
+                                                ? $items[$planId][$mealTimeId][$categoryId][$mealId]
+                                                : [];
 
                                             $itemsToRemove = array_diff($existingItems, $currentItems);
 
@@ -1115,8 +1115,8 @@ class PurchasePlanController extends Controller
 
                                                 // Check if swap items exist for this plan, meal time, category, meal, and item
                                                 $currentSwapItems = isset($swapItems[$planId][$mealTimeId][$categoryId][$mealId][$itemId])
-                                                ? $swapItems[$planId][$mealTimeId][$categoryId][$mealId][$itemId]
-                                                : [];
+                                                    ? $swapItems[$planId][$mealTimeId][$categoryId][$mealId][$itemId]
+                                                    : [];
                                                 // Remove nulls from the array
                                                 $currentSwapItems = array_filter($currentSwapItems, function ($value) {
                                                     return ! is_null($value);
@@ -1237,7 +1237,7 @@ class PurchasePlanController extends Controller
                         ];
                     });
 
-                    $isNew = \App\Models\ItemMeal::where('meal_id', $request->meal_id)
+                    $isNew = ItemMeal::where('meal_id', $request->meal_id)
                         ->where('item_id', $item->id)
                         ->exists() ? 0 : 1;
 
@@ -1731,8 +1731,8 @@ class PurchasePlanController extends Controller
                                     'id'      => $userMeal->id,
                                     'name'    => $userMeal->meal_name,
                                     'image'   => $userMeal->meal && $userMeal->meal->image
-                                    ? asset('private/public/storage/' . $userMeal->meal->image)
-                                    : null,
+                                        ? asset('private/public/storage/' . $userMeal->meal->image)
+                                        : null,
                                     'carbs'   => round($totals['carbs'], 2),
                                     'protein' => round($totals['protein'], 2),
                                     'fat'     => round($totals['fat'], 2),
@@ -2267,9 +2267,9 @@ class PurchasePlanController extends Controller
                     return response()->json(['success' => false, 'message' => 'Unable to download the image.']);
                 }
 
-                                                       // Step 2: Generate a unique filename and save to storage
+                // Step 2: Generate a unique filename and save to storage
                 $imageName = Str::random(32) . '.jpg'; // Generate a random 32-character string and append '.jpg'
-                                                       // Full path to store the image in public storage
+                // Full path to store the image in public storage
                 $imagePath = 'items/' . $imageName;    // Define the folder and filename
 
                 // Save the image to storage
@@ -2318,7 +2318,7 @@ class PurchasePlanController extends Controller
                     $foodCategory->save();
                 }
 
-                                                       // Step 3: Save food details in the database
+                // Step 3: Save food details in the database
                 $food                    = new Item(); // Assuming you have a Food model
                 $food->title             = $validated['name'];
                 $food->protein           = cleanDecimal($protein);
@@ -2499,7 +2499,7 @@ class PurchasePlanController extends Controller
                 foreach ($swapFoodIds as $swapId) {
                     // Ensure the food is not already in the swap list
                     if (! in_array($swapId, array_column($swapFoods, 'id'))) {
-                        $item = \App\Models\Item::find($swapId);
+                        $item = Item::find($swapId);
                         if ($item) {
                             $swapFoods[] = [
                                 'id'   => $item->id,
@@ -2511,7 +2511,7 @@ class PurchasePlanController extends Controller
                 }
             } else {
                 $swapId = $request->swap_food_ids;
-                $item   = \App\Models\Item::find($swapId);
+                $item   = Item::find($swapId);
                 if ($item) {
                     $swapFoods[] = [
                         'id'   => $item->id,
