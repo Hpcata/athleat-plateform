@@ -16,6 +16,6 @@
     </ul>
 
     <p>We will continue to share helpful resources with you.</p>
-    <p>Best regards,<br>The Performancehealthsupport Team</p>
+    <p>Best regards,<br>The Team at ATHLEAT.com</p>
 </body>
 </html>

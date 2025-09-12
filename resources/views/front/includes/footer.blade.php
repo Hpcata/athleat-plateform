@@ -1,18 +1,13 @@
-@if (Route::is('front.profile') || Route::is('front.plans.details') || Route::is('front.my-plans'))
+@if (!auth()->guard('web')->check() && (Route::is('front.profile') || Route::is('front.plans.details') || Route::is('front.my-plans')))
     <footer class="footer">
         <div class="footer-content">
-            <div class="logo">
+            <div class="logo" onclick="window.location.href = '{{ route('front.index') }}'">
                 <img src="{!! frontAssets('images/logo.svg') !!}" alt="Logo" class="logo-img" />
             </div>
             <nav class="footer-nav">
-                @if ($userId = optional(auth()->guard('web')->user())->id)
-                    <a href="{{ route('front.profile-old', ['id' => $userId]) }}">My Profile</a>
-                @else
-                    <a href="#">My Profile</a>
-                @endif
-                <a href="/challenges">Challenges and Rewards</a>
-                <a href="/resources">Resources and Help</a>
-                <a href="/store">Store</a>
+                <span class="nav-item coming-soon-popup">Challenges and Rewards</span>
+                <span class="nav-item coming-soon-popup">Resources and Help</span>
+                <a href="https://athleatshop.com/" target="_blank">Store</a>
             </nav>
         </div>
         <div class="footer-bottom">
@@ -45,22 +40,13 @@
             <nav class="nav-links">
                 <a class="footer-link" style="position: relative;" href="{{ route('front.about-us') }}">About</a>
                 <div class="dropdown">
-                    <a class="footer-link dropdown-toggle" href="#" role="button" id="servicesDropdown"
-                        data-bs-toggle="dropdown" aria-expanded="false">
-                        Services
-                    </a>
+                    <a class="footer-link dropdown-toggle" role="button" id="servicesDropdown" data-bs-toggle="dropdown" aria-expanded="false">Services</a>
                     <ul class="dropdown-menu" aria-labelledby="servicesDropdown">
-                        <li>
-                            <a class="dropdown-item" href="#">Training Nutrition Plan</a>
-                        </li>
-                        <li><a class="dropdown-item" href="#">Competition plan</a></li>
-                        <li>
-                            <a class="dropdown-item" href="#">Injury & Recovery Plan</a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="#">Pre & Post Surgery Plan</a>
-                        </li>
-                        <li><a class="dropdown-item" href="#">Private Consultations</a></li>
+                        <li><a class="dropdown-item" href="{{ route('front.training.nutrition.plan') }}">Training Nutrition Plan</a></li>
+                        <li><a class="dropdown-item" href="{{ route('front.competition.plan') }}">Competition plan</a></li>
+                        <li><a class="dropdown-item" href="{{ route('front.injury.recovery.plan') }}">Injury & Recovery Plan</a></li>
+                        <li><a class="dropdown-item" href="{{ route('front.surgery.plan') }}">Pre & Post Surgery Plan</a></li>
+                        <li><a class="dropdown-item" href="{{ route('front.consultations') }}">Private Consultations</a></li>
                     </ul>
                 </div>
 
@@ -70,7 +56,7 @@
             <!-- Buttons (Desktop) -->
             <div class="buttons-desktop">
                 @if (auth()->guard('web')->check())
-                    <a href="#" class="btn btn-login mob-hide">My Profile</a>
+                    <a href="{{ route('front.my-plans') }}" class="btn btn-login mob-hide">My Profile</a>
                 @else
                     <button class=" btn-login mob-hide" onclick="openSingupFreePopup(true)">Log in</button>
                     <button class=" btn-signup" onclick="openSingupFreePopup()">Sign up for free</button>
@@ -80,7 +66,7 @@
             <!-- Buttons (Mobile) -->
             <div class="buttons-mobile">
                 @if (auth()->guard('web')->check())
-                    <a href="#" class="btn btn-login rounded-md">My Profile</a>
+                    <a href="{{ route('front.my-plans') }}" class="btn btn-login rounded-md">My Profile</a>
                 @else
                     <button type="button" class="rounded-md  btn-login" onclick="openSingupFreePopup(true)">Log in</button>
                     <button type="button" class="rounded-md  btn-signup" onclick="openSingupFreePopup()">Sign up for free</button>

@@ -1,0 +1,214 @@
+/* injury css starts */
+.tab-header {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 12px;
+  flex-direction: column;
+  margin-bottom: 12px;
+}
+.tab-header p {
+  margin-bottom: 0;
+}
+.tab-box-title {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 12px;
+}
+
+.tab-box-title span {
+  color: var(--Yellow-700, #967500);
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  border-radius: 100px;
+  background: var(--Yellow-200, #ffefce);
+  padding: 3px 6px;
+}
+
+.custom-accordion {
+  position: relative;
+  margin-bottom: 1rem;
+  border: 1px solid #dee2e6;
+  border-radius: 12px;
+  border: 1px solid var(--Cloud-100, #e5eaf4);
+  background: var(--White, #fff);
+  box-shadow: 0 2px 8px 0 rgba(11, 30, 58, 0.12);
+  padding: 20px;
+  position: relative;
+}
+.custom-accordion.resources {
+  padding: 0;
+}
+.custom-accordion-header {
+  width: 100%;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  top: unset;
+  right: unset;
+  margin-bottom: 6px;
+  /* z-index: 9999999; */
+}
+.custom-accordion.resources .custom-accordion-header {
+  padding: 20px 20px 20px 20px;
+  margin-bottom: 0;
+}
+.custom-accordion.resources .custom-accordion-header.active {
+  padding: 20px 20px 0 20px;
+}
+
+.custom-accordion-header.active .expanded-title {
+  display: block;
+}
+
+.custom-accordion-header.active .collapsed-title {
+  display: none;
+}
+
+.custom-accordion-content {
+  padding: 0;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-in-out;
+}
+
+.arrow {
+  border: solid black;
+  border-width: 0 3px 3px 0;
+  display: inline-block;
+  padding: 3px;
+  transform: rotate(45deg);
+  -webkit-transform: rotate(45deg);
+  transition: transform 0.3s ease-in-out;
+}
+
+.custom-accordion-header.active .arrow {
+  transform: rotate(-135deg);
+  -webkit-transform: rotate(-135deg);
+}
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  padding: 16px 16px 16px 16px;
+}
+
+.recovery-card {
+  display: flex;
+  background: #fff;
+  border-radius: 12px;
+  padding: 16px;
+  border-radius: 12px;
+  background: linear-gradient(
+    231deg,
+    var(--Kerry-grey---ultra-light, #e5eaf4) 9.49%,
+    #b4d1ff 72.32%
+  );
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.12);
+  gap: 12px;
+}
+
+.recovery-card.white-card {
+  background: #fff;
+  flex-direction: column;
+}
+
+.recovery-card .card-logo img {
+  width: 115px;
+  height: 115px;
+  object-fit: contain;
+  max-width: fit-content;
+}
+
+.recovery-card.white-card .card-logo img {
+  width: auto;
+  height: 40px;
+  object-fit: contain;
+}
+
+.recovery-card .card-content h3 {
+  font-size: 16px;
+  margin: 0 0 8px;
+}
+
+.recovery-card .card-content p {
+  font-size: 14px;
+  margin: 0 0 10px;
+  color: #444;
+}
+
+.recovery-card .btn {
+  padding: 6px 12px;
+  border: none;
+  background: #eee;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.resources-custom-grid.grid-2.injury-page {
+  padding: 12px;
+  margin-bottom: 0;
+}
+
+.injury-page .clock-img {
+  margin-bottom: 2px;
+}
+.injury-plan-page h1 {
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  margin-top: 24px;
+}
+
+.injury-plan-page .training-plan {
+  margin-bottom: 0;
+}
+.accordion-body {
+  padding: 0 !important;
+}
+
+.tab-header h2,
+.custom-accordion h2 {
+  color: var(--kerry-grey-600-main, #3b3b3b);
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  margin-bottom: 0;
+}
+
+@media (max-width: 768px) {
+  .injury-plan-page h1 {
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    margin-top: 24px;
+    margin-bottom: 0;
+  }
+  .tab-header h2,
+  .custom-accordion h2 {
+    color: var(--kerry-grey-600-main, #3b3b3b);
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    margin-bottom: 0;
+  }
+  .cards-grid {
+    grid-template-columns: 1fr;
+    padding: 24px 12px 12px 12px;
+  }
+  .injury-plan-page .hero-container {
+    margin-top: 12px;
+  }
+}

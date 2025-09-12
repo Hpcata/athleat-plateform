@@ -83,7 +83,8 @@ body {
 }
 
 .header .nav-center .nav-item,
-.header .nav-right .nav-item {
+.header .nav-right .nav-item,
+.footer .footer-nav .nav-item {
     color: #fff;
     font-size: 1rem;
     font-weight: 500;
@@ -262,11 +263,15 @@ body {
     font-size: 1rem;
     font-weight: 600;
 }
-
+.main.injury-plan-page .hero-container{
+margin-top: 107px;
+}
 .training-plan {
     margin-bottom: 56px;
 }
-
+.training-plan.plan-detail-page{
+    margin-top: 56px !important;
+}
 .challenges,
 .optimize-performance,
 .plans-section,
@@ -1430,6 +1435,12 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+
+.section-header .view-all-link {
+    color: #4a84dd;
+    font-size: 1rem;
+    font-weight: 600
 }
 
 .view-all-link {
@@ -3703,6 +3714,12 @@ button:focus,
 }
 
 @media (max-width: 600px) {
+    .training-plan.plan-detail-page{
+    margin-top: 36px !important;
+}
+.main.injury-plan-page .hero-container{
+margin-top: 72px;
+}
     .modal-confirm h4 {
         font-size: 28px;
     }
@@ -4361,4 +4378,42 @@ button:focus,
 .buttons-mobile .btn.btn-login:hover{
      background: transparent;
      color: #fff;
+}
+.plan-card {
+    background: linear-gradient(231deg, var(--Kerry-grey---ultra-light, #e5eaf4) 9.49%, #b4d1ff 72.32%);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    min-height: 380px;
+    height: 100%;
+    display: flex
+;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    min-width: 260px;
+}
+.transparent-card{
+    border-radius: 8px;
+    background: var(--White, #FFF);
+    box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.12);
+    min-height: 200px;
+}
+.transparent-card-header{
+    display: flex;
+    gap: 4px;
+    align-items: center;
+}
+@media (max-width: 600px) {
+    .plan-card.transparent-card{
+        width: 100%;
+        min-width: 100%;
+    }
+    .plan-placeholder-container {
+    padding: 12px;
+}
+.consultation-card-custom {
+padding: 12px !important;
+}
 }

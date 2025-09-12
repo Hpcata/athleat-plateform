@@ -225,13 +225,13 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Re-initialize slider on window resize if needed
-window.addEventListener('resize', () => {
-    if (mealCardsSlider) {
-        mealCardsSlider.destroy();
-        mealCardsSlider = null;
-    }
-    // initMealCardsSlider();
-});
+// window.addEventListener('resize', () => {
+//     if (mealCardsSlider) {
+//         mealCardsSlider.destroy();
+//         mealCardsSlider = null;
+//     }
+//     // initMealCardsSlider();
+// });
 //         (s.style.display = "flex"),
 //         (s.style.alignItems = "center"),
 //         (s.style.justifyContent = "center"),
@@ -505,18 +505,15 @@ function updateCountdown() {
 // Initialize countdown
 setInterval(updateCountdown, 60000); // Update every minute
 
- // Target all horizontal scroll containers
-$(document).ready(function() {
-   
-    $('.challenge-cards, .challenges .challenge-cards, .surfing-videos .video-grid, .training-plan .meal-cards, .consults-plans-grid').each(function() {
-        var $el = $(this);
-        var scrollTimeout;
-        $el.on('scroll', function() {
-            $el.addClass('show-scrollbar');
-            clearTimeout(scrollTimeout);
-            scrollTimeout = setTimeout(function() {
-                $el.removeClass('show-scrollbar');
-            }, 700); // Hide after 700ms of no scroll
-        });
+// Target all horizontal scroll containers
+$('.challenge-cards, .challenges .challenge-cards, .surfing-videos .video-grid, .training-plan .meal-cards, .consults-plans-grid').each(function() {
+    var $el = $(this);
+    var scrollTimeout;
+    $el.on('scroll', function() {
+        $el.addClass('show-scrollbar');
+        clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(function() {
+            $el.removeClass('show-scrollbar');
+        }, 700); // Hide after 700ms of no scroll
     });
 });

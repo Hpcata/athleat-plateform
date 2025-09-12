@@ -134,6 +134,7 @@
                         <a href="{{ route('admin.purchase-plans.index') }}" class="btn btn-primary btn-set-task">Back</a>
                     </div>
                 </div>
+
             </div>
         </div>
 
@@ -360,13 +361,31 @@
                                 <button type="submit" class="btn btn-primary">Update</button>
                                 <button type="submit" class="btn btn-success" name="action" value="save_exit">Update &
                                     Exit</button>
-                                <a href="{{ route('front.profile', ['id' => $payment->user_id, 'admin_view' => 1]) }}"
-                                    target="_blank" class="btn btn-success">
-                                    View User Profile
-                                </a>
+                                @php
+                                    if (isset($firstUserPlan) && isset($firstUserPlan->plan)) {
+                                        switch ($firstUserPlan->plan->name) {
+                                            case 'Training Nutrition Plan':
+                                                $route = route('front.training.nutrition.plan', ['user_id' => $firstUserPlan->user_id, 'plan_id' => $firstUserPlan->plan->id]);
+                                                break;
+                                            case 'Injury & Recovery Plan':
+                                                $route = route('front.injury.recovery.plan', ['user_id' => $firstUserPlan->user_id, 'plan_id' => $firstUserPlan->plan->id]);
+                                                break;
+                                            case 'Competition Plan':
+                                                $route = route('front.competition.plan');
+                                                break;
+                                            case 'Injury Recovery + Post Surgery':
+                                                $route = route('front.surgery.plan');
+                                                break;
+                                        }
+                                    } else {
+                                        $route = route('front.profile', ['id' => $firstUserPlan->user_id, 'payment_id' => $payment->id]);
+                                    }
+                                @endphp
+                                <a href="{{ $route }}" target="_blank" class="btn btn-success">View User Profile</a>
                                 <button type="button" name="action" value="send"
-                                    class="btn {{ $isMailSent ? 'btn-success' : 'btn-secondary' }}"
-                                    data-user-id="{{ $payment->user_id }}" data-payment-id="{{ $payment->id }}">
+                                    class="btn {{ $isMailSent ? 'btn-secondary' : 'btn-success' }}"
+                                    data-user-id="{{ $payment->user_id }}" data-payment-id="{{ $payment->id }}" {{ $isMailSent ? 'disabled' : '' }}
+                                    title="{{ $isMailSent ? 'Sent to Customer' : 'Send to Customer' }}">
                                     {{ $isMailSent ? 'Sent to Customer' : 'Send to Customer' }}
                                 </button>
 
@@ -764,7 +783,7 @@
             </div>
         </div>
     </div>
-    
+
     <!-- Info Modal -->
     <div class="modal" id="itemInfoModal" tabindex="-1" role="dialog" aria-labelledby="itemInfoModalLabel"
         aria-hidden="true">
@@ -3021,7 +3040,6 @@
             function setupDynamicMeasurementSync(modal) {
                 const $container = $(`${modal} #dynamicQtyMeasurementContainer`);
                 const $rows = $container.find('.qty-unit-row');
-                console.log("rows", $rows);
                 if ($rows.length < 2) return;
 
                 let unitMap = {};
@@ -3033,8 +3051,6 @@
                         unitMap[unit] = qty;
                     }
                 });
-
-                console.log("unitMap", unitMap);
 
                 const baseUnit = Object.keys(unitMap)[0];
                 const baseQty = unitMap[baseUnit];

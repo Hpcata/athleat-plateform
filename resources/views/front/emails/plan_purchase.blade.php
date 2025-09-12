@@ -9,11 +9,8 @@
 </head>
 <body>
     <h2>Hey {{ $user->name }},</h2>
-    
     <p>Thank you for purchasing Sports Nutrition Plans - {{ $planName }} .</p>
-
     <p>Our team will review your submission shortly and we will email you when your plan is ready.</p>
-
-    <p>Best regards, <br> The Performance Health Support Team</p>
+    <p>Best regards, <br> The Team at ATHLEAT.com</p>
 </body>
 </html>

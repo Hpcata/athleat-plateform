@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\BlogController;
+use App\Http\Controllers\Admin\ConsultationController;
 use App\Http\Controllers\Admin\TestimonialController;
 use App\Http\Controllers\Front\FrontController;
 use App\Http\Controllers\Admin\Auth\LoginController as AdminAuthController;
@@ -46,8 +47,8 @@ use App\Http\Controllers\Admin\SportGameController;
 
 Route::get('/check-auth', function () {
     return response()->json([
-        'authenticated' => \Auth::check(),
-        'user' => \Auth::user()
+        'authenticated' => \Illuminate\Support\Facades\Auth::check(),
+        'user' => \Illuminate\Support\Facades\Auth::user()
     ]);
 });
 
@@ -123,6 +124,7 @@ Route::group(['middleware' => ['auth:admin', 'admin']], function () {
 
 		Route::as('backend.')->group(function () {
 			Route::resource('blogs', BlogController::class);
+			Route::resource('consultations', ConsultationController::class);
 		});
 
 		Route::as('admin.')->group(function () {
@@ -274,10 +276,16 @@ Route::get('/get-foods/{key}', [FrontController::class, 'getFoodItems'])->name('
 Route::get('/competition-plan/{id}', [FrontController::class, 'getCompetitionPlanDetails'])->name('front.competition-plan-details');
 Route::get('/get-meals-items', [FrontController::class, 'getAllMeals'])->name('front.get.meals.items');
 Route::get('/get-default-plan-details/{id}', [FrontPlanController::class, 'getDefaultPlanDetails'])->name('front.get-default-plan-details');
-Route::get('/training-nutrition-plan', [FrontController::class, 'trainingNutritionPlan'])->name('front.training.nutrition.plan');
+Route::get('/training-nutrition-plan/{user_id?}/{plan_id?}', [FrontController::class, 'trainingNutritionPlan'])->name('front.training.nutrition.plan');
 Route::get('/competition-plan', [FrontController::class, 'competitionPlan'])->name('front.competition.plan');
-Route::get('/injury-recovery-plan', [FrontController::class, 'injuryRecoveryPlan'])->name('front.injury.recovery.plan');
+Route::get('/injury-recovery-plan/{user_id?}/{plan_id?}', [FrontController::class, 'injuryRecoveryPlan'])->name('front.injury.recovery.plan');
 Route::get('/surgery-plan', [FrontController::class, 'surgeryPlan'])->name('front.surgery.plan');
+Route::get('/consultations', [FrontController::class, 'consultations'])->name('front.consultations');
+
+// Consultation booking routes
+Route::post('/consultation/book', [App\Http\Controllers\Front\ConsultationController::class, 'bookConsultation'])->name('front.consultation.book');
+Route::get('/consultation/{id}/details', [App\Http\Controllers\Front\ConsultationController::class, 'getConsultationDetails'])->name('front.consultation.details');
+Route::get('/consultation/questionnaire-status', [App\Http\Controllers\Front\ConsultationController::class, 'checkQuestionnaireStatus'])->name('front.consultation.questionnaire.status');
 
 // Front auth
 Route::post('front/register', [FrontController::class, 'register'])->name('front.register');
@@ -319,7 +327,6 @@ Route::get('/overseas_travel_nutrition_plan', function () {
 
 // Plans
 Route::group(['middleware' => 'auth'], function () {
-	// Route::get('/plans/{id}', [FrontPlanController::class, 'show'])->name('front.plans.details');
 	Route::get('/plans/{id}/details/{user_id}', [FrontPlanController::class, 'show'])->name('front.plans.details');
 	Route::get('/meal-time/{id}/{plan_id}', [FrontPlanController::class, 'mealTimeDetails'])->name('front.meal-time.details');
 	Route::post('/get-meals', [FrontPlanController::class, 'getMealByMealTimes'])->name('front.get-meals');
@@ -338,8 +345,8 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::post('/plans/preview/', [FrontPlanController::class, 'planPreview'])->name('front.plans.preview');
 
 	// TODO : New Design profile-landing page Route//
-	Route::get('/profile-landing/{id}', [FrontController::class, 'getProfile'])->name('front.profile');
-	Route::get('/profile/{id}', [FrontController::class, 'getProfileDetails'])->name('front.profile-old');
+	Route::get('/profile-landing/{id}/{payment_id?}', [FrontController::class, 'getProfile'])->name('front.profile');
+	Route::get('/profile/{id}/', [FrontController::class, 'getProfileDetails'])->name('front.profile-old');
 	Route::post('/profile/update', [FrontController::class, 'updateProfile'])->name('front.profile.update');
 	Route::post('/food/quantity/update', [FrontController::class, 'updateFoodQuantity'])->name('front.food-quantity-update');
 

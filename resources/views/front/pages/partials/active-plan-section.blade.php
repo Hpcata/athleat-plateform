@@ -1,4 +1,4 @@
-<section class="training-plan">
+<section class="training-plan plan-detail-page">
     @if (isset($userPlan) && isset($userPlan?->plan))
         <div class="section-header">
             <h2>{{ $userPlan->plan->name }}</h2>

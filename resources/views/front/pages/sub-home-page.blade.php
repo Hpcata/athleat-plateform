@@ -708,7 +708,7 @@
                                             An in-depth session to review your current approach, identify key opportunities, and give you practical, tailored strategies to reach your sporting goals. Get expert support that meets you where you’re at, with relevant education and answers to the questions that matter most.
                                         </p>
                                     </div>
-                                    <a href="https://booking.biohealthpassport.com.au/kerry-obryan" target="_blank" class="btn-signup">Learn more</a>
+                                    <a href="{{ route('front.consultations') }}" target="_blank" class="btn-signup">Learn more</a>
                                 </div>
                             </div>
                             <div class="col-md-4">
@@ -754,7 +754,7 @@
                                     <p class="sport-nutrition-promo__desc">{!! $section->content !!}</p>
                                     <div class="sport-nutrition-promo__form">
                                         <div class="custom-select-wrapper">
-                                        <select name="sport" id="sport" required data-custom="true">
+                                        <select name="sport" id="sport" data-custom="true">
                                             <option value="">Select Category</option>
                                             @foreach($sportCategories as $category)
                                                 <option value="{{ $category->id }}">{{ $category->name }}</option>
@@ -768,7 +768,7 @@
                                         </div>
                                          <div class="vertical-line"></div>
                                         <div class="custom-select-wrapper">
-                                            <select name="sport_game" id="sport_game" required data-custom="true">
+                                            <select name="sport_game" id="sport_game" data-custom="true">
                                                 <option value="">Sport</option>
                                             </select>
                                             <div class="custom-select-arrow">
@@ -779,7 +779,7 @@
                                         </div>
                                         <div class="vertical-line"></div>
                                         <div class="custom-select-wrapper">
-                                            <select name="state" required data-custom="true">
+                                            <select name="state" data-custom="true">
                                                 <option value="">State</option>
                                                 <option value="New South Wales">New South Wales (NSW)</option>
                                                 <option value="Victoria">Victoria (VIC)</option>
@@ -829,7 +829,6 @@
                         </div>
                     </div>
                 </section>
-
             @endif
             @if($section->section_type == \App\Models\Section::TYPE_REAL_STORIES && $section->enabled == 1)
                 <!-- testimonial slider section -->
@@ -1078,24 +1077,24 @@
 
         document.addEventListener("DOMContentLoaded", function () {
             const purchaseModal = document.getElementById('purchaseModal');
+            if (purchaseModal) {
+                purchaseModal.addEventListener('hidden.bs.modal', function () {
+                    // Reset the form inside the modal
+                    document.getElementById('payment-form').reset();
 
-            purchaseModal.addEventListener('hidden.bs.modal', function () {
-                // Reset the form inside the modal
-                document.getElementById('payment-form').reset();
+                    // Reset Stripe card element (if applicable)
+                    if (typeof stripe !== "undefined" && typeof card !== "undefined") {
+                        card.clear();
+                    }
 
-                // Reset Stripe card element (if applicable)
-                if (typeof stripe !== "undefined" && typeof card !== "undefined") {
-                    card.clear();
-                }
-
-                // Clear any validation messages or applied promo codes
-                document.getElementById('promo-message').textContent = "";
-                document.getElementById('discount').value = "";
-                document.getElementById('coupon-details').classList.add('d-none'); // Hide coupon details
-                document.getElementById('toggle-coupon-link').classList.remove('active'); // Reset link style
-                document.getElementById('payment-details').style.removeProperty('display');
-
-            });
+                    // Clear any validation messages or applied promo codes
+                    document.getElementById('promo-message').textContent = "";
+                    document.getElementById('discount').value = "";
+                    document.getElementById('coupon-details').classList.add('d-none'); // Hide coupon details
+                    document.getElementById('toggle-coupon-link').classList.remove('active'); // Reset link style
+                    document.getElementById('payment-details').style.removeProperty('display');
+                });
+            }
         });
 
         $('#registerModal').on('hidden.bs.modal', function () {
@@ -1204,6 +1203,10 @@
 
             $("#sport-form").submit(function (e) {
                 e.preventDefault();
+
+                // TODO: Remove this after testing
+                $('#comingSoonModal').modal('show');
+                return;
 
                 // iOS-specific form handling
                 if (isIOS()) {
@@ -3079,6 +3082,10 @@
 
         $('#show-new-signup-modal').click(function (e) {
             e.preventDefault(); // remove alert for now
+            // Clear consultation login flag since this is not triggered by consultation booking
+            if (typeof window.clearConsultationLoginFlag === 'function') {
+                window.clearConsultationLoginFlag();
+            }
             if ($('#signupModalathlete').length) {
                 $('#signupModalathlete').modal('hide');
             }
