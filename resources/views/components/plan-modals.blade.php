@@ -889,8 +889,10 @@ function updateCongratsModal(planType, hasConsultation) {
                 const planData = {
                     type: this.getAttribute('data-plan-type'),
                     price: this.getAttribute('data-plan-price'),
+                    monthlyPrice: this.getAttribute('data-monthly-price'),
                     planName: '{{ $planDetails?->name }}',
-                    planId: '{{ $planDetails?->id }}'
+                    planId: '{{ $planDetails?->id }}',
+                    isMonthlyActive: document.getElementById('monthlyPlanBtn').classList.contains('active')
                 };
                 
                 // Store in sessionStorage
@@ -919,13 +921,25 @@ function updateCongratsModal(planType, hasConsultation) {
     });
 
     // Function to show payment modal for plans
-    function showPlanPaymentModal(button) {
+    function showPlanPaymentModal(button, storedPlanData = null) {
         const planType = button.getAttribute('data-plan-type');
         const oneTimePrice = button.getAttribute('data-plan-price');
         const monthlyPrice = button.getAttribute('data-monthly-price');
         
-        // Check which pricing type is currently active
-        const isMonthlyActive = document.getElementById('monthlyPlanBtn').classList.contains('active');
+        // Check which pricing type is currently active, or use stored preference
+        let isMonthlyActive;
+        let finalOneTimePrice = oneTimePrice;
+        let finalMonthlyPrice = monthlyPrice;
+        
+        if (storedPlanData) {
+            // Use stored pricing preference and prices
+            isMonthlyActive = storedPlanData.isMonthlyActive;
+            finalOneTimePrice = storedPlanData.price;
+            finalMonthlyPrice = storedPlanData.monthlyPrice;
+        } else {
+            // Use current UI state
+            isMonthlyActive = document.getElementById('monthlyPlanBtn').classList.contains('active');
+        }
         
         // Close any existing modals first
         $('.modal').modal('hide');
@@ -936,27 +950,27 @@ function updateCongratsModal(planType, hasConsultation) {
             if (planType === 'main') {
                 document.getElementById('paymentModalTitle').textContent = '{{ $planDetails?->name }}';
                 document.getElementById('paymentModalSubtitle').textContent = '{{ $planDetails?->name }}';
-                document.getElementById('paymentModalPrice').textContent = isMonthlyActive ? 'A$' + monthlyPrice + '/mth' : 'A$' + oneTimePrice;
-                document.getElementById('paymentModalPrice').setAttribute('data-original-price', isMonthlyActive ? monthlyPrice : oneTimePrice);
+                document.getElementById('paymentModalPrice').textContent = isMonthlyActive ? 'A$' + finalMonthlyPrice + '/mth' : 'A$' + finalOneTimePrice;
+                document.getElementById('paymentModalPrice').setAttribute('data-original-price', isMonthlyActive ? finalMonthlyPrice : finalOneTimePrice);
                 document.getElementById('paymentModalDuration').textContent = isMonthlyActive ? 'Over {{ $months }} Months' : 'One time payment';
-                document.getElementById('paymentButton').textContent = isMonthlyActive ? 'Monthly | A$' + monthlyPrice + '/mth' : 'One Payment | A$' + oneTimePrice;
-                document.getElementById('paymentButton').setAttribute('data-monthly-price', monthlyPrice);
+                document.getElementById('paymentButton').textContent = isMonthlyActive ? 'Monthly | A$' + finalMonthlyPrice + '/mth' : 'One Payment | A$' + finalOneTimePrice;
+                document.getElementById('paymentButton').setAttribute('data-monthly-price', finalMonthlyPrice);
             } else if (planType === 'powerplay') {
                 document.getElementById('paymentModalTitle').textContent = 'Power Play';
                 document.getElementById('paymentModalSubtitle').textContent = '{{ $planDetails?->name }} + 30 min Consult with Extreme Sports Dietitian Kerry O\'Byran';
-                document.getElementById('paymentModalPrice').textContent = isMonthlyActive ? 'A$' + monthlyPrice + '/mth' : 'A$' + oneTimePrice;
-                document.getElementById('paymentModalPrice').setAttribute('data-original-price', isMonthlyActive ? monthlyPrice : oneTimePrice);
+                document.getElementById('paymentModalPrice').textContent = isMonthlyActive ? 'A$' + finalMonthlyPrice + '/mth' : 'A$' + finalOneTimePrice;
+                document.getElementById('paymentModalPrice').setAttribute('data-original-price', isMonthlyActive ? finalMonthlyPrice : finalOneTimePrice);
                 document.getElementById('paymentModalDuration').textContent = isMonthlyActive ? 'Over {{ $months }} Months' : 'One time payment';
-                document.getElementById('paymentButton').textContent = isMonthlyActive ? 'Monthly | A$' + monthlyPrice + '/mth' : 'One Payment | A$' + oneTimePrice;
-                document.getElementById('paymentButton').setAttribute('data-monthly-price', monthlyPrice);
+                document.getElementById('paymentButton').textContent = isMonthlyActive ? 'Monthly | A$' + finalMonthlyPrice + '/mth' : 'One Payment | A$' + finalOneTimePrice;
+                document.getElementById('paymentButton').setAttribute('data-monthly-price', finalMonthlyPrice);
             } else if (planType === 'gameplan') {
                 document.getElementById('paymentModalTitle').textContent = 'Game Plan';
                 document.getElementById('paymentModalSubtitle').textContent = '{{ $planDetails?->name }} + 60 min Consult with Kerry to cover Nutrition AND Training Advise';
-                document.getElementById('paymentModalPrice').textContent = isMonthlyActive ? 'A$' + monthlyPrice + '/mth' : 'A$' + oneTimePrice;
-                document.getElementById('paymentModalPrice').setAttribute('data-original-price', isMonthlyActive ? monthlyPrice : oneTimePrice);
+                document.getElementById('paymentModalPrice').textContent = isMonthlyActive ? 'A$' + finalMonthlyPrice + '/mth' : 'A$' + finalOneTimePrice;
+                document.getElementById('paymentModalPrice').setAttribute('data-original-price', isMonthlyActive ? finalMonthlyPrice : finalOneTimePrice);
                 document.getElementById('paymentModalDuration').textContent = isMonthlyActive ? 'Over {{ $months }} Months' : 'One time payment';
-                document.getElementById('paymentButton').textContent = isMonthlyActive ? 'Monthly | A$' + monthlyPrice + '/mth' : 'One Payment | A$' + oneTimePrice;
-                document.getElementById('paymentButton').setAttribute('data-monthly-price', monthlyPrice);
+                document.getElementById('paymentButton').textContent = isMonthlyActive ? 'Monthly | A$' + finalMonthlyPrice + '/mth' : 'One Payment | A$' + finalOneTimePrice;
+                document.getElementById('paymentButton').setAttribute('data-monthly-price', finalMonthlyPrice);
             }
             
             // Reset coupon fields when modal is shown
@@ -984,7 +998,7 @@ window.onPlanPurchaseLoginSuccess = function() {
             // Find the button with the stored plan data
             const button = document.querySelector(`.plan-get-started-btn[data-plan-type="${planData.type}"]`);
             if (button) {
-                showPlanPaymentModal(button);
+                showPlanPaymentModal(button, planData);
             }
             sessionStorage.removeItem('pendingPlanPurchase');
             if (window.pendingPlanPurchase) {
@@ -1054,7 +1068,7 @@ window.handlePendingPlanPurchase = function() {
             if (button) {
                 // Show payment modal automatically
                 setTimeout(() => {
-                    showPlanPaymentModal(button);
+                    showPlanPaymentModal(button, planData);
                 }, 500); // Small delay to ensure page is fully loaded
             }
             // Clear the pending plan purchase
