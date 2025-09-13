@@ -139,7 +139,7 @@
                         <p class="amount"><strong id="paymentModalPrice" data-original-price="0">A$51.25</strong> <span class="" id="paymentModalDuration">Per month for 8 months.</span></p>
 
                         <span class="divider"></span>
-                        <p class="mb-2 sign-in-text" style="line-height: 22px;">Signed in as<br><strong>jordansmith@gmail.com</strong></p>
+                        <p class="mb-2 sign-in-text" style="line-height: 22px;">Signed in as<br><strong>{{ Auth::user()->email ?? '' }}</strong></p>
                         <a href="#" class="d-block mb-3 coupon-code" id="toggle-coupon-consultation">Add a Coupon
                             Code</a>
                         <!-- Coupon Code -->
@@ -505,11 +505,17 @@ document.addEventListener('DOMContentLoaded', function() {
                     isNaN: isNaN(originalPrice)
                 });
                 
-                paymentModalPrice.textContent = `A$${originalPrice.toFixed(2)}`;
-                
-                // Reset button text
+                // Check if this is a monthly plan to preserve "/mth" suffix
                 const isMonthlyActive = document.getElementById('paymentModalPlan').getAttribute('data-is-monthly') === 'true' || 
                                        (document.getElementById('monthlyPlanBtn') && document.getElementById('monthlyPlanBtn').classList.contains('active'));
+                
+                if (isMonthlyActive) {
+                    paymentModalPrice.textContent = `A$${originalPrice.toFixed(2)}/mth`;
+                } else {
+                    paymentModalPrice.textContent = `A$${originalPrice.toFixed(2)}`;
+                }
+                
+                // Reset button text
                 if (isMonthlyActive) {
                     const monthlyPrice = paymentButton.getAttribute('data-monthly-price');
                     paymentButton.innerHTML = `Monthly | A$${monthlyPrice}/mth`;
@@ -616,11 +622,18 @@ document.addEventListener('DOMContentLoaded', function() {
                     });
                     
                     // Update display
+                    const isMonthlyActive = document.getElementById('paymentModalPlan').getAttribute('data-is-monthly') === 'true' || 
+                                           (document.getElementById('monthlyPlanBtn') && document.getElementById('monthlyPlanBtn').classList.contains('active'));
+                    
                     if (isNaN(finalPrice)) {
                         console.error('Final price is NaN, using original price');
-                        paymentModalPrice.textContent = `A$${originalPrice.toFixed(2)}`;
+                        paymentModalPrice.textContent = isMonthlyActive ? `A$${originalPrice.toFixed(2)}/mth` : `A$${originalPrice.toFixed(2)}`;
                     } else {
-                        paymentModalPrice.textContent = finalPrice <= 0 ? 'A$0' : `A$${finalPrice.toFixed(2)}`;
+                        if (finalPrice <= 0) {
+                            paymentModalPrice.textContent = 'A$0';
+                        } else {
+                            paymentModalPrice.textContent = isMonthlyActive ? `A$${finalPrice.toFixed(2)}/mth` : `A$${finalPrice.toFixed(2)}`;
+                        }
                     }
                     
                     // Update toggle link text
@@ -676,11 +689,19 @@ document.addEventListener('DOMContentLoaded', function() {
                     // Reset values
                     discountField.value = "";
                     const resetPrice = parseFloat(paymentModalPrice.getAttribute('data-original-price') || '0');
-                    paymentModalPrice.textContent = `A$${resetPrice.toFixed(2)}`;
-                    toggleCouponLink.textContent = "Add a Coupon Code";
                     
+                    // Check if this is a monthly plan to preserve "/mth" suffix
                     const isMonthlyActive = document.getElementById('paymentModalPlan').getAttribute('data-is-monthly') === 'true' || 
                                        (document.getElementById('monthlyPlanBtn') && document.getElementById('monthlyPlanBtn').classList.contains('active'));
+                    
+                    if (isMonthlyActive) {
+                        paymentModalPrice.textContent = `A$${resetPrice.toFixed(2)}/mth`;
+                    } else {
+                        paymentModalPrice.textContent = `A$${resetPrice.toFixed(2)}`;
+                    }
+                    
+                    toggleCouponLink.textContent = "Add a Coupon Code";
+                    
                     if (isMonthlyActive) {
                         const monthlyPrice = paymentButton.getAttribute('data-monthly-price');
                         paymentButton.innerHTML = `Monthly | A$${monthlyPrice}/mth`;
