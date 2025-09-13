@@ -312,6 +312,7 @@ Route::get('front/logout-guest', function () {
 //Stripe payment
 Route::post('/process-payment', [PaymentController::class, 'processPayment'])->name('process.payment');
 Route::post('/process-plan-purchase', [PaymentController::class, 'processPlanPurchase'])->name('process.plan.purchase');
+Route::post('/check-existing-plan', [PaymentController::class, 'checkExistingPlan'])->name('check.existing.plan');
 Route::get('/payment-success', [PaymentController::class, 'paymentSuccess'])->name('payment.success');
 
 Route::post('/free-test-save', [FrontController::class, 'freeTestSave'])->name('front.submit-free-test');

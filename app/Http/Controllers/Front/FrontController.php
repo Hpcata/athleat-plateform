@@ -1875,7 +1875,7 @@ class FrontController extends Controller
             $purchasedPlanIds = $payments->pluck('plan_id')->toArray();
             $notPurchasedPlans = Plan::whereNotIn('id', $purchasedPlanIds)->get();
 
-            if (!$isQuestionnaireSubmitted->is_complete) {
+            if ($isQuestionnaireSubmitted && !$isQuestionnaireSubmitted->is_complete) {
                 $payment = $payments->first();
                 return view('front.pages.profile-my-plans', compact('notPurchasedPlans', 'payments', 'isQuestionnaireSubmitted', 'payment'));
             }

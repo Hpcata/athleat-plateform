@@ -2231,6 +2231,57 @@
                         }
                     });
 
+                    // Function to check existing plan for purchase modal
+                    function checkExistingPlanForPurchaseModal(planId, button) {
+                        // Show loading state
+                        const originalText = button.text();
+                        button.text('Checking...');
+                        button.prop('disabled', true);
+
+                        // Make API call to check existing plan
+                        fetch('/check-existing-plan', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                            },
+                            body: JSON.stringify({
+                                plan_id: planId
+                            })
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            // Reset button state
+                            button.text(originalText);
+                            button.prop('disabled', false);
+
+                            if (data.success && !data.has_plan) {
+                                // User doesn't have the plan, proceed with payment modal
+                                $('#purchaseModal').modal('show');
+                            } else if (data.has_plan) {
+                                // User already has the plan, show error message
+                                alert(data.message);
+                                return;
+                            } else {
+                                // Other error (like not authenticated)
+                                if (data.requires_auth) {
+                                    // Redirect to login or show login modal
+                                    window.location.href = '/login';
+                                } else {
+                                    alert(data.message || 'An error occurred. Please try again.');
+                                }
+                            }
+                        })
+                        .catch(error => {
+                            // Reset button state
+                            button.text(originalText);
+                            button.prop('disabled', false);
+                            
+                            console.error('Error checking existing plan:', error);
+                            alert('An error occurred while checking your plan status. Please try again.');
+                        });
+                    }
+
                     // Event listener for the 'Purchase Now' button
                     $('body').on('click', '.purchase-now-btn', function () {
 
@@ -2259,7 +2310,8 @@
 
                                 }
 
-                        $('#purchaseModal').modal('show');
+                        // Check if user already has this plan before showing payment modal
+                        checkExistingPlanForPurchaseModal(planId, $(this));
 
                         // Handle the form submission
                         $('#payment-form').off('submit').on('submit', function (event) {

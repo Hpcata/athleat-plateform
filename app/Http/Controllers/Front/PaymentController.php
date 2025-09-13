@@ -99,11 +99,11 @@ class PaymentController extends Controller
                 'user_id' => $user->id
             ]);
 
-            $existingPayment = Payment::where('plan_id', $validated['plan_id'])
+            $existingUserPlan = UserPlan::where('plan_id', $validated['plan_id'])
                 ->where('user_id', $user->id)
                 ->first();
 
-            if ($existingPayment) {
+            if ($existingUserPlan) {
                 return response()->json([
                     'success' => false,
                     'message' => 'You have already purchased this plan. Please login to your account to manage your plans.',
@@ -692,6 +692,18 @@ class PaymentController extends Controller
                 'plan_type' => $validated['plan_type'] ?? 'not provided',
                 'plan_id' => $validated['plan_id'] ?? 'not provided'
             ]);
+
+            // Check if user already has this plan in user_plans table
+            $existingUserPlan = UserPlan::where('plan_id', $validated['plan_id'])
+                ->where('user_id', $user->id)
+                ->first();
+
+            if ($existingUserPlan) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'You have already purchased this plan. Please check your account to manage your existing plans.',
+                ]);
+            }
 
             $coupon = null;
             $discount = 0;
@@ -1316,6 +1328,51 @@ class PaymentController extends Controller
             // Re-throw the exception to trigger transaction rollback
             throw $e;
         }
+    }
+
+    /**
+     * Check if user already has a specific plan
+     */
+    public function checkExistingPlan(Request $request)
+    {
+        // Check if user is authenticated
+        if (!Auth::check()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Please login to check plan status',
+                'requires_auth' => true
+            ]);
+        }
+
+        $user = Auth::user();
+        $planId = $request->input('plan_id');
+
+        if (!$planId) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Plan ID is required'
+            ], 400);
+        }
+
+        // Check if user already has this plan
+        $existingUserPlan = UserPlan::where('plan_id', $planId)
+            ->where('user_id', $user->id)
+            ->first();
+
+        if ($existingUserPlan) {
+            return response()->json([
+                'success' => false,
+                'has_plan' => true,
+                'message' => 'You have already purchased this plan. Please check your account to manage your existing plans.',
+                'plan_status' => $existingUserPlan->status
+            ]);
+        }
+
+        return response()->json([
+            'success' => true,
+            'has_plan' => false,
+            'message' => 'Plan is available for purchase'
+        ]);
     }
 
     /**

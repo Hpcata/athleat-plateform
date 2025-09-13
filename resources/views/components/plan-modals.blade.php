@@ -1066,7 +1066,7 @@ function updateCongratsModal(planType, hasConsultation) {
                     price: this.getAttribute('data-plan-price'),
                     monthlyPrice: this.getAttribute('data-monthly-price'),
                     planName: '{{ $planDetails?->name }}',
-                    planId: '{{ $planDetails?->id }}',
+                    planId: this.getAttribute('data-plan-id') || '{{ $planDetails?->id }}',
                     isMonthlyActive: document.getElementById('monthlyPlanBtn').classList.contains('active')
                 };
                 
@@ -1100,7 +1100,65 @@ function updateCongratsModal(planType, hasConsultation) {
         const planType = button.getAttribute('data-plan-type');
         const oneTimePrice = button.getAttribute('data-plan-price');
         const monthlyPrice = button.getAttribute('data-monthly-price');
+        const planId = button.getAttribute('data-plan-id') || '{{ $planDetails?->id }}';
         
+        // Check if user already has this plan before showing payment modal
+        checkExistingPlan(planId, planType, oneTimePrice, monthlyPrice, button, storedPlanData);
+    }
+
+    // Function to check if user already has the plan
+    function checkExistingPlan(planId, planType, oneTimePrice, monthlyPrice, button, storedPlanData = null) {
+        // Show loading state
+        const originalText = button.textContent;
+        button.textContent = 'Checking...';
+        button.disabled = true;
+
+        // Make API call to check existing plan
+        fetch('/check-existing-plan', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            },
+            body: JSON.stringify({
+                plan_id: planId
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Reset button state
+            button.textContent = originalText;
+            button.disabled = false;
+
+            if (data.success && !data.has_plan) {
+                // User doesn't have the plan, proceed with payment modal
+                proceedWithPaymentModal(planType, oneTimePrice, monthlyPrice, button, storedPlanData);
+            } else if (data.has_plan) {
+                // User already has the plan, show error message
+                alert(data.message);
+                return;
+            } else {
+                // Other error (like not authenticated)
+                if (data.requires_auth) {
+                    // Handle authentication requirement
+                    handleAuthenticationRequired(button, storedPlanData);
+                } else {
+                    alert(data.message || 'An error occurred. Please try again.');
+                }
+            }
+        })
+        .catch(error => {
+            // Reset button state
+            button.textContent = originalText;
+            button.disabled = false;
+            
+            console.error('Error checking existing plan:', error);
+            alert('An error occurred while checking your plan status. Please try again.');
+        });
+    }
+
+    // Function to proceed with payment modal after validation
+    function proceedWithPaymentModal(planType, oneTimePrice, monthlyPrice, button, storedPlanData = null) {
         // Check which pricing type is currently active, or use stored preference
         let isMonthlyActive;
         let finalOneTimePrice = oneTimePrice;
@@ -1162,7 +1220,38 @@ function updateCongratsModal(planType, hasConsultation) {
             // Show payment modal
             $('#paymentModalPlan').modal('show');
         }, 300);
-}
+    }
+
+    // Function to handle authentication requirement
+    function handleAuthenticationRequired(button, storedPlanData = null) {
+        // Store plan data for after login
+        const planData = {
+            type: button.getAttribute('data-plan-type'),
+            price: button.getAttribute('data-plan-price'),
+            monthlyPrice: button.getAttribute('data-monthly-price'),
+            planName: '{{ $planDetails?->name }}',
+            planId: button.getAttribute('data-plan-id') || '{{ $planDetails?->id }}',
+            isMonthlyActive: document.getElementById('monthlyPlanBtn').classList.contains('active')
+        };
+        
+        // Store in sessionStorage
+        sessionStorage.setItem('pendingPlanPurchase', JSON.stringify(planData));
+        window.pendingPlanPurchase = planData;
+        
+        // Mark that this login was triggered by plan purchase
+        sessionStorage.setItem('loginTriggeredByPlanPurchase', 'true');
+        
+        // Close any existing modals first
+        $('.modal').modal('hide');
+        
+        // Wait for existing modal to close, then show signup modal
+        setTimeout(() => {
+            // Initialize signup modal content before showing
+            initializeSignupModal();
+            // Show login/signup modal
+            $('#signupModalathlete').modal('show');
+        }, 300);
+    }
 
 // Handle successful login/signup for plan purchase
 window.onPlanPurchaseLoginSuccess = function() {
@@ -1173,7 +1262,8 @@ window.onPlanPurchaseLoginSuccess = function() {
             // Find the button with the stored plan data
             const button = document.querySelector(`.plan-get-started-btn[data-plan-type="${planData.type}"]`);
             if (button) {
-                showPlanPaymentModal(button, planData);
+                // Check if user already has this plan before showing payment modal
+                checkExistingPlan(planData.planId, planData.type, planData.price, planData.monthlyPrice, button, planData);
             }
             sessionStorage.removeItem('pendingPlanPurchase');
             if (window.pendingPlanPurchase) {
@@ -1237,13 +1327,13 @@ window.handlePendingPlanPurchase = function() {
                 return;
             }
             
-            // User is authenticated, proceed with payment modal
+            // User is authenticated, check for existing plan before showing payment modal
             // Find the button with the stored plan data
             const button = document.querySelector(`.plan-get-started-btn[data-plan-type="${planData.type}"]`);
             if (button) {
-                // Show payment modal automatically
+                // Check if user already has this plan before showing payment modal
                 setTimeout(() => {
-                    showPlanPaymentModal(button, planData);
+                    checkExistingPlan(planData.planId, planData.type, planData.price, planData.monthlyPrice, button, planData);
                 }, 500); // Small delay to ensure page is fully loaded
             }
             // Clear the pending plan purchase
