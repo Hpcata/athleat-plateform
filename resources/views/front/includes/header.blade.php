@@ -176,7 +176,9 @@
 
             {{-- Mobile menu button --}}
             <div class="mob-btn-wrap">
-                <button class="me-0 btn-login web-hide" onclick="openSingupFreePopup(true)">Log in</button>
+                @if (!Auth::check())
+                    <button class="me-0 btn-login web-hide" onclick="openSingupFreePopup(true)">Log in</button>
+                @endif
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                     style="border: none">
                     <span class="menu-icon" style="color: white">
