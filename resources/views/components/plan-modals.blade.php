@@ -446,7 +446,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const planType = this.getAttribute('data-plan-type');
 
             // Update payment modal with selected plan data
-            document.getElementById('paymentModalTitle').textContent = planName;
+            document.getElementById('paymentModalTitle').innerHTML = planName;
             document.getElementById('paymentModalPrice').textContent = planPrice;
             document.getElementById('selectedPlanId').value = planId;
             document.getElementById('selectedPlanType').value = planType;
@@ -463,7 +463,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             // Update congrats modal
-            document.getElementById('congratsPlanName').textContent = `Your ${planName}`;
+            document.getElementById('congratsPlanName').innerHTML = `Your ${planName}`;
             document.getElementById('congratsPlanDescription').textContent = planName;
         });
     });
@@ -1245,7 +1245,7 @@ function getPlanTypeFromTitle(title) {
 
 // Function to update congrats modal content based on plan type (moved outside DOMContentLoaded)
 function updateCongratsModal(planType, hasConsultation) {
-    const planName = '{{ $planDetails?->name }}';
+    const planName = '{!! $planDetails?->name !!}';
     const congratsPlanName = document.getElementById('congratsPlanName');
     const congratsPlanDescription = document.getElementById('congratsPlanDescription');
     const powerPlayGamePlanContent = document.getElementById('powerPlayGamePlanContent');
@@ -1328,7 +1328,7 @@ function updateCongratsModal(planType, hasConsultation) {
                     type: this.getAttribute('data-plan-type'),
                     price: this.getAttribute('data-plan-price'),
                     monthlyPrice: this.getAttribute('data-monthly-price'),
-                    planName: '{{ $planDetails?->name }}',
+                    planName: '{!! $planDetails?->name !!}',
                     planId: this.getAttribute('data-plan-id') || '{{ $planDetails?->id }}',
                     isMonthlyActive: document.getElementById('monthlyPlanBtn') ? document.getElementById('monthlyPlanBtn').classList.contains('active') : false
                 };
@@ -1462,8 +1462,8 @@ function updateCongratsModal(planType, hasConsultation) {
             
             // Update payment modal content based on plan type and pricing
             if (planType === 'main') {
-                document.getElementById('paymentModalTitle').textContent = '{{ $planDetails?->name }}';
-                document.getElementById('paymentModalSubtitle').textContent = '{{ $planDetails?->name }}';
+                document.getElementById('paymentModalTitle').innerHTML = '{!! $planDetails?->name !!}';
+                document.getElementById('paymentModalSubtitle').innerHTML = '{!! $planDetails?->name !!}';
                 document.getElementById('paymentModalPrice').textContent = isMonthlyActive ? 'A$' + finalMonthlyPrice + '/mth' : 'A$' + finalOneTimePrice;
                 document.getElementById('paymentModalPrice').setAttribute('data-original-price', isMonthlyActive ? finalMonthlyPrice : finalOneTimePrice);
                 document.getElementById('paymentModalDuration').textContent = isMonthlyActive ? 'Over {{ $months }} Months' : 'One time payment';
@@ -1471,7 +1471,7 @@ function updateCongratsModal(planType, hasConsultation) {
                 document.getElementById('paymentButton').setAttribute('data-monthly-price', finalMonthlyPrice);
             } else if (planType === 'powerplay') {
                 document.getElementById('paymentModalTitle').textContent = 'Power Play';
-                document.getElementById('paymentModalSubtitle').textContent = '{{ $planDetails?->name }} + 30 min Consult with Extreme Sports Dietitian Kerry O\'Byran';
+                document.getElementById('paymentModalSubtitle').innerHTML = '{!! $planDetails?->name !!} + 30 min Consult with Extreme Sports Dietitian Kerry O\'Byran';
                 document.getElementById('paymentModalPrice').textContent = isMonthlyActive ? 'A$' + finalMonthlyPrice + '/mth' : 'A$' + finalOneTimePrice;
                 document.getElementById('paymentModalPrice').setAttribute('data-original-price', isMonthlyActive ? finalMonthlyPrice : finalOneTimePrice);
                 document.getElementById('paymentModalDuration').textContent = isMonthlyActive ? 'Over {{ $months }} Months' : 'One time payment';
@@ -1479,7 +1479,7 @@ function updateCongratsModal(planType, hasConsultation) {
                 document.getElementById('paymentButton').setAttribute('data-monthly-price', finalMonthlyPrice);
             } else if (planType === 'gameplan') {
                 document.getElementById('paymentModalTitle').textContent = 'Game Plan';
-                document.getElementById('paymentModalSubtitle').textContent = '{{ $planDetails?->name }} + 60 min Consult with Kerry to cover Nutrition AND Training Advise';
+                document.getElementById('paymentModalSubtitle').innerHTML = '{!! $planDetails?->name !!} + 60 min Consult with Kerry to cover Nutrition AND Training Advise';
                 document.getElementById('paymentModalPrice').textContent = isMonthlyActive ? 'A$' + finalMonthlyPrice + '/mth' : 'A$' + finalOneTimePrice;
                 document.getElementById('paymentModalPrice').setAttribute('data-original-price', isMonthlyActive ? finalMonthlyPrice : finalOneTimePrice);
                 document.getElementById('paymentModalDuration').textContent = isMonthlyActive ? 'Over {{ $months }} Months' : 'One time payment';
@@ -1510,7 +1510,7 @@ function updateCongratsModal(planType, hasConsultation) {
             type: button.getAttribute('data-plan-type'),
             price: button.getAttribute('data-plan-price'),
             monthlyPrice: button.getAttribute('data-monthly-price'),
-            planName: '{{ $planDetails?->name }}',
+            planName: '{!! $planDetails?->name !!}',
             planId: button.getAttribute('data-plan-id') || '{{ $planDetails?->id }}',
             isMonthlyActive: document.getElementById('paymentModalPlan').getAttribute('data-is-monthly') === 'true'
         };
