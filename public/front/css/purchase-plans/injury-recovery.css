@@ -76,7 +76,7 @@
   padding: 0;
   max-height: 0;
   overflow: hidden;
-  transition: max-height 0.3s ease-in-out;
+  transition: max-height 0.4s ease-in-out;
 }
 
 .arrow {
@@ -186,29 +186,72 @@
   margin-bottom: 0;
 }
 
-@media (max-width: 768px) {
-  .injury-plan-page h1 {
-    font-size: 18px;
-    font-style: normal;
-    font-weight: 700;
-    line-height: normal;
-    margin-top: 24px;
-    margin-bottom: 0;
-  }
-  .tab-header h2,
-  .custom-accordion h2 {
-    color: var(--kerry-grey-600-main, #3b3b3b);
-    font-size: 16px;
-    font-style: normal;
-    font-weight: 700;
-    line-height: normal;
-    margin-bottom: 0;
-  }
-  .cards-grid {
-    grid-template-columns: 1fr;
-    padding: 24px 12px 12px 12px;
-  }
-  .injury-plan-page .hero-container {
-    margin-top: 12px;
-  }
+/* Arrow visibility fixes for injury recovery page accordions */
+.injury-plan-page .custom-accordion-content .slider-wrapper .slider-arrow {
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    display: block !important;
 }
+
+.injury-plan-page .custom-accordion-content .slider-wrapper .slider-arrow.hidden {
+    opacity: 0 !important;
+    pointer-events: none !important;
+    display: none !important;
+}
+
+/* Reposition arrows inside accordion to prevent overflow clipping */
+.injury-plan-page .custom-accordion-content .slider-wrapper {
+    position: relative;
+    overflow: visible !important; /* Allow arrows to extend beyond container */
+}
+
+.injury-plan-page .custom-accordion-content .slider-arrow.left-arrow {
+    left: 0 !important; /* Move inside instead of outside */
+    
+}
+/* Arrow visibility fixes for injury recovery page accordions - Hidden by default */
+.injury-plan-page .custom-accordion-content .slider-wrapper .slider-arrow {
+  opacity: 0 !important; /* Hidden by default */
+  pointer-events: auto !important;
+  display: block !important;
+  transition: opacity 0.2s ease; /* Smooth fade transition */
+}
+
+/* Show arrows only on hover */
+.injury-plan-page .custom-accordion-content .slider-wrapper:hover .slider-arrow {
+  opacity: 1 !important; /* Show on hover */
+}
+
+/* Hide arrows when there are not enough cards */
+.injury-plan-page .custom-accordion-content .slider-wrapper .slider-arrow.hidden {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  display: none !important;
+}
+
+/* Reposition arrows inside accordion to prevent overflow clipping */
+.injury-plan-page .custom-accordion-content .slider-wrapper {
+  position: relative;
+  overflow: visible !important; /* Allow arrows to extend beyond container */
+}
+
+.injury-plan-page .custom-accordion-content .slider-arrow.left-arrow {
+  left: 0 !important; /* Move inside instead of outside */
+  
+  opacity: 0 !important; /* Start hidden */
+  transition: opacity 0.2s ease;
+}
+
+.injury-plan-page .custom-accordion-content .slider-arrow.right-arrow {
+  right: 0 !important; /* Move inside instead of outside */
+  
+  opacity: 0 !important; /* Start hidden */
+  transition: opacity 0.2s ease;
+}
+
+/* Show arrows on hover of the slider wrapper */
+.injury-plan-page .custom-accordion-content .slider-wrapper:hover .slider-arrow.left-arrow,
+.injury-plan-page .custom-accordion-content .slider-wrapper:hover .slider-arrow.right-arrow {
+  opacity: 1 !important;
+}
+

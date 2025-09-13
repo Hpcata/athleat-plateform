@@ -12,6 +12,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const scrollAmount = 300;
 
     // Show arrows only if 4 or more cards exist
+    // Show arrows only if 4 or more cards exist
     function updateArrowVisibility() {
         if (!scrollContainer || !leftArrow || !rightArrow) {
             return;
@@ -20,8 +21,17 @@ document.addEventListener("DOMContentLoaded", function () {
         const cards = scrollContainer.querySelectorAll(".challenge-card");
         const shouldShowArrows = cards.length > 4;
 
-        leftArrow.style.display = shouldShowArrows ? "block" : "none";
-        rightArrow.style.display = shouldShowArrows ? "block" : "none";
+        if (shouldShowArrows) {
+            leftArrow.style.display = "block";
+            rightArrow.style.display = "block";
+            leftArrow.classList.remove('hidden');
+            rightArrow.classList.remove('hidden');
+        } else {
+            leftArrow.style.display = "none";
+            rightArrow.style.display = "none";
+            leftArrow.classList.add('hidden');
+            rightArrow.classList.add('hidden');
+        }
     }
 
     // Scroll behavior
