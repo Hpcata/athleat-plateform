@@ -20,8 +20,7 @@ use App\Models\UserItemSwap;
 use App\Models\UserMeal;
 use App\Models\UserPlan;
 use App\Models\UserPrePlan;
-use App\Models\UserSwapItem;
-use App\Services\ActivityTracker;
+use App\Models\RecurringPayment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
@@ -37,7 +36,15 @@ class PurchasePlanController extends Controller
     public function index()
     {
         // Fetch payments with pagination (you can adjust per page as needed)
-        $payments = Payment::with('plan:id,name')->get();
+        $payments = Payment::with('plan:id,name')
+            ->whereIn('id', function ($query) {
+                $query->select(DB::raw('MIN(id)'))
+                    ->from('payments')
+                    ->whereNotNull('user_plan_id')
+                    ->groupBy('user_plan_id');
+            })
+            ->orWhereNull('user_plan_id')
+            ->get();
         $planIds  = array_unique(array_column($payments->toArray(), 'plan_id'));
         $userIds  = array_unique(array_column($payments->toArray(), 'user_id'));
 
@@ -3119,6 +3126,95 @@ class PurchasePlanController extends Controller
         } catch (\Exception $e) {
             Log::error('Error deleting swap food item: ' . $e->getMessage());
             return response()->json(['success' => false, 'message' => 'Failed to delete swap food item.'], 500);
+        }
+    }
+
+    /**
+     * Get payment information for a specific payment
+     */
+    public function getPaymentInfo($paymentId)
+    {
+        try {
+            $payment = Payment::with(['plan', 'user', 'consultation', 'userPlan'])
+                ->findOrFail($paymentId);
+
+            $paymentInfo = [
+                'payment' => $payment,
+                'is_recurring' => false,
+                'recurring_info' => null,
+                'payment_group' => null
+            ];
+
+            // Get all payments in the same group (same user_plan_id)
+            if ($payment->user_plan_id) {
+                $paymentGroup = Payment::where('user_plan_id', $payment->user_plan_id)
+                    ->with(['plan', 'user'])
+                    ->orderBy('id', 'asc')
+                    ->get();
+                
+                $paymentInfo['payment_group'] = $paymentGroup;
+                
+                // Get first payment for original payment intent ID and coupon code
+                $firstPayment = $paymentGroup->first();
+                $paymentInfo['first_payment'] = [
+                    'payment_intent_id' => $firstPayment->payment_intent_id,
+                    'coupon_code' => $firstPayment->coupon_code
+                ];
+                
+                // Check if this payment has a recurring payment using user_plan_id
+                $recurringPayment = RecurringPayment::where('user_plan_id', $payment->user_plan_id)->first();
+                
+                if ($recurringPayment) {
+                    $paymentInfo['is_recurring'] = true;
+                    $paymentInfo['recurring_info'] = [
+                        'stripe_subscription_id' => $recurringPayment->stripe_subscription_id,
+                        'total_payments' => $recurringPayment->total_payments,
+                        'total_payments_expected' => $recurringPayment->total_payments_expected,
+                        'next_payment_date' => $recurringPayment->next_payment_date,
+                        'last_payment_date' => $recurringPayment->last_payment_date,
+                        'payment_status' => $recurringPayment->payment_status,
+                        'canceled_at' => $recurringPayment->canceled_at,
+                        'cancelation_reason' => $recurringPayment->cancelation_reason,
+                        'remaining_payments' => $recurringPayment->total_payments_expected - $recurringPayment->total_payments
+                    ];
+                }
+            } else {
+                // Fallback: Check if this payment has a recurring payment using old method
+                $userPlan = UserPlan::where('user_id', $payment->user_id)
+                    ->where('plan_id', $payment->plan_id)
+                    ->first();
+
+                if ($userPlan) {
+                    $recurringPayment = RecurringPayment::where('user_plan_id', $userPlan->id)->first();
+                    
+                    if ($recurringPayment) {
+                        $paymentInfo['is_recurring'] = true;
+                        $paymentInfo['recurring_info'] = [
+                            'stripe_subscription_id' => $recurringPayment->stripe_subscription_id,
+                            'total_payments' => $recurringPayment->total_payments,
+                            'total_payments_expected' => $recurringPayment->total_payments_expected,
+                            'next_payment_date' => $recurringPayment->next_payment_date,
+                            'last_payment_date' => $recurringPayment->last_payment_date,
+                            'payment_status' => $recurringPayment->payment_status,
+                            'canceled_at' => $recurringPayment->canceled_at,
+                            'cancelation_reason' => $recurringPayment->cancelation_reason,
+                            'remaining_payments' => $recurringPayment->total_payments_expected - $recurringPayment->total_payments
+                        ];
+                    }
+                }
+            }
+
+            return response()->json([
+                'success' => true,
+                'data' => $paymentInfo
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Error fetching payment info: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to fetch payment information.'
+            ], 500);
         }
     }
 }

@@ -76,6 +76,7 @@
                                 <td>
                                     <!-- Action link to show payment details -->
                                     <a href="javascript:void(0);" class="btn btn-sm btn-outline-primary user-pre-plan-details m-1" data-payment-id="{{ $payment->id }}" ><i class="icofont-eye text-primary"></i></a>
+                                    <a href="javascript:void(0);" class="btn btn-sm btn-outline-info payment-info-btn m-1" data-payment-id="{{ $payment->id }}" title="Payment Information"><i class="icofont-info-circle text-info"></i></a>
                                     @if($isPlanCreated)
                                     <a href="{{ route('admin.purchase-plans.edit', ['user' => $payment->user_id,'plan' => $payment->id]) }}" class="btn btn-sm btn-outline-success m-1"><i class="icofont-edit text-success"></i></a>
                                     @else
@@ -101,6 +102,21 @@
             </div>
             <div class="modal-body">
                 <!-- Dynamic content will be injected here -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Payment Information Modal -->
+<div id="paymentInfoModal" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Payment Information</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Dynamic payment content will be injected here -->
             </div>
         </div>
     </div>
@@ -387,6 +403,136 @@
             var description = $(this).data('description') || 'N/A';
             $('#modalDescription').text(description);
             $('#itemInfoModal').modal('show');
+        });
+
+        // Handle payment information button click
+        $(document).on('click', '.payment-info-btn', function() {
+            const paymentId = $(this).data('payment-id');
+            
+            console.log('Clicked on payment-info-btn with paymentId:', paymentId);
+
+            $.ajax({
+                url: '{{ route('admin.purchase-plans.payment-info', ':id') }}'.replace(':id', paymentId),
+                method: 'GET',
+                success: function(response) {
+                    if (response.success) {
+                        console.log(response.data);
+                        
+                        let modalContent = '';
+                        const data = response.data;
+                        const payment = data.payment;
+                        const isRecurring = data.is_recurring;
+                        const recurringInfo = data.recurring_info;
+                        const paymentGroup = data.payment_group;
+                        const firstPayment = data.first_payment;
+
+                        // Payment Basic Information
+                        modalContent += `
+                            <div>
+                                <h4 style="color:#7258db;">Payment Details</h4><hr>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <p><strong>Payment ID:</strong> ${payment.id}</p>
+                                        <p><strong>Plan:</strong> ${payment.plan ? payment.plan.name : 'N/A'}</p>
+                                        <p><strong>Customer Name:</strong> ${payment.name || 'N/A'}</p>
+                                        <p><strong>Email:</strong> ${payment.email || 'N/A'}</p>
+                                        <p><strong>Phone:</strong> ${payment.phone || 'N/A'}</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p><strong>Amount:</strong> $${payment.price || 'N/A'}</p>
+                                        <p><strong>Original Price:</strong> $${payment.original_price || 'N/A'}</p>
+                                        <p><strong>Status:</strong> <span class="badge ${payment.status === 'completed' ? 'bg-success' : payment.status === 'pending' ? 'bg-warning' : 'bg-danger'}">${payment.status || 'N/A'}</span></p>
+                                        <p><strong>Payment Intent ID:</strong> ${firstPayment ? firstPayment.payment_intent_id || 'N/A' : payment.payment_intent_id || 'N/A'}</p>
+                                        <p><strong>Coupon Code:</strong> ${firstPayment ? firstPayment.coupon_code || 'N/A' : payment.coupon_code || 'N/A'}</p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <p><strong>Purchase Date:</strong> ${new Date(payment.created_at).toLocaleString()}</p>
+                                    </div>
+                                </div>
+                            </div><hr>`;
+
+                        // Recurring Payment Information
+                        if (isRecurring && recurringInfo) {
+                            // Calculate subscription status based on criteria
+                            const firstPaymentDate = new Date(payment.created_at);
+                            const eightMonthsLater = new Date(firstPaymentDate);
+                            eightMonthsLater.setMonth(eightMonthsLater.getMonth() + 8);
+                            const currentDate = new Date();
+                            
+                            // Subscription is only canceled when 8-month period has expired
+                            const isWithinEightMonths = currentDate < eightMonthsLater;
+                            const isActiveSubscription = isWithinEightMonths;
+                            
+                            const subscriptionStatus = isActiveSubscription ? 'Active Subscription' : 'Canceled Subscription';
+                            const statusClass = isActiveSubscription ? 'bg-success' : 'bg-danger';
+                            
+                            modalContent += `
+                                <div>
+                                    <h4 style="color:#7258db;">Recurring Payment Information</h4><hr>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <p><strong>Subscription Status:</strong> <span class="badge ${statusClass}">${subscriptionStatus}</span></p>
+                                            <p><strong>Stripe Subscription ID:</strong> ${recurringInfo.stripe_subscription_id || 'N/A'}</p>
+                                            <p><strong>Total Payments Made:</strong> ${recurringInfo.total_payments}</p>
+                                            <p><strong>Total Payments Expected:</strong> ${recurringInfo.total_payments_expected}</p>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p><strong>Remaining Payments:</strong> <span class="badge ${recurringInfo.remaining_payments > 0 ? 'bg-info' : 'bg-success'}">${recurringInfo.remaining_payments}</span></p>
+                                            <p><strong>First Payment Date:</strong> ${firstPaymentDate.toLocaleDateString()}</p>
+                                            <p><strong>8-Month Period Ends:</strong> ${eightMonthsLater.toLocaleDateString()}</p>
+                                        </div>
+                                    </div>`;
+
+                            if (isActiveSubscription) {
+                                modalContent += `
+                                    <div class="row mt-3">
+                                        <div class="col-md-12">
+                                            <div class="alert alert-success">
+                                                <p><strong>Active Subscription</strong></p>
+                                                <p>This subscription is active with ${recurringInfo.remaining_payments} payment(s) remaining and is within the 8-month period.</p>
+                                            </div>
+                                        </div>
+                                    </div>`;
+                            } else {
+                                modalContent += `
+                                    <div class="row mt-3">
+                                        <div class="col-md-12">
+                                            <div class="alert alert-danger">
+                                                <p><strong>Canceled Subscription</strong></p>
+                                                <p>This subscription has expired after the 8-month period ended on ${eightMonthsLater.toLocaleDateString()}.</p>
+                                            </div>
+                                        </div>
+                                    </div>`;
+                            }
+
+                            modalContent += '</div><hr>';
+                        } else {
+                            modalContent += `
+                                <div>
+                                    <h4 style="color:#7258db;">Payment Type</h4><hr>
+                                    <div class="alert alert-info">
+                                        <p><strong>One-time Payment</strong></p>
+                                        <p>This is a single payment transaction, not a recurring subscription.</p>
+                                    </div>
+                                </div><hr>`;
+                        }
+
+
+                        // Set the content inside the modal
+                        $('#paymentInfoModal .modal-body').html(modalContent);
+
+                        // Show the modal
+                        $('#paymentInfoModal').modal('show');
+                    } else {
+                        alert('Failed to load payment information.');
+                    }
+                },
+                error: function() {
+                    alert('An error occurred while fetching payment information.');
+                }
+            });
         });
     });
 

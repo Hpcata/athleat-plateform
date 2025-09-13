@@ -881,7 +881,7 @@ class PaymentController extends Controller
                 }
 
                 $paymentIntentData = [
-                    'amount' => $finalPrice * 100,
+                    'amount' => (int) round($finalPrice * 100),
                     'currency' => 'aud',
                     'confirmation_method' => 'automatic',
                     'customer' => $customer->id,
@@ -951,9 +951,10 @@ class PaymentController extends Controller
                 Log::debug('Game Plan - Consultation ID: ' . $consultationId);
             }
 
-            // Create payment record
+            // Create payment record (user_plan_id will be updated after UserPlan creation)
             $payment = Payment::create([
                 'user_id' => $user->id,
+                'user_plan_id' => null, // Will be updated after UserPlan creation
                 'plan_id' => $validated['plan_id'],
                 'consultation_id' => $consultationId,
                 'price' => $validated['final_price'] ?? $finalPrice,
@@ -1047,6 +1048,9 @@ class PaymentController extends Controller
                 );
                 Log::debug('UserPlan created/updated (pending)', ['user_plan' => $userPlan]);
             }
+
+            // Update payment with user_plan_id
+            $payment->update(['user_plan_id' => $userPlan->id]);
 
             // Handle monthly recurring payments with Stripe subscription
             if ($validated['is_monthly']) {

@@ -225,20 +225,33 @@ class StripeWebhookController extends Controller
 
         // Update UserPlan status based on payment completion
         $userPlan = $recurringPayment->userPlan;
+        Log::info('UserPlan found', [
+            'user_plan_id' => $userPlan->id,
+            'user_plan_status' => $userPlan->status
+        ]);
         if ($userPlan) {
             $userPlanStatus = $isCompleted ? 'completed' : 'active';
             $userPlan->update(['status' => $userPlanStatus]);
         }
 
+        $userPlanId = $recurringPayment->user_plan_id;
+        $userPlan = UserPlan::find($userPlanId);
+        $userId = $userPlan->user_id;
+        $planId = $userPlan->plan_id;
+
+        // Get customer details from Stripe to populate missing fields
+        $customer = $this->getCustomerDetails($invoice->customer);
+        
         // Create payment record for tracking
         Payment::create([
-            'user_id' => $recurringPayment->user_id,
-            'plan_id' => $recurringPayment->userPlan->plan_id ?? $recurringPayment->plan_id,
+            'user_id' => $userId,
+            'user_plan_id' => $userPlanId,
+            'plan_id' => $planId,
             'price' => $invoice->amount_paid / 100, // Convert from cents
-            'original_price' => $invoice->amount_paid / 100,
-            'name' => $invoice->customer_name ?? 'Recurring Payment',
-            'email' => $invoice->customer_email ?? '',
-            'phone' => '',
+            'original_price' => $this->getOriginalPriceFromSubscription($invoice->subscription),
+            'name' => $customer->name ?? $invoice->customer_name ?? 'Recurring Payment',
+            'email' => $customer->email ?? $invoice->customer_email ?? '',
+            'phone' => $customer->phone ?? '',
             'payment_intent_id' => $invoice->payment_intent,
             'status' => 'succeeded',
             'coupon_code' => null
@@ -340,20 +353,33 @@ class StripeWebhookController extends Controller
 
         // Update UserPlan status based on payment completion
         $userPlan = $recurringPayment->userPlan;
+        Log::info('UserPlan found', [
+            'user_plan_id' => $userPlan->id,
+            'user_plan_status' => $userPlan->status
+        ]);
         if ($userPlan) {
             $userPlanStatus = $isCompleted ? 'completed' : 'active';
             $userPlan->update(['status' => $userPlanStatus]);
         }
 
+        $userPlanId = $recurringPayment->user_plan_id;
+        $userPlan = UserPlan::find($userPlanId);
+        $userId = $userPlan->user_id;
+        $planId = $userPlan->plan_id;
+
+        // Get customer details from Stripe to populate missing fields
+        $customer = $this->getCustomerDetails($invoice->customer);
+        
         // Create payment record for tracking
         Payment::create([
-            'user_id' => $recurringPayment->user_id,
-            'plan_id' => $recurringPayment->userPlan->plan_id ?? $recurringPayment->plan_id,
+            'user_id' => $userId,
+            'user_plan_id' => $userPlanId,
+            'plan_id' => $planId,
             'price' => $invoice->amount_paid / 100, // Convert from cents
-            'original_price' => $invoice->amount_paid / 100,
-            'name' => $invoice->customer_name ?? 'Recurring Payment',
-            'email' => $invoice->customer_email ?? '',
-            'phone' => '',
+            'original_price' => $this->getOriginalPriceFromSubscription($invoice->subscription),
+            'name' => $customer->name ?? $invoice->customer_name ?? 'Recurring Payment',
+            'email' => $customer->email ?? $invoice->customer_email ?? '',
+            'phone' => $customer->phone ?? '',
             'payment_intent_id' => $invoice->payment_intent,
             'status' => 'succeeded',
             'coupon_code' => null
@@ -431,6 +457,10 @@ class StripeWebhookController extends Controller
 
         // Update UserPlan status based on subscription status
         $userPlan = $recurringPayment->userPlan;
+        Log::info('UserPlan found', [
+            'user_plan_id' => $userPlan->id,
+            'user_plan_status' => $userPlan->status
+        ]);
         if ($userPlan) {
             $userPlanStatus = ($subscription && in_array($subscription->status, ['canceled', 'incomplete_expired', 'unpaid'])) ? 'cancelled' : 'pending';
             $userPlan->update(['status' => $userPlanStatus]);
@@ -515,6 +545,10 @@ class StripeWebhookController extends Controller
 
         // Update UserPlan status based on subscription status
         $userPlan = $recurringPayment->userPlan;
+        Log::info('UserPlan found', [
+            'user_plan_id' => $userPlan->id,
+            'user_plan_status' => $userPlan->status
+        ]);
         if ($userPlan) {
             if (in_array($subscription->status, ['canceled', 'unpaid', 'incomplete_expired'])) {
                 $userPlan->update([
@@ -570,6 +604,10 @@ class StripeWebhookController extends Controller
 
         // Update UserPlan status to cancelled
         $userPlan = $recurringPayment->userPlan;
+        Log::info('UserPlan found', [
+            'user_plan_id' => $userPlan->id,
+            'user_plan_status' => $userPlan->status
+        ]);
         if ($userPlan) {
             $userPlan->update([
                 'status' => 'cancelled',
@@ -665,39 +703,6 @@ class StripeWebhookController extends Controller
         return $fallbackDate;
     }
 
-    private function getNextPaymentDate($subscriptionId)
-    {
-        try {
-            Stripe::setApiKey(config('services.stripe.secret'));
-            $subscription = \Stripe\Subscription::retrieve($subscriptionId);
-            
-            // Validate the timestamp
-            if ($subscription->current_period_end && $subscription->current_period_end > 0) {
-                $nextPaymentDate = \Carbon\Carbon::createFromTimestamp($subscription->current_period_end);
-                
-                // Additional validation to ensure the date is reasonable
-                if ($nextPaymentDate->isFuture()) {
-                    return $nextPaymentDate;
-                }
-            }
-            
-            // Fallback to next month if subscription data is invalid
-            Log::warning('Invalid subscription current_period_end, using fallback', [
-                'subscription_id' => $subscriptionId,
-                'current_period_end' => $subscription->current_period_end ?? 'null'
-            ]);
-            
-            return now()->addMonth();
-            
-        } catch (\Exception $e) {
-            Log::error('Failed to get next payment date: ' . $e->getMessage(), [
-                'subscription_id' => $subscriptionId,
-                'error' => $e->getMessage()
-            ]);
-            return now()->addMonth();
-        }
-    }
-
     private function cancelStripeSubscription($subscriptionId, $reason = 'All payments completed')
     {
         try {
@@ -739,6 +744,55 @@ class StripeWebhookController extends Controller
             
             // Don't throw exception - we don't want to break the webhook processing
             // The subscription will remain active, but our database will be updated
+            return null;
+        }
+    }
+
+    /**
+     * Get customer details from Stripe
+     */
+    private function getCustomerDetails($customerId)
+    {
+        try {
+            Stripe::setApiKey(config('services.stripe.secret'));
+            $customer = \Stripe\Customer::retrieve($customerId);
+            
+            return (object) [
+                'name' => $customer->name ?? null,
+                'email' => $customer->email ?? null,
+                'phone' => $customer->phone ?? null
+            ];
+        } catch (\Exception $e) {
+            Log::error('Failed to get customer details: ' . $e->getMessage(), [
+                'customer_id' => $customerId
+            ]);
+            return (object) [
+                'name' => null,
+                'email' => null,
+                'phone' => null
+            ];
+        }
+    }
+
+    /**
+     * Get original price from subscription or plan
+     */
+    private function getOriginalPriceFromSubscription($subscriptionId)
+    {
+        try {
+            Stripe::setApiKey(config('services.stripe.secret'));
+            $subscription = \Stripe\Subscription::retrieve($subscriptionId);
+            
+            if ($subscription && $subscription->items && $subscription->items->data) {
+                $price = $subscription->items->data[0]->price->unit_amount ?? null;
+                return $price ? $price / 100 : null; // Convert from cents
+            }
+            
+            return null;
+        } catch (\Exception $e) {
+            Log::error('Failed to get original price from subscription: ' . $e->getMessage(), [
+                'subscription_id' => $subscriptionId
+            ]);
             return null;
         }
     }

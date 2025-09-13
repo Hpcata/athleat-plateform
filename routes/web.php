@@ -224,6 +224,7 @@ Route::group(['middleware' => ['auth:admin', 'admin']], function () {
 		Route::post('/purchase-plans', [PurchasePlanController::class, 'store'])->name('admin.purchase-plans.store');
 		Route::get('/purchase-plans/{user}/edit/{plan}', [PurchasePlanController::class, 'edit'])->name('admin.purchase-plans.edit');
 		Route::put('/purchase-plans', [PurchasePlanController::class, 'update'])->name('admin.purchase-plans.update');
+		Route::get('/purchase-plans/{paymentId}/payment-info', [PurchasePlanController::class, 'getPaymentInfo'])->name('admin.purchase-plans.payment-info');
 		Route::get('/pre-plan-details/{id}', [PurchasePlanController::class, 'getPrePlanDetails'])->name('admin.pre-plan-details');
 		Route::post('/handle-plan-action', [PurchasePlanController::class, 'handlePlanAction'])->name('admin.handle-plan-action');
 		Route::post('/update-nutrition-flag', [PurchasePlanController::class, 'updateNutritionFalg'])->name('admin.update-nutrition-flag');
