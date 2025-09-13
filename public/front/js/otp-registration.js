@@ -205,11 +205,13 @@ function verifyOtp() {
                     // User exists - login successful
                     if (window.pendingConsultation) {
                         showSuccess("Login successful! Continuing with your consultation booking...");
+                    } else if (window.pendingPlanPurchase) {
+                        showSuccess("Login successful! Continuing with your plan purchase...");
                     } else {
                         showSuccess("Login successful! Redirecting to your profile...");
                     }
                     sessionStorage.removeItem("quiz_state");
-                    // Check if there's a pending consultation
+                    // Check if there's a pending consultation or plan purchase
                     setTimeout(() => {
                         if (window.pendingConsultation) {
                             // Store consultation data in sessionStorage before reload
@@ -220,6 +222,16 @@ function verifyOtp() {
                                 signupModal.hide();
                             }
                             // Refresh the page to show consultation booking popup
+                            window.location.reload();
+                        } else if (window.pendingPlanPurchase) {
+                            // Store plan purchase data in sessionStorage before reload
+                            sessionStorage.setItem('pendingPlanPurchase', JSON.stringify(window.pendingPlanPurchase));
+                            // Close the signup modal
+                            const signupModal = bootstrap.Modal.getInstance(document.getElementById('signupModalathlete'));
+                            if (signupModal) {
+                                signupModal.hide();
+                            }
+                            // Refresh the page to show plan purchase popup
                             window.location.reload();
                         } else {
                             // Check if user should return to consultation page
@@ -377,7 +389,7 @@ function completeRegistration() {
                 // Redirect to profile landing page using the user ID from response
                 setTimeout(() => {
                     if (data.user && data.user.id) {
-                        // Check if there's a pending consultation
+                        // Check if there's a pending consultation or plan purchase
                         if (window.pendingConsultation) {
                             // Store consultation data in sessionStorage before reload
                             sessionStorage.setItem('pendingConsultation', JSON.stringify(window.pendingConsultation));
@@ -387,6 +399,16 @@ function completeRegistration() {
                                 signupModal.hide();
                             }
                             // Refresh the page to show consultation booking popup
+                            window.location.reload();
+                        } else if (window.pendingPlanPurchase) {
+                            // Store plan purchase data in sessionStorage before reload
+                            sessionStorage.setItem('pendingPlanPurchase', JSON.stringify(window.pendingPlanPurchase));
+                            // Close the signup modal
+                            const signupModal = bootstrap.Modal.getInstance(document.getElementById('signupModalathlete'));
+                            if (signupModal) {
+                                signupModal.hide();
+                            }
+                            // Refresh the page to show plan purchase popup
                             window.location.reload();
                         } else {
                             // Check if user should return to consultation page

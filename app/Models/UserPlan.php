@@ -21,6 +21,12 @@ class UserPlan extends Model
         'nutrition_info_flag'
     ];
 
+    protected $casts = [
+        'is_mail_sent' => 'boolean',
+        'mail_sent_at' => 'datetime',
+        'nutrition_info_flag' => 'boolean'
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -54,5 +60,21 @@ class UserPlan extends Model
     public function userItems()
     {
         return $this->hasMany(UserItem::class, 'user_plan_id');
+    }
+
+    /**
+     * Get the recurring payment for this user plan
+     */
+    public function recurringPayment()
+    {
+        return $this->hasOne(RecurringPayment::class);
+    }
+
+    /**
+     * Check if this user plan has recurring payments
+     */
+    public function isRecurring()
+    {
+        return $this->recurringPayment()->exists();
     }
 }

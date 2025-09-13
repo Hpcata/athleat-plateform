@@ -176,7 +176,9 @@
 
             {{-- Mobile menu button --}}
             <div class="mob-btn-wrap">
-                <button class="me-0 btn-login web-hide" onclick="openSingupFreePopup(true)">Log in</button>
+                @if (!Auth::check())
+                    <button class="me-0 btn-login web-hide" onclick="openSingupFreePopup(true)">Log in</button>
+                @endif
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                     style="border: none">
                     <span class="menu-icon" style="color: white">
@@ -384,12 +386,20 @@
         sessionStorage.removeItem('loginTriggeredByConsultation');
     };
 
+    // Global function to clear plan purchase login flag
+    window.clearPlanPurchaseLoginFlag = function() {
+        sessionStorage.removeItem('loginTriggeredByPlanPurchase');
+    };
+
     function openSingupFreePopup(isLogin = false, isQuiz = false) {
-        // Clear consultation login flag since this is not triggered by consultation booking
+        // Clear consultation and plan purchase login flags since this is not triggered by booking
         if (typeof window.clearConsultationLoginFlag === 'function') {
             window.clearConsultationLoginFlag();
         }
-
+        if (typeof window.clearPlanPurchaseLoginFlag === 'function') {
+            window.clearPlanPurchaseLoginFlag();
+        }
+        
         if (isQuiz) {
             $('#signupModalathlete .signup-login-h2-title').addClass('d-none');
             $('#signupModalathlete .quiz-h2-title').removeClass('d-none');

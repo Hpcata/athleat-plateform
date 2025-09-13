@@ -21,10 +21,9 @@
                     <div class="container-homepage">
                         <div class="hero-content-fixed">
                             {!! $section->content !!}
-                            <button class="btn-signup purchase-now-btn"
-                                    data-plan-id="{{ $planDetails?->id }}"
-                                    data-plan-name="{{ $planDetails?->name }}"
-                                    data-plan-price="{{ $planDetails?->price }}">
+                            <button class="btn-signup "
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#planChooseModal">
                                     Purchase plan
                             </button>
                         </div>
@@ -63,10 +62,9 @@
                         </div>
                         {!! $section->content !!}
 
-                        <button id="TPMAIU-purchase-plan-btn" class="purchase-now-btn d-none"
-                                    data-plan-id="{{ $planDetails?->id }}"
-                                    data-plan-name="{{ $planDetails?->name }}"
-                                    data-plan-price="{{ $planDetails?->price }}">
+                        <button id="TPMAIU-purchase-plan-btn" class=" d-none"
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#planChooseModal">
                                     Purchase plan
                             </button>
                     </div>
@@ -99,6 +97,12 @@
 
     @include('front.pages.partials.purchase-plan-register')
     @include('front.pages.partials.purchase-plan-login')
+    
+    @include('components.plan-modals', [
+        'userEmail' => Auth::check() ? Auth::user()->email : 'guest@example.com',
+        'planDetails' => $planDetails,
+        'consultations' => $consultations
+    ])
 @endsection
 
 @push('scripts')
@@ -159,6 +163,17 @@
         $('#training-plan-link').on('click', function() {
             window.location.href = "{{ route('front.training.nutrition.plan') }}";
         });
+
+$(document).ready(function() {
+    if($('.plan-inclusion-section .pricing-section .pricing-amount').length > 0) {
+        $('.plan-inclusion-section .pricing-section .pricing-amount').html('${{ number_format($planDetails?->price, 0) }} AUD');
+    }
+    
+    // Check if there's a pending plan purchase after page refresh
+    if (typeof window.handlePendingPlanPurchase === 'function') {
+        window.handlePendingPlanPurchase();
+    }
+});
     </script>
 
     <script src="{!! frontAssets('js/purchase-plan.js') !!}"></script>
