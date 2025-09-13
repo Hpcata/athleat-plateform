@@ -289,6 +289,43 @@
 
 <!-- JavaScript for Modal Functionality -->
 <script src="https://js.stripe.com/v3/"></script>
+<style>
+/* Payment processing modal styles */
+.payment-processing {
+    pointer-events: auto !important;
+}
+
+.payment-processing .modal-backdrop {
+    pointer-events: none !important;
+}
+
+.payment-processing .btn-close,
+.payment-processing .close {
+    opacity: 0.5 !important;
+    cursor: not-allowed !important;
+}
+
+.payment-processing .modal-dialog {
+    pointer-events: auto !important;
+}
+
+/* Prevent text selection during payment processing */
+.payment-processing * {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+/* Allow text selection in input fields */
+.payment-processing input,
+.payment-processing textarea {
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    user-select: text;
+}
+</style>
 <script>
 // Initialize Stripe globally
 const stripe = Stripe('{{ config("services.stripe.key") }}');
@@ -768,6 +805,122 @@ function checkQuestionnaireStatusAndRedirect() {
     });
 }
 
+// Global payment processing state
+let isPaymentProcessing = false;
+
+// Function to prevent page reload during payment processing
+function preventPageReload() {
+    window.addEventListener('beforeunload', handleBeforeUnload);
+}
+
+// Function to prevent modal close during payment processing
+function preventModalClose() {
+    // Prevent modal close via hide.bs.modal event
+    $('#paymentModalPlan').off('hide.bs.modal').on('hide.bs.modal', function(e) {
+        if (isPaymentProcessing) {
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+        }
+    });
+    
+    // Prevent modal close via ESC key
+    $(document).off('keydown.paymentModal').on('keydown.paymentModal', function(e) {
+        if (isPaymentProcessing && e.keyCode === 27) { // ESC key
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+        }
+    });
+    
+    // Prevent modal close via backdrop click - use Bootstrap's backdrop event
+    $('#paymentModalPlan').off('click.dismiss.bs.modal').on('click.dismiss.bs.modal', function(e) {
+        if (isPaymentProcessing && e.target === this) {
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+        }
+    });
+    
+    // Additional backdrop click prevention
+    $('#paymentModalPlan').off('click.paymentModal').on('click.paymentModal', function(e) {
+        if (isPaymentProcessing && e.target === this) {
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+        }
+    });
+    
+    // Disable close button during payment processing
+    $('#paymentModalPlan .btn-close, #paymentModalPlan .close').off('click.paymentModal').on('click.paymentModal', function(e) {
+        if (isPaymentProcessing) {
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+        }
+    });
+    
+    // Set modal data attributes to prevent backdrop dismissal
+    if (isPaymentProcessing) {
+        $('#paymentModalPlan').attr('data-bs-backdrop', 'static');
+        $('#paymentModalPlan').attr('data-bs-keyboard', 'false');
+        
+        // Also update the modal instance configuration if it exists
+        const modalElement = document.getElementById('paymentModalPlan');
+        if (modalElement && bootstrap.Modal.getInstance(modalElement)) {
+            const modalInstance = bootstrap.Modal.getInstance(modalElement);
+            modalInstance._config.backdrop = 'static';
+            modalInstance._config.keyboard = false;
+        }
+    }
+    
+    // Add visual indicators that modal cannot be closed
+    if (isPaymentProcessing) {
+        $('#paymentModalPlan').addClass('payment-processing');
+        $('#paymentModalPlan .btn-close, #paymentModalPlan .close').addClass('disabled').css('opacity', '0.5');
+        $('#paymentModalPlan .modal-backdrop').css('pointer-events', 'none');
+    }
+}
+
+// Function to handle beforeunload event
+function handleBeforeUnload(e) {
+    if (isPaymentProcessing) {
+        e.preventDefault();
+        e.returnValue = 'Payment is being processed. Are you sure you want to leave? This may cause issues with your payment.';
+        return e.returnValue;
+    }
+}
+
+// Function to reset payment processing state
+function resetPaymentProcessingState() {
+    isPaymentProcessing = false;
+    window.removeEventListener('beforeunload', handleBeforeUnload);
+    
+    // Remove all modal close prevention event listeners
+    $('#paymentModalPlan').off('hide.bs.modal');
+    $(document).off('keydown.paymentModal');
+    $('#paymentModalPlan').off('click.dismiss.bs.modal');
+    $('#paymentModalPlan').off('click.paymentModal');
+    $('#paymentModalPlan .btn-close, #paymentModalPlan .close').off('click.paymentModal');
+    
+    // Restore modal data attributes
+    $('#paymentModalPlan').attr('data-bs-backdrop', 'true');
+    $('#paymentModalPlan').attr('data-bs-keyboard', 'true');
+    
+    // Also restore the modal instance configuration if it exists
+    const modalElement = document.getElementById('paymentModalPlan');
+    if (modalElement && bootstrap.Modal.getInstance(modalElement)) {
+        const modalInstance = bootstrap.Modal.getInstance(modalElement);
+        modalInstance._config.backdrop = true;
+        modalInstance._config.keyboard = true;
+    }
+    
+    // Remove visual indicators
+    $('#paymentModalPlan').removeClass('payment-processing');
+    $('#paymentModalPlan .btn-close, #paymentModalPlan .close').removeClass('disabled').css('opacity', '1');
+    $('#paymentModalPlan .modal-backdrop').css('pointer-events', 'auto');
+}
+
 // Function to process plan payment (single request to backend)
 function processPlanPayment() {
     const planType = document.getElementById('paymentModalTitle').textContent;
@@ -777,8 +930,15 @@ function processPlanPayment() {
     const couponCode = $('#promo-code-consultation').val().trim();
     const cardHolderName = $('#card-holder-name').val();
     
+    // Set payment processing state
+    isPaymentProcessing = true;
+    
     // Disable button to prevent double submission
     $('#paymentButton').prop('disabled', true).text('Processing...');
+    
+    // Prevent page reload and modal close during payment processing
+    preventPageReload();
+    preventModalClose();
     
     // Check if this is a free plan (final price is 0 or less)
     if (parseFloat(finalPrice) <= 0) {
@@ -791,6 +951,7 @@ function processPlanPayment() {
     if (!cardHolderName.trim()) {
         alert('Please enter the name on card.');
         $('#paymentButton').prop('disabled', false).text('One Payment | A$' + finalPrice);
+        resetPaymentProcessingState();
         return;
     }
 
@@ -819,6 +980,7 @@ function sendPlanRequestWithCardDetails() {
     if (!cardNumberElement || !cardExpiryElement || !cardCvcElement) {
         alert('Payment form is not ready. Please try again.');
         $('#paymentButton').prop('disabled', false).text(isMonthly ? 'Monthly | A$' + finalPrice + '/mth' : 'One Payment | A$' + finalPrice);
+        resetPaymentProcessingState();
         return;
     }
     
@@ -835,6 +997,7 @@ function sendPlanRequestWithCardDetails() {
             // Handle payment method creation error
             $('#paymentButton').prop('disabled', false).text(isMonthly ? 'Monthly | A$' + finalPrice + '/mth' : 'One Payment | A$' + finalPrice);
             alert('Payment method error: ' + result.error.message);
+            resetPaymentProcessingState();
         } else {
             // Payment method created successfully, send to backend
             sendPlanRequestToBackend(result.paymentMethod.id);
@@ -870,6 +1033,8 @@ function sendPlanRequestToBackend(paymentMethodId) {
         },
         success: function(response) {
             if (response.success) {
+                // Reset payment processing state
+                resetPaymentProcessingState();
                 // Hide payment modal programmatically
                 isPaymentModalClosingProgrammatically = true;
                 $('#paymentModalPlan').modal('hide');
@@ -899,6 +1064,7 @@ function sendPlanRequestToBackend(paymentMethodId) {
             $('#paymentButton').prop('disabled', false).text(isMonthly ? 'Monthly | A$' + finalPrice + '/mth' : 'One Payment | A$' + finalPrice);
             const errorMessage = xhr.responseJSON?.message || 'Payment failed. Please try again.';
             alert('Payment failed: ' + errorMessage);
+            resetPaymentProcessingState();
         }
     });
 }
@@ -940,6 +1106,8 @@ function sendFreePlanRequest() {
         success: function(response) {
             console.log('Free plan response:', response);
             if (response.success) {
+                // Reset payment processing state
+                resetPaymentProcessingState();
                 // Hide payment modal programmatically
                 isPaymentModalClosingProgrammatically = true;
                 $('#paymentModalPlan').modal('hide');
@@ -951,6 +1119,7 @@ function sendFreePlanRequest() {
                 // Handle error
                 $('#paymentButton').prop('disabled', false).text('Get Free Plan');
                 alert('Plan purchase failed: ' + (response.message || 'Unknown error'));
+                resetPaymentProcessingState();
             }
         },
         error: function(xhr) {
@@ -958,6 +1127,7 @@ function sendFreePlanRequest() {
             $('#paymentButton').prop('disabled', false).text('Get Free Plan');
             const errorMessage = xhr.responseJSON?.message || 'Plan purchase failed. Please try again.';
             alert('Plan purchase failed: ' + errorMessage);
+            resetPaymentProcessingState();
         }
     });
 }
