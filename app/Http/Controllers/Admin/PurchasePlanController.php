@@ -43,7 +43,6 @@ class PurchasePlanController extends Controller
                     ->whereNotNull('user_plan_id')
                     ->groupBy('user_plan_id');
             })
-            ->orWhereNull('user_plan_id')
             ->get();
         $planIds  = array_unique(array_column($payments->toArray(), 'plan_id'));
         $userIds  = array_unique(array_column($payments->toArray(), 'user_id'));
