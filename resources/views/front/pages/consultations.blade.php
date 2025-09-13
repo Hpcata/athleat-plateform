@@ -185,7 +185,7 @@ $intresetsmallimg1 = $intresetsmallimg2 = $intresetsmallimg3 = $intrestimg1 = $i
 
                         <span class="divider"></span>
                         <p class="mb-2 sign-in-text" style="line-height: 22px;">Signed in
-                            as<br><strong id="user-email">{{ Auth::user()->email ?? 'jordansmith@gmail.com' }}</strong></p>
+                            as<br><strong id="user-email">{{ Auth::user()->email }}</strong></p>
                         <a href="##" class="d-block mb-3 coupon-code" id="toggle-coupon-consultation">Add a Coupon
                             Code</a>
                         <!-- Coupon Code -->
@@ -709,62 +709,56 @@ $intresetsmallimg1 = $intresetsmallimg2 = $intresetsmallimg3 = $intrestimg1 = $i
     </script>
 
     <script>
-        const onePaymentBtn = document.getElementById("onePaymentBtn");
-        const monthlyPlanBtn = document.getElementById("monthlyPlanBtn");
-        const onePaymentPlans = document.getElementById("onePaymentPlans");
-        const monthlyPlans = document.getElementById("monthlyPlans");
+        // const onePaymentBtn = document.getElementById("onePaymentBtn");
+        // const monthlyPlanBtn = document.getElementById("monthlyPlanBtn");
+        // const onePaymentPlans = document.getElementById("onePaymentPlans");
+        // const monthlyPlans = document.getElementById("monthlyPlans");
 
-        onePaymentBtn.addEventListener("click", () => {
-            onePaymentPlans.classList.remove("d-none");
-            monthlyPlans.classList.add("d-none");
-            onePaymentBtn.classList.add("active");
-            monthlyPlanBtn.classList.remove("active");
-        });
+        // onePaymentBtn.addEventListener("click", () => {
+        //     onePaymentPlans.classList.remove("d-none");
+        //     monthlyPlans.classList.add("d-none");
+        //     onePaymentBtn.classList.add("active");
+        //     monthlyPlanBtn.classList.remove("active");
+        // });
 
-        monthlyPlanBtn.addEventListener("click", () => {
-            onePaymentPlans.classList.add("d-none");
-            monthlyPlans.classList.remove("d-none");
-            monthlyPlanBtn.classList.add("active");
-            onePaymentBtn.classList.remove("active");
-        });
+        // monthlyPlanBtn.addEventListener("click", () => {
+        //     onePaymentPlans.classList.add("d-none");
+        //     monthlyPlans.classList.remove("d-none");
+        //     monthlyPlanBtn.classList.add("active");
+        //     onePaymentBtn.classList.remove("active");
+        // });
     </script>
 
     <script>
         // Handle monthlyBtn in planChooseModal
-        document.getElementById("monthlyBtn").addEventListener("click", function () {
-            // Hide the current modal
-            const planModal = bootstrap.Modal.getInstance(document.getElementById('planChooseModal'));
-            if (planModal) {
-                planModal.hide();
-            }
+        // document.getElementById("monthlyBtn").addEventListener("click", function () {
+        //     // Hide the current modal
+        //     const planModal = bootstrap.Modal.getInstance(document.getElementById('planChooseModal'));
+        //     if (planModal) {
+        //         planModal.hide();
+        //     }
 
-            // Show the consultation congrats modal
-            const congratsModalConsultation = new bootstrap.Modal(document.getElementById('congratsModalConsultation'));
-            congratsModalConsultation.show();
-        });
+        //     // Show the consultation congrats modal
+        //     const congratsModalConsultation = new bootstrap.Modal(document.getElementById('congratsModalConsultation'));
+        //     congratsModalConsultation.show();
+        // });
 
-        // Handle consultation booking button
-        const consultationBtn = document.querySelector('#paymentModal .btn-signup');
-        if (consultationBtn) {
-            consultationBtn.addEventListener("click", function () {
-                // Hide the current modal
-                const paymentModal = bootstrap.Modal.getInstance(document.getElementById('paymentModal'));
-                if (paymentModal) {
-                    paymentModal.hide();
-                }
+        // // Handle consultation booking button
+        // const consultationBtn = document.querySelector('#paymentModal .btn-signup');
+        // if (consultationBtn) {
+        //     consultationBtn.addEventListener("click", function () {
+        //         // Hide the current modal
+        //         const paymentModal = bootstrap.Modal.getInstance(document.getElementById('paymentModal'));
+        //         if (paymentModal) {
+        //             paymentModal.hide();
+        //         }
 
-                // Show the consultation congrats modal
-                const congratsModalConsultation = new bootstrap.Modal(document.getElementById('congratsModalConsultation'));
-                congratsModalConsultation.show();
-            });
-        }
+        //         // Show the consultation congrats modal
+        //         const congratsModalConsultation = new bootstrap.Modal(document.getElementById('congratsModalConsultation'));
+        //         congratsModalConsultation.show();
+        //     });
+        // }
 
-    </script>
-    <script>
-        document.getElementById("toggle-coupon").addEventListener("click", function (e) {
-            e.preventDefault();
-            document.getElementById("coupon-details").classList.toggle("d-none");
-        });
     </script>
     <script>
         document.getElementById("toggle-coupon-consultation").addEventListener("click", function (e) {
@@ -805,12 +799,6 @@ $intresetsmallimg1 = $intresetsmallimg2 = $intresetsmallimg3 = $intrestimg1 = $i
                 // Show payment form again when coupon is removed
                 document.querySelector('#consultation-payment-form .form-wrap').classList.remove('d-none');
             }
-        });
-    </script>
-    <script>
-        document.getElementById("apply-promo-code").addEventListener("click", function () {
-            // Add your promo code application logic here
-            console.log("Promo code applied");
         });
     </script>
     <script>
@@ -963,6 +951,43 @@ $intresetsmallimg1 = $intresetsmallimg2 = $intresetsmallimg3 = $intrestimg1 = $i
     </script>
 
     <!-- Consultation Booking Script -->
+    <style>
+    /* Payment processing modal styles */
+    .payment-processing {
+        pointer-events: auto !important;
+    }
+
+    .payment-processing .modal-backdrop {
+        pointer-events: none !important;
+    }
+
+    .payment-processing .btn-close,
+    .payment-processing .close {
+        opacity: 0.5 !important;
+        cursor: not-allowed !important;
+    }
+
+    .payment-processing .modal-dialog {
+        pointer-events: auto !important;
+    }
+
+    /* Prevent text selection during payment processing */
+    .payment-processing * {
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+
+    /* Allow text selection in input fields */
+    .payment-processing input,
+    .payment-processing textarea {
+        -webkit-user-select: text;
+        -moz-user-select: text;
+        -ms-user-select: text;
+        user-select: text;
+    }
+    </style>
     <script>
         // Stripe configuration
         let stripe;
@@ -1169,10 +1194,16 @@ $intresetsmallimg1 = $intresetsmallimg2 = $intresetsmallimg3 = $intrestimg1 = $i
                 const isAuthenticated = {{ Auth::check() ? 'true' : 'false' }};
 
                 if (!isAuthenticated) {
-                    // Initialize signup modal content before showing
-                    initializeSignupModal();
-                    // Show login/signup modal
-                    $('#signupModalathlete').modal('show');
+                    // Close any existing modals first
+                    $('.modal').modal('hide');
+                    
+                    // Wait for existing modal to close, then show signup modal
+                    setTimeout(() => {
+                        // Initialize signup modal content before showing
+                        window.initializeSignupModal();
+                        // Show login/signup modal
+                        $('#signupModalathlete').modal('show');
+                    }, 300);
                     // Store consultation data for after login
                     const consultationData = {
                         id: $(this).data('consultation-id'),
@@ -1512,6 +1543,122 @@ $intresetsmallimg1 = $intresetsmallimg2 = $intresetsmallimg3 = $intrestimg1 = $i
             $('#paymentModal').modal('show');
         }
 
+        // Global payment processing state
+        let isConsultationPaymentProcessing = false;
+
+        // Function to prevent page reload during payment processing
+        function preventConsultationPageReload() {
+            window.addEventListener('beforeunload', handleConsultationBeforeUnload);
+        }
+
+        // Function to prevent modal close during payment processing
+        function preventConsultationModalClose() {
+            // Prevent modal close via hide.bs.modal event
+            $('#paymentModal').off('hide.bs.modal').on('hide.bs.modal', function(e) {
+                if (isConsultationPaymentProcessing) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    return false;
+                }
+            });
+            
+            // Prevent modal close via ESC key
+            $(document).off('keydown.consultationModal').on('keydown.consultationModal', function(e) {
+                if (isConsultationPaymentProcessing && e.keyCode === 27) { // ESC key
+                    e.preventDefault();
+                    e.stopPropagation();
+                    return false;
+                }
+            });
+            
+            // Prevent modal close via backdrop click - use Bootstrap's backdrop event
+            $('#paymentModal').off('click.dismiss.bs.modal').on('click.dismiss.bs.modal', function(e) {
+                if (isConsultationPaymentProcessing && e.target === this) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    return false;
+                }
+            });
+            
+            // Additional backdrop click prevention
+            $('#paymentModal').off('click.consultationModal').on('click.consultationModal', function(e) {
+                if (isConsultationPaymentProcessing && e.target === this) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    return false;
+                }
+            });
+            
+            // Disable close button during payment processing
+            $('#paymentModal .btn-close, #paymentModal .close').off('click.consultationModal').on('click.consultationModal', function(e) {
+                if (isConsultationPaymentProcessing) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    return false;
+                }
+            });
+            
+            // Set modal data attributes to prevent backdrop dismissal
+            if (isConsultationPaymentProcessing) {
+                $('#paymentModal').attr('data-bs-backdrop', 'static');
+                $('#paymentModal').attr('data-bs-keyboard', 'false');
+                
+                // Also update the modal instance configuration if it exists
+                const modalElement = document.getElementById('paymentModal');
+                if (modalElement && bootstrap.Modal.getInstance(modalElement)) {
+                    const modalInstance = bootstrap.Modal.getInstance(modalElement);
+                    modalInstance._config.backdrop = 'static';
+                    modalInstance._config.keyboard = false;
+                }
+            }
+            
+            // Add visual indicators that modal cannot be closed
+            if (isConsultationPaymentProcessing) {
+                $('#paymentModal').addClass('payment-processing');
+                $('#paymentModal .btn-close, #paymentModal .close').addClass('disabled').css('opacity', '0.5');
+                $('#paymentModal .modal-backdrop').css('pointer-events', 'none');
+            }
+        }
+
+        // Function to handle beforeunload event
+        function handleConsultationBeforeUnload(e) {
+            if (isConsultationPaymentProcessing) {
+                e.preventDefault();
+                e.returnValue = 'Payment is being processed. Are you sure you want to leave? This may cause issues with your payment.';
+                return e.returnValue;
+            }
+        }
+
+        // Function to reset payment processing state
+        function resetConsultationPaymentProcessingState() {
+            isConsultationPaymentProcessing = false;
+            window.removeEventListener('beforeunload', handleConsultationBeforeUnload);
+            
+            // Remove all modal close prevention event listeners
+            $('#paymentModal').off('hide.bs.modal');
+            $(document).off('keydown.consultationModal');
+            $('#paymentModal').off('click.dismiss.bs.modal');
+            $('#paymentModal').off('click.consultationModal');
+            $('#paymentModal .btn-close, #paymentModal .close').off('click.consultationModal');
+            
+            // Restore modal data attributes
+            $('#paymentModal').attr('data-bs-backdrop', 'true');
+            $('#paymentModal').attr('data-bs-keyboard', 'true');
+            
+            // Also restore the modal instance configuration if it exists
+            const modalElement = document.getElementById('paymentModal');
+            if (modalElement && bootstrap.Modal.getInstance(modalElement)) {
+                const modalInstance = bootstrap.Modal.getInstance(modalElement);
+                modalInstance._config.backdrop = true;
+                modalInstance._config.keyboard = true;
+            }
+            
+            // Remove visual indicators
+            $('#paymentModal').removeClass('payment-processing');
+            $('#paymentModal .btn-close, #paymentModal .close').removeClass('disabled').css('opacity', '1');
+            $('#paymentModal .modal-backdrop').css('pointer-events', 'auto');
+        }
+
         function processConsultationPayment() {
             const consultationId = $('#consultation-id').val();
             const price = $('#consultation-final-price').val();
@@ -1519,8 +1666,15 @@ $intresetsmallimg1 = $intresetsmallimg2 = $intresetsmallimg3 = $intrestimg1 = $i
             const couponCode = $('#promo-code-consultation').val().trim();
             const cardHolderName = $('#card-holder-name').val();
 
+            // Set payment processing state
+            isConsultationPaymentProcessing = true;
+
             // Disable button to prevent double submission
             $('#payConsultationBtn').prop('disabled', true).text('Processing...');
+
+            // Prevent page reload and modal close during payment processing
+            preventConsultationPageReload();
+            preventConsultationModalClose();
 
             // Check if this is a free consultation (price is 0 or less)
             if (parseFloat(price) <= 0) {
@@ -1533,6 +1687,7 @@ $intresetsmallimg1 = $intresetsmallimg2 = $intresetsmallimg3 = $intrestimg1 = $i
             if (!cardHolderName.trim()) {
                 alert('Please enter the name on card.');
                 $('#payConsultationBtn').prop('disabled', false).html('Pay | $<span id="pay-button-price">' + price + '</span>');
+                resetConsultationPaymentProcessingState();
                 return;
             }
 
@@ -1549,6 +1704,7 @@ $intresetsmallimg1 = $intresetsmallimg2 = $intresetsmallimg3 = $intrestimg1 = $i
                     // Handle payment method creation error
                     $('#payConsultationBtn').prop('disabled', false).html('Pay | $<span id="pay-button-price">' + price + '</span>');
                     alert('Payment method error: ' + result.error.message);
+                    resetConsultationPaymentProcessingState();
                 } else {
                     // Payment method created successfully
                     paymentMethodId = result.paymentMethod.id;
@@ -1619,6 +1775,8 @@ $intresetsmallimg1 = $intresetsmallimg2 = $intresetsmallimg3 = $intrestimg1 = $i
                 },
                 success: function (response) {
                     if (response.success) {
+                        // Reset payment processing state
+                        resetConsultationPaymentProcessingState();
                         // Hide payment modal
                         $('#paymentModal').modal('hide');
                         // Show congrats modal
@@ -1629,8 +1787,10 @@ $intresetsmallimg1 = $intresetsmallimg2 = $intresetsmallimg3 = $intrestimg1 = $i
                             if (result.error) {
                                 $('#payConsultationBtn').prop('disabled', false).html('Pay | $<span id="pay-button-price">' + price + '</span>');
                                 alert('Payment failed: ' + result.error.message);
+                                resetConsultationPaymentProcessingState();
                             } else {
                                 // Payment succeeded after 3D Secure
+                                resetConsultationPaymentProcessingState();
                                 $('#paymentModal').modal('hide');
                                 $('#congratsModalConsultation').modal('show');
                             }
@@ -1638,6 +1798,7 @@ $intresetsmallimg1 = $intresetsmallimg2 = $intresetsmallimg3 = $intrestimg1 = $i
                     } else {
                         alert(response.message || 'An error occurred while booking the consultation.');
                         $('#payConsultationBtn').prop('disabled', false).html('Pay | $<span id="pay-button-price">' + price + '</span>');
+                        resetConsultationPaymentProcessingState();
                     }
                 },
                 error: function (xhr) {
@@ -1646,6 +1807,7 @@ $intresetsmallimg1 = $intresetsmallimg2 = $intresetsmallimg3 = $intrestimg1 = $i
                         // User needs to login
                         $('#paymentModal').modal('hide');
                         $('#signupModalathlete').modal('show');
+                        resetConsultationPaymentProcessingState();
                     } else {
                         // Show more informative error message
                         let errorMessage = 'An error occurred while booking the consultation. Please try again.';
@@ -1661,6 +1823,7 @@ $intresetsmallimg1 = $intresetsmallimg2 = $intresetsmallimg3 = $intrestimg1 = $i
                         }
 
                         $('#payConsultationBtn').prop('disabled', false).html('Pay | $<span id="pay-button-price">' + price + '</span>');
+                        resetConsultationPaymentProcessingState();
                     }
                 }
             });

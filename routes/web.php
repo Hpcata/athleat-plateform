@@ -224,6 +224,7 @@ Route::group(['middleware' => ['auth:admin', 'admin']], function () {
 		Route::post('/purchase-plans', [PurchasePlanController::class, 'store'])->name('admin.purchase-plans.store');
 		Route::get('/purchase-plans/{user}/edit/{plan}', [PurchasePlanController::class, 'edit'])->name('admin.purchase-plans.edit');
 		Route::put('/purchase-plans', [PurchasePlanController::class, 'update'])->name('admin.purchase-plans.update');
+		Route::get('/purchase-plans/{paymentId}/payment-info', [PurchasePlanController::class, 'getPaymentInfo'])->name('admin.purchase-plans.payment-info');
 		Route::get('/pre-plan-details/{id}', [PurchasePlanController::class, 'getPrePlanDetails'])->name('admin.pre-plan-details');
 		Route::post('/handle-plan-action', [PurchasePlanController::class, 'handlePlanAction'])->name('admin.handle-plan-action');
 		Route::post('/update-nutrition-flag', [PurchasePlanController::class, 'updateNutritionFalg'])->name('admin.update-nutrition-flag');
@@ -311,6 +312,8 @@ Route::get('front/logout-guest', function () {
 
 //Stripe payment
 Route::post('/process-payment', [PaymentController::class, 'processPayment'])->name('process.payment');
+Route::post('/process-plan-purchase', [PaymentController::class, 'processPlanPurchase'])->name('process.plan.purchase');
+Route::post('/check-existing-plan', [PaymentController::class, 'checkExistingPlan'])->name('check.existing.plan');
 Route::get('/payment-success', [PaymentController::class, 'paymentSuccess'])->name('payment.success');
 
 Route::post('/free-test-save', [FrontController::class, 'freeTestSave'])->name('front.submit-free-test');
@@ -391,3 +394,6 @@ Route::prefix('quiz')->group(function () {
 });
 
 Route::get('/about-us', [FrontController::class, 'aboutUs'])->name('front.about-us');
+
+// Stripe Webhook (must be outside middleware to avoid CSRF)
+Route::post('/stripe/webhook', [App\Http\Controllers\StripeWebhookController::class, 'handleWebhook'])->name('stripe.webhook');

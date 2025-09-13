@@ -786,19 +786,34 @@ class FrontController extends Controller
             }
 
             // Check if coupon is applicable to plan or consultation
-            $isApplicable = false;
-
+            $isApplicableToPlan = false;
+            $isApplicableToConsultation = false;
+            
             if ($planId) {
-                $isApplicable = $coupon->plans()->where('plans.id', $planId)->exists();
-            } elseif ($consultationId) {
-                // Check if the coupon is applicable to the specific consultation
-                $isApplicable = $coupon->consultations()->where('consultations.id', $consultationId)->exists();
+                $isApplicableToPlan = $coupon->plans()->where('plans.id', $planId)->exists();
             }
+            
+            if ($consultationId) {
+                $isApplicableToConsultation = $coupon->consultations()->where('consultations.id', $consultationId)->exists();
+            }
+            
+            // Coupon must be applicable to either the plan OR the consultation
+            $isApplicable = $isApplicableToPlan || $isApplicableToConsultation;
 
             if (!$isApplicable) {
+                $errorMessage = 'This coupon is not applicable to the selected item';
+                if ($planId && $consultationId) {
+                    $errorMessage .= ' (plan or consultation)';
+                } elseif ($planId) {
+                    $errorMessage .= ' (plan)';
+                } elseif ($consultationId) {
+                    $errorMessage .= ' (consultation)';
+                }
+                $errorMessage .= '.';
+                
                 return response()->json([
                     'valid'   => false,
-                    'message' => 'This coupon is not applicable to the selected item.',
+                    'message' => $errorMessage,
                 ]);
             }
 
@@ -1860,7 +1875,7 @@ class FrontController extends Controller
             $purchasedPlanIds = $payments->pluck('plan_id')->toArray();
             $notPurchasedPlans = Plan::whereNotIn('id', $purchasedPlanIds)->get();
 
-            if (!$isQuestionnaireSubmitted->is_complete) {
+            if ($isQuestionnaireSubmitted && !$isQuestionnaireSubmitted->is_complete) {
                 $payment = $payments->first();
                 return view('front.pages.profile-my-plans', compact('notPurchasedPlans', 'payments', 'isQuestionnaireSubmitted', 'payment'));
             }
@@ -1938,14 +1953,18 @@ class FrontController extends Controller
 
         $page        = Page::with('sections')->where('slug', 'training_nutrition_plan')->first();
         $planDetails = Plan::where('name', 'Training Nutrition Plan')->first();
-        return view('front.pages.training-nutrition-plan', compact('page', 'planDetails'));
+        $consultations = Consultation::whereIn('time', [30, 60])->get();
+
+        return view('front.pages.training-nutrition-plan', compact('page', 'planDetails', 'consultations'));
     }
 
     public function competitionPlan(Request $request)
     {
         $page        = Page::with('sections')->where('slug', 'competition_plan')->first();
         $planDetails = Plan::where('name', 'Competition Plan')->first();
-        return view('front.pages.competition_plan', compact('page', 'planDetails'));
+        $consultations = Consultation::whereIn('time', [30, 60])->get();
+        
+        return view('front.pages.competition_plan', compact('page', 'planDetails', 'consultations'));
     }
 
     public function injuryRecoveryPlan(Request $request, $userId = null, $planId = null)
@@ -1975,25 +1994,18 @@ class FrontController extends Controller
 
         $page        = Page::with('sections')->where('slug', 'injury_recovery_nutrition_plan')->first();
         $planDetails = Plan::where('name', 'Injury & Recovery Plan')->first();
+        $consultations = Consultation::whereIn('time', [30, 60])->get();
 
-        // If page doesn't exist, create a default page object
-        if (!$page) {
-            $page = (object) [
-                'id' => null,
-                'title' => 'Injury & Recovery Plan',
-                'slug' => 'injury_recovery_nutrition_plan',
-                'sections' => collect([])
-            ];
-        }
-
-        return view('front.pages.injury-recovery-plan', compact('page', 'planDetails'));
+        return view('front.pages.injury-recovery-plan', compact('page', 'planDetails', 'consultations'));
     }
 
     public function surgeryPlan(Request $request)
     {
         $page        = Page::with('sections')->where('slug', 'surgery_plan')->first();
         $planDetails = Plan::where('name', 'Injury Recovery + Post Surgery')->first();
-        return view('front.pages.surgery_plan', compact('page', 'planDetails'));
+        $consultations = Consultation::whereIn('time', [30, 60])->get();
+        
+        return view('front.pages.surgery_plan', compact('page', 'planDetails', 'consultations'));
     }
 
     public function consultations(Request $request)

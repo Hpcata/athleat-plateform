@@ -16,7 +16,9 @@ class Payment extends Model
     protected $fillable = [
         'plan_id',
         'user_id',
+        'user_plan_id',
         'price',
+        'original_price',
         'name',
         'email',
         'phone',
@@ -41,5 +43,10 @@ class Payment extends Model
     public function consultation()
     {
         return $this->belongsTo(Consultation::class);
+    }
+
+    public function userPlan()
+    {
+        return $this->belongsTo(UserPlan::class);
     }
 }

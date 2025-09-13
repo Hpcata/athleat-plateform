@@ -21,7 +21,9 @@ class Kernel extends ConsoleKernel
         $schedule->command('nutrition:alternates');
         $schedule->command('update:food-nutrition-data');
         $schedule->command('nutrition:fetch-energy');
-
+        
+        // Check recurring payments daily at 9 AM
+        $schedule->command('recurring:check-payments')->dailyAt('09:00');
     }
 
     /**
