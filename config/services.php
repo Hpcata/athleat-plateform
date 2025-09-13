@@ -34,7 +34,7 @@ return [
         'key' => env('STRIPE_KEY'),
         'secret' => env('STRIPE_SECRET'),
         'public_key' => env('STRIPE_KEY'),
-        'webhook_secret' => env('STRIPE_WEBHOOK_SECRET', 'whsec_ES8CHO1zoBNxuomYXkvlHk2NNxOov7tv'),
+        'webhook_secret' => env('STRIPE_WEBHOOK_SECRET'),
         'testing_mode' => env('STRIPE_TESTING_MODE', false),
         'subscription_interval' => env('STRIPE_SUBSCRIPTION_INTERVAL', 'minute'), // month, day, minute
         'subscription_interval_count' => env('STRIPE_SUBSCRIPTION_INTERVAL_COUNT', 1),
