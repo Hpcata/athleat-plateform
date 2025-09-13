@@ -238,7 +238,7 @@ class ConsultationController extends Controller
     /**
      * Check if user has completed the nutrition-form questionnaire
      */
-    public function checkQuestionnaireStatus()
+    public function checkQuestionnaireStatus(Request $request)
     {
         if (!Auth::check()) {
             return response()->json([
@@ -249,18 +249,30 @@ class ConsultationController extends Controller
         }
 
         $user = Auth::user();
+        $userId = $request->get('user_id', $user->id);
+        $paymentId = $request->get('payment_id');
         
         // Check if user has completed nutrition-form questionnaire
-        $questionnaireCompleted = Questionnaire::where('user_id', $user->id)
+        $questionnaireCompleted = Questionnaire::where('user_id', $userId)
             ->where('question', 'nutrition-form')
             ->exists();
+
+        // Build redirect URL with parameters
+        if ($questionnaireCompleted) {
+            $redirectUrl = route('front.profile', $userId);
+        } else {
+            $redirectUrl = route('front.pre-plan-details');
+            if ($userId && $paymentId) {
+                $redirectUrl .= "?user_id={$userId}&id={$paymentId}";
+            } elseif ($userId) {
+                $redirectUrl .= "?user_id={$userId}";
+            }
+        }
 
         return response()->json([
             'success' => true,
             'questionnaire_completed' => $questionnaireCompleted,
-            'redirect_url' => $questionnaireCompleted 
-                ? route('front.profile', $user->id) 
-                : route('front.pre-plan-details')
+            'redirect_url' => $redirectUrl
         ]);
     }
 

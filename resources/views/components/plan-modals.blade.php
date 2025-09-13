@@ -768,7 +768,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Handle calendar booking modal close - check questionnaire status and redirect
     $('#calendarBookingModalPlan').on('hidden.bs.modal', function () {
-        checkQuestionnaireStatusAndRedirect();
+        checkQuestionnaireStatusAndRedirect(currentPaymentId);
     });
 
     // Prevent page refresh when calendar booking modal is open
@@ -801,8 +801,20 @@ function preventRefreshWhenCalendarOpen(event) {
 }
 
 // Check questionnaire status and redirect accordingly (moved outside DOMContentLoaded for global access)
-function checkQuestionnaireStatusAndRedirect() {
-    fetch('{{ route("front.consultation.questionnaire.status") }}', {
+function checkQuestionnaireStatusAndRedirect(paymentId = null) {
+    const userId = '{{ Auth::user()->id ?? "" }}';
+    let url = '{{ route("front.consultation.questionnaire.status") }}';
+    
+    // Build query parameters
+    const params = new URLSearchParams();
+    if (userId) params.append('user_id', userId);
+    if (paymentId) params.append('payment_id', paymentId);
+    
+    if (params.toString()) {
+        url += '?' + params.toString();
+    }
+    
+    fetch(url, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -832,6 +844,7 @@ function checkQuestionnaireStatusAndRedirect() {
 
 // Global payment processing state
 let isPaymentProcessing = false;
+let currentPaymentId = null; // Store current payment ID for questionnaire redirect
 
 // Function to prevent page reload during payment processing
 function preventPageReload() {
@@ -1060,6 +1073,9 @@ function sendPlanRequestToBackend(paymentMethodId) {
         },
         success: function(response) {
             if (response.success) {
+                // Store payment ID for questionnaire redirect
+                currentPaymentId = response.data.payment_id;
+                
                 // Reset payment processing state
                 resetPaymentProcessingState();
                 // Hide payment modal programmatically
@@ -1136,6 +1152,9 @@ function sendFreePlanRequest() {
         success: function(response) {
             console.log('Free plan response:', response);
             if (response.success) {
+                // Store payment ID for questionnaire redirect
+                currentPaymentId = response.data.payment_id;
+                
                 // Reset payment processing state
                 resetPaymentProcessingState();
                 // Hide payment modal programmatically
@@ -1304,7 +1323,7 @@ function updateCongratsModal(planType, hasConsultation) {
             window.removeEventListener('beforeunload', preventRefreshWhenCalendarOpen);
             
             // Call the questionnaire function
-            checkQuestionnaireStatusAndRedirect();
+            checkQuestionnaireStatusAndRedirect(currentPaymentId);
         });
     }
 
