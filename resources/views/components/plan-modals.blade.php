@@ -508,7 +508,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 paymentModalPrice.textContent = `A$${originalPrice.toFixed(2)}`;
                 
                 // Reset button text
-                const isMonthlyActive = document.getElementById('monthlyPlanBtn').classList.contains('active');
+                const isMonthlyActive = document.getElementById('paymentModalPlan').getAttribute('data-is-monthly') === 'true' || 
+                                       (document.getElementById('monthlyPlanBtn') && document.getElementById('monthlyPlanBtn').classList.contains('active'));
                 if (isMonthlyActive) {
                     const monthlyPrice = paymentButton.getAttribute('data-monthly-price');
                     paymentButton.innerHTML = `Monthly | A$${monthlyPrice}/mth`;
@@ -636,7 +637,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         // Remove required attribute from card holder name for free plans
                         document.getElementById('card-holder-name').removeAttribute('required');
                     } else {
-                        const isMonthlyActive = document.getElementById('monthlyPlanBtn').classList.contains('active');
+                        const isMonthlyActive = document.getElementById('paymentModalPlan').getAttribute('data-is-monthly') === 'true' || 
+                                       (document.getElementById('monthlyPlanBtn') && document.getElementById('monthlyPlanBtn').classList.contains('active'));
                         if (isMonthlyActive) {
                             // Calculate discounted monthly price
                             const monthlyPrice = paymentButton.getAttribute('data-monthly-price');
@@ -677,7 +679,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     paymentModalPrice.textContent = `A$${resetPrice.toFixed(2)}`;
                     toggleCouponLink.textContent = "Add a Coupon Code";
                     
-                    const isMonthlyActive = document.getElementById('monthlyPlanBtn').classList.contains('active');
+                    const isMonthlyActive = document.getElementById('paymentModalPlan').getAttribute('data-is-monthly') === 'true' || 
+                                       (document.getElementById('monthlyPlanBtn') && document.getElementById('monthlyPlanBtn').classList.contains('active'));
                     if (isMonthlyActive) {
                         const monthlyPrice = paymentButton.getAttribute('data-monthly-price');
                         paymentButton.innerHTML = `Monthly | A$${monthlyPrice}/mth`;
@@ -967,7 +970,8 @@ function sendPlanRequestWithCardDetails() {
     const email = '{{ Auth::user()->email ?? "" }}';
     const couponCode = $('#promo-code-consultation').val().trim();
     const cardHolderName = $('#card-holder-name').val() || '{{ Auth::user()->name ?? "" }}';
-    const isMonthly = document.getElementById('monthlyPlanBtn').classList.contains('active');
+    const isMonthly = document.getElementById('paymentModalPlan').getAttribute('data-is-monthly') === 'true' || 
+                     (document.getElementById('monthlyPlanBtn') && document.getElementById('monthlyPlanBtn').classList.contains('active'));
     
     // Check if this is a free plan (final price is 0 or less)
     if (parseFloat(finalPrice) <= 0) {
@@ -1013,7 +1017,8 @@ function sendPlanRequestToBackend(paymentMethodId) {
     const email = '{{ Auth::user()->email ?? "" }}';
     const couponCode = $('#promo-code-consultation').val().trim();
     const cardHolderName = $('#card-holder-name').val() || '{{ Auth::user()->name ?? "" }}';
-    const isMonthly = document.getElementById('monthlyPlanBtn').classList.contains('active');
+    const isMonthly = document.getElementById('paymentModalPlan').getAttribute('data-is-monthly') === 'true' || 
+                     (document.getElementById('monthlyPlanBtn') && document.getElementById('monthlyPlanBtn').classList.contains('active'));
     
     $.ajax({
         url: '{{ route("process.plan.purchase") }}',
@@ -1052,14 +1057,16 @@ function sendPlanRequestToBackend(paymentMethodId) {
                 handlePaymentConfirmation(clientSecret, response.subscription_id);
             } else {
                 // Handle error
-                const isMonthly = document.getElementById('monthlyPlanBtn').classList.contains('active');
+                const isMonthly = document.getElementById('paymentModalPlan').getAttribute('data-is-monthly') === 'true' || 
+                     (document.getElementById('monthlyPlanBtn') && document.getElementById('monthlyPlanBtn').classList.contains('active'));
                 const finalPrice = document.getElementById('paymentModalPrice').textContent.replace(/[A$,\s]/g, '');
                 $('#paymentButton').prop('disabled', false).text(isMonthly ? 'Monthly | A$' + finalPrice + '/mth' : 'One Payment | A$' + finalPrice);
                 alert('Payment failed: ' + (response.message || 'Unknown error'));
             }
         },
         error: function(xhr) {
-            const isMonthly = document.getElementById('monthlyPlanBtn').classList.contains('active');
+            const isMonthly = document.getElementById('paymentModalPlan').getAttribute('data-is-monthly') === 'true' || 
+                     (document.getElementById('monthlyPlanBtn') && document.getElementById('monthlyPlanBtn').classList.contains('active'));
             const finalPrice = document.getElementById('paymentModalPrice').textContent.replace(/[A$,\s]/g, '');
             $('#paymentButton').prop('disabled', false).text(isMonthly ? 'Monthly | A$' + finalPrice + '/mth' : 'One Payment | A$' + finalPrice);
             const errorMessage = xhr.responseJSON?.message || 'Payment failed. Please try again.';
@@ -1077,7 +1084,8 @@ function sendFreePlanRequest() {
     const email = '{{ Auth::user()->email ?? "" }}';
     const couponCode = $('#promo-code-consultation').val().trim();
     const cardHolderName = $('#card-holder-name').val() || '{{ Auth::user()->name ?? "" }}';
-    const isMonthly = document.getElementById('monthlyPlanBtn').classList.contains('active');
+    const isMonthly = document.getElementById('paymentModalPlan').getAttribute('data-is-monthly') === 'true' || 
+                     (document.getElementById('monthlyPlanBtn') && document.getElementById('monthlyPlanBtn').classList.contains('active'));
     
     console.log('Sending free plan request:', {
         planType: planType,
@@ -1151,7 +1159,8 @@ function handlePaymentAction(clientSecret, subscriptionId) {
         }).then(function(result) {
             if (result.error) {
                 const finalPrice = document.getElementById('paymentModalPrice').textContent.replace(/[A$,\s]/g, '');
-                const isMonthly = document.getElementById('monthlyPlanBtn').classList.contains('active');
+                const isMonthly = document.getElementById('paymentModalPlan').getAttribute('data-is-monthly') === 'true' || 
+                     (document.getElementById('monthlyPlanBtn') && document.getElementById('monthlyPlanBtn').classList.contains('active'));
                 $('#paymentButton').prop('disabled', false).text(isMonthly ? 'Monthly | A$' + finalPrice + '/mth' : 'One Payment | A$' + finalPrice);
                 alert('Payment failed: ' + result.error.message);
             } else {
@@ -1193,7 +1202,8 @@ function handlePaymentConfirmation(clientSecret, subscriptionId) {
         }).then(function(result) {
             if (result.error) {
                 const finalPrice = document.getElementById('paymentModalPrice').textContent.replace(/[A$,\s]/g, '');
-                const isMonthly = document.getElementById('monthlyPlanBtn').classList.contains('active');
+                const isMonthly = document.getElementById('paymentModalPlan').getAttribute('data-is-monthly') === 'true' || 
+                     (document.getElementById('monthlyPlanBtn') && document.getElementById('monthlyPlanBtn').classList.contains('active'));
                 $('#paymentButton').prop('disabled', false).text(isMonthly ? 'Monthly | A$' + finalPrice + '/mth' : 'One Payment | A$' + finalPrice);
                 alert('Payment failed: ' + result.error.message);
             } else {
@@ -1320,7 +1330,7 @@ function updateCongratsModal(planType, hasConsultation) {
                     monthlyPrice: this.getAttribute('data-monthly-price'),
                     planName: '{{ $planDetails?->name }}',
                     planId: this.getAttribute('data-plan-id') || '{{ $planDetails?->id }}',
-                    isMonthlyActive: document.getElementById('monthlyPlanBtn').classList.contains('active')
+                    isMonthlyActive: document.getElementById('monthlyPlanBtn') ? document.getElementById('monthlyPlanBtn').classList.contains('active') : false
                 };
                 
                 // Store in sessionStorage
@@ -1422,9 +1432,24 @@ function updateCongratsModal(planType, hasConsultation) {
             isMonthlyActive = storedPlanData.isMonthlyActive;
             finalOneTimePrice = storedPlanData.price;
             finalMonthlyPrice = storedPlanData.monthlyPrice;
+            
+            // Update UI to reflect stored preference
+            const monthlyBtn = document.getElementById('monthlyPlanBtn');
+            const oneTimeBtn = document.getElementById('oneTimePlanBtn');
+            
+            if (monthlyBtn && oneTimeBtn) {
+                if (isMonthlyActive) {
+                    monthlyBtn.classList.add('active');
+                    oneTimeBtn.classList.remove('active');
+                } else {
+                    monthlyBtn.classList.remove('active');
+                    oneTimeBtn.classList.add('active');
+                }
+            }
         } else {
             // Use current UI state
-            isMonthlyActive = document.getElementById('monthlyPlanBtn').classList.contains('active');
+            const monthlyBtn = document.getElementById('monthlyPlanBtn');
+            isMonthlyActive = monthlyBtn ? monthlyBtn.classList.contains('active') : false;
         }
         
         // Close any existing modals first
@@ -1432,6 +1457,9 @@ function updateCongratsModal(planType, hasConsultation) {
         
         // Wait for existing modal to close, then show payment modal
         setTimeout(() => {
+            // Store the monthly preference in the payment modal for later use
+            document.getElementById('paymentModalPlan').setAttribute('data-is-monthly', isMonthlyActive);
+            
             // Update payment modal content based on plan type and pricing
             if (planType === 'main') {
                 document.getElementById('paymentModalTitle').textContent = '{{ $planDetails?->name }}';
@@ -1484,7 +1512,7 @@ function updateCongratsModal(planType, hasConsultation) {
             monthlyPrice: button.getAttribute('data-monthly-price'),
             planName: '{{ $planDetails?->name }}',
             planId: button.getAttribute('data-plan-id') || '{{ $planDetails?->id }}',
-            isMonthlyActive: document.getElementById('monthlyPlanBtn').classList.contains('active')
+            isMonthlyActive: document.getElementById('paymentModalPlan').getAttribute('data-is-monthly') === 'true'
         };
         
         // Store in sessionStorage
@@ -1512,6 +1540,21 @@ window.onPlanPurchaseLoginSuccess = function() {
     if (pendingPlanData) {
         try {
             const planData = JSON.parse(pendingPlanData);
+            
+            // Update UI to reflect stored preference
+            const monthlyBtn = document.getElementById('monthlyPlanBtn');
+            const oneTimeBtn = document.getElementById('oneTimePlanBtn');
+            
+            if (monthlyBtn && oneTimeBtn) {
+                if (planData.isMonthlyActive) {
+                    monthlyBtn.classList.add('active');
+                    oneTimeBtn.classList.remove('active');
+                } else {
+                    monthlyBtn.classList.remove('active');
+                    oneTimeBtn.classList.add('active');
+                }
+            }
+            
             // Find the button with the stored plan data
             const button = document.querySelector(`.plan-get-started-btn[data-plan-type="${planData.type}"]`);
             if (button) {
@@ -1580,7 +1623,20 @@ window.handlePendingPlanPurchase = function() {
                 return;
             }
             
-            // User is authenticated, check for existing plan before showing payment modal
+            // User is authenticated, update UI to reflect stored preference first
+            const monthlyBtn = document.getElementById('monthlyPlanBtn');
+            const oneTimeBtn = document.getElementById('oneTimePlanBtn');
+            
+            if (monthlyBtn && oneTimeBtn) {
+                if (planData.isMonthlyActive) {
+                    monthlyBtn.classList.add('active');
+                    oneTimeBtn.classList.remove('active');
+                } else {
+                    monthlyBtn.classList.remove('active');
+                    oneTimeBtn.classList.add('active');
+                }
+            }
+            
             // Find the button with the stored plan data
             const button = document.querySelector(`.plan-get-started-btn[data-plan-type="${planData.type}"]`);
             if (button) {
