@@ -1122,7 +1122,7 @@ class PaymentController extends Controller
 
             // Send plan purchase email notification
             try {
-                Mail::to($user->email)->send(new PlanPurchaseMail($user, $payment));
+                Mail::to($user->email)->send(new PlanPurchaseMail($user, $payment?->plan?->name));
             } catch (\Exception $e) {
                 Log::warning('Failed to send plan purchase email: ' . $e->getMessage());
             }
