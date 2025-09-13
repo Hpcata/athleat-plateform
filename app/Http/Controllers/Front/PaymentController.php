@@ -111,6 +111,7 @@ class PaymentController extends Controller
             }
 
             // Apply coupon logic
+            Log::debug('Applying coupon logic.', ['coupon_code' => $validated['coupon_code']]);
             if (! empty($validated['coupon_code'])) {
                 $coupon = Coupon::where('code', $validated['coupon_code'])
                     ->where('status', true)
@@ -120,11 +121,13 @@ class PaymentController extends Controller
                     ->first();
 
                 if ($coupon) {
+                    Log::debug('Coupon found.', ['coupon_id' => $coupon->id]);
                     $userUsageCount = CouponUsage::where('coupon_id', $coupon->id)
                         ->where('user_id', $user->id)
                         ->count();
 
                     if ($coupon->uses_per_user > 0 && $userUsageCount >= $coupon->uses_per_user) {
+                        Log::debug('User usage count is greater than or equal to coupon uses per user.', ['user_usage_count' => $userUsageCount, 'coupon_uses_per_user' => $coupon->uses_per_user]);
                         return response()->json([
                             'valid'   => false,
                             'message' => 'You have already used this coupon the maximum allowed times.',
@@ -154,6 +157,8 @@ class PaymentController extends Controller
                         $sectionElement = 'fixed_discount';
                         $couponType     = TrackingType::COUPON_APPLIED;
                     }
+
+                    Log::debug('Tracking coupon usage.', ['section_element' => $sectionElement, 'coupon_type' => $couponType]);
 
                     // 🔹 Track click
                     $click = ActivityTracker::click($sectionElement, $user->id);
@@ -275,6 +280,11 @@ class PaymentController extends Controller
 
                 $paymentIntentId = $paymentIntent->id;
                 $status          = $paymentIntent->status;
+            } else {
+                // Free plan (100% discount) - no payment required
+                Log::debug('Free plan detected - skipping payment processing.', ['final_price' => $finalPrice]);
+                $paymentIntentId = null;
+                $status = 'free_plan';
             }
 
             // Save payment record (always, regardless of discount)
@@ -759,6 +769,43 @@ class PaymentController extends Controller
                                     } elseif ($coupon->type === 'fixed') {
                                         $finalPrice = max(0, $finalPrice - $coupon->value);
                                     }
+                                    
+                                    // 🔹 Track coupon application (from processPayment)
+                                    $couponParts = explode('_', $couponCode);
+                                    $sourceSlug = $couponParts[0] ?? null;
+                                    $couponSource = null;
+                                    
+                                    if ($sourceSlug) {
+                                        $couponSource = DB::table('coupon_source')->select('id', 'name')->where('slug', $sourceSlug)->first();
+                                    }
+                                    
+                                    // Determine tracking type and section element
+                                    if ($coupon->type === 'percentage' && $coupon->value == 100.00) {
+                                        $discount = 'full';
+                                        $sectionElement = 'full_discount';
+                                        $couponType = TrackingType::FREE_PLAN_COUPON;
+                                    } elseif ($coupon->type === 'percentage') {
+                                        $discount = $discountAmount;
+                                        $sectionElement = 'percentage_discount';
+                                        $couponType = TrackingType::COUPON_APPLIED;
+                                    } elseif ($coupon->type === 'fixed') {
+                                        $discount = $coupon->value;
+                                        $sectionElement = 'fixed_discount';
+                                        $couponType = TrackingType::COUPON_APPLIED;
+                                    }
+                                    
+                                    // Track coupon click and log
+                                    $click = ActivityTracker::click($sectionElement, $user->id);
+                                    ActivityTracker::log($couponType, $user->id, [
+                                        'user_click_id' => $click->id,
+                                        'section_element_id' => $click->section_element_id,
+                                        'coupon_code' => $couponCode,
+                                        'coupon_id' => $coupon->id,
+                                        'discount' => $discount,
+                                        'plan_id' => $validated['plan_id'],
+                                        'coupon_source_id' => $couponSource->id ?? null,
+                                        'coupon_source_name' => $couponSource->name ?? null,
+                                    ]);
                                 } else {
                                     $errorMessage = 'This coupon is not applicable to the selected plan';
                                     if ($consultationId) {
@@ -881,6 +928,11 @@ class PaymentController extends Controller
 
                 $paymentIntentId = $paymentIntent->id;
                 $status = $paymentIntent->status;
+            } else {
+                // Free plan (100% discount) - no payment required
+                Log::debug('Free plan detected - skipping payment processing.', ['final_price' => $finalPrice]);
+                $paymentIntentId = null;
+                $status = 'free_plan';
             }
 
             // Determine consultation ID based on plan type
@@ -927,7 +979,19 @@ class PaymentController extends Controller
                 $coupon->increment('usage_count');
             }
 
-            // Add tracking of plan purchased
+            // Add coupon source tracking (from processPayment)
+            $couponSource = null;
+            if (isset($validated['coupon_code']) && ! empty($validated['coupon_code'])) {
+                // 🔹 Split coupon code by "_", get the source slug (e.g., FB from FB_Athlete20)
+                $couponParts = explode('_', $validated['coupon_code']);
+                $sourceSlug  = $couponParts[0] ?? null;
+
+                if ($sourceSlug) {
+                    $couponSource = DB::table('coupon_source')->select('id', 'name')->where('slug', $sourceSlug)->first();
+                }
+            }
+
+            // Add tracking of plan purchased (enhanced with coupon source info)
             $click = ActivityTracker::click('plan_subscribed', $user->id);
             ActivityTracker::log(TrackingType::PLAN_SUBSCRIBED, $user->id, [
                 'user_click_id' => $click->id,
@@ -938,6 +1002,8 @@ class PaymentController extends Controller
                 'discount' => $discount,
                 'original_price' => $validated['price'],
                 'coupon_id' => $coupon ? $coupon->id : 0,
+                'coupon_source_id' => $couponSource ? $couponSource->id : 0,
+                'coupon_source_name' => $couponSource ? $couponSource->name : null,
                 'plan_type' => $validated['plan_type'],
                 'is_monthly' => $validated['is_monthly'] ?? false
             ]);
@@ -984,50 +1050,58 @@ class PaymentController extends Controller
 
             // Handle monthly recurring payments with Stripe subscription
             if ($validated['is_monthly']) {
-                // Check if payment method is provided for monthly subscription
-                if (empty($validated['payment_method_id'])) {
-                    DB::rollBack();
-                    return response()->json([
-                        'success' => false,
-                        'message' => 'Payment method is required for monthly subscriptions.'
-                    ], 400);
-                }
-                
-                try {
-                    $subscriptionResult = $this->createStripeSubscription($userPlan, $user, $validated, $validated['payment_method_id'], $customer);
-                    
-                    // Check if subscription needs frontend confirmation or action
-                    if (isset($subscriptionResult['requires_confirmation'])) {
-                        DB::rollBack();
-                        return response()->json([
-                            'success' => false,
-                            'requires_confirmation' => true,
-                            'payment_intent_client_secret' => $subscriptionResult['client_secret'],
-                            'subscription_id' => $subscriptionResult['subscription_id'],
-                            'message' => 'Payment confirmation required for subscription.'
-                        ], 200);
-                    } elseif (isset($subscriptionResult['requires_action'])) {
-                        DB::rollBack();
-                        return response()->json([
-                            'success' => false,
-                            'requires_action' => true,
-                            'payment_intent_client_secret' => $subscriptionResult['client_secret'],
-                            'subscription_id' => $subscriptionResult['subscription_id'],
-                            'message' => 'Payment action required for subscription.'
-                        ], 200);
-                    }
-                } catch (\Exception $e) {
-                    // If subscription creation fails, rollback the entire transaction
-                    DB::rollBack();
-                    Log::error('Stripe subscription creation failed, rolling back transaction: ' . $e->getMessage(), [
-                        'user_id' => $user->id,
-                        'plan_id' => $validated['plan_id'],
-                        'payment_method_id' => $validated['payment_method_id']
+                // For free plans (100% discount), skip subscription creation
+                if ($finalPrice <= 0) {
+                    Log::debug('Free monthly plan detected - skipping subscription creation.', [
+                        'final_price' => $finalPrice,
+                        'is_monthly' => $validated['is_monthly']
                     ]);
-                    return response()->json([
-                        'success' => false,
-                        'message' => 'Failed to create recurring subscription: ' . $e->getMessage()
-                    ], 400);
+                } else {
+                    // Check if payment method is provided for paid monthly subscription
+                    if (empty($validated['payment_method_id'])) {
+                        DB::rollBack();
+                        return response()->json([
+                            'success' => false,
+                            'message' => 'Payment method is required for monthly subscriptions.'
+                        ], 400);
+                    }
+                    
+                    try {
+                        $subscriptionResult = $this->createStripeSubscription($userPlan, $user, $validated, $validated['payment_method_id'], $customer);
+                        
+                        // Check if subscription needs frontend confirmation or action
+                        if (isset($subscriptionResult['requires_confirmation'])) {
+                            DB::rollBack();
+                            return response()->json([
+                                'success' => false,
+                                'requires_confirmation' => true,
+                                'payment_intent_client_secret' => $subscriptionResult['client_secret'],
+                                'subscription_id' => $subscriptionResult['subscription_id'],
+                                'message' => 'Payment confirmation required for subscription.'
+                            ], 200);
+                        } elseif (isset($subscriptionResult['requires_action'])) {
+                            DB::rollBack();
+                            return response()->json([
+                                'success' => false,
+                                'requires_action' => true,
+                                'payment_intent_client_secret' => $subscriptionResult['client_secret'],
+                                'subscription_id' => $subscriptionResult['subscription_id'],
+                                'message' => 'Payment action required for subscription.'
+                            ], 200);
+                        }
+                    } catch (\Exception $e) {
+                        // If subscription creation fails, rollback the entire transaction
+                        DB::rollBack();
+                        Log::error('Stripe subscription creation failed, rolling back transaction: ' . $e->getMessage(), [
+                            'user_id' => $user->id,
+                            'plan_id' => $validated['plan_id'],
+                            'payment_method_id' => $validated['payment_method_id']
+                        ]);
+                        return response()->json([
+                            'success' => false,
+                            'message' => 'Failed to create recurring subscription: ' . $e->getMessage()
+                        ], 400);
+                    }
                 }
             }
 

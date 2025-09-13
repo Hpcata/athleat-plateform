@@ -808,7 +808,14 @@ function sendPlanRequestWithCardDetails() {
     const cardHolderName = $('#card-holder-name').val() || '{{ Auth::user()->name ?? "" }}';
     const isMonthly = document.getElementById('monthlyPlanBtn').classList.contains('active');
     
-    // Check if Stripe Elements are initialized
+    // Check if this is a free plan (final price is 0 or less)
+    if (parseFloat(finalPrice) <= 0) {
+        // Free plan - send request without payment method
+        sendFreePlanRequest();
+        return;
+    }
+    
+    // For paid plans, validate Stripe Elements
     if (!cardNumberElement || !cardExpiryElement || !cardCvcElement) {
         alert('Payment form is not ready. Please try again.');
         $('#paymentButton').prop('disabled', false).text(isMonthly ? 'Monthly | A$' + finalPrice + '/mth' : 'One Payment | A$' + finalPrice);
@@ -830,59 +837,135 @@ function sendPlanRequestWithCardDetails() {
             alert('Payment method error: ' + result.error.message);
         } else {
             // Payment method created successfully, send to backend
-            $.ajax({
-                url: '{{ route("process.plan.purchase") }}',
-                method: 'POST',
-                data: {
-                    plan_id: '{{ $planDetails?->id }}',
-                    plan_type: getPlanTypeFromTitle(planType),
-                    price: originalPrice,
-                    final_price: parseFloat(finalPrice),
-                    name: cardHolderName,
-                    email: email,
-                    phone: '{{ Auth::user()->phone ?? "" }}',
-                    coupon_code: couponCode,
-                    is_monthly: isMonthly,
-                    payment_method_id: result.paymentMethod.id,
-                    _token: '{{ csrf_token() }}'
-                },
-                success: function(response) {
-                    if (response.success) {
-                        // Hide payment modal programmatically
-                        isPaymentModalClosingProgrammatically = true;
-                        $('#paymentModalPlan').modal('hide');
-                        // Update congrats modal content based on plan type
-                        updateCongratsModal(response.data.plan_type, response.data.has_consultation);
-                        // Show congrats modal
-                        $('#congratsModalPlan').modal('show');
-                    } else if (response.requires_action) {
-                        // Handle 3D Secure authentication
-                        const clientSecret = response.client_secret || response.payment_intent_client_secret;
-                        handlePaymentAction(clientSecret, response.subscription_id);
-                    } else if (response.requires_confirmation) {
-                        // Handle payment confirmation
-                        const clientSecret = response.client_secret || response.payment_intent_client_secret;
-                        handlePaymentConfirmation(clientSecret, response.subscription_id);
-                    } else {
-                        // Handle error
-                        $('#paymentButton').prop('disabled', false).text(isMonthly ? 'Monthly | A$' + finalPrice + '/mth' : 'One Payment | A$' + finalPrice);
-                        alert('Payment failed: ' + (response.message || 'Unknown error'));
-                    }
-                },
-                error: function(xhr) {
-                    $('#paymentButton').prop('disabled', false).text(isMonthly ? 'Monthly | A$' + finalPrice + '/mth' : 'One Payment | A$' + finalPrice);
-                    const errorMessage = xhr.responseJSON?.message || 'Payment failed. Please try again.';
-                    alert('Payment failed: ' + errorMessage);
-                }
-        });
-    }
-});
+            sendPlanRequestToBackend(result.paymentMethod.id);
+        }
+    });
+}
+
+// Send plan request to backend (for paid plans)
+function sendPlanRequestToBackend(paymentMethodId) {
+    const planType = document.getElementById('paymentModalTitle').textContent;
+    const originalPrice = parseFloat(document.getElementById('paymentModalPrice').getAttribute('data-original-price') || '0');
+    const finalPrice = document.getElementById('paymentModalPrice').textContent.replace(/[A$,\s]/g, '');
+    const email = '{{ Auth::user()->email ?? "" }}';
+    const couponCode = $('#promo-code-consultation').val().trim();
+    const cardHolderName = $('#card-holder-name').val() || '{{ Auth::user()->name ?? "" }}';
+    const isMonthly = document.getElementById('monthlyPlanBtn').classList.contains('active');
+    
+    $.ajax({
+        url: '{{ route("process.plan.purchase") }}',
+        method: 'POST',
+        data: {
+            plan_id: '{{ $planDetails?->id }}',
+            plan_type: getPlanTypeFromTitle(planType),
+            price: originalPrice,
+            final_price: parseFloat(finalPrice),
+            name: cardHolderName,
+            email: email,
+            phone: '{{ Auth::user()->phone ?? "" }}',
+            coupon_code: couponCode,
+            is_monthly: isMonthly,
+            payment_method_id: paymentMethodId,
+            _token: '{{ csrf_token() }}'
+        },
+        success: function(response) {
+            if (response.success) {
+                // Hide payment modal programmatically
+                isPaymentModalClosingProgrammatically = true;
+                $('#paymentModalPlan').modal('hide');
+                // Update congrats modal content based on plan type
+                updateCongratsModal(response.data.plan_type, response.data.has_consultation);
+                // Show congrats modal
+                $('#congratsModalPlan').modal('show');
+            } else if (response.requires_action) {
+                // Handle 3D Secure authentication
+                const clientSecret = response.client_secret || response.payment_intent_client_secret;
+                handlePaymentAction(clientSecret, response.subscription_id);
+            } else if (response.requires_confirmation) {
+                // Handle payment confirmation
+                const clientSecret = response.client_secret || response.payment_intent_client_secret;
+                handlePaymentConfirmation(clientSecret, response.subscription_id);
+            } else {
+                // Handle error
+                const isMonthly = document.getElementById('monthlyPlanBtn').classList.contains('active');
+                const finalPrice = document.getElementById('paymentModalPrice').textContent.replace(/[A$,\s]/g, '');
+                $('#paymentButton').prop('disabled', false).text(isMonthly ? 'Monthly | A$' + finalPrice + '/mth' : 'One Payment | A$' + finalPrice);
+                alert('Payment failed: ' + (response.message || 'Unknown error'));
+            }
+        },
+        error: function(xhr) {
+            const isMonthly = document.getElementById('monthlyPlanBtn').classList.contains('active');
+            const finalPrice = document.getElementById('paymentModalPrice').textContent.replace(/[A$,\s]/g, '');
+            $('#paymentButton').prop('disabled', false).text(isMonthly ? 'Monthly | A$' + finalPrice + '/mth' : 'One Payment | A$' + finalPrice);
+            const errorMessage = xhr.responseJSON?.message || 'Payment failed. Please try again.';
+            alert('Payment failed: ' + errorMessage);
+        }
+    });
+}
+
+// Send free plan request to backend (no payment method required)
+function sendFreePlanRequest() {
+    const planType = document.getElementById('paymentModalTitle').textContent;
+    const originalPrice = parseFloat(document.getElementById('paymentModalPrice').getAttribute('data-original-price') || '0');
+    const finalPrice = document.getElementById('paymentModalPrice').textContent.replace(/[A$,\s]/g, '');
+    const email = '{{ Auth::user()->email ?? "" }}';
+    const couponCode = $('#promo-code-consultation').val().trim();
+    const cardHolderName = $('#card-holder-name').val() || '{{ Auth::user()->name ?? "" }}';
+    const isMonthly = document.getElementById('monthlyPlanBtn').classList.contains('active');
+    
+    console.log('Sending free plan request:', {
+        planType: planType,
+        originalPrice: originalPrice,
+        finalPrice: finalPrice,
+        isMonthly: isMonthly,
+        couponCode: couponCode
+    });
+    
+    $.ajax({
+        url: '{{ route("process.plan.purchase") }}',
+        method: 'POST',
+        data: {
+            plan_id: '{{ $planDetails?->id }}',
+            plan_type: getPlanTypeFromTitle(planType),
+            price: originalPrice,
+            final_price: parseFloat(finalPrice),
+            name: cardHolderName,
+            email: email,
+            phone: '{{ Auth::user()->phone ?? "" }}',
+            coupon_code: couponCode,
+            is_monthly: isMonthly,
+            payment_method_id: null, // No payment method for free plans
+            _token: '{{ csrf_token() }}'
+        },
+        success: function(response) {
+            console.log('Free plan response:', response);
+            if (response.success) {
+                // Hide payment modal programmatically
+                isPaymentModalClosingProgrammatically = true;
+                $('#paymentModalPlan').modal('hide');
+                // Update congrats modal content based on plan type
+                updateCongratsModal(response.data.plan_type, response.data.has_consultation);
+                // Show congrats modal
+                $('#congratsModalPlan').modal('show');
+            } else {
+                // Handle error
+                $('#paymentButton').prop('disabled', false).text('Get Free Plan');
+                alert('Plan purchase failed: ' + (response.message || 'Unknown error'));
+            }
+        },
+        error: function(xhr) {
+            console.error('Free plan error:', xhr);
+            $('#paymentButton').prop('disabled', false).text('Get Free Plan');
+            const errorMessage = xhr.responseJSON?.message || 'Plan purchase failed. Please try again.';
+            alert('Plan purchase failed: ' + errorMessage);
+        }
+    });
 }
 
 // Process free plan purchase (single request)
 function processFreePlanPurchase() {
-    // Free plan purchase - send request with empty payment method
-    sendPlanRequestWithCardDetails();
+    // Free plan purchase - send request without payment method
+    sendFreePlanRequest();
 }
 
 // Handle payment action (3D Secure)
