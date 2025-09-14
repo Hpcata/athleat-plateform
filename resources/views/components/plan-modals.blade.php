@@ -645,7 +645,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     
                     // If 100% discount, update button text and hide payment form
                     if (finalPrice <= 0) {
-                        paymentButton.innerHTML = 'Get Free Plan';
+                        paymentButton.innerHTML = 'Next';
                         // Hide payment form for free plan
                         document.querySelector('#paymentForm .form-wrap').classList.add('d-none');
                         // Remove required attribute from card holder name for free plans
@@ -1166,14 +1166,14 @@ function sendFreePlanRequest() {
                 $('#congratsModalPlan').modal('show');
             } else {
                 // Handle error
-                $('#paymentButton').prop('disabled', false).text('Get Free Plan');
+                $('#paymentButton').prop('disabled', false).text('Next');
                 alert('Plan purchase failed: ' + (response.message || 'Unknown error'));
                 resetPaymentProcessingState();
             }
         },
         error: function(xhr) {
             console.error('Free plan error:', xhr);
-            $('#paymentButton').prop('disabled', false).text('Get Free Plan');
+            $('#paymentButton').prop('disabled', false).text('Next');
             const errorMessage = xhr.responseJSON?.message || 'Plan purchase failed. Please try again.';
             alert('Plan purchase failed: ' + errorMessage);
             resetPaymentProcessingState();
