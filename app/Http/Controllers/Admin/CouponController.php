@@ -84,11 +84,15 @@ class CouponController extends Controller
         // Attach the plans to the coupon
         if (!empty($validated['plans'])) {
             $coupon->plans()->sync($validated['plans']); // Sync adds records to the pivot table
+        } else {
+            $coupon->plans()->sync([]);
         }
 
         // Attach the consultations to the coupon
         if (!empty($validated['consultations'])) {
             $coupon->consultations()->sync($validated['consultations']); // Sync adds records to the pivot table
+        } else {
+            $coupon->consultations()->sync([]);
         }
 
         return redirect()->route('admin.coupons.index')->with('success', 'Coupon updated successfully.');

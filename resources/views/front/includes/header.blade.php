@@ -206,7 +206,7 @@
                                 <a class="dropdown-item" href="{{ route('front.training.nutrition.plan') }}">Training Nutrition Plan</a>
                             </li>
                             <li>
-                                <a class="dropdown-item" href="{{ route('front.competition.plan') }}">Competition Plan</a>
+                                <a class="scroll-to-plans dropdown-item competition-plan-link row2">Competition Plan</a>
                             <li>
                                 <a class="dropdown-item" href="{{ route('front.injury.recovery.plan') }}">Injury & Recovery Plan</a>
                             </li>
