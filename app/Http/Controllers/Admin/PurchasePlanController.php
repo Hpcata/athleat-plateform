@@ -3165,12 +3165,16 @@ class PurchasePlanController extends Controller
                 $recurringPayment = RecurringPayment::where('user_plan_id', $payment->user_plan_id)->first();
                 
                 if ($recurringPayment) {
+                    // Calculate next payment date based on first payment and number of payments done
+                    $calculatedNextPaymentDate = $this->calculateNextPaymentDate($paymentGroup, $recurringPayment);
+                    
                     $paymentInfo['is_recurring'] = true;
                     $paymentInfo['recurring_info'] = [
                         'stripe_subscription_id' => $recurringPayment->stripe_subscription_id,
                         'total_payments' => $recurringPayment->total_payments,
                         'total_payments_expected' => $recurringPayment->total_payments_expected,
                         'next_payment_date' => $recurringPayment->next_payment_date,
+                        'calculated_next_payment_date' => $calculatedNextPaymentDate,
                         'last_payment_date' => $recurringPayment->last_payment_date,
                         'payment_status' => $recurringPayment->payment_status,
                         'canceled_at' => $recurringPayment->canceled_at,
@@ -3188,12 +3192,22 @@ class PurchasePlanController extends Controller
                     $recurringPayment = RecurringPayment::where('user_plan_id', $userPlan->id)->first();
                     
                     if ($recurringPayment) {
+                        // Get payment group for calculation
+                        $paymentGroup = Payment::where('user_plan_id', $userPlan->id)
+                            ->with(['plan', 'user'])
+                            ->orderBy('id', 'asc')
+                            ->get();
+                        
+                        // Calculate next payment date based on first payment and number of payments done
+                        $calculatedNextPaymentDate = $this->calculateNextPaymentDate($paymentGroup, $recurringPayment);
+                        
                         $paymentInfo['is_recurring'] = true;
                         $paymentInfo['recurring_info'] = [
                             'stripe_subscription_id' => $recurringPayment->stripe_subscription_id,
                             'total_payments' => $recurringPayment->total_payments,
                             'total_payments_expected' => $recurringPayment->total_payments_expected,
                             'next_payment_date' => $recurringPayment->next_payment_date,
+                            'calculated_next_payment_date' => $calculatedNextPaymentDate,
                             'last_payment_date' => $recurringPayment->last_payment_date,
                             'payment_status' => $recurringPayment->payment_status,
                             'canceled_at' => $recurringPayment->canceled_at,
@@ -3216,5 +3230,30 @@ class PurchasePlanController extends Controller
                 'message' => 'Failed to fetch payment information.'
             ], 500);
         }
+    }
+
+    /**
+     * Calculate next payment date based on first payment date and number of payments done
+     */
+    private function calculateNextPaymentDate($paymentGroup, $recurringPayment)
+    {
+        if ($paymentGroup->isEmpty()) {
+            return null;
+        }
+
+        $firstPayment = $paymentGroup->first();
+        $firstPaymentDate = $firstPayment->created_at;
+        $totalPaymentsDone = $paymentGroup->count();
+        
+        // If all payments are completed, return null (no next payment)
+        if ($totalPaymentsDone >= $recurringPayment->total_payments_expected) {
+            return null;
+        }
+        
+        // Calculate next payment date by adding months based on payments done
+        // First payment is immediate, subsequent payments are monthly
+        $nextPaymentDate = $firstPaymentDate->copy()->addMonths($totalPaymentsDone);
+        
+        return $nextPaymentDate;
     }
 }
