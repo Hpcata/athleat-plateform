@@ -424,7 +424,7 @@ class PaymentController extends Controller
         $prePlan = DB::table('user_pre_plans')
             ->select('id')
             ->where('user_id', $userId)
-            ->where('payment_id', $paymentId)
+            // ->where('payment_id', $paymentId)
             ->first();
 
         $userPrePlanId = $prePlan->id ?? null;
@@ -472,7 +472,7 @@ class PaymentController extends Controller
             // Check if user already has a pre-plan
             $prePlanId = DB::table('user_pre_plans')
                 ->where('user_id', $user_id)
-                ->where('payment_id', $payment_id)
+                // ->where('payment_id', $payment_id)
                 ->value('id');
 
             if (! $prePlanId) {
@@ -565,10 +565,10 @@ class PaymentController extends Controller
 
             DB::commit();
 
-            $payment  = Payment::with('user')->where('id', $payment_id)->first();
-            $email    = $payment->user->email;
-            $planName = Plan::where('id', $payment->plan_id)->first()->name;
-            $user     = $payment->user;
+            $user     = User::find($user_id);
+            // $payment  = Payment::with('user')->where('id', $payment_id)->first();
+            $email    = $user->email;
+            $user     = $user;
 
             if ($step == 9) {
                 $click = ActivityTracker::click('questionnaire_completed', $user->id);
@@ -703,6 +703,27 @@ class PaymentController extends Controller
                 'plan_id' => $validated['plan_id'] ?? 'not provided'
             ]);
 
+            // 🔹 SERVER-SIDE PRICE CALCULATION: Calculate the exact price user should pay
+            $plan = Plan::find($validated['plan_id']);
+            if (!$plan) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Plan not found.'
+                ], 404);
+            }
+
+            // Calculate base price based on plan type and monthly option
+            $basePrice = $this->calculateBasePrice($plan, $validated['plan_type'], $validated['is_monthly']);
+            
+            Log::debug('Server-side price calculation', [
+                'plan_id' => $plan->id,
+                'plan_name' => $plan->name,
+                'plan_type' => $validated['plan_type'],
+                'is_monthly' => $validated['is_monthly'],
+                'base_price' => $basePrice,
+                'provided_price' => $validated['price']
+            ]);
+
             // Check if user already has this plan in user_plans table
             $existingUserPlan = UserPlan::where('plan_id', $validated['plan_id'])
                 ->where('user_id', $user->id)
@@ -718,8 +739,8 @@ class PaymentController extends Controller
             $coupon = null;
             $discount = 0;
 
-            // Handle coupon validation (exactly like consultation flow)
-            $finalPrice = $validated['price'];
+            // Handle coupon validation using server-calculated base price
+            $finalPrice = $basePrice; // Use server-calculated price instead of provided price
             $couponCode = $validated['coupon_code'];
             
             if ($couponCode) {
@@ -829,6 +850,9 @@ class PaymentController extends Controller
             }
 
             Log::debug('Final price after discount.', ['final_price' => $finalPrice]);
+
+            // 🔹 PRICE VALIDATION: Verify that the provided prices match server-calculated prices
+            $this->validateCalculatedPrices($validated, $basePrice, $finalPrice, $coupon, $user, $request);
 
             // Payment method validation removed - payment method is optional
 
@@ -1521,6 +1545,124 @@ class PaymentController extends Controller
             Log::error('Failed to get or create Stripe customer: ' . $e->getMessage());
             throw $e;
         }
+    }
+
+    /**
+     * Calculate base price based on plan type and monthly option
+     */
+    private function calculateBasePrice($plan, $planType, $isMonthly)
+    {
+        $basePrice = $plan->price;
+        
+        // Apply plan type specific pricing
+        switch ($planType) {
+            case 'main':
+                // Use the plan's base price
+                break;
+            case 'powerplay':
+                // Power Play plan: plan price + 30min consultation price
+                $thirtyMinConsultation = Consultation::where('time', 30)->first();
+                if ($thirtyMinConsultation) {
+                    $basePrice = $plan->price + $thirtyMinConsultation->price;
+                }
+                break;
+            case 'gameplan':
+                // Game Plan: plan price + 60min consultation price
+                $sixtyMinConsultation = Consultation::where('time', 60)->first();
+                if ($sixtyMinConsultation) {
+                    $basePrice = $plan->price + $sixtyMinConsultation->price;
+                }
+                break;
+            default:
+                // Use the plan's base price
+                break;
+        }
+        
+        // If monthly, apply 10% markup and divide by 8 months (matching frontend logic)
+        if ($isMonthly) {
+            $months = 8;
+            $basePrice = ($basePrice * 1.1) / $months; // 10% markup, then divide by months
+        }
+        
+        return round($basePrice, 2);
+    }
+
+    /**
+     * Validate that provided prices match server-calculated prices
+     */
+    private function validateCalculatedPrices($validated, $expectedBasePrice, $expectedFinalPrice, $coupon, $user, $request)
+    {
+        // Validate base price
+        $providedBasePrice = $validated['price'];
+        $basePriceDifference = abs($expectedBasePrice - $providedBasePrice);
+        
+        Log::debug('Base price validation check', [
+            'expected_base_price' => $expectedBasePrice,
+            'provided_base_price' => $providedBasePrice,
+            'base_price_difference' => $basePriceDifference,
+            'plan_id' => $validated['plan_id'],
+            'plan_type' => $validated['plan_type'],
+            'is_monthly' => $validated['is_monthly']
+        ]);
+        
+        if ($basePriceDifference > 0.01) {
+            Log::warning('Base price validation failed - price mismatch detected', [
+                'user_id' => $user->id,
+                'plan_id' => $validated['plan_id'],
+                'expected_base_price' => $expectedBasePrice,
+                'provided_base_price' => $providedBasePrice,
+                'difference' => $basePriceDifference,
+                'ip_address' => $request->ip(),
+                'user_agent' => $request->userAgent()
+            ]);
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Price validation failed. Please refresh the page and try again.',
+                'error_code' => 'BASE_PRICE_MISMATCH'
+            ], 400);
+        }
+        
+        // Validate final price if provided
+        if (isset($validated['final_price']) && $validated['final_price'] !== null) {
+            $providedFinalPrice = $validated['final_price'];
+            $finalPriceDifference = abs($expectedFinalPrice - $providedFinalPrice);
+            
+            Log::debug('Final price validation check', [
+                'expected_final_price' => $expectedFinalPrice,
+                'provided_final_price' => $providedFinalPrice,
+                'final_price_difference' => $finalPriceDifference,
+                'coupon_applied' => $coupon ? $coupon->code : 'none',
+                'coupon_type' => $coupon ? $coupon->type : 'none',
+                'coupon_value' => $coupon ? $coupon->value : 'none'
+            ]);
+            
+            if ($finalPriceDifference > 0.01) {
+                Log::warning('Final price validation failed - price mismatch detected', [
+                    'user_id' => $user->id,
+                    'plan_id' => $validated['plan_id'],
+                    'expected_final_price' => $expectedFinalPrice,
+                    'provided_final_price' => $providedFinalPrice,
+                    'difference' => $finalPriceDifference,
+                    'coupon_code' => $validated['coupon_code'] ?? 'none',
+                    'ip_address' => $request->ip(),
+                    'user_agent' => $request->userAgent()
+                ]);
+                
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Price validation failed. Please refresh the page and try again.',
+                    'error_code' => 'FINAL_PRICE_MISMATCH'
+                ], 400);
+            }
+        }
+        
+        Log::info('Price validation passed', [
+            'user_id' => $user->id,
+            'plan_id' => $validated['plan_id'],
+            'validated_base_price' => $providedBasePrice,
+            'validated_final_price' => $validated['final_price'] ?? 'not_provided'
+        ]);
     }
 }
 

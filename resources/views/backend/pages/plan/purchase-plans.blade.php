@@ -482,6 +482,7 @@
                                             <p><strong>Remaining Payments:</strong> <span class="badge ${recurringInfo.remaining_payments > 0 ? 'bg-info' : 'bg-success'}">${recurringInfo.remaining_payments}</span></p>
                                             <p><strong>First Payment Date:</strong> ${firstPaymentDate.toLocaleDateString()}</p>
                                             <p><strong>8-Month Period Ends:</strong> ${eightMonthsLater.toLocaleDateString()}</p>
+                                            <p><strong>Next Payment Date:</strong> ${recurringInfo.calculated_next_payment_date ? new Date(recurringInfo.calculated_next_payment_date).toLocaleDateString() : 'N/A (All payments completed)'}</p>
                                         </div>
                                     </div>`;
 

@@ -276,7 +276,7 @@
                             <div class="form-group d-none" id="select-sports-id">
                                 <div class="input-group">
                                     <select name="sportstype" id="sportstype" class="sports-select">
-                                        <option>Select Sports</option>
+                                        <option selected>Select Sports</option>
                                         @foreach(getSports() as $sport)
                                             <option value="{{ $sport->id }}">{{ $sport->name }}</option>
                                         @endforeach

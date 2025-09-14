@@ -152,13 +152,15 @@
         });
 
         $('#competition-plan-link').on('click', function() {
-            window.location.href = "{{ route('front.competition.plan') }}";
+            showLearnMoreTooltip(this, 'Coming Soon')
+            // window.location.href = "{{ route('front.competition.plan') }}";
         });
         $('#injury-plan-link').on('click', function() {
             window.location.href = "{{ route('front.injury.recovery.plan') }}";
         });
         $('#surgery-plan-link').on('click', function() {
-            window.location.href = "{{ route('front.surgery.plan') }}";
+            showLearnMoreTooltip(this, 'Coming Soon')
+            // window.location.href = "{{ route('front.surgery.plan') }}";
         });
         $('#training-plan-link').on('click', function() {
             window.location.href = "{{ route('front.training.nutrition.plan') }}";
