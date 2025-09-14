@@ -620,7 +620,7 @@
                                             Unlock your peak performance with a 24-hour Competition Nutrition Plan - Ensuring you’re hydrated, fuelled & ON when it’s game time so that nutrition is never your weakness!
                                         </p>
                                     </div>
-                                    <button class="btn-signup" onclick="window.location.href='{{ route('front.competition.plan') }}'">Learn more</button>
+                                    <button class="btn-signup" onclick="showLearnMoreTooltip(this, 'Coming Soon')">Learn more</button>
                                 </div>
                             </div>
                             <div class="col-md-4">
