@@ -185,7 +185,7 @@ $intresetsmallimg1 = $intresetsmallimg2 = $intresetsmallimg3 = $intrestimg1 = $i
 
                         <span class="divider"></span>
                         <p class="mb-2 sign-in-text" style="line-height: 22px;">Signed in
-                            as<br><strong id="user-email">{{ Auth::user()->email }}</strong></p>
+                            as<br><strong id="user-email">{{ Auth::user()?->email }}</strong></p>
                         <a href="##" class="d-block mb-3 coupon-code" id="toggle-coupon-consultation">Add a Coupon
                             Code</a>
                         <!-- Coupon Code -->
@@ -454,13 +454,14 @@ $intresetsmallimg1 = $intresetsmallimg2 = $intresetsmallimg3 = $intrestimg1 = $i
             }
         });
 
+        if(document.querySelector(".chat-widget")) {
         // Chat widget interaction
-        document
+            document
             .querySelector(".chat-widget")
             .addEventListener("click", function () {
                 alert("Chat feature would open here!");
             });
-
+        }
 
     </script>
 

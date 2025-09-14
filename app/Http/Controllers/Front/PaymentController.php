@@ -567,7 +567,6 @@ class PaymentController extends Controller
 
             $payment  = Payment::with('user')->where('id', $payment_id)->first();
             $email    = $payment->user->email;
-            $planName = Plan::where('id', $payment->plan_id)->first()->name;
             $user     = $payment->user;
 
             if ($step == 9) {

@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        if (!Schema::hasTable('consultations')) {
+        if (Schema::hasTable('consultations')) {
             Schema::table('consultations', function (Blueprint $table) {
                 $table->boolean('show_on_consultation_page')->default(0)->after('time');
             });
