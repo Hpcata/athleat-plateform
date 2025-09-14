@@ -670,8 +670,16 @@ document.addEventListener('DOMContentLoaded', function() {
                                 console.error('Monthly price is NaN, using fallback');
                                 paymentButton.innerHTML = `Monthly | A$${monthlyPrice}/mth`;
                             } else {
-                                const monthlyDiscountAmount = (originalMonthlyPrice * discount) / 100;
-                                const discountedMonthlyPrice = originalMonthlyPrice - monthlyDiscountAmount;
+                                let discountedMonthlyPrice;
+                                
+                                if (data.type === 'percentage') {
+                                    const monthlyDiscountAmount = (originalMonthlyPrice * discount) / 100;
+                                    discountedMonthlyPrice = originalMonthlyPrice - monthlyDiscountAmount;
+                                } else if (data.type === 'fixed') {
+                                    discountedMonthlyPrice = Math.max(0, originalMonthlyPrice - discount);
+                                } else {
+                                    discountedMonthlyPrice = originalMonthlyPrice;
+                                }
                                 
                                 paymentButton.innerHTML = `Monthly | A$${discountedMonthlyPrice.toFixed(2)}/mth`;
                             }
