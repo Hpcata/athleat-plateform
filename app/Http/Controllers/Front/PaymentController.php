@@ -424,7 +424,7 @@ class PaymentController extends Controller
         $prePlan = DB::table('user_pre_plans')
             ->select('id')
             ->where('user_id', $userId)
-            ->where('payment_id', $paymentId)
+            // ->where('payment_id', $paymentId)
             ->first();
 
         $userPrePlanId = $prePlan->id ?? null;
@@ -472,7 +472,7 @@ class PaymentController extends Controller
             // Check if user already has a pre-plan
             $prePlanId = DB::table('user_pre_plans')
                 ->where('user_id', $user_id)
-                ->where('payment_id', $payment_id)
+                // ->where('payment_id', $payment_id)
                 ->value('id');
 
             if (! $prePlanId) {
@@ -565,9 +565,10 @@ class PaymentController extends Controller
 
             DB::commit();
 
-            $payment  = Payment::with('user')->where('id', $payment_id)->first();
-            $email    = $payment->user->email;
-            $user     = $payment->user;
+            $user     = User::find($user_id);
+            // $payment  = Payment::with('user')->where('id', $payment_id)->first();
+            $email    = $user->email;
+            $user     = $user;
 
             if ($step == 9) {
                 $click = ActivityTracker::click('questionnaire_completed', $user->id);
