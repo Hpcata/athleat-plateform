@@ -20,7 +20,7 @@
                             <!-- singup/login  -->
                             <img src="{{ frontAssets('images/athleat_logo_full_colour.svg') }}" alt="ATHLEAT Fuel Logo"
                                 width="168" height="19" style="margin-bottom: 47px;" />
-                            <h2 class="welcome-title">Welcome to ATHLEAT</h2>
+                            <h2 class="welcome-title">Welcome Back</h2>
                         </div>
                         <!-- or -->
                         <div class='quiz-h2-title d-none'>
