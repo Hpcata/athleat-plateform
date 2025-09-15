@@ -642,7 +642,8 @@ class PaymentController extends Controller
             ->first();
 
         try {
-            Mail::to($user->email)->send(new PlanPurchaseMail($user, $plan->name));
+            $profileLandingPage = route('front.profile', $user->id);
+            Mail::to($user->email)->send(new PlanPurchaseMail($user, $plan->name, $profileLandingPage));
             Mail::to(config('constants.admin_email'))->send(new PrePlanDetailsSubmitMail($user, $plan->name));
 
             return response()->json([
@@ -1090,13 +1091,6 @@ class PaymentController extends Controller
                     'user_id' => $user->id,
                     'consultation_id' => $consultationId
                 ]);
-            }
-
-            // Send plan purchase email notification
-            try {
-                Mail::to($user->email)->send(new PlanPurchaseMail($user, $payment?->plan?->name));
-            } catch (\Exception $e) {
-                Log::warning('Failed to send plan purchase email: ' . $e->getMessage());
             }
 
             DB::commit();
