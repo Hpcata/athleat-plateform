@@ -78,9 +78,9 @@
                                     <a href="javascript:void(0);" class="btn btn-sm btn-outline-primary user-pre-plan-details m-1" data-payment-id="{{ $payment->id }}" ><i class="icofont-eye text-primary"></i></a>
                                     <a href="javascript:void(0);" class="btn btn-sm btn-outline-info payment-info-btn m-1" data-payment-id="{{ $payment->id }}" title="Payment Information"><i class="icofont-info-circle text-info"></i></a>
                                     @if($isPlanCreated)
-                                    <a href="{{ route('admin.purchase-plans.edit', ['user' => $payment->user_id,'plan' => $payment->id]) }}" class="btn btn-sm btn-outline-success m-1"><i class="icofont-edit text-success"></i></a>
+                                        <a href="{{ route('admin.purchase-plans.edit', ['user' => $payment->user_id,'plan' => $payment->id]) }}" class="btn btn-sm btn-outline-success m-1"><i class="icofont-edit text-success"></i></a>
                                     @else
-                                    <a href="{{ route('admin.purchase-plans.create', $payment->id) }}" class="btn btn-sm btn-outline-success m-1"><i class="icofont-plus text-success"></i></a>
+                                        <a href="{{ route('admin.purchase-plans.create', $payment->id) }}" class="btn btn-sm btn-outline-success m-1"><i class="icofont-plus text-success"></i></a>
                                     @endif
                                 </td> 
                             </tr>

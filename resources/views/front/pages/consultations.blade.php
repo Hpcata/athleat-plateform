@@ -259,14 +259,6 @@ $intresetsmallimg1 = $intresetsmallimg2 = $intresetsmallimg3 = $intrestimg1 = $i
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content" style="border-radius: 12px;">
                 <div id="congratsContentConsultation">
-                    <!-- Remove close button to prevent manual closing -->
-                    <!-- <button type="button" class="btn-close congrats-modal" data-bs-dismiss="modal"
-                            aria-label="Close"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12"
-                                viewBox="0 0 12 12" fill="none">
-                                <path
-                                    d="M0.219668 1.28033C-0.0732225 0.987438 -0.0732225 0.512558 0.219668 0.219668C0.512558 -0.0732225 0.987438 -0.0732225 1.28033 0.219668L5.999 4.9384L10.7176 0.219798C11.0105 -0.0730923 11.4854 -0.0730923 11.7782 0.219798C12.0711 0.512688 12.0711 0.987568 11.7782 1.28046L7.0597 5.999L11.7782 10.7176C12.0711 11.0105 12.0711 11.4854 11.7782 11.7782C11.4854 12.0711 11.0105 12.0711 10.7176 11.7782L5.999 7.0597L1.28033 11.7784C0.987438 12.0713 0.512558 12.0713 0.219668 11.7784C-0.0732225 11.4855 -0.0732225 11.0106 0.219668 10.7177L4.9384 5.999L0.219668 1.28033Z"
-                                    fill="#626262" />
-                            </svg></button> -->
                     <img src="{{ frontAssets('images/consultation/congrats-modal-img.png') }}" alt="Congrats"
                         class="rounded-top w-100">
                     <div class="p-4 text-center modal-body">
@@ -285,6 +277,7 @@ $intresetsmallimg1 = $intresetsmallimg2 = $intresetsmallimg3 = $intrestimg1 = $i
                         <p class="congrats-para">
                             Lets book in a time
                         </p>
+                        <input type="hidden" id="payment-id" name="payment_id">
                         <button type="button" class="w-100 btn btn-signup" id="book-time-btn">Book a Time</button>
                     </div>
                 </div>
@@ -303,6 +296,7 @@ $intresetsmallimg1 = $intresetsmallimg2 = $intresetsmallimg3 = $intrestimg1 = $i
                 </div>
                 <div class="modal-body p-0">
                     <div class="calendar-container" style="height: 600px;">
+                        <input type="hidden" id="payment-id" name="payment_id">
                         <!-- Google Calendar Appointment Scheduling begin -->
                         <iframe id="calendar-iframe" src="" style="border: 0" width="100%" height="600"
                             frameborder="0"></iframe>
@@ -885,7 +879,7 @@ $intresetsmallimg1 = $intresetsmallimg2 = $intresetsmallimg3 = $intrestimg1 = $i
                     document.getElementById("toggle-coupon-consultation").textContent = "Add a Coupon Code";
                     payButton.innerHTML = `Pay | $<span id="pay-button-price">${originalPrice}</span>`;
                     payButton.disabled = false;
-                    
+
                     // Ensure payment form is visible for invalid coupons
                     document.querySelector('#consultation-payment-form .form-wrap').classList.remove('d-none');
                 }
@@ -894,7 +888,7 @@ $intresetsmallimg1 = $intresetsmallimg2 = $intresetsmallimg3 = $intrestimg1 = $i
                 console.error('Error:', error);
                 promoMessage.textContent = error.message || "Something went wrong. Please try again.";
                 promoMessage.className = "form-text text-danger";
-                
+
                 // Reset values on error - DO NOT calculate amount
                 discountField.value = "";
                 document.getElementById("consultation-final-price").value = originalPrice;
@@ -903,7 +897,7 @@ $intresetsmallimg1 = $intresetsmallimg2 = $intresetsmallimg3 = $intrestimg1 = $i
                 document.getElementById("toggle-coupon-consultation").textContent = "Add a Coupon Code";
                 payButton.innerHTML = `Pay | $<span id="pay-button-price">${originalPrice}</span>`;
                 payButton.disabled = false;
-                
+
                 // Ensure payment form is visible on error
                 document.querySelector('#consultation-payment-form .form-wrap').classList.remove('d-none');
             })
@@ -1197,7 +1191,7 @@ $intresetsmallimg1 = $intresetsmallimg2 = $intresetsmallimg3 = $intrestimg1 = $i
                 if (!isAuthenticated) {
                     // Close any existing modals first
                     $('.modal').modal('hide');
-                    
+
                     // Wait for existing modal to close, then show signup modal
                     setTimeout(() => {
                         // Initialize signup modal content before showing
@@ -1302,7 +1296,7 @@ $intresetsmallimg1 = $intresetsmallimg2 = $intresetsmallimg3 = $intrestimg1 = $i
 
                 // Get consultation time from stored data
                 const consultationTime = window.currentConsultationTime || 30; // Default to 30 if not set
-
+                const paymentId = $("#congratsModalConsultation #payment-id").val();
                 // Set the appropriate calendar URL based on consultation time
                 const calendarIframe = document.getElementById('calendar-iframe');
                 if (consultationTime === 30) {
@@ -1315,6 +1309,9 @@ $intresetsmallimg1 = $intresetsmallimg2 = $intresetsmallimg3 = $intrestimg1 = $i
 
                 // Hide congrats modal
                 $('#congratsModalConsultation').modal('hide');
+
+                // set payment id
+                $("#calendarBookingModal #payment-id").val(paymentId);
 
                 // Show calendar booking modal
                 $('#calendarBookingModal').modal('show');
@@ -1346,7 +1343,8 @@ $intresetsmallimg1 = $intresetsmallimg2 = $intresetsmallimg3 = $intrestimg1 = $i
 
             // Handle calendar booking modal close - check questionnaire status and redirect
             $('#calendarBookingModal').on('hidden.bs.modal', function () {
-                checkQuestionnaireStatusAndRedirect();
+                const paymentId = $("#calendarBookingModal #payment-id").val();
+                checkQuestionnaireStatusAndRedirect(paymentId);
             });
 
             // Prevent page refresh when calendar booking modal is open
@@ -1562,7 +1560,7 @@ $intresetsmallimg1 = $intresetsmallimg2 = $intresetsmallimg3 = $intrestimg1 = $i
                     return false;
                 }
             });
-            
+
             // Prevent modal close via ESC key
             $(document).off('keydown.consultationModal').on('keydown.consultationModal', function(e) {
                 if (isConsultationPaymentProcessing && e.keyCode === 27) { // ESC key
@@ -1571,7 +1569,7 @@ $intresetsmallimg1 = $intresetsmallimg2 = $intresetsmallimg3 = $intrestimg1 = $i
                     return false;
                 }
             });
-            
+
             // Prevent modal close via backdrop click - use Bootstrap's backdrop event
             $('#paymentModal').off('click.dismiss.bs.modal').on('click.dismiss.bs.modal', function(e) {
                 if (isConsultationPaymentProcessing && e.target === this) {
@@ -1580,7 +1578,7 @@ $intresetsmallimg1 = $intresetsmallimg2 = $intresetsmallimg3 = $intrestimg1 = $i
                     return false;
                 }
             });
-            
+
             // Additional backdrop click prevention
             $('#paymentModal').off('click.consultationModal').on('click.consultationModal', function(e) {
                 if (isConsultationPaymentProcessing && e.target === this) {
@@ -1589,7 +1587,7 @@ $intresetsmallimg1 = $intresetsmallimg2 = $intresetsmallimg3 = $intrestimg1 = $i
                     return false;
                 }
             });
-            
+
             // Disable close button during payment processing
             $('#paymentModal .btn-close, #paymentModal .close').off('click.consultationModal').on('click.consultationModal', function(e) {
                 if (isConsultationPaymentProcessing) {
@@ -1598,12 +1596,12 @@ $intresetsmallimg1 = $intresetsmallimg2 = $intresetsmallimg3 = $intrestimg1 = $i
                     return false;
                 }
             });
-            
+
             // Set modal data attributes to prevent backdrop dismissal
             if (isConsultationPaymentProcessing) {
                 $('#paymentModal').attr('data-bs-backdrop', 'static');
                 $('#paymentModal').attr('data-bs-keyboard', 'false');
-                
+
                 // Also update the modal instance configuration if it exists
                 const modalElement = document.getElementById('paymentModal');
                 if (modalElement && bootstrap.Modal.getInstance(modalElement)) {
@@ -1612,7 +1610,7 @@ $intresetsmallimg1 = $intresetsmallimg2 = $intresetsmallimg3 = $intrestimg1 = $i
                     modalInstance._config.keyboard = false;
                 }
             }
-            
+
             // Add visual indicators that modal cannot be closed
             if (isConsultationPaymentProcessing) {
                 $('#paymentModal').addClass('payment-processing');
@@ -1634,18 +1632,18 @@ $intresetsmallimg1 = $intresetsmallimg2 = $intresetsmallimg3 = $intrestimg1 = $i
         function resetConsultationPaymentProcessingState() {
             isConsultationPaymentProcessing = false;
             window.removeEventListener('beforeunload', handleConsultationBeforeUnload);
-            
+
             // Remove all modal close prevention event listeners
             $('#paymentModal').off('hide.bs.modal');
             $(document).off('keydown.consultationModal');
             $('#paymentModal').off('click.dismiss.bs.modal');
             $('#paymentModal').off('click.consultationModal');
             $('#paymentModal .btn-close, #paymentModal .close').off('click.consultationModal');
-            
+
             // Restore modal data attributes
             $('#paymentModal').attr('data-bs-backdrop', 'true');
             $('#paymentModal').attr('data-bs-keyboard', 'true');
-            
+
             // Also restore the modal instance configuration if it exists
             const modalElement = document.getElementById('paymentModal');
             if (modalElement && bootstrap.Modal.getInstance(modalElement)) {
@@ -1653,7 +1651,7 @@ $intresetsmallimg1 = $intresetsmallimg2 = $intresetsmallimg3 = $intrestimg1 = $i
                 modalInstance._config.backdrop = true;
                 modalInstance._config.keyboard = true;
             }
-            
+
             // Remove visual indicators
             $('#paymentModal').removeClass('payment-processing');
             $('#paymentModal .btn-close, #paymentModal .close').removeClass('disabled').css('opacity', '1');
@@ -1709,7 +1707,7 @@ $intresetsmallimg1 = $intresetsmallimg2 = $intresetsmallimg3 = $intrestimg1 = $i
                 } else {
                     // Payment method created successfully
                     paymentMethodId = result.paymentMethod.id;
-
+                    $('#payment-method-id').val(paymentMethodId);
                     // Send payment to server
                     sendConsultationRequest();
                 }
@@ -1728,9 +1726,13 @@ $intresetsmallimg1 = $intresetsmallimg2 = $intresetsmallimg3 = $intrestimg1 = $i
         }
 
         // Check questionnaire status and redirect accordingly
-        function checkQuestionnaireStatusAndRedirect() {
+        function checkQuestionnaireStatusAndRedirect(paymentId = null) {
             fetch('{{ route("front.consultation.questionnaire.status") }}', {
-                method: 'GET',
+                method: 'POST',
+                body: JSON.stringify({
+                    payment_id: paymentId || null,
+                    user_id: '{{ Auth::user()->id ?? "" }}' || null
+                }),
                 headers: {
                     'Content-Type': 'application/json',
                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
@@ -1760,6 +1762,7 @@ $intresetsmallimg1 = $intresetsmallimg2 = $intresetsmallimg3 = $intrestimg1 = $i
             const email = $('#user-email').text();
             const couponCode = $('#promo-code-consultation').val().trim();
             const cardHolderName = $('#card-holder-name').val() || '{{ Auth::user()->name ?? "" }}';
+            const paymentMethodId = $('#payment-method-id').val();
 
             $.ajax({
                 url: '{{ route("front.consultation.book") }}',
@@ -1782,6 +1785,7 @@ $intresetsmallimg1 = $intresetsmallimg2 = $intresetsmallimg3 = $intrestimg1 = $i
                         $('#paymentModal').modal('hide');
                         // Show congrats modal
                         $('#congratsModalConsultation').modal('show');
+                        $("#congratsModalConsultation #payment-id").val(response.payment_id);
                     } else if (response.requires_action) {
                         // Handle 3D Secure authentication
                         stripe.handleCardAction(response.payment_intent_client_secret).then(function (result) {
@@ -1794,6 +1798,7 @@ $intresetsmallimg1 = $intresetsmallimg2 = $intresetsmallimg3 = $intrestimg1 = $i
                                 resetConsultationPaymentProcessingState();
                                 $('#paymentModal').modal('hide');
                                 $('#congratsModalConsultation').modal('show');
+                                $("#congratsModalConsultation #payment-id").val(response.payment_id);
                             }
                         });
                     } else {

@@ -193,7 +193,7 @@ class PaymentController extends Controller
                 Log::debug('Creating Stripe payment intent.', ['amount' => $finalPrice * 100]);
 
                 $paymentMethodId = null;
-                
+
                 // Create Stripe customer with payment method if provided
                 $customer = $this->getOrCreateStripeCustomer($user, $validated['payment_method_id'] ?? null);
                 Log::info('Stripe customer created/retrieved with payment method', [
@@ -201,13 +201,13 @@ class PaymentController extends Controller
                     'user_id' => $user->id,
                     'payment_method_id' => $validated['payment_method_id'] ?? null
                 ]);
-                
+
                 // Create payment method if provided
                 if (!empty($validated['payment_method_id'])) {
                     try {
                         // Retrieve the existing payment method from Stripe
                         $paymentMethod = \Stripe\PaymentMethod::retrieve($validated['payment_method_id']);
-                        
+
                         // Attach payment method to customer if not already attached
                         if (!$paymentMethod->customer) {
                             $paymentMethod->attach(['customer' => $customer->id]);
@@ -215,14 +215,14 @@ class PaymentController extends Controller
                             // Payment method is attached to different customer
                             throw new \Exception('Payment method is already attached to another customer.');
                         }
-                        
+
                         $paymentMethodId = $paymentMethod->id;
-                        
+
                         Log::debug('Payment method retrieved and attached to customer', [
                             'payment_method_id' => $paymentMethodId,
                             'customer_id' => $customer->id
                         ]);
-                        
+
                     } catch (\Exception $e) {
                         Log::error('Failed to handle payment method: ' . $e->getMessage());
                         DB::rollBack();
@@ -273,7 +273,7 @@ class PaymentController extends Controller
                 } elseif ($paymentIntent->status !== 'succeeded') {
                     DB::rollBack();
                     return response()->json([
-                        'success' => false, 
+                        'success' => false,
                         'message' => 'Payment failed with status: ' . $paymentIntent->status
                     ], 400);
                 }
@@ -386,32 +386,32 @@ class PaymentController extends Controller
         // Handle Stripe redirect parameters
         $paymentIntentId = $request->get('payment_intent');
         $paymentIntentClientSecret = $request->get('payment_intent_client_secret');
-        
+
         Log::info('Payment success page accessed', [
             'payment_intent_id' => $paymentIntentId,
             'payment_intent_client_secret' => $paymentIntentClientSecret,
             'user_id' => Auth::id()
         ]);
-        
+
         // If we have payment intent details, we could verify the payment status
         if ($paymentIntentId) {
             try {
                 Stripe::setApiKey(config('services.stripe.secret'));
                 $paymentIntent = \Stripe\PaymentIntent::retrieve($paymentIntentId);
-                
+
                 Log::info('Payment intent verified', [
                     'payment_intent_id' => $paymentIntentId,
                     'status' => $paymentIntent->status,
                     'amount' => $paymentIntent->amount
                 ]);
-                
+
                 // You could add additional logic here to update user status, send emails, etc.
-                
+
             } catch (\Exception $e) {
                 Log::error('Failed to verify payment intent: ' . $e->getMessage());
             }
         }
-        
+
         return view('payment.success');
     }
 
@@ -424,7 +424,7 @@ class PaymentController extends Controller
         $prePlan = DB::table('user_pre_plans')
             ->select('id')
             ->where('user_id', $userId)
-            // ->where('payment_id', $paymentId)
+            ->where('payment_id', $paymentId)
             ->first();
 
         $userPrePlanId = $prePlan->id ?? null;
@@ -472,7 +472,7 @@ class PaymentController extends Controller
             // Check if user already has a pre-plan
             $prePlanId = DB::table('user_pre_plans')
                 ->where('user_id', $user_id)
-                // ->where('payment_id', $payment_id)
+                ->where('payment_id', $payment_id)
                 ->value('id');
 
             if (! $prePlanId) {
@@ -567,8 +567,6 @@ class PaymentController extends Controller
 
             $user     = User::find($user_id);
             // $payment  = Payment::with('user')->where('id', $payment_id)->first();
-            $email    = $user->email;
-            $user     = $user;
 
             if ($step == 9) {
                 $click = ActivityTracker::click('questionnaire_completed', $user->id);
@@ -613,7 +611,7 @@ class PaymentController extends Controller
                 'success'      => true,
                 'message'      => 'Step data saved successfully!',
                 'user_id'      => $user->id,
-                'redirect_url' => $step == 9 ? route('front.profile', $user->id) : null,
+                'redirect_url' => $step == 9 ? route('front.profile', ['id' => $user->id, 'payment_id' => $payment_id]) : null,
             ]);
 
         } catch (\Exception $e) {
@@ -678,7 +676,7 @@ class PaymentController extends Controller
         // Define validation rules
         $rules = [
             'plan_id' => 'required|integer|exists:plans,id',
-            'plan_type' => 'required|string|in:main,powerplay,gameplan',
+            'plan_type' => 'required|string|in:main, powerplay, gameplan',
             'price' => 'required|numeric|min:0',
             'final_price' => 'nullable|numeric|min:0',
             'name' => 'required|string|max:255',
@@ -690,19 +688,13 @@ class PaymentController extends Controller
         ];
 
         $validated = $request->validate($rules);
-        
+
         // Convert is_monthly to proper boolean
         $validated['is_monthly'] = filter_var($validated['is_monthly'], FILTER_VALIDATE_BOOLEAN);
 
         DB::beginTransaction();
 
         try {
-            Log::debug('Plan purchase payment flow started.', [
-                'request' => $request->all(),
-                'plan_type' => $validated['plan_type'] ?? 'not provided',
-                'plan_id' => $validated['plan_id'] ?? 'not provided'
-            ]);
-
             // 🔹 SERVER-SIDE PRICE CALCULATION: Calculate the exact price user should pay
             $plan = Plan::find($validated['plan_id']);
             if (!$plan) {
@@ -714,15 +706,6 @@ class PaymentController extends Controller
 
             // Calculate base price based on plan type and monthly option
             $basePrice = $this->calculateBasePrice($plan, $validated['plan_type'], $validated['is_monthly']);
-            
-            Log::debug('Server-side price calculation', [
-                'plan_id' => $plan->id,
-                'plan_name' => $plan->name,
-                'plan_type' => $validated['plan_type'],
-                'is_monthly' => $validated['is_monthly'],
-                'base_price' => $basePrice,
-                'provided_price' => $validated['price']
-            ]);
 
             // Check if user already has this plan in user_plans table
             $existingUserPlan = UserPlan::where('plan_id', $validated['plan_id'])
@@ -742,15 +725,15 @@ class PaymentController extends Controller
             // Handle coupon validation using server-calculated base price
             $finalPrice = $basePrice; // Use server-calculated price instead of provided price
             $couponCode = $validated['coupon_code'];
-            
+
             if ($couponCode) {
                 $coupon = Coupon::where('code', $couponCode)
                     ->where('status', 1)
                     ->first();
-                    
+
                 if ($coupon) {
                     $currentDateTime = \Carbon\Carbon::now();
-                    
+
                     // Check if coupon is valid
                     if ($currentDateTime->gte($coupon->start_date) && $currentDateTime->lte($coupon->end_date)) {
                         // Check usage limits
@@ -759,7 +742,7 @@ class PaymentController extends Controller
                             $userUsageCount = CouponUsage::where('coupon_id', $coupon->id)
                                 ->where('user_id', $user->id)
                                 ->count();
-                                
+
                             if ($coupon->uses_per_user == 0 || $userUsageCount < $coupon->uses_per_user) {
                                 // Determine consultation ID based on plan type for coupon validation
                                 $consultationId = null;
@@ -770,18 +753,18 @@ class PaymentController extends Controller
                                     $consultation = Consultation::where('time', 60)->first();
                                     $consultationId = $consultation ? $consultation->id : null;
                                 }
-                                
+
                                 // Check if coupon is applicable to plan or consultation
                                 $isApplicableToPlan = $coupon->plans()->where('plans.id', $validated['plan_id'])->exists();
                                 $isApplicableToConsultation = false;
-                                
+
                                 if ($consultationId) {
                                     $isApplicableToConsultation = $coupon->consultations()->where('consultations.id', $consultationId)->exists();
                                 }
-                                
+
                                 // Coupon must be applicable to either the plan OR the consultation
                                 $isApplicable = $isApplicableToPlan || $isApplicableToConsultation;
-                                
+
                                 if ($isApplicable) {
                                     // Apply discount
                                     if ($coupon->type === 'percentage') {
@@ -790,16 +773,16 @@ class PaymentController extends Controller
                                     } elseif ($coupon->type === 'fixed') {
                                         $finalPrice = max(0, $finalPrice - $coupon->value);
                                     }
-                                    
+
                                     // 🔹 Track coupon application (from processPayment)
                                     $couponParts = explode('_', $couponCode);
                                     $sourceSlug = $couponParts[0] ?? null;
                                     $couponSource = null;
-                                    
+
                                     if ($sourceSlug) {
                                         $couponSource = DB::table('coupon_source')->select('id', 'name')->where('slug', $sourceSlug)->first();
                                     }
-                                    
+
                                     // Determine tracking type and section element
                                     if ($coupon->type === 'percentage' && $coupon->value == 100.00) {
                                         $discount = 'full';
@@ -814,7 +797,7 @@ class PaymentController extends Controller
                                         $sectionElement = 'fixed_discount';
                                         $couponType = TrackingType::COUPON_APPLIED;
                                     }
-                                    
+
                                     // Track coupon click and log
                                     $click = ActivityTracker::click($sectionElement, $user->id);
                                     ActivityTracker::log($couponType, $user->id, [
@@ -849,8 +832,6 @@ class PaymentController extends Controller
                 }
             }
 
-            Log::debug('Final price after discount.', ['final_price' => $finalPrice]);
-
             // 🔹 PRICE VALIDATION: Verify that the provided prices match server-calculated prices
             $this->validateCalculatedPrices($validated, $basePrice, $finalPrice, $coupon, $user, $request);
 
@@ -861,24 +842,18 @@ class PaymentController extends Controller
 
             // If payment is required, create Stripe payment intent
             if ($finalPrice > 0) {
-                Log::debug('Creating Stripe payment intent.', ['amount' => $finalPrice * 100]);
 
                 $paymentMethodId = null;
-                
+
                 // Create Stripe customer with payment method if provided
                 $customer = $this->getOrCreateStripeCustomer($user, $validated['payment_method_id'] ?? null);
-                Log::info('Stripe customer created/retrieved with payment method', [
-                    'customer_id' => $customer->id,
-                    'user_id' => $user->id,
-                    'payment_method_id' => $validated['payment_method_id'] ?? null
-                ]);
-                
+
                 // Create payment method if provided
                 if (!empty($validated['payment_method_id'])) {
                     try {
                         // Retrieve the existing payment method from Stripe
                         $paymentMethod = \Stripe\PaymentMethod::retrieve($validated['payment_method_id']);
-                        
+
                         // Attach payment method to customer if not already attached
                         if (!$paymentMethod->customer) {
                             $paymentMethod->attach(['customer' => $customer->id]);
@@ -886,14 +861,9 @@ class PaymentController extends Controller
                             // Payment method is attached to different customer
                             throw new \Exception('Payment method is already attached to another customer.');
                         }
-                        
+
                         $paymentMethodId = $paymentMethod->id;
-                        
-                        Log::debug('Payment method retrieved and attached to customer', [
-                            'payment_method_id' => $paymentMethodId,
-                            'customer_id' => $customer->id
-                        ]);
-                        
+
                     } catch (\Exception $e) {
                         Log::error('Failed to handle payment method: ' . $e->getMessage());
                         DB::rollBack();
@@ -922,11 +892,6 @@ class PaymentController extends Controller
 
                 $paymentIntent = PaymentIntent::create($paymentIntentData);
 
-                Log::debug('Stripe PaymentIntent created.', [
-                    'status' => $paymentIntent->status,
-                    'has_payment_method' => !empty($paymentMethodId)
-                ]);
-
                 // Handle different PaymentIntent statuses
                 if ($paymentIntent->status === 'requires_action' && $paymentIntent->next_action->type === 'use_stripe_sdk') {
                     DB::rollBack();
@@ -945,7 +910,7 @@ class PaymentController extends Controller
                 } elseif ($paymentIntent->status !== 'succeeded') {
                     DB::rollBack();
                     return response()->json([
-                        'success' => false, 
+                        'success' => false,
                         'message' => 'Payment failed with status: ' . $paymentIntent->status
                     ], 400);
                 }
@@ -954,25 +919,19 @@ class PaymentController extends Controller
                 $status = $paymentIntent->status;
             } else {
                 // Free plan (100% discount) - no payment required
-                Log::debug('Free plan detected - skipping payment processing.', ['final_price' => $finalPrice]);
                 $paymentIntentId = null;
                 $status = 'free_plan';
             }
 
             // Determine consultation ID based on plan type
             $consultationId = null;
-            Log::debug('Plan type: ' . $validated['plan_type']);
-            
+
             if ($validated['plan_type'] === 'powerplay') {
                 $consultation = Consultation::where('time', 30)->first();
-                Log::debug('Power Play - Looking for 30min consultation', ['consultation' => $consultation]);
                 $consultationId = $consultation ? $consultation->id : null;
-                Log::debug('Power Play - Consultation ID: ' . $consultationId);
             } elseif ($validated['plan_type'] === 'gameplan') {
                 $consultation = Consultation::where('time', 60)->first();
-                Log::debug('Game Plan - Looking for 60min consultation', ['consultation' => $consultation]);
                 $consultationId = $consultation ? $consultation->id : null;
-                Log::debug('Game Plan - Consultation ID: ' . $consultationId);
             }
 
             // Create payment record (user_plan_id will be updated after UserPlan creation)
@@ -999,7 +958,7 @@ class PaymentController extends Controller
                     'payment_id' => $payment->id,
                     'discount_amount' => $validated['price'] - $finalPrice
                 ]);
-                
+
                 // Update coupon usage count
                 $coupon->increment('usage_count');
             }
@@ -1044,12 +1003,6 @@ class PaymentController extends Controller
                 ->where('is_complete', 1)
                 ->exists();
 
-            Log::debug('User questionnaire status', [
-                'user_id' => $user->id,
-                'has_completed' => $hasCompletedQuestionnaire,
-                'plan_id' => $validated['plan_id']
-            ]);
-
             if ($hasCompletedQuestionnaire) {
                 $userPlan = UserPlan::updateOrCreate(
                     ['user_id' => $user->id, 'plan_id' => $validated['plan_id']],
@@ -1059,7 +1012,6 @@ class PaymentController extends Controller
                         'updated_at' => now(),
                     ]
                 );
-                Log::debug('UserPlan created/updated (active)', ['user_plan' => $userPlan]);
             } else {
                 // Create user plan entry even if questionnaire not complete
                 $userPlan = UserPlan::updateOrCreate(
@@ -1070,7 +1022,6 @@ class PaymentController extends Controller
                         'updated_at' => now(),
                     ]
                 );
-                Log::debug('UserPlan created/updated (pending)', ['user_plan' => $userPlan]);
             }
 
             // Update payment with user_plan_id
@@ -1093,10 +1044,10 @@ class PaymentController extends Controller
                             'message' => 'Payment method is required for monthly subscriptions.'
                         ], 400);
                     }
-                    
+
                     try {
                         $subscriptionResult = $this->createStripeSubscription($userPlan, $user, $validated, $validated['payment_method_id'], $customer);
-                        
+
                         // Check if subscription needs frontend confirmation or action
                         if (isset($subscriptionResult['requires_confirmation'])) {
                             DB::rollBack();
@@ -1139,9 +1090,6 @@ class PaymentController extends Controller
                     'user_id' => $user->id,
                     'consultation_id' => $consultationId
                 ]);
-                Log::debug('UserConsultation created', ['user_consultation' => $userConsultation]);
-            } else {
-                Log::debug('No consultation ID found, skipping UserConsultation creation');
             }
 
             // Send plan purchase email notification
@@ -1152,12 +1100,6 @@ class PaymentController extends Controller
             }
 
             DB::commit();
-            Log::debug('Plan purchase processed successfully.', [
-                'payment_id' => $payment->id,
-                'user_plan_created' => isset($userPlan) ? $userPlan->id : 'not created',
-                'user_consultation_created' => isset($userConsultation) ? $userConsultation->id : 'not created',
-                'consultation_id' => $consultationId
-            ]);
 
             return response()->json([
                 'success' => true,
@@ -1167,7 +1109,8 @@ class PaymentController extends Controller
                     'payment_id' => $payment->id,
                     'plan_type' => $validated['plan_type'],
                     'has_consultation' => $consultationId ? true : false,
-                    'consultation_id' => $consultationId
+                    'consultation_id' => $consultationId,
+                    'hasCompletedQuestionnaire' => $hasCompletedQuestionnaire
                 ],
                 'redirect_url' => route('front.pre-plan-details')
             ]);
@@ -1212,7 +1155,7 @@ class PaymentController extends Controller
 
             // STEP 2: Create Product and Price in Stripe
             Log::info('Step 2: Creating Product and Price');
-            
+
             $product = \Stripe\Product::create([
                 'name' => $userPlan->plan->name . ' - Monthly Subscription',
                 'description' => 'Monthly subscription for ' . $userPlan->plan->name,
@@ -1249,11 +1192,11 @@ class PaymentController extends Controller
 
             // STEP 3: Set Up Subscription
             Log::info('Step 3: Setting up Subscription');
-            
+
             // Calculate billing cycle anchor (next month) - no immediate payment
             // Handle test clocks by ensuring the anchor is in the future relative to test clock
             $billingCycleAnchor = \Carbon\Carbon::now()->addMonth()->timestamp;
-            
+
             // Check if we're in test mode and adjust for test clocks
             if (config('services.stripe.testing_mode', false)) {
                 // For testing, use a shorter interval to avoid test clock issues
@@ -1264,7 +1207,7 @@ class PaymentController extends Controller
                     'current_time' => now()->format('Y-m-d H:i:s')
                 ]);
             }
-            
+
             // Validate the timestamp
             if ($billingCycleAnchor <= 0) {
                 Log::error('Invalid billing cycle anchor timestamp', [
@@ -1273,7 +1216,7 @@ class PaymentController extends Controller
                 ]);
                 throw new \Exception('Invalid billing cycle anchor timestamp');
             }
-            
+
             Log::info('Billing cycle anchor calculated', [
                 'billing_cycle_anchor' => $billingCycleAnchor,
                 'billing_start_date' => \Carbon\Carbon::createFromTimestamp($billingCycleAnchor)->format('Y-m-d H:i:s'),
@@ -1281,7 +1224,7 @@ class PaymentController extends Controller
             ]);
 
             $cancelAt = \Carbon\Carbon::now()->addMonths(9)->timestamp;
-            
+
             $subscription = \Stripe\Subscription::create([
                 'customer' => $customer->id,
                 'items' => [
@@ -1317,10 +1260,10 @@ class PaymentController extends Controller
 
             // STEP 4: Handle Payment Method
             Log::info('Step 4: Handling Payment Method');
-            
+
             // Ensure payment method is properly attached to customer
             $paymentMethod = \Stripe\PaymentMethod::retrieve($paymentMethodId);
-            
+
             if (!$paymentMethod->customer) {
                 $paymentMethod->attach(['customer' => $customer->id]);
                 Log::info('Payment method attached to customer', [
@@ -1331,10 +1274,10 @@ class PaymentController extends Controller
 
             // STEP 5: Confirm Payment Intent
             Log::info('Step 5: Confirming Payment Intent');
-            
+
             if ($subscription->latest_invoice && $subscription->latest_invoice->payment_intent) {
                 $paymentIntent = $subscription->latest_invoice->payment_intent;
-                
+
                 Log::info('Payment Intent status', [
                     'payment_intent_id' => $paymentIntent->id,
                     'status' => $paymentIntent->status
@@ -1380,7 +1323,7 @@ class PaymentController extends Controller
 
             // Create RecurringPayment record with validation
             $nextPaymentDate = \Carbon\Carbon::createFromTimestamp($billingCycleAnchor);
-            
+
             // Validate the next payment date
             if (!$nextPaymentDate->isFuture()) {
                 Log::error('Next payment date is not in the future', [
@@ -1390,10 +1333,10 @@ class PaymentController extends Controller
                 ]);
                 throw new \Exception('Next payment date must be in the future');
             }
-            
+
             // Calculate total payments expected based on testing mode
             $totalPaymentsExpected = config('services.stripe.testing_mode', false) ? 8 : 8; // Same for both modes
-            
+
             RecurringPayment::create([
                 'user_plan_id' => $userPlan->id,
                 'stripe_subscription_id' => $subscription->id,
@@ -1426,7 +1369,7 @@ class PaymentController extends Controller
                 'payment_method_id' => $paymentMethodId,
                 'trace' => $e->getTraceAsString()
             ]);
-            
+
             // Re-throw the exception to trigger transaction rollback
             throw $e;
         }
@@ -1487,7 +1430,7 @@ class PaymentController extends Controller
             if ($user->stripe_customer_id) {
                 try {
                     $customer = \Stripe\Customer::retrieve($user->stripe_customer_id);
-                    
+
                     // Update customer metadata with payment method if provided
                     if ($paymentMethodId) {
                         $customer->metadata['default_payment_method_id'] = $paymentMethodId;
@@ -1497,7 +1440,7 @@ class PaymentController extends Controller
                             'payment_method_id' => $paymentMethodId
                         ]);
                     }
-                    
+
                     Log::info('Retrieved existing Stripe customer', [
                         'customer_id' => $customer->id,
                         'user_id' => $user->id
@@ -1516,7 +1459,7 @@ class PaymentController extends Controller
             $metadata = [
                 'user_id' => $user->id,
             ];
-            
+
             // Add payment method ID to metadata if provided
             if ($paymentMethodId) {
                 $metadata['default_payment_method_id'] = $paymentMethodId;
@@ -1532,7 +1475,7 @@ class PaymentController extends Controller
 
             // Save customer ID to user record
             $user->update(['stripe_customer_id' => $customer->id]);
-            
+
             Log::info('Created new Stripe customer and saved to user', [
                 'customer_id' => $customer->id,
                 'user_id' => $user->id,
@@ -1553,7 +1496,7 @@ class PaymentController extends Controller
     private function calculateBasePrice($plan, $planType, $isMonthly)
     {
         $basePrice = $plan->price;
-        
+
         // Apply plan type specific pricing
         switch ($planType) {
             case 'main':
@@ -1577,13 +1520,13 @@ class PaymentController extends Controller
                 // Use the plan's base price
                 break;
         }
-        
+
         // If monthly, apply 10% markup and divide by 8 months (matching frontend logic)
         if ($isMonthly) {
             $months = 8;
             $basePrice = ($basePrice * 1.1) / $months; // 10% markup, then divide by months
         }
-        
+
         return round($basePrice, 2);
     }
 
@@ -1595,7 +1538,7 @@ class PaymentController extends Controller
         // Validate base price
         $providedBasePrice = $validated['price'];
         $basePriceDifference = abs($expectedBasePrice - $providedBasePrice);
-        
+
         Log::debug('Base price validation check', [
             'expected_base_price' => $expectedBasePrice,
             'provided_base_price' => $providedBasePrice,
@@ -1604,7 +1547,7 @@ class PaymentController extends Controller
             'plan_type' => $validated['plan_type'],
             'is_monthly' => $validated['is_monthly']
         ]);
-        
+
         if ($basePriceDifference > 0.01) {
             Log::warning('Base price validation failed - price mismatch detected', [
                 'user_id' => $user->id,
@@ -1615,19 +1558,19 @@ class PaymentController extends Controller
                 'ip_address' => $request->ip(),
                 'user_agent' => $request->userAgent()
             ]);
-            
+
             return response()->json([
                 'success' => false,
                 'message' => 'Price validation failed. Please refresh the page and try again.',
                 'error_code' => 'BASE_PRICE_MISMATCH'
             ], 400);
         }
-        
+
         // Validate final price if provided
         if (isset($validated['final_price']) && $validated['final_price'] !== null) {
             $providedFinalPrice = $validated['final_price'];
             $finalPriceDifference = abs($expectedFinalPrice - $providedFinalPrice);
-            
+
             Log::debug('Final price validation check', [
                 'expected_final_price' => $expectedFinalPrice,
                 'provided_final_price' => $providedFinalPrice,
@@ -1636,7 +1579,7 @@ class PaymentController extends Controller
                 'coupon_type' => $coupon ? $coupon->type : 'none',
                 'coupon_value' => $coupon ? $coupon->value : 'none'
             ]);
-            
+
             if ($finalPriceDifference > 0.01) {
                 Log::warning('Final price validation failed - price mismatch detected', [
                     'user_id' => $user->id,
@@ -1648,7 +1591,7 @@ class PaymentController extends Controller
                     'ip_address' => $request->ip(),
                     'user_agent' => $request->userAgent()
                 ]);
-                
+
                 return response()->json([
                     'success' => false,
                     'message' => 'Price validation failed. Please refresh the page and try again.',
@@ -1656,7 +1599,7 @@ class PaymentController extends Controller
                 ], 400);
             }
         }
-        
+
         Log::info('Price validation passed', [
             'user_id' => $user->id,
             'plan_id' => $validated['plan_id'],

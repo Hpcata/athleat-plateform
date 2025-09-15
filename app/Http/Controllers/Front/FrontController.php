@@ -1765,40 +1765,104 @@ class FrontController extends Controller
     public function getProfile(Request $request, $userId, $paymentId = null)
     {
         try {
-            $user                     = User::select('id', 'free_user')->find($userId);
-            $payment                  = $paymentId ? Payment::where('user_id', $userId)->where('id', $paymentId)->first() : Payment::where('user_id', $userId)->first();
+            $user = User::select('id', 'free_user')->findOrFail($userId);
+
+            // pick a canonical payment:
+            // if payment_id passed, prefer that exact row, otherwise choose the latest payment by created_at (or id)
+            if ($paymentId) {
+                $canonicalPayment = Payment::where('user_id', $userId)->where('id', $paymentId)->first();
+            } else {
+                // choose the latest by created_at (fallback to id)
+                $canonicalPayment = Payment::where('user_id', $userId)
+                    ->orderBy('created_at', 'desc')
+                    ->orderBy('id', 'desc')
+                    ->first();
+            }
+
+            // check if questionnaire exists and is complete
             $isQuestionnaireSubmitted = UserPrePlan::where('user_id', $userId)->where('is_complete', 1)->first();
 
-            if (auth()->user() && ! auth()->user()->is_superadmin && auth()->user()?->id != $userId) {
-                return redirect()->route('front.index')->with('error', 'You are not authorized to access this page.');
+            // user plan: try to find by payment->plan_id (if exists) else by user_id
+            $userPlan = null;
+            if ($canonicalPayment && $canonicalPayment->plan_id) {
+                $userPlan = UserPlan::with('plan')->where('user_id', $userId)->where('plan_id', $canonicalPayment->plan_id)->first();
+            }
+            if (! $userPlan) {
+                $userPlan = UserPlan::with('plan')->where('user_id', $userId)->latest()->first();
             }
 
-            if (! $payment && ! $user->free_user) {
-                return redirect()->back()->with('error', 'Plan not purchased.');
+            // For free users, if no payment and user->free_user true, build placeholder for free plans
+            if (! $canonicalPayment && $user->free_user && ! $userPlan) {
+                $userPlan = new UserPlan();
+                $userPlan->free_user = true;
+                $userPlan->free_user_plan = Plan::all();
             }
 
-            $userPlan = UserPlan::with(['plan'])->where('user_id', $userId)->where('plan_id', $payment->plan_id)->first();
+            // Normalize flags (booleans) for easier reasoning
+            $hasPayment = (bool) $canonicalPayment;
+            $hasConsultation = $hasPayment && !! $canonicalPayment->consultation_id;
+            $hasPlanPurchased = $hasPayment && !empty($canonicalPayment->plan_id); // plan_id null/0 => not purchased
+            $questionnaireComplete = (bool) ($isQuestionnaireSubmitted && $isQuestionnaireSubmitted->is_complete);
+            $userPlanActive = (bool) ($userPlan && isset($userPlan->status) && $userPlan->status === 'active');
+            $mailSent = (bool) ($userPlan && isset($userPlan->is_mail_sent) && $userPlan->is_mail_sent);
 
-            // Also fetch the free_user column from the user table
-            if (! $payment && ! $userPlan && $user->free_user) {
-                $userPlan                 = new UserPlan();
-                $plans                    = Plan::all();
-                $userPlan->free_user_plan = $plans;
+            /*
+            Priority (as you wrote):
+            1. free user (when no paid payment & free_user true)
+            2. complete questionnaire
+            3. done with consultation (questionnaire completed)  -> waiting plan / plan-preparation
+            4. done with consultation but plan didn't buy (questionnaire completed) -> prompt purchase personalised plan
+            5. buy a plan -> show plan preparation or final plan depending on mail/status
+            6. done with consultation and buy a plan -> plan-preparation or final plan
+            */
+
+            // Decide single view state (string)
+            $viewState = 'purchase_prompt'; // default
+
+            // 1) Free user & no paid payment -> show purchase a personalised plan overlay (free screen)
+            if (! $hasPayment && $user->free_user) {
+                $viewState = 'free_user';
             }
-
-            if ($userPlan) {
-                $userPlan->free_user = $user->free_user ?? null;
+            // 2) If there is a payment and questionnaire NOT completed -> ask to continue questionnaire
+            elseif ($hasPayment && ! $questionnaireComplete) {
+                $viewState = 'continue_questionnaire';
+            }
+            // 3) If user has purchased a plan and questionnaire completed -> preparing / final plan depending on mail/status
+            elseif ($hasPlanPurchased && $questionnaireComplete) {
+                // if plan is active or mail sent -> final plan
+                if ($userPlanActive && $mailSent) {
+                    $viewState = 'final_plan';
+                } else {
+                    // still preparing
+                    $viewState = 'preparing_plan';
+                }
+            }
+            // 4) If user has consultation (consultation booked) and questionnaire completed but plan not purchased
+            elseif ($hasConsultation && $questionnaireComplete && ! $hasPlanPurchased) {
+                $viewState = 'consultation_only_after_questionnaire';
+            }
+            // 5) If user has consultation but questionnaire incomplete -> force questionnaire (this is already captured earlier)
+            elseif ($hasConsultation && ! $questionnaireComplete) {
+                $viewState = 'continue_questionnaire';
+            }
+            // 6) If hasPayment and neither plan nor consultation -> treat as prompt purchase
+            else {
+                $viewState = 'purchase_prompt';
             }
 
             $isSuperAdmin = Auth::guard('admin')->user()?->is_superadmin ?? false;
             $isAdminView  = $request->get('admin_view') && $isSuperAdmin;
 
-            return view('front.pages.profile-landing', compact('userPlan', 'payment', 'isQuestionnaireSubmitted', 'isAdminView', 'isSuperAdmin'));
+            return view('front.pages.profile-landing', compact(
+                'userPlan',
+                'canonicalPayment',
+                'isQuestionnaireSubmitted',
+                'isAdminView',
+                'isSuperAdmin',
+                'viewState'
+            ));
         } catch (Exception $e) {
-            // Log the error for debugging
             Log::error('Error fetching user profile: ' . $e->getMessage());
-
-            // Redirect back with a generic error message
             return redirect()->back()->with('error', 'Something went wrong. Please try again later.');
         }
     }

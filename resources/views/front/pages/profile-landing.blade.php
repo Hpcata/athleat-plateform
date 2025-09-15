@@ -25,21 +25,19 @@
             </section>
 
             @php
-                $showFreePlan = !$payment && isset($userPlan) && $userPlan->free_user && $userPlan->free_user_plan && !isset($userPlan?->plan);
-                $needsQuestionnaire = isset($payment) && (!isset($isQuestionnaireSubmitted) || !$isQuestionnaireSubmitted->is_complete);
-                $waitingPlan = isset($payment->plan_id, $isQuestionnaireSubmitted, $userPlan) && $isQuestionnaireSubmitted->is_complete && !$userPlan->is_mail_sent;
-                $showFinalPlan = (isset($userPlan) && $userPlan->status == 'active');
+                // from controller: $viewState, $userPlan, $canonicalPayment, $isQuestionnaireSubmitted
+                $payment = $canonicalPayment ?? null;
             @endphp
 
-            @if ($showFreePlan)
+            @if ($viewState === 'free_user')
                 @include('front.pages.partials.nutrition-plan-section', [
                     'title' => 'My Plans',
                     'actionText' => 'Purchase Plan',
                     'actionRoute' => 'front.my-plans',
-                    'overlayText' => isset($isQuestionnaireSubmitted) && !$isQuestionnaireSubmitted->is_complete ? 'Continue your Questionnaire' : 'Purchase a personalised plan',
-                    'overlayRoute' => isset($isQuestionnaireSubmitted) && !$isQuestionnaireSubmitted->is_complete ? route('front.pre-plan-details', ['id' => $payment->id ?? null, 'user_id' => $payment->user_id ?? null]) : route('front.my-plans')
+                    'overlayText' => (isset($isQuestionnaireSubmitted) && !$isQuestionnaireSubmitted->is_complete) ? 'Continue your Questionnaire' : 'Purchase a personalised plan',
+                    'overlayRoute' => (isset($isQuestionnaireSubmitted) && !$isQuestionnaireSubmitted->is_complete) ? route('front.pre-plan-details', ['id' => $payment->id ?? null, 'user_id' => $payment->user_id ?? null]) : route('front.my-plans')
                 ])
-            @elseif ($needsQuestionnaire)
+            @elseif ($viewState === 'continue_questionnaire')
                 @include('front.pages.partials.nutrition-plan-section', [
                     'title' => 'My Plans',
                     'actionText' => 'Purchase Plan',
@@ -48,10 +46,20 @@
                     'hideActionText' => false,
                     'overlayRoute' => route('front.pre-plan-details', ['id' => $payment->id ?? null, 'user_id' => $payment->user_id ?? null])
                 ])
-            @elseif ($waitingPlan)
-                @include('front.pages.partials.plan-preparation-section', ['plan' => $payment->plan ?? null, 'isPreparingPlan' => true])
-            @elseif ($showFinalPlan)
-                @include('front.pages.partials.plan-preparation-section', ['plan' => $payment->plan ?? null, 'isPreparingPlan' => false, 'redirectRoute' => true])
+            @elseif ($viewState === 'consultation_only_after_questionnaire' || $viewState === 'purchase_prompt')
+                {{-- Show purchase overlay (consultation only or default purchase prompt) --}}
+                @include('front.pages.partials.nutrition-plan-section', [
+                    'title' => 'My Plans',
+                    'actionText' => 'Purchase Plan',
+                    'actionRoute' => 'front.my-plans',
+                    'overlayText' => 'Purchase a personalised plan',
+                    'overlayRoute' => route('front.my-plans'),
+                    'hideActionText' => false,
+                ])
+            @elseif ($viewState === 'preparing_plan')
+                @include('front.pages.partials.plan-preparation-section', ['plan' => $payment->plan ?? $userPlan->plan ?? null, 'isPreparingPlan' => true])
+            @elseif ($viewState === 'final_plan')
+                @include('front.pages.partials.plan-preparation-section', ['plan' => $payment->plan ?? $userPlan->plan ?? null, 'isPreparingPlan' => false, 'redirectRoute' => true])
             @endif
 
             <!-- Challenges -->
@@ -208,30 +216,6 @@
                     <a href="/my-plans" class="see-all">All Plans</a>
                 </div>
 
-                @php
-                    $mealCount = isset($userPlan->userMeals) ? $userPlan->userMeals->count() : 0;
-                    $userPlan = $userPlan ?? null;
-
-                    $latestMealImages = isset($userPlan->userMeals)
-                        ? $userPlan
-                            ->userMeals()
-                            ->with('meal')
-                            ->latest()
-                            ->get()
-                            ->map(function ($userMeal) {
-                                return $userMeal->meal?->image ? asset('storage/' . $userMeal->meal->image) : null;
-                            })
-                            ->filter(function ($image) {
-                                return !empty($image); // filters out null and empty strings
-                            })
-                            ->take(2)
-                            ->values()
-                            ->toArray()
-                        : [];
-
-                    $mealImage1 = $latestMealImages[0] ?? frontAssets('images/sports-training/fooditem1.webp');
-                    $mealImage2 = $latestMealImages[1] ?? frontAssets('images/sports-training/fooditem6.webp');
-                @endphp
                 <label class="plan-subtitle-mob">Nutrition plans</label>
                 <div class="consults-plans-grid">
                     <div class="plan-card-custom plan-competition">
@@ -241,11 +225,11 @@
                                 Unlock your peak performance with a 24-hour Competition Nutrition Plan - Ensuring you’re hydrated, fuelled & ON when it’s game time so that nutrition is never your weakness!
                             </div>
                             <div class="consult-user-row">
-                                <img src="{{ $mealImage1 }}" class="consult-avatar"
+                                <img src="{{ asset('front/images/circled-meal-1.svg') }}" class="consult-avatar"
                                     alt="Kerry O'Bryan, expert coach avatar" />
-                                <img src="{{ $mealImage2 }}" class="consult-avatar overlap1"
+                                <img src="{{ asset('front/images/circled-meal-2.svg') }}" class="consult-avatar overlap1"
                                     alt="Kerry O'Bryan, expert coach avatar" />
-                                <span>{{ $mealCount }} meals • 18 Nutrition tips</span>
+                                <span>21 meals customised for you</span>
                             </div>
                         </div>
                         <button class="btn-consult"  onclick="showLearnMoreTooltip(this, 'Coming Soon')">Learn more</button>
@@ -259,11 +243,11 @@
                                 personalised plan that caters to where you're at. Faster recovery is the goal & nutrition is too often overlooked!
                             </div>
                             <div class="consult-user-row">
-                                <img src="{{ $mealImage1 }}" class="consult-avatar"
+                                <img src="{{ asset('front/images/circled-meal-1.svg') }}" class="consult-avatar"
                                     alt="Kerry O'Bryan, expert coach avatar" />
-                                <img src="{{ $mealImage2 }}" class="consult-avatar overlap1"
+                                <img src="{{ asset('front/images/circled-meal-2.svg') }}" class="consult-avatar overlap1"
                                     alt="Kerry O'Bryan, expert coach avatar" />
-                                <span>{{ $mealCount }} meals • 18 Nutrition tips</span>
+                                <span>21 meals customised for you</span>
                             </div>
                         </div>
                         <button class="btn-consult" onclick="window.location.href='{{ route('front.injury.recovery.plan') }}'">Learn more</button>
@@ -380,7 +364,6 @@
             isFreeUser: {{ $userPlan->free_user ?? 0 }},
             routes: {
                 getProfileMeals: @json(route('front.get-profile-meals', ['plan' => 'PLAN_ID', 'category' => 'CATEGORY_ID'])),
-                supplementScanner: @json(route('front.supplement-scanner')),
                 mealDetails: @json(route('front.meal.details')),
                 mealsItems: @json(route('front.meals.items', ':mealId')),
                 itemsSwapItems: @json(route('front.items.swap-items', ':id')),

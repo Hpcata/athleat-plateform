@@ -2,20 +2,21 @@
 
 namespace App\Http\Controllers\Front;
 
-use App\Http\Controllers\Controller;
-use App\Models\Consultation;
-use App\Models\Payment;
-use App\Models\UserConsultation;
+use Stripe\Stripe;
 use App\Models\User;
-use App\Models\Questionnaire;
+use App\Models\Payment;
+use Stripe\PaymentIntent;
+use App\Models\UserPrePlan;
+use App\Models\Consultation;
 use App\Models\TrackingType;
-use App\Services\ActivityTracker;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use App\Models\Questionnaire;
+use App\Models\UserConsultation;
+use App\Services\ActivityTracker;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Stripe\PaymentIntent;
-use Stripe\Stripe;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class ConsultationController extends Controller
 {
@@ -45,34 +46,34 @@ class ConsultationController extends Controller
         // Validate coupon if provided
         $finalPrice = $consultation->price;
         $couponCode = $request->coupon_code;
-        
+
         if ($couponCode) {
             $coupon = \App\Models\Coupon::where('code', $couponCode)
                 ->where('status', 1)
                 ->first();
-                
+
             if ($coupon) {
                 $currentDateTime = \Carbon\Carbon::now();
-                
+
                 // Check if coupon is valid
                 if ($currentDateTime->gte($coupon->start_date) && $currentDateTime->lte($coupon->end_date)) {
                     // Check if coupon is applicable to this specific consultation
                     $isApplicableToConsultation = $coupon->consultations()->where('consultations.id', $consultation->id)->exists();
-                    
+
                     if (!$isApplicableToConsultation) {
                         return response()->json([
                             'success' => false,
                             'message' => 'This coupon is not applicable to the selected consultation.'
                         ]);
                     }
-                    
+
                     // Check usage limits
                     if ($coupon->max_uses == 0 || $coupon->usage_count < $coupon->max_uses) {
                         // Check user usage
                         $userUsageCount = \App\Models\CouponUsage::where('coupon_id', $coupon->id)
                             ->where('user_id', $user->id)
                             ->count();
-                            
+
                         if ($coupon->uses_per_user == 0 || $userUsageCount < $coupon->uses_per_user) {
                             // Apply discount
                             if ($coupon->type === 'percentage') {
@@ -81,7 +82,7 @@ class ConsultationController extends Controller
                             } elseif ($coupon->type === 'fixed') {
                                 $finalPrice = max(0, $finalPrice - $coupon->value);
                             }
-                            
+
                             // Track coupon usage with same logic as PaymentController
                             $this->trackCouponUsage($coupon, $user, $consultation, $finalPrice, $couponCode);
                         } else {
@@ -115,7 +116,7 @@ class ConsultationController extends Controller
         try {
             // Remove the check that prevents multiple bookings of the same consultation
             // Users can now book the same consultation multiple times
-            
+
             $paymentIntentId = null;
             $status = 'pending';
 
@@ -186,7 +187,7 @@ class ConsultationController extends Controller
                     'payment_id' => $payment->id,
                     'discount_amount' => $consultation->price - $finalPrice
                 ]);
-                
+
                 // Update coupon usage count
                 $coupon->increment('usage_count');
             }
@@ -201,7 +202,7 @@ class ConsultationController extends Controller
 
         } catch (\Exception $e) {
             DB::rollBack();
-            
+
             // If payment was successful but booking failed, we need to refund the payment
             if ($finalPrice > 0 && isset($paymentIntentId) && $paymentIntentId) {
                 try {
@@ -210,13 +211,13 @@ class ConsultationController extends Controller
                         'payment_intent' => $paymentIntentId,
                         'reason' => 'consultation_booking_failed'
                     ]);
-                    
+
                     Log::info('Payment refunded due to booking failure. Payment Intent: ' . $paymentIntentId . ', Refund ID: ' . $refund->id);
                 } catch (\Exception $refundException) {
                     Log::error('Failed to refund payment after booking failure. Payment Intent: ' . $paymentIntentId . ', Error: ' . $refundException->getMessage());
                 }
             }
-            
+
             Log::error('Consultation booking error: ' . $e->getMessage());
             return response()->json([
                 'success' => false,
@@ -228,7 +229,7 @@ class ConsultationController extends Controller
     public function getConsultationDetails($id)
     {
         $consultation = Consultation::findOrFail($id);
-        
+
         return response()->json([
             'success' => true,
             'consultation' => $consultation
@@ -249,17 +250,17 @@ class ConsultationController extends Controller
         }
 
         $user = Auth::user();
-        $userId = $request->get('user_id', $user->id);
-        $paymentId = $request->get('payment_id');
-        
-        // Check if user has completed nutrition-form questionnaire
-        $questionnaireCompleted = Questionnaire::where('user_id', $userId)
-            ->where('question', 'nutrition-form')
+        $userId = $request->input('user_id', $user->id);
+        $paymentId = $request->input('payment_id');
+
+        // Check if user has completed questionnaire
+        $questionnaireCompleted = UserPrePlan::where('user_id', $userId)
+            ->where('is_complete', 1)
             ->exists();
 
         // Build redirect URL with parameters
         if ($questionnaireCompleted) {
-            $redirectUrl = route('front.profile', $userId);
+            $redirectUrl = route('front.profile', ['id' => $userId, 'payment_id' => $paymentId]);
         } else {
             $redirectUrl = route('front.pre-plan-details');
             if ($userId && $paymentId) {
