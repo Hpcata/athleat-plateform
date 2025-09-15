@@ -1473,6 +1473,9 @@ $intresetsmallimg1 = $intresetsmallimg2 = $intresetsmallimg3 = $intrestimg1 = $i
             $('.signup-login-h2-title').removeClass('d-none');
             $('.signup-login-h2-img').removeClass('d-none');
 
+            $('#signupModalathlete #new-user-singup').removeClass('d-none');
+            $('#signupModalathlete #existing-user-login').addClass('d-none');
+
             // Hide quiz-specific content
             $('.quiz-h2-title').addClass('d-none');
             $('.quiz-h2-img').addClass('d-none');
