@@ -114,7 +114,7 @@
                     <a href="#" class="see-all coming-soon-popup">See all</a>
                 </div>
                 <div class="resources-custom-grid">
-                    <div class="cursor-pointer resource-card-custom resource-supplement hover-card scanner-btn" id="scanner-btn">
+                    <div class="cursor-pointer resource-card-custom resource-supplement hover-card scanner-btn" id="scanner-btn" onclick="window.location.href='{{ route('front.supplement-scanner') }}'">
                         <img src="{{ frontAssets('images/cardbg.webp') }}" class="resource-bg-img"
                             alt="Supplement scanner background" />
                         <div class="icon-bg">
@@ -228,7 +228,7 @@
                                 <span>21 meals customised for you</span>
                             </div>
                         </div>
-                        <button class="btn-consult" onclick="showLearnMoreTooltip(this, 'Coming Soon')">Learn more</button>
+                        <button class="btn-consult" onclick="window.location.href='{{ route('front.injury.recovery.plan') }}'">Learn more</button>
                     </div>
                 </div>
 
@@ -247,7 +247,7 @@
                                 alt="Kerry O'Bryan, expert coach avatar" style="border:none;" />
                             <span style="padding-left:0">Kerry O'Bryan • 60 min</span>
                         </div>
-                        <a href="https://booking.biohealthpassport.com.au/kerry-obryan" target="_blank"
+                        <a href="{{ route('front.consultations') }}"
                             class="text-decoration-none btn-consult">Book consult</a>
                     </div>
                 </div>

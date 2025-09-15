@@ -9,7 +9,7 @@
 </head>
 <body>
     <h2>Hey {{ $user->name }},</h2>
-    <p>We are excited to inform you that your <b>{{ $planName }}</b> plan has been successfully activated!</p>
+    <p>We are excited to inform you that your <b>{{ $planName }}</b> has been successfully activated!</p>
     <p>Your plan is now active and ready to use. Please <a href="{{ $profileLandingPage }}">check your account</a> for the details and enjoy the benefits.</p>
     <p>If you have any questions or need assistance, feel free to reach out to our support team.</p>
     <p>Thank you for choosing us.</p>

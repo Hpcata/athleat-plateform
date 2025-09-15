@@ -25,7 +25,7 @@
                     <img src="{{ asset('front/images/circled-meal-3.svg') }}" class="consult-avatar overlap2"
                         alt="meal image" />
 
-                    <span style="padding-left: 0px;">21 meals • 18 Nutrition tips</span>
+                    <span style="padding-left: 0px;">21 meals customised for you</span>
                 </div>
                 @php
                     if (isset($redirectRoute) && isset($userPlan) && isset($plan)) {

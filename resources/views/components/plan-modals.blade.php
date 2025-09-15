@@ -512,9 +512,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Reset button text
                 if (isMonthlyActive) {
                     const monthlyPrice = paymentButton.getAttribute('data-monthly-price');
-                    paymentButton.innerHTML = `Monthly | A$${monthlyPrice}/mth`;
+                    paymentButton.innerHTML = `Monthly | A$${parseFloat(monthlyPrice).toFixed(2)}/mth`;
                 } else {
-                    paymentButton.innerHTML = `One Payment | A$${originalPrice.toFixed(0)}`;
+                    paymentButton.innerHTML = `One Payment | A$${originalPrice.toFixed(2)}`;
                 }
 
                 // Show payment form
@@ -624,7 +624,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         paymentModalPrice.textContent = isMonthlyActive ? `A$${originalPrice.toFixed(2)}/mth` : `A$${originalPrice.toFixed(2)}`;
                     } else {
                         if (finalPrice <= 0) {
-                            paymentModalPrice.textContent = 'A$0';
+                            paymentModalPrice.textContent = 'A$0.00';
                         } else {
                             paymentModalPrice.textContent = isMonthlyActive ? `A$${finalPrice.toFixed(2)}/mth` : `A$${finalPrice.toFixed(2)}`;
                         }
@@ -677,7 +677,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 paymentButton.innerHTML = `Monthly | A$${discountedMonthlyPrice.toFixed(2)}/mth`;
                             }
                         } else {
-                            paymentButton.innerHTML = `One Payment | A$${finalPrice.toFixed(0)}`;
+                            paymentButton.innerHTML = `One Payment | A$${finalPrice.toFixed(2)}`;
                         }
                         // Show payment form for paid plan
                         document.querySelector('#paymentForm .form-wrap').classList.remove('d-none');
@@ -706,9 +706,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
                     if (isMonthlyActive) {
                         const monthlyPrice = paymentButton.getAttribute('data-monthly-price');
-                        paymentButton.innerHTML = `Monthly | A$${monthlyPrice}/mth`;
+                        paymentButton.innerHTML = `Monthly | A$${parseFloat(monthlyPrice).toFixed(2)}/mth`;
                     } else {
-                        paymentButton.innerHTML = `One Payment | A$${resetPrice.toFixed(0)}`;
+                        paymentButton.innerHTML = `One Payment | A$${resetPrice.toFixed(2)}`;
                     }
 
                     // Show payment form
@@ -1507,26 +1507,26 @@ function updateCongratsModal(planType, hasConsultation, hasCompletedQuestionnair
             if (planType === 'main') {
                 document.getElementById('paymentModalTitle').innerHTML = '{!! $planDetails?->name !!}';
                 document.getElementById('paymentModalSubtitle').innerHTML = '{!! $planDetails?->name !!}';
-                document.getElementById('paymentModalPrice').textContent = isMonthlyActive ? 'A$' + finalMonthlyPrice + '/mth' : 'A$' + finalOneTimePrice;
+                document.getElementById('paymentModalPrice').textContent = isMonthlyActive ? 'A$' + parseFloat(finalMonthlyPrice).toFixed(2) + '/mth' : 'A$' + parseFloat(finalOneTimePrice).toFixed(2);
                 document.getElementById('paymentModalPrice').setAttribute('data-original-price', isMonthlyActive ? finalMonthlyPrice : finalOneTimePrice);
                 document.getElementById('paymentModalDuration').textContent = isMonthlyActive ? 'Over {{ $months }} Months' : 'One time payment';
-                document.getElementById('paymentButton').textContent = isMonthlyActive ? 'Monthly | A$' + finalMonthlyPrice + '/mth' : 'One Payment | A$' + finalOneTimePrice;
+                document.getElementById('paymentButton').textContent = isMonthlyActive ? 'Monthly | A$' + parseFloat(finalMonthlyPrice).toFixed(2) + '/mth' : 'One Payment | A$' + parseFloat(finalOneTimePrice).toFixed(2);
                 document.getElementById('paymentButton').setAttribute('data-monthly-price', finalMonthlyPrice);
             } else if (planType === 'powerplay') {
                 document.getElementById('paymentModalTitle').textContent = 'Power Play';
                 document.getElementById('paymentModalSubtitle').innerHTML = '{!! $planDetails?->name !!} + 30 min Consult with Extreme Sports Dietitian Kerry O\'Byran';
-                document.getElementById('paymentModalPrice').textContent = isMonthlyActive ? 'A$' + finalMonthlyPrice + '/mth' : 'A$' + finalOneTimePrice;
+                document.getElementById('paymentModalPrice').textContent = isMonthlyActive ? 'A$' + parseFloat(finalMonthlyPrice).toFixed(2) + '/mth' : 'A$' + parseFloat(finalOneTimePrice).toFixed(2);
                 document.getElementById('paymentModalPrice').setAttribute('data-original-price', isMonthlyActive ? finalMonthlyPrice : finalOneTimePrice);
                 document.getElementById('paymentModalDuration').textContent = isMonthlyActive ? 'Over {{ $months }} Months' : 'One time payment';
-                document.getElementById('paymentButton').textContent = isMonthlyActive ? 'Monthly | A$' + finalMonthlyPrice + '/mth' : 'One Payment | A$' + finalOneTimePrice;
+                document.getElementById('paymentButton').textContent = isMonthlyActive ? 'Monthly | A$' + parseFloat(finalMonthlyPrice).toFixed(2) + '/mth' : 'One Payment | A$' + parseFloat(finalOneTimePrice).toFixed(2);
                 document.getElementById('paymentButton').setAttribute('data-monthly-price', finalMonthlyPrice);
             } else if (planType === 'gameplan') {
                 document.getElementById('paymentModalTitle').textContent = 'Game Plan';
                 document.getElementById('paymentModalSubtitle').innerHTML = '{!! $planDetails?->name !!} + 60 min Consult with Kerry to cover NutritionAND Training Advice';
-                document.getElementById('paymentModalPrice').textContent = isMonthlyActive ? 'A$' + finalMonthlyPrice + '/mth' : 'A$' + finalOneTimePrice;
+                document.getElementById('paymentModalPrice').textContent = isMonthlyActive ? 'A$' + parseFloat(finalMonthlyPrice).toFixed(2) + '/mth' : 'A$' + parseFloat(finalOneTimePrice).toFixed(2);
                 document.getElementById('paymentModalPrice').setAttribute('data-original-price', isMonthlyActive ? finalMonthlyPrice : finalOneTimePrice);
                 document.getElementById('paymentModalDuration').textContent = isMonthlyActive ? 'Over {{ $months }} Months' : 'One time payment';
-                document.getElementById('paymentButton').textContent = isMonthlyActive ? 'Monthly | A$' + finalMonthlyPrice + '/mth' : 'One Payment | A$' + finalOneTimePrice;
+                document.getElementById('paymentButton').textContent = isMonthlyActive ? 'Monthly | A$' + parseFloat(finalMonthlyPrice).toFixed(2) + '/mth' : 'One Payment | A$' + parseFloat(finalOneTimePrice).toFixed(2);
                 document.getElementById('paymentButton').setAttribute('data-monthly-price', finalMonthlyPrice);
             }
 

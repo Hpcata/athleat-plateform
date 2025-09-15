@@ -2037,7 +2037,7 @@ class FrontController extends Controller
         $page        = Page::with('sections')->where('slug', 'competition_plan')->first();
         $planDetails = Plan::where('name', 'Competition Plan')->first();
         $consultations = Consultation::whereIn('time', [30, 60])->get();
-        
+
         return view('front.pages.competition_plan', compact('page', 'planDetails', 'consultations'));
     }
 
@@ -2078,7 +2078,7 @@ class FrontController extends Controller
         $page        = Page::with('sections')->where('slug', 'surgery_plan')->first();
         $planDetails = Plan::where('name', 'Injury Recovery + Post Surgery')->first();
         $consultations = Consultation::whereIn('time', [30, 60])->get();
-        
+
         return view('front.pages.surgery_plan', compact('page', 'planDetails', 'consultations'));
     }
 

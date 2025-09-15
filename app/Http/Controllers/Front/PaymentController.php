@@ -424,8 +424,9 @@ class PaymentController extends Controller
         $prePlan = DB::table('user_pre_plans')
             ->select('id')
             ->where('user_id', $userId)
-            ->where('payment_id', $paymentId)
+            // ->where('payment_id', $paymentId)
             ->first();
+
 
         $userPrePlanId = $prePlan->id ?? null;
         $nextStep      = 1;         // Default to step 1
@@ -472,13 +473,13 @@ class PaymentController extends Controller
             // Check if user already has a pre-plan
             $prePlanId = DB::table('user_pre_plans')
                 ->where('user_id', $user_id)
-                ->where('payment_id', $payment_id)
+                // ->where('payment_id', $payment_id)
                 ->value('id');
 
             if (! $prePlanId) {
                 // Create new pre-plan if it doesn't exist
                 $prePlanId = DB::table('user_pre_plans')->insertGetId([
-                    'payment_id' => $payment_id,
+                    // 'payment_id' => $payment_id,
                     'user_id'    => $user_id,
                     'dob'        => $request->ans['personal_details']['dob'] ?? null,
                     'occupation' => $request->ans['personal_details']['occupation'] ?? null,
@@ -642,8 +643,8 @@ class PaymentController extends Controller
             ->first();
 
         try {
-            $profileLandingPage = route('front.profile', $user->id);
-            Mail::to($user->email)->send(new PlanPurchaseMail($user, $plan->name, $profileLandingPage));
+            // $profileLandingPage = route('front.profile', $user->id);
+            // Mail::to($user->email)->send(new PlanPurchaseMail($user, $plan->name, $profileLandingPage));
             Mail::to(config('constants.admin_email'))->send(new PrePlanDetailsSubmitMail($user, $plan->name));
 
             return response()->json([
@@ -1013,6 +1014,10 @@ class PaymentController extends Controller
                         'updated_at' => now(),
                     ]
                 );
+
+                $profileLandingPage = route('front.profile', $user->id);
+                $plan = Plan::find($validated['plan_id']);
+                Mail::to($user->email)->send(new PlanPurchaseMail($user, $plan->name, $profileLandingPage));
             } else {
                 // Create user plan entry even if questionnaire not complete
                 $userPlan = UserPlan::updateOrCreate(
@@ -1023,6 +1028,9 @@ class PaymentController extends Controller
                         'updated_at' => now(),
                     ]
                 );
+                $profileLandingPage = route('front.profile', $user->id);
+                $plan = Plan::find($validated['plan_id']);
+                Mail::to($user->email)->send(new PlanPurchaseMail($user, $plan->name, $profileLandingPage));
             }
 
             // Update payment with user_plan_id
