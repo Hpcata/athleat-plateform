@@ -67,7 +67,7 @@ $intresetsmallimg1 = $intresetsmallimg2 = $intresetsmallimg3 = $intrestimg1 = $i
                                         {!! $consultation->content !!}
 
                                         <div class="pricing-section">
-                                            <h2 class="pricing-amount">${{ number_format($consultation->price, 0) }} AUD</h2>
+                                            <h2 class="pricing-amount">${{ number_format($consultation->price, 2) }} AUD</h2>
                                             <div class="pricing-buttons">
                                                 <button class="btn-signup book-consult-btn" data-consultation-id="{{ $consultation->id }}"
                                                     data-consultation-price="{{ $consultation->price }}"
@@ -773,15 +773,15 @@ $intresetsmallimg1 = $intresetsmallimg2 = $intresetsmallimg3 = $intrestimg1 = $i
 
                 // Reset price to original
                 const originalPrice = parseFloat(document.getElementById("consultation-final-price").getAttribute("data-original-price") || "120");
-                document.getElementById("consultation-final-price").value = originalPrice;
+                document.getElementById("consultation-final-price").value = originalPrice.toFixed(2);
                 if (document.getElementById("pay-button-price")) {
-                    document.getElementById("pay-button-price").textContent = originalPrice;
+                    document.getElementById("pay-button-price").textContent = originalPrice.toFixed(2);
                 }
                 if (document.getElementById("consultation-price")) {
-                    document.getElementById("consultation-price").innerHTML = `A$${originalPrice}`;
+                    document.getElementById("consultation-price").innerHTML = `A$${originalPrice.toFixed(2)}`;
                 }
                 if (document.getElementById("payConsultationBtn")) {
-                    document.getElementById("payConsultationBtn").innerHTML = `Pay | $<span id="pay-button-price">${originalPrice}</span>`;
+                    document.getElementById("payConsultationBtn").innerHTML = `Pay | $<span id="pay-button-price">${originalPrice.toFixed(2)}</span>`;
                 }
                 // Ensure the button is not disabled
                 document.getElementById("payConsultationBtn").disabled = false;
@@ -843,7 +843,7 @@ $intresetsmallimg1 = $intresetsmallimg2 = $intresetsmallimg3 = $intrestimg1 = $i
 
                     // Update display
                     document.getElementById("consultation-final-price").value = finalPrice.toFixed(2);
-                    payButtonPrice.textContent = finalPrice.toFixed(0);
+                    payButtonPrice.textContent = finalPrice.toFixed(2);
                     consultationPrice.innerHTML = `A$${finalPrice.toFixed(2)}`;
 
                     // Update toggle link text
@@ -858,7 +858,7 @@ $intresetsmallimg1 = $intresetsmallimg2 = $intresetsmallimg3 = $intrestimg1 = $i
                         // Hide payment form for free consultation
                         document.querySelector('#consultation-payment-form .form-wrap').classList.add('d-none');
                     } else {
-                        payButton.innerHTML = `Pay | $<span id="pay-button-price">${finalPrice.toFixed(0)}</span>`;
+                        payButton.innerHTML = `Pay | $<span id="pay-button-price">${finalPrice.toFixed(2)}</span>`;
                         // Show payment form for paid consultation
                         document.querySelector('#consultation-payment-form .form-wrap').classList.remove('d-none');
                     }
@@ -868,11 +868,11 @@ $intresetsmallimg1 = $intresetsmallimg2 = $intresetsmallimg3 = $intrestimg1 = $i
 
                     // Reset values - DO NOT calculate amount for invalid coupons
                     discountField.value = "";
-                    document.getElementById("consultation-final-price").value = originalPrice;
-                    payButtonPrice.textContent = originalPrice;
-                    consultationPrice.innerHTML = `A$${originalPrice}`;
+                    document.getElementById("consultation-final-price").value = originalPrice.toFixed(2);
+                    payButtonPrice.textContent = originalPrice.toFixed(2);
+                    consultationPrice.innerHTML = `A$${originalPrice.toFixed(2)}`;
                     document.getElementById("toggle-coupon-consultation").textContent = "Add a Coupon Code";
-                    payButton.innerHTML = `Pay | $<span id="pay-button-price">${originalPrice}</span>`;
+                    payButton.innerHTML = `Pay | $<span id="pay-button-price">${originalPrice.toFixed(2)}</span>`;
                     payButton.disabled = false;
 
                     // Ensure payment form is visible for invalid coupons
@@ -886,11 +886,11 @@ $intresetsmallimg1 = $intresetsmallimg2 = $intresetsmallimg3 = $intrestimg1 = $i
 
                 // Reset values on error - DO NOT calculate amount
                 discountField.value = "";
-                document.getElementById("consultation-final-price").value = originalPrice;
-                payButtonPrice.textContent = originalPrice;
-                consultationPrice.innerHTML = `A$${originalPrice}`;
+                document.getElementById("consultation-final-price").value = originalPrice.toFixed(2);
+                payButtonPrice.textContent = originalPrice.toFixed(2);
+                consultationPrice.innerHTML = `A$${originalPrice.toFixed(2)}`;
                 document.getElementById("toggle-coupon-consultation").textContent = "Add a Coupon Code";
-                payButton.innerHTML = `Pay | $<span id="pay-button-price">${originalPrice}</span>`;
+                payButton.innerHTML = `Pay | $<span id="pay-button-price">${originalPrice.toFixed(2)}</span>`;
                 payButton.disabled = false;
 
                 // Ensure payment form is visible on error
