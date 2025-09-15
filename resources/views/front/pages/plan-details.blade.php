@@ -115,7 +115,7 @@
                                                                 data-category-id="{{ $userCategory->id }}"
                                                                 data-user-plan-id="{{ $userPlan->id }}">
                                                                 <img
-                                                                    src="{{ webAssets('storage/'.$meal->meal->image) }}"
+                                                                    src="{{ webAssets('storage/' . $meal->meal->image) }}"
                                                                     alt="{{ $meal->meal->title }}"
                                                                     height="252"
                                                                     width="160" />
@@ -151,98 +151,69 @@
                 @endif
             </section>
 
-            <!-- Plate Breakdown and Training Load -->
-            <section aria-label="Plate Breakdown and Training Load" style="margin-top: 2rem">
-                <div class="section-header">
-                    <h2>Main Meal Plate Portions</h2>
-                </div>
-                <p>
-                    Your carb and veggie portions vary by meal type and training
-                    load for peak performance. Your protein, however, stays the
-                    same. Select your training load below to view:
-                </p>
-                <div class="dropdown dropdown-container training-load-dropdown">
-                    <button class="btn custom-dropdown-button dropdown-toggle" type="button" id="trainingLoadDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                        <div class="custom-dropdown-content">
-                            <div class="custom-dropdown-content-inner">
-                                <div class="custom-dropdown-title">Low</div>
-                                <div class="custom-dropdown-subtitle">Low load, rest and recovery days</div>
-                            </div>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="8" viewBox="0 0 12 8" fill="none">
-                                <path d="M1 1.5L6 6.5L11 1.5" stroke="#3B3B3B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-                        </div>
-                    </button>
-                    <ul class="dropdown-menu custom-dropdown-menu" aria-labelledby="trainingLoadDropdown">
-                        <li>
-                            <div class="custom-dropdown-option selected" data-value="low" data-image="{{ webAssets('front/images/low-load.png') }}">
-                                <div class="option-title">Low</div>
-                                <div class="option-subtitle">Low load, rest and recovery days</div>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="custom-dropdown-option" data-value="moderate" data-image="{{ webAssets('front/images/medium-load.png') }}">
-                                <div class="option-title">Medium </div>
-                                <div class="option-subtitle">Training days</div>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="custom-dropdown-option" data-value="high" data-image="{{ webAssets('front/images/high-load.svg') }}">
-                                <div class="option-title">High </div>
-                                <div class="option-subtitle">Competition or heavy training days</div>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
+            @php
+                $title = $description = $label = $proteinLabel = $proteinDescription = $fuelLabel = $fuelDescription = $protectLabel = $protectDescription = '';
+                if (isset($plan) && isset($plan->name)) {
+                    switch ($plan->name) {
+                        case 'Training Nutrition Plan':
+                            $title = 'Plate Like this...';
+                            $description = 'Your carb and veggie portions vary by meal type and training load for peak performance. Protein stays the same. See the ideal ratios and what foods to choose below.';
+                            $label = 'Training Load';
+                            $proteinLabel = 'Repair Foods: Proteins';
+                            $proteinDescription = 'Keep 1/4 of the plate for protein. Include lean meat, eggs, tofu, fish, or skinless chicken to rebuild & recover muscles.';
+                            $fuelLabel = 'Fuel Foods: Carbs & Healthy Fats';
+                            $fuelDescription = 'Choose complex carbs like potatoes, pasta, noodles & rice or bread as regular fuel sources. Faster carbs, like rice crackers, fruit, bars-use pre-training.';
+                            $protectLabel = 'Protect Foods: Colourful Fruit and Veg';
+                            $protectDescription = 'A variety of fruits and colourful vegetables, eaten regularly, like berries, carrots & capsicum will drive a strong immune system & gut microbiome.';
+                            break;
+                        case 'Injury & Recovery Plan':
+                            $title = 'Recovery Meal Portions';
+                            $description = 'Injury recovery goals are - optimal healing whilst limiting muscle loss and excessive gains in body fat. Training load is reduced during injury, so fuelling requirements are lower.';
+                            $label = 'Meal Portion';
+                            $proteinLabel = 'Repair Foods: Proteins';
+                            $proteinDescription = 'Keep 1/4 of the plate for protein. Include lean meat, eggs, tofu, fish, or skinless chicken to rebuild & recover muscles.';
+                            $fuelLabel = 'Fuel Foods: Carbs & Healthy Fats';
+                            $fuelDescription = 'Choose complex carbs like potatoes, pasta, noodles & rice or bread as regular fuel sources.';
+                            $protectLabel = 'Protect Foods: Colourful Fruit and Veg';
+                            $protectDescription = 'A variety of fruits and colourful vegetables eaten regularly will drive a strong immune system & gut microbiome.';
+                            break;
+                        case 'Competition Plan':
+                            $title = 'Competition Meal Portions...';
+                            $description = 'Your carb and veggie portions vary by meal type and training load for peak performance. Protein stays the same. See the ideal ratios and what foods to choose below.';
+                            $label = 'Training Load';
+                            $proteinLabel = 'Repair foods: Proteins';
+                            $proteinDescription = 'Includes meat, eggs, fish, dairy, tofu or legumes to rebuild & recover muscle.Proteins are not a main fuel source for high-intensity sport, so they are not the priority in the lead-up, on comp day. Leaner white proteins like chicken, fish, pork & eggs are preferred pre-comp as they break down faster in the gut compared to fatty red meats. Proteins are important post-comp to maximise recovery.';
+                            $fuelLabel = 'Fuel Foods: Carbs & Healthy Fats';
+                            $fuelDescription = 'Choose complex carbs like potatoes, pasta, noodles & rice or bread as regular fuel sources that are rehearsed in training. Faster carbs foods like rice crackers, fruit, muesli bars, should be used more the closer the event is, as they digest fast and provide high-octane fuel fast.';
+                            $protectLabel = 'Protect Foods: Colourful Fruit and Veg';
+                            $protectDescription = 'Higher fibre vegetables (carrots, broccoli, mushrooms, etc) and low sugar fruits (blueberries, blackberries, cherries, lemon, limes) are not the priority on comp day as higher fibre meals can cause gut upset. Focus more on the smart carb fuelling foods.';
+                            break;
+                        case 'Injury Recovery + Post Surgery':
+                            $title = 'Plate Like this...';
+                            $description = 'Your carb and veggie portions vary by meal type and training load for peak performance. Protein stays the same. See the ideal ratios and what foods to choose below.';
+                            $label = 'Training Load';
+                            $proteinLabel = 'Repair Foods: Proteins';
+                            $proteinDescription = 'Includes meat, eggs, fish, dairy, tofu or legumes to rebuild & recover muscle.';
+                            $fuelLabel = 'Fuel Foods: Carbs & Healthy Fats';
+                            $fuelDescription = 'Choose complex carbs sources like potatoes, pasta, rice, noodles and breads.';
+                            $protectLabel = 'Protect Foods: Colourful Fruit and Veg';
+                            $protectDescription = 'A variety of mixed fruit & veg drives a strong immune system and gut microbiome.';
+                            break;
+                    }
+                } else {
+                    $title = 'Plate Like this...';
+                    $description = 'Your carb and veggie portions vary by meal type and training load for peak performance. Protein stays the same. See the ideal ratios and what foods to choose below.';
+                    $label = 'Training Load';
+                    $proteinLabel = 'Repair Foods: Proteins';
+                    $proteinDescription = 'Includes meat, eggs, fish, dairy, tofu or legumes to rebuild & recover muscle.';
+                    $fuelLabel = 'Fuel Foods: Carbs & Healthy Fats';
+                    $fuelDescription = 'Choose complex carbs sources like potatoes, pasta, rice, noodles and breads.';
+                    $protectLabel = 'Protect Foods: Colourful Fruit and Veg';
+                    $protectDescription = 'A variety of mixed fruit & veg drives a strong immune system and gut microbiome.';
+                }
+            @endphp
 
-                <div style="display: flex; align-items: start; gap: 1.5rem; flex-wrap: wrap; flex-direction:column;">
-                    <img
-                        src="{{ webAssets('front/images/low-load.png') }}"
-                        alt="Plate like this image"
-                        width="318"
-                        height="350"
-                        class="plate-img"
-                        id="plate-img"/>
-                    <ul style="list-style: none; padding-left: 0; font-size: 1rem">
-                        <li class="list-w-image">
-                            <img
-                                src="{{ webAssets('front/images/boiled egg.svg') }}"
-                                alt="Plate like this image"
-                                style="width: 32px; height: auto"
-                                width="32"
-                                height="33" />
-                            <div>
-                                <span style="color: #A60015; font-weight: bold">Protein: Repair foods</span>
-                                <br />Keep one-quarter of the plate for protein. Choose soft, lean sources like boiled eggs, tofu, fish, or skinless chicken.
-                            </div>
-                        </li>
-                        <li class="list-w-image">
-                            <img
-                                src="{{ webAssets('front/images/Bread.svg') }}"
-                                alt="Plate like this image"
-                                style="width: 32px; height: auto"
-                                width="32"
-                                height="33" />
-                            <div>
-                                <span style="color: #967500; font-weight: bold">Carbs: Fuel</span>
-                                <br />Choose easily digestible carbs like boiled potatoes, white rice, or white bread. Avoid high-fiber or heavy grains before surgery.
-                            </div>
-                        </li>
-                        <li class="list-w-image">
-                            <img
-                                src="{{ webAssets('front/images/apple.svg') }}"
-                                alt="Plate like this image"
-                                style="width: 32px; height: auto"
-                                width="32"
-                                height="33" />
-                            <div>
-                                <span style="color: #3E8E00; font-weight: bold">Fruit and vegetables: Protect</span>
-                                <br />Lightly cooked or peeled vegetables are easier on the gut. Go for colorful but low-fiber options like carrots, zucchini, or bell peppers.
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-            </section>
+            @include('front.pages.partials.plate-breakdown')
         </div>
     </main>
 

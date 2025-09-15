@@ -58,7 +58,7 @@
                 <img src="{{ asset('front/images/circled-meal-3.svg') }}" class="consult-avatar overlap2"
                     alt="meal image" />
 
-                <span style="padding-left: 0px;">28 meals customised for you</span>
+                <span style="padding-left: 0px;">21 meals customised for you</span>
             </div>
         </div>
     </div>

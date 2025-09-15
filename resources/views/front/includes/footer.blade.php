@@ -11,7 +11,7 @@
             </nav>
         </div>
         <div class="footer-bottom">
-            <p>Copyright © 2025 Catalysta Pty Ltd trading as Athlete Elite. All rights reserved.</p>
+            <p>Copyright 2025 Catalysta Pty Ltd</p>
         </div>
     </footer>
 @else
@@ -32,25 +32,28 @@
                     </svg>
                 </a>
                 <p class="copyright-text mob-hide">
-                    Copyright © 2025 Catalysta Pty Ltd trading as Athlete Elite. All rights reserved.
+                    Copyright 2025 Catalysta Pty Ltd
                 </p>
             </div>
 
             <!-- Navigation Links -->
             <nav class="nav-links">
-                <a class="footer-link" style="position: relative;" href="{{ route('front.about-us') }}">About</a>
+                <a class="footer-link" style="position: relative;" href="{{ auth()->guard('web')->check() ? route('front.profile',['id' => auth()->guard('web')->user()->id]) : route('front.index' ) }}">Home</a>
+                @if (auth()->guard('web')->check())
+                <a class="footer-link" style="position: relative;" href="https://athleatshop.com/" target="_blank">Shop</a>
+                @endif
                 <div class="dropdown">
-                    <a class="footer-link dropdown-toggle" role="button" id="servicesDropdown" data-bs-toggle="dropdown" aria-expanded="false">Services</a>
-                    <ul class="dropdown-menu" aria-labelledby="servicesDropdown">
+                    <a class="footer-link dropdown-toggle coming-soon-popup" role="button" id="servicesDropdown" data-bs-toggle="dropdown" aria-expanded="false">Services</a>
+                    {{-- <ul class="dropdown-menu" aria-labelledby="servicesDropdown">
                         <li><a class="dropdown-item" href="{{ route('front.training.nutrition.plan') }}">Training Nutrition Plan</a></li>
                         <li><a class="dropdown-item" href="{{ route('front.competition.plan') }}">Competition plan</a></li>
                         <li><a class="dropdown-item" href="{{ route('front.injury.recovery.plan') }}">Injury & Recovery Plan</a></li>
                         <li><a class="dropdown-item" href="{{ route('front.surgery.plan') }}">Pre & Post Surgery Plan</a></li>
                         <li><a class="dropdown-item" href="{{ route('front.consultations') }}">Private Consultations</a></li>
-                    </ul>
+                    </ul> --}}
                 </div>
 
-                <a href="javascript:void(0)" onclick="showLearnMoreTooltip(this, 'Coming Soon')" class="footer-link contact-mobile" style="position: relative;">Contact</a>
+                {{-- <a href="javascript:void(0)" class="footer-link contact-mobile coming-soon-popup" style="position: relative;">Contact</a> --}}
             </nav>
 
             <!-- Buttons (Desktop) -->
@@ -72,7 +75,7 @@
                     <button type="button" class="rounded-md  btn-signup" onclick="openSingupFreePopup()">Sign up for free</button>
                 @endif
             </div>
-            <p class="copyright-text web-hide">Copyright {{ date('Y') }} Catalysta Pty Ltd</p>
+            <p class="copyright-text web-hide">Copyright 2025 Catalysta Pty Ltd</p>
         </div>
     </footer>
 @endif

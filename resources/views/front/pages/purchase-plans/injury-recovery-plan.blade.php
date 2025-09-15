@@ -84,7 +84,6 @@
                                     @endif
                                 </div>
                             </section>
-                          
                         </div>
                     </div>
                 </div>
@@ -102,7 +101,7 @@
                     <div class="custom-accordion-content">
                         <div class="accordion-body">
                               <section class="resources" style="margin-bottom: 0;padding:12px;">
-                                
+
                                 <div class="" style="margin: 12px 0;">
                                     <div class="resource-card-custom resource-tip">
                                         <div class="tip-title">Kez's Tip of the Day</div>
@@ -152,7 +151,6 @@
                     </div>
                 </div>
             </div>
-
 
             <!-- Resources -->
             <div class="training-plan-wrapper">
@@ -207,31 +205,6 @@
                     <a href="/my-plans" class="see-all">All Plans</a>
                 </div>
 
-                @php
-                    $mealCount = isset($userPlan->userMeals) ? $userPlan->userMeals->count() : 0;
-                    $userPlan = $userPlan ?? null;
-
-                    $latestMealImages = isset($userPlan->userMeals)
-                        ? $userPlan
-                            ->userMeals()
-                            ->with('meal')
-                            ->latest()
-                            ->get()
-                            ->map(function ($userMeal) {
-                                return $userMeal->meal?->image ? asset('storage/' . $userMeal->meal->image) : null;
-                            })
-                            ->filter(function ($image) {
-                                return !empty($image); // filters out null and empty strings
-                            })
-                            ->take(2)
-                            ->values()
-                            ->toArray()
-                        : [];
-
-                    $mealImage1 = $latestMealImages[0] ?? frontAssets('images/sports-training/fooditem1.webp');
-                    $mealImage2 = $latestMealImages[1] ?? frontAssets('images/sports-training/fooditem6.webp');
-                @endphp
-
                 <label class="plan-subtitle-mob">Nutrition plans</label>
                 <div class="consults-plans-grid">
                     <div class="plan-card-custom plan-competition">
@@ -242,10 +215,9 @@
                                 fuelled & ON when it’s game time so that nutrition is never your weakness!
                             </div>
                             <div class="consult-user-row">
-                                <img src="{{ $mealImage1 }}" class="consult-avatar" alt="Kerry O'Bryan, expert coach avatar" />
-                                <img src="{{ $mealImage2 }}" class="consult-avatar overlap1"
-                                    alt="Kerry O'Bryan, expert coach avatar" />
-                                <span>{{ $mealCount }} meals • 18 Nutrition tips</span>
+                                <img src="{{ asset('front/images/circled-meal-1.svg') }}" class="consult-avatar" alt="Kerry O'Bryan, expert coach avatar" />
+                                <img src="{{ asset('front/images/circled-meal-2.svg') }}" class="consult-avatar overlap1" alt="Kerry O'Bryan, expert coach avatar" />
+                                <span>21 meals customised for you</span>
                             </div>
                         </div>
                         <button class="btn-consult" onclick="showLearnMoreTooltip(this, 'Coming Soon')">Learn more</button>
@@ -260,10 +232,9 @@
                                 often overlooked!
                             </div>
                             <div class="consult-user-row">
-                                <img src="{{ $mealImage1 }}" class="consult-avatar" alt="Kerry O'Bryan, expert coach avatar" />
-                                <img src="{{ $mealImage2 }}" class="consult-avatar overlap1"
-                                    alt="Kerry O'Bryan, expert coach avatar" />
-                                <span>{{ $mealCount }} meals • 18 Nutrition tips</span>
+                                <img src="{{ asset('front/images/circled-meal-1.svg') }}" class="consult-avatar" alt="Kerry O'Bryan, expert coach avatar" />
+                                <img src="{{ asset('front/images/circled-meal-2.svg') }}" class="consult-avatar overlap1" alt="Kerry O'Bryan, expert coach avatar" />
+                                <span>21 meals customised for you</span>
                             </div>
                         </div>
                         <button class="btn-consult" onclick="showLearnMoreTooltip(this, 'Coming Soon')">Learn more</button>
@@ -647,7 +618,6 @@
             isFreeUser: {{ $userPlan->free_user ?? 0 }},
             routes: {
                 getProfileMeals: @json(route('front.get-profile-meals', ['plan' => 'PLAN_ID', 'category' => 'CATEGORY_ID'])),
-                supplementScanner: @json(route('front.supplement-scanner')),
                 mealDetails: @json(route('front.meal.details')),
                 mealsItems: @json(route('front.meals.items', ':mealId')),
                 itemsSwapItems: @json(route('front.items.swap-items', ':id')),

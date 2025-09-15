@@ -286,7 +286,7 @@ Route::get('/consultations', [FrontController::class, 'consultations'])->name('f
 // Consultation booking routes
 Route::post('/consultation/book', [App\Http\Controllers\Front\ConsultationController::class, 'bookConsultation'])->name('front.consultation.book');
 Route::get('/consultation/{id}/details', [App\Http\Controllers\Front\ConsultationController::class, 'getConsultationDetails'])->name('front.consultation.details');
-Route::get('/consultation/questionnaire-status', [App\Http\Controllers\Front\ConsultationController::class, 'checkQuestionnaireStatus'])->name('front.consultation.questionnaire.status');
+Route::post('/consultation/questionnaire-status', [App\Http\Controllers\Front\ConsultationController::class, 'checkQuestionnaireStatus'])->name('front.consultation.questionnaire.status');
 
 // Front auth
 Route::post('front/register', [FrontController::class, 'register'])->name('front.register');
@@ -302,8 +302,6 @@ Route::post('front/otp/verify', [OtpRegistrationController::class, 'verifyOtp'])
 Route::post('front/otp/register', [OtpRegistrationController::class, 'completeRegistration'])->name('front.otp.register');
 Route::post('front/otp/resend', [OtpRegistrationController::class, 'resendOtp'])->name('front.otp.resend');
 Route::get('front/otp/sport-games-age-groups', [OtpRegistrationController::class, 'getSportGamesAndAgeGroups'])->name('front.otp.sport-games-age-groups');
-// Debug route for OTP testing (remove in production)
-Route::get('front/otp/debug/{mobile}', [OtpRegistrationController::class, 'debugCache'])->name('front.otp.debug');
 
 // GET route fallback for expired session
 Route::get('front/logout-guest', function () {
