@@ -644,7 +644,8 @@ class PaymentController extends Controller
             ->first();
 
         try {
-            Mail::to($user->email)->send(new PlanPurchaseMail($user, $plan->name));
+            $profileLandingPage = route('front.profile', $user->id);
+            Mail::to($user->email)->send(new PlanPurchaseMail($user, $plan->name, $profileLandingPage));
             Mail::to(config('constants.admin_email'))->send(new PrePlanDetailsSubmitMail($user, $plan->name));
 
             return response()->json([
@@ -1142,13 +1143,6 @@ class PaymentController extends Controller
                 Log::debug('UserConsultation created', ['user_consultation' => $userConsultation]);
             } else {
                 Log::debug('No consultation ID found, skipping UserConsultation creation');
-            }
-
-            // Send plan purchase email notification
-            try {
-                Mail::to($user->email)->send(new PlanPurchaseMail($user, $payment?->plan?->name));
-            } catch (\Exception $e) {
-                Log::warning('Failed to send plan purchase email: ' . $e->getMessage());
             }
 
             DB::commit();
