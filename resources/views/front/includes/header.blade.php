@@ -2,6 +2,7 @@
     $setting = \App\Models\SiteSettings::where('page_id', 'general')->where('meta_key', 'header_headermenu')->first();
     $headerData = json_decode($setting['meta_value'], true);
     $auth = auth()->guard('web')->check();
+    $userId = $auth ? auth()->user()->id : null;
 ?>
 
 @if ($auth && (Route::is('front.profile') || Route::is('front.plans.details') || Route::is('front.my-plans')))
