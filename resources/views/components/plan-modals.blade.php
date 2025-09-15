@@ -624,7 +624,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         paymentModalPrice.textContent = isMonthlyActive ? `A$${originalPrice.toFixed(2)}/mth` : `A$${originalPrice.toFixed(2)}`;
                     } else {
                         if (finalPrice <= 0) {
-                            paymentModalPrice.textContent = 'A$0';
+                            paymentModalPrice.textContent = 'A$0.00';
                         } else {
                             paymentModalPrice.textContent = isMonthlyActive ? `A$${finalPrice.toFixed(2)}/mth` : `A$${finalPrice.toFixed(2)}`;
                         }
