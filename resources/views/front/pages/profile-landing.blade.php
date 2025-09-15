@@ -47,7 +47,7 @@
                     'actionRoute' => 'front.my-plans',
                     'overlayText' => 'Continue your Questionnaire',
                     'hideActionText' => false,
-                    'overlayRoute' => route('front.pre-plan-details', ['id' => $paymentForQuestionnaireRoute->id ?? null, 'user_id' => $paymentForQuestionnaireRoute->user_id ?? null])
+                    'overlayRoute' => route('front.pre-plan-details', ['user_id' => $paymentForQuestionnaireRoute->user_id ?? null])
                 ])
             @elseif ($viewState === 'consultation_only_after_questionnaire' || $viewState === 'purchase_prompt')
                 @include('front.pages.partials.nutrition-plan-section', [
@@ -145,7 +145,7 @@
                     <a href="#" class="see-all coming-soon-popup">See all</a>
                 </div>
                 <div class="resources-custom-grid">
-                    <div class="cursor-pointer resource-card-custom resource-supplement hover-card scanner-btn" id="scanner-btn">
+                    <div class="cursor-pointer resource-card-custom resource-supplement hover-card scanner-btn" id="scanner-btn" onclick="window.location.href='{{ route('front.supplement-scanner') }}'">
                         <img src="{{ frontAssets('images/cardbg.webp') }}" class="resource-bg-img"
                             alt="Supplement scanner background" />
                         <div class="icon-bg">
