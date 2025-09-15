@@ -14,11 +14,11 @@
         @if($plan->name == 'Training Nutrition Plan')
             <a href="{{ route('front.training.nutrition.plan') }}" class="btn-consult">Learn more</a>
         @elseif($plan->name == 'Competition Plan')
-            <a href="{{ route('front.competition.plan') }}" class="btn-consult">Learn more</a>
+            <button class="btn-consult" onclick="showLearnMoreTooltip(this, 'Coming Soon')">Learn more</button>
         @elseif($plan->name == 'Injury & Recovery Plan')
             <a href="{{ route('front.injury.recovery.plan') }}" class="btn-consult">Learn more</a>
         @elseif($plan->name == 'Injury Recovery + Post Surgery')
-            <a href="{{ route('front.surgery.plan') }}" class="btn-consult">Learn more</a>
+            <button class="btn-consult" onclick="showLearnMoreTooltip(this, 'Coming Soon')">Learn more</button>
         @else
             <button class="btn-consult" onclick="showLearnMoreTooltip(this, 'Coming Soon')">Learn more</button>
         @endif

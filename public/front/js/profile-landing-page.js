@@ -106,10 +106,6 @@ document.addEventListener("DOMContentLoaded", function () {
     $("#start-chat-link, #chat-to-virtual-kez-btn").click(function () {
         $("#delphi-bubble-trigger").click();
     });
-
-    $(".scanner-btn").click(function () {
-        location.href = profileData.routes.supplementScanner;
-    });
 });
 
 function showLoader() {

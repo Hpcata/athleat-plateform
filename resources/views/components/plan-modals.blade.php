@@ -1,23 +1,23 @@
 {{-- Plan Modals Component --}}
 {{-- Usage: @include('components.plan-modals', ['userEmail' => $userEmail, 'planDetails' => $planDetails, 'consultations' => $consultations]) --}}
 @php
-    $months = 8;
-    $thirtyMinConsultationPlanPrice = $consultations->where('time', 30)->first()?->price ?? 0;
-    $sixtyMinConsultationPlanPrice = $consultations->where('time', 60)->first()?->price ?? 0;
-    $powerPlayPlanPrice = $planDetails?->price + $thirtyMinConsultationPlanPrice;
-    $gamePlanPlanPrice = $planDetails?->price + $sixtyMinConsultationPlanPrice;
-    
-    // Monthly calculations with 10% markup
-    $monthlyPlanPrice = ($planDetails?->price * 1.1) / $months;
-    $monthlyPowerPlayPrice = ($powerPlayPlanPrice * 1.1) / $months;
-    $monthlyGamePlanPrice = ($gamePlanPlanPrice * 1.1) / $months;
+$months = 8;
+$thirtyMinConsultationPlanPrice = $consultations->where('time', 30)->first()?->price ?? 0;
+$sixtyMinConsultationPlanPrice = $consultations->where('time', 60)->first()?->price ?? 0;
+$powerPlayPlanPrice = $planDetails?->price + $thirtyMinConsultationPlanPrice;
+$gamePlanPlanPrice = $planDetails?->price + $sixtyMinConsultationPlanPrice;
+
+// Monthly calculations with 10% markup
+$monthlyPlanPrice = ($planDetails?->price * 1.1) / $months;
+$monthlyPowerPlayPrice = ($powerPlayPlanPrice * 1.1) / $months;
+$monthlyGamePlanPrice = ($gamePlanPlanPrice * 1.1) / $months;
 @endphp
 
-<div class="modal fade" id="planChooseModal" tabindex="-1" aria-hidden="true">
+    <div class="modal fade" id="planChooseModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="p-3 modal-content" style="border-radius: 12px;">
 
-              
+
                 <div class="mb-3 pb-0 border-0 modal-header">
                     <div>&nbsp;</div>
                     <h5 class="mb-0 modal-title fw-bold">Choose your plan</h5>
@@ -25,7 +25,7 @@
 
                 </div>
 
-            
+
                 <div class="p-0 modal-body">
                     <div class="d-flex justify-content-center mb-4">
                         <div class="d-flex justify-content-center w-fit payment-toggle-swich">
@@ -35,9 +35,9 @@
                         </div>
                     </div>
 
-                   
+
                     <div id="onePaymentPlans">
-                      
+
                         <div class="mb-4 border-0 card">
                             <div class="card-body">
                                 <div class="d-flex align-items-center justify-content-between">
@@ -48,7 +48,7 @@
                                     </div>
                                 </div>
 
-                                {!! $planDetails?->description !!}
+                                <p class="">{!! $planDetails?->description !!}</p>
                                 <div class="d-flex align-items-center justify-content-between">
                                     <button class="btn btn-signup plan-get-started-btn" data-plan-type="main" data-plan-price="{{ $planDetails?->price }}" data-monthly-price="{{ number_format($monthlyPlanPrice, 2) }}">Get started</button>
                                     <a href="" class="text-decoration-none whats-included-link" data-bs-dismiss="modal">What's included
@@ -63,7 +63,7 @@
                             </div>
                         </div>
 
-               
+
                         <div class="position-relative mb-4 border-0 card">
                             <span class="popular-badge">Popular</span>
                             <div class="card-body">
@@ -90,7 +90,7 @@
                             </div>
                         </div>
 
-                   
+
                         <div class="mb-4 border-0 card">
 
                             <div class="card-body">
@@ -102,7 +102,7 @@
                                     </div>
                                 </div>
 
-                                <p class="">{{ $planDetails?->name }} + 60 min Consult with Kerry to cover Nutrition AND Training Advise</p>
+                                <p class="">{{ $planDetails?->name }} + 60 min Consult with Kerry to cover NutritionAND Training Advice</p>
                                 <div class="d-flex align-items-center justify-content-between">
                                     <button class="btn btn-signup plan-get-started-btn" data-plan-type="gameplan" data-plan-price="{{ $gamePlanPlanPrice }}" data-monthly-price="{{ number_format($monthlyGamePlanPrice, 2) }}">Get started</button>
                                     <a href="#" class="text-decoration-none whats-in-one-on-one-link" data-bs-dismiss="modal">What's in a 1 on 1
@@ -122,7 +122,7 @@
         </div>
     </div>
 
-       <!-- Payment Modal -->
+    <!-- Payment Modal -->
     <div class="modal fade" id="paymentModalPlan" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -188,6 +188,7 @@
                                 </div>
                             </div>
                             <!-- Button that swaps modal content -->
+                            {{-- make this button text in the center --}}
                             <button type="submit" class="w-100 btn btn-signup" id="paymentButton">
                                 One Payment | A${{ number_format($planDetails?->price, 0) }}
                             </button>
@@ -206,21 +207,13 @@
         </div>
     </div>
 
-        <!-- Congrats Modal for Plan Selection -->
+    <!-- Congrats Modal for Plan Selection -->
     <div class="modal fade" id="congratsModalPlan" tabindex="-1" aria-labelledby="congratsModalPlanLabel"
         aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content" style="border-radius: 12px;">
                 <div id="congratsContentPlan">
-                    <!-- Remove close button to prevent manual closing, same as consultation -->
-                    <!-- <button type="button" class="btn-close congrats-modal" data-bs-dismiss="modal"
-                        aria-label="Close"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12"
-                            viewBox="0 0 12 12" fill="none">
-                            <path
-                                d="M0.219668 1.28033C-0.0732225 0.987438 -0.0732225 0.512558 0.219668 0.219668C0.512558 -0.0732225 0.987438 -0.0732225 1.28033 0.219668L5.999 4.9384L10.7176 0.219798C11.0105 -0.0730923 11.4854 -0.0730923 11.7782 0.219798C12.0711 0.512688 12.0711 0.987568 11.7782 1.28046L7.0597 5.999L11.7782 10.7176C12.0711 11.0105 12.0711 11.4854 11.7782 11.7782C11.4854 12.0711 11.0105 12.0711 10.7176 11.7782L5.999 7.0597L1.28033 11.7784C0.987438 12.0713 0.512558 12.0713 0.219668 11.7784C-0.0732225 11.4855 -0.0732225 11.0106 0.219668 10.7177L4.9384 5.999L0.219668 1.28033Z"
-                                fill="#626262" />
-                        </svg></button> -->
-                        <img src="{{ frontAssets('images/consultation/congrats-modal-img.png') }}" alt="Congrats"
+                    <img src="{{ frontAssets('images/consultation/congrats-modal-img.png') }}" alt="Congrats"
                         class="rounded-top w-100">
                     <div class="p-4 text-center modal-body">
                         <div class="mb-3">
@@ -340,7 +333,7 @@ document.addEventListener('DOMContentLoaded', function() {
     $('#paymentModalPlan').on('shown.bs.modal', function() {
         if (!cardNumberElement) {
             const elements = stripe.elements();
-            
+
             cardNumberElement = elements.create('cardNumber', {
                 style: {
                     base: {
@@ -352,7 +345,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     },
                 },
             });
-            
+
             cardExpiryElement = elements.create('cardExpiry', {
                 style: {
                     base: {
@@ -364,7 +357,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     },
                 },
             });
-            
+
             cardCvcElement = elements.create('cardCvc', {
                 style: {
                     base: {
@@ -376,7 +369,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     },
                 },
             });
-            
+
             cardNumberElement.mount('#card-number-element');
             cardExpiryElement.mount('#card-expiry-element');
             cardCvcElement.mount('#card-cvc-element');
@@ -409,15 +402,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function updatePlanPricing(pricingType) {
         const pricing = planPricing[pricingType];
-        
+
         // Update main plan
         document.getElementById('planPrice').textContent = pricing.planPrice;
         document.getElementById('planDuration').textContent = pricing.planDuration;
-        
+
         // Update Power Play plan
         document.getElementById('powerPlayPrice').textContent = pricing.powerPlayPrice;
         document.getElementById('powerPlayDuration').textContent = pricing.powerPlayDuration;
-        
+
         // Update Game Plan
         document.getElementById('gamePlanPrice').textContent = pricing.gamePlanPrice;
         document.getElementById('gamePlanDuration').textContent = pricing.gamePlanDuration;
@@ -478,44 +471,44 @@ document.addEventListener('DOMContentLoaded', function() {
     const paymentModalPrice = document.getElementById('paymentModalPrice');
     const paymentButton = document.getElementById('paymentButton');
     const toggleCouponLink = document.getElementById('toggle-coupon-consultation');
-    
+
     if (toggleCouponBtn && couponDetails) {
         toggleCouponBtn.addEventListener('click', function(e) {
             e.preventDefault();
-            
+
             if (couponDetails.classList.contains('d-none')) {
                 // Show coupon details
                 couponDetails.classList.remove('d-none');
             } else {
                 // Hide coupon details and reset coupon
                 couponDetails.classList.add('d-none');
-                
+
                 // Reset coupon values
                 promoCodeInput.value = '';
                 promoMessage.textContent = '';
                 promoMessage.className = 'form-text';
                 discountField.value = '';
-                
+
                 // Reset price display to original price
                 const originalPrice = parseFloat(paymentModalPrice.getAttribute('data-original-price') || '0');
-                
+
                 // Debug logging
                 console.log('Coupon toggle reset:', {
                     dataOriginalPrice: paymentModalPrice.getAttribute('data-original-price'),
                     originalPrice: originalPrice,
                     isNaN: isNaN(originalPrice)
                 });
-                
+
                 // Check if this is a monthly plan to preserve "/mth" suffix
-                const isMonthlyActive = document.getElementById('paymentModalPlan').getAttribute('data-is-monthly') === 'true' || 
+                const isMonthlyActive = document.getElementById('paymentModalPlan').getAttribute('data-is-monthly') === 'true' ||
                                        (document.getElementById('monthlyPlanBtn') && document.getElementById('monthlyPlanBtn').classList.contains('active'));
-                
+
                 if (isMonthlyActive) {
                     paymentModalPrice.textContent = `A$${originalPrice.toFixed(2)}/mth`;
                 } else {
                     paymentModalPrice.textContent = `A$${originalPrice.toFixed(2)}`;
                 }
-                
+
                 // Reset button text
                 if (isMonthlyActive) {
                     const monthlyPrice = paymentButton.getAttribute('data-monthly-price');
@@ -523,12 +516,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 } else {
                     paymentButton.innerHTML = `One Payment | A$${originalPrice.toFixed(0)}`;
                 }
-                
+
                 // Show payment form
                 document.querySelector('#paymentForm .form-wrap').classList.remove('d-none');
                 // Add required attribute back for paid plans
                 document.getElementById('card-holder-name').setAttribute('required', 'required');
-                
+
                 // Reset toggle link text
                 this.textContent = 'Add a Coupon Code';
             }
@@ -537,17 +530,17 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Apply coupon code (exactly like consultation flow)
     const applyPromoBtn = document.getElementById('apply-promo-code-consultation');
-    
+
     if (applyPromoBtn) {
         applyPromoBtn.addEventListener('click', function() {
             const promoCode = promoCodeInput.value.trim();
             const planId = '{{ $planDetails?->id }}';
             const originalPrice = parseFloat(paymentModalPrice.getAttribute('data-original-price') || '0');
-            
+
             // Determine consultation ID based on plan type
             let consultationId = null;
             const planType = getPlanTypeFromTitle(document.getElementById('paymentModalTitle').textContent);
-            
+
             if (planType === 'powerplay') {
                 // For Power Play, we need to get the 30-minute consultation ID
                 consultationId = '{{ $consultations->where("time", 30)->first()?->id }}';
@@ -555,7 +548,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 // For Game Plan, we need to get the 60-minute consultation ID
                 consultationId = '{{ $consultations->where("time", 60)->first()?->id }}';
             }
-            
+
             // Debug logging
             console.log('Coupon application:', {
                 promoCode: promoCode,
@@ -566,28 +559,28 @@ document.addEventListener('DOMContentLoaded', function() {
                 dataOriginalPrice: paymentModalPrice.getAttribute('data-original-price'),
                 isNaN: isNaN(originalPrice)
             });
-            
+
             if (!promoCode) {
                 promoMessage.textContent = "Please enter a coupon code.";
                 promoMessage.className = "form-text text-danger";
                 return;
             }
-            
+
             // Disable apply button during validation
             this.disabled = true;
             this.textContent = "Applying...";
-            
+
             // Prepare request body
             const requestBody = {
                 code: promoCode,
                 plan_id: planId
             };
-            
+
             // Add consultation_id if applicable
             if (consultationId) {
                 requestBody.consultation_id = consultationId;
             }
-            
+
             fetch('{{ route("validate.coupon.code") }}', {
                 method: 'POST',
                 headers: {
@@ -601,10 +594,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (data.valid) {
                     const discount = parseFloat(data.discount);
                     discountField.value = discount;
-                    
+
                     let finalPrice = originalPrice;
                     let discountText = "";
-                    
+
                     if (data.type === 'percentage') {
                         const discountAmount = (originalPrice * discount) / 100;
                         finalPrice = originalPrice - discountAmount;
@@ -613,7 +606,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         finalPrice = Math.max(0, originalPrice - discount);
                         discountText = `$${discount} off`;
                     }
-                    
+
                     // Debug logging for price calculation
                     console.log('Price calculation:', {
                         originalPrice: originalPrice,
@@ -621,11 +614,11 @@ document.addEventListener('DOMContentLoaded', function() {
                         finalPrice: finalPrice,
                         isNaN: isNaN(finalPrice)
                     });
-                    
+
                     // Update display
-                    const isMonthlyActive = document.getElementById('paymentModalPlan').getAttribute('data-is-monthly') === 'true' || 
+                    const isMonthlyActive = document.getElementById('paymentModalPlan').getAttribute('data-is-monthly') === 'true' ||
                                            (document.getElementById('monthlyPlanBtn') && document.getElementById('monthlyPlanBtn').classList.contains('active'));
-                    
+
                     if (isNaN(finalPrice)) {
                         console.error('Final price is NaN, using original price');
                         paymentModalPrice.textContent = isMonthlyActive ? `A$${originalPrice.toFixed(2)}/mth` : `A$${originalPrice.toFixed(2)}`;
@@ -636,13 +629,13 @@ document.addEventListener('DOMContentLoaded', function() {
                             paymentModalPrice.textContent = isMonthlyActive ? `A$${finalPrice.toFixed(2)}/mth` : `A$${finalPrice.toFixed(2)}`;
                         }
                     }
-                    
+
                     // Update toggle link text
                     toggleCouponLink.textContent = `Remove Coupon Code (${discountText})`;
-                    
+
                     promoMessage.textContent = `Coupon applied successfully! ${discountText}`;
                     promoMessage.className = "form-text text-success";
-                    
+
                     // If 100% discount, update button text and hide payment form
                     if (finalPrice <= 0) {
                         paymentButton.innerHTML = 'Next';
@@ -651,13 +644,13 @@ document.addEventListener('DOMContentLoaded', function() {
                         // Remove required attribute from card holder name for free plans
                         document.getElementById('card-holder-name').removeAttribute('required');
                     } else {
-                        const isMonthlyActive = document.getElementById('paymentModalPlan').getAttribute('data-is-monthly') === 'true' || 
+                        const isMonthlyActive = document.getElementById('paymentModalPlan').getAttribute('data-is-monthly') === 'true' ||
                                        (document.getElementById('monthlyPlanBtn') && document.getElementById('monthlyPlanBtn').classList.contains('active'));
                         if (isMonthlyActive) {
                             // Calculate discounted monthly price
                             const monthlyPrice = paymentButton.getAttribute('data-monthly-price');
                             const originalMonthlyPrice = parseFloat(monthlyPrice);
-                            
+
                             // Debug logging
                             console.log('Monthly calculation:', {
                                 monthlyPrice: monthlyPrice,
@@ -665,13 +658,13 @@ document.addEventListener('DOMContentLoaded', function() {
                                 discount: discount,
                                 isNaN: isNaN(originalMonthlyPrice)
                             });
-                            
+
                             if (isNaN(originalMonthlyPrice)) {
                                 console.error('Monthly price is NaN, using fallback');
                                 paymentButton.innerHTML = `Monthly | A$${monthlyPrice}/mth`;
                             } else {
                                 let discountedMonthlyPrice;
-                                
+
                                 if (data.type === 'percentage') {
                                     const monthlyDiscountAmount = (originalMonthlyPrice * discount) / 100;
                                     discountedMonthlyPrice = originalMonthlyPrice - monthlyDiscountAmount;
@@ -680,7 +673,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 } else {
                                     discountedMonthlyPrice = originalMonthlyPrice;
                                 }
-                                
+
                                 paymentButton.innerHTML = `Monthly | A$${discountedMonthlyPrice.toFixed(2)}/mth`;
                             }
                         } else {
@@ -694,36 +687,36 @@ document.addEventListener('DOMContentLoaded', function() {
                 } else {
                     promoMessage.textContent = data.message || "Invalid coupon code.";
                     promoMessage.className = "form-text text-danger";
-                    
+
                     // Reset values
                     discountField.value = "";
                     const resetPrice = parseFloat(paymentModalPrice.getAttribute('data-original-price') || '0');
-                    
+
                     // Check if this is a monthly plan to preserve "/mth" suffix
-                    const isMonthlyActive = document.getElementById('paymentModalPlan').getAttribute('data-is-monthly') === 'true' || 
+                    const isMonthlyActive = document.getElementById('paymentModalPlan').getAttribute('data-is-monthly') === 'true' ||
                                        (document.getElementById('monthlyPlanBtn') && document.getElementById('monthlyPlanBtn').classList.contains('active'));
-                    
+
                     if (isMonthlyActive) {
                         paymentModalPrice.textContent = `A$${resetPrice.toFixed(2)}/mth`;
                     } else {
                         paymentModalPrice.textContent = `A$${resetPrice.toFixed(2)}`;
                     }
-                    
+
                     toggleCouponLink.textContent = "Add a Coupon Code";
-                    
+
                     if (isMonthlyActive) {
                         const monthlyPrice = paymentButton.getAttribute('data-monthly-price');
                         paymentButton.innerHTML = `Monthly | A$${monthlyPrice}/mth`;
                     } else {
                         paymentButton.innerHTML = `One Payment | A$${resetPrice.toFixed(0)}`;
                     }
-                    
+
                     // Show payment form
                     document.querySelector('#paymentForm .form-wrap').classList.remove('d-none');
                     // Add required attribute back for paid plans
                     document.getElementById('card-holder-name').setAttribute('required', 'required');
                 }
-                
+
                 // Re-enable apply button
                 this.disabled = false;
                 this.textContent = "Apply";
@@ -732,7 +725,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.error('Error:', error);
                 promoMessage.textContent = "Error applying coupon code. Please try again.";
                 promoMessage.className = "form-text text-danger";
-                
+
                 // Re-enable apply button
                 this.disabled = false;
                 this.textContent = "Apply";
@@ -742,7 +735,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Handle payment button click (exactly like consultation flow)
     $('#paymentButton').on('click', function(e) {
-            e.preventDefault();
+        e.preventDefault();
         processPlanPayment();
     });
 
@@ -754,7 +747,7 @@ document.addEventListener('DOMContentLoaded', function() {
             setTimeout(function() {
                 const planInclusionSection = document.querySelector('.plan-inclusion-section');
                 if (planInclusionSection) {
-                    planInclusionSection.scrollIntoView({ 
+                    planInclusionSection.scrollIntoView({
                         behavior: 'smooth',
                         block: 'start'
                     });
@@ -810,20 +803,14 @@ function preventRefreshWhenCalendarOpen(event) {
 
 // Check questionnaire status and redirect accordingly (moved outside DOMContentLoaded for global access)
 function checkQuestionnaireStatusAndRedirect(paymentId = null) {
-    const userId = '{{ Auth::user()->id ?? "" }}';
     let url = '{{ route("front.consultation.questionnaire.status") }}';
-    
-    // Build query parameters
-    const params = new URLSearchParams();
-    if (userId) params.append('user_id', userId);
-    if (paymentId) params.append('payment_id', paymentId);
-    
-    if (params.toString()) {
-        url += '?' + params.toString();
-    }
-    
+
     fetch(url, {
-        method: 'GET',
+        method: 'POST',
+        body: JSON.stringify({
+            payment_id: paymentId || null,
+            user_id: '{{ Auth::user()->id ?? "" }}' || null
+        }),
         headers: {
             'Content-Type': 'application/json',
             'X-CSRF-TOKEN': '{{ csrf_token() }}'
@@ -869,7 +856,7 @@ function preventModalClose() {
             return false;
         }
     });
-    
+
     // Prevent modal close via ESC key
     $(document).off('keydown.paymentModal').on('keydown.paymentModal', function(e) {
         if (isPaymentProcessing && e.keyCode === 27) { // ESC key
@@ -878,7 +865,7 @@ function preventModalClose() {
             return false;
         }
     });
-    
+
     // Prevent modal close via backdrop click - use Bootstrap's backdrop event
     $('#paymentModalPlan').off('click.dismiss.bs.modal').on('click.dismiss.bs.modal', function(e) {
         if (isPaymentProcessing && e.target === this) {
@@ -887,7 +874,7 @@ function preventModalClose() {
             return false;
         }
     });
-    
+
     // Additional backdrop click prevention
     $('#paymentModalPlan').off('click.paymentModal').on('click.paymentModal', function(e) {
         if (isPaymentProcessing && e.target === this) {
@@ -896,7 +883,7 @@ function preventModalClose() {
             return false;
         }
     });
-    
+
     // Disable close button during payment processing
     $('#paymentModalPlan .btn-close, #paymentModalPlan .close').off('click.paymentModal').on('click.paymentModal', function(e) {
         if (isPaymentProcessing) {
@@ -905,12 +892,12 @@ function preventModalClose() {
             return false;
         }
     });
-    
+
     // Set modal data attributes to prevent backdrop dismissal
     if (isPaymentProcessing) {
         $('#paymentModalPlan').attr('data-bs-backdrop', 'static');
         $('#paymentModalPlan').attr('data-bs-keyboard', 'false');
-        
+
         // Also update the modal instance configuration if it exists
         const modalElement = document.getElementById('paymentModalPlan');
         if (modalElement && bootstrap.Modal.getInstance(modalElement)) {
@@ -919,7 +906,7 @@ function preventModalClose() {
             modalInstance._config.keyboard = false;
         }
     }
-    
+
     // Add visual indicators that modal cannot be closed
     if (isPaymentProcessing) {
         $('#paymentModalPlan').addClass('payment-processing');
@@ -941,18 +928,18 @@ function handleBeforeUnload(e) {
 function resetPaymentProcessingState() {
     isPaymentProcessing = false;
     window.removeEventListener('beforeunload', handleBeforeUnload);
-    
+
     // Remove all modal close prevention event listeners
     $('#paymentModalPlan').off('hide.bs.modal');
     $(document).off('keydown.paymentModal');
     $('#paymentModalPlan').off('click.dismiss.bs.modal');
     $('#paymentModalPlan').off('click.paymentModal');
     $('#paymentModalPlan .btn-close, #paymentModalPlan .close').off('click.paymentModal');
-    
+
     // Restore modal data attributes
     $('#paymentModalPlan').attr('data-bs-backdrop', 'true');
     $('#paymentModalPlan').attr('data-bs-keyboard', 'true');
-    
+
     // Also restore the modal instance configuration if it exists
     const modalElement = document.getElementById('paymentModalPlan');
     if (modalElement && bootstrap.Modal.getInstance(modalElement)) {
@@ -960,7 +947,7 @@ function resetPaymentProcessingState() {
         modalInstance._config.backdrop = true;
         modalInstance._config.keyboard = true;
     }
-    
+
     // Remove visual indicators
     $('#paymentModalPlan').removeClass('payment-processing');
     $('#paymentModalPlan .btn-close, #paymentModalPlan .close').removeClass('disabled').css('opacity', '1');
@@ -975,24 +962,24 @@ function processPlanPayment() {
     const email = '{{ Auth::user()->email ?? "" }}';
     const couponCode = $('#promo-code-consultation').val().trim();
     const cardHolderName = $('#card-holder-name').val();
-    
+
     // Set payment processing state
     isPaymentProcessing = true;
-    
+
     // Disable button to prevent double submission
     $('#paymentButton').prop('disabled', true).text('Processing...');
-    
+
     // Prevent page reload and modal close during payment processing
     preventPageReload();
     preventModalClose();
-    
+
     // Check if this is a free plan (final price is 0 or less)
     if (parseFloat(finalPrice) <= 0) {
         // Free plan - no payment required, skip payment method validation
         processFreePlanPurchase();
         return;
     }
-    
+
     // For paid plans, validate card holder name
     if (!cardHolderName.trim()) {
         alert('Please enter the name on card.');
@@ -1013,16 +1000,16 @@ function sendPlanRequestWithCardDetails() {
     const email = '{{ Auth::user()->email ?? "" }}';
     const couponCode = $('#promo-code-consultation').val().trim();
     const cardHolderName = $('#card-holder-name').val() || '{{ Auth::user()->name ?? "" }}';
-    const isMonthly = document.getElementById('paymentModalPlan').getAttribute('data-is-monthly') === 'true' || 
+    const isMonthly = document.getElementById('paymentModalPlan').getAttribute('data-is-monthly') === 'true' ||
                      (document.getElementById('monthlyPlanBtn') && document.getElementById('monthlyPlanBtn').classList.contains('active'));
-    
+
     // Check if this is a free plan (final price is 0 or less)
     if (parseFloat(finalPrice) <= 0) {
         // Free plan - send request without payment method
         sendFreePlanRequest();
         return;
     }
-    
+
     // For paid plans, validate Stripe Elements
     if (!cardNumberElement || !cardExpiryElement || !cardCvcElement) {
         alert('Payment form is not ready. Please try again.');
@@ -1030,7 +1017,7 @@ function sendPlanRequestWithCardDetails() {
         resetPaymentProcessingState();
         return;
     }
-    
+
     // Create payment method using Stripe Elements
     stripe.createPaymentMethod({
         type: 'card',
@@ -1060,9 +1047,9 @@ function sendPlanRequestToBackend(paymentMethodId) {
     const email = '{{ Auth::user()->email ?? "" }}';
     const couponCode = $('#promo-code-consultation').val().trim();
     const cardHolderName = $('#card-holder-name').val() || '{{ Auth::user()->name ?? "" }}';
-    const isMonthly = document.getElementById('paymentModalPlan').getAttribute('data-is-monthly') === 'true' || 
+    const isMonthly = document.getElementById('paymentModalPlan').getAttribute('data-is-monthly') === 'true' ||
                      (document.getElementById('monthlyPlanBtn') && document.getElementById('monthlyPlanBtn').classList.contains('active'));
-    
+
     $.ajax({
         url: '{{ route("process.plan.purchase") }}',
         method: 'POST',
@@ -1083,14 +1070,16 @@ function sendPlanRequestToBackend(paymentMethodId) {
             if (response.success) {
                 // Store payment ID for questionnaire redirect
                 currentPaymentId = response.data.payment_id;
-                
+                hasCompletedQuestionnaire = response.data.hasCompletedQuestionnaire;
+
                 // Reset payment processing state
                 resetPaymentProcessingState();
                 // Hide payment modal programmatically
                 isPaymentModalClosingProgrammatically = true;
                 $('#paymentModalPlan').modal('hide');
                 // Update congrats modal content based on plan type
-                updateCongratsModal(response.data.plan_type, response.data.has_consultation);
+                updateCongratsModal(response.data.plan_type, response.data.has_consultation, hasCompletedQuestionnaire);
+
                 // Show congrats modal
                 $('#congratsModalPlan').modal('show');
             } else if (response.requires_action) {
@@ -1103,7 +1092,7 @@ function sendPlanRequestToBackend(paymentMethodId) {
                 handlePaymentConfirmation(clientSecret, response.subscription_id);
             } else {
                 // Handle error
-                const isMonthly = document.getElementById('paymentModalPlan').getAttribute('data-is-monthly') === 'true' || 
+                const isMonthly = document.getElementById('paymentModalPlan').getAttribute('data-is-monthly') === 'true' ||
                      (document.getElementById('monthlyPlanBtn') && document.getElementById('monthlyPlanBtn').classList.contains('active'));
                 const finalPrice = document.getElementById('paymentModalPrice').textContent.replace(/[A$,\s]/g, '');
                 $('#paymentButton').prop('disabled', false).text(isMonthly ? 'Monthly | A$' + finalPrice + '/mth' : 'One Payment | A$' + finalPrice);
@@ -1111,7 +1100,7 @@ function sendPlanRequestToBackend(paymentMethodId) {
             }
         },
         error: function(xhr) {
-            const isMonthly = document.getElementById('paymentModalPlan').getAttribute('data-is-monthly') === 'true' || 
+            const isMonthly = document.getElementById('paymentModalPlan').getAttribute('data-is-monthly') === 'true' ||
                      (document.getElementById('monthlyPlanBtn') && document.getElementById('monthlyPlanBtn').classList.contains('active'));
             const finalPrice = document.getElementById('paymentModalPrice').textContent.replace(/[A$,\s]/g, '');
             $('#paymentButton').prop('disabled', false).text(isMonthly ? 'Monthly | A$' + finalPrice + '/mth' : 'One Payment | A$' + finalPrice);
@@ -1130,9 +1119,9 @@ function sendFreePlanRequest() {
     const email = '{{ Auth::user()->email ?? "" }}';
     const couponCode = $('#promo-code-consultation').val().trim();
     const cardHolderName = $('#card-holder-name').val() || '{{ Auth::user()->name ?? "" }}';
-    const isMonthly = document.getElementById('paymentModalPlan').getAttribute('data-is-monthly') === 'true' || 
+    const isMonthly = document.getElementById('paymentModalPlan').getAttribute('data-is-monthly') === 'true' ||
                      (document.getElementById('monthlyPlanBtn') && document.getElementById('monthlyPlanBtn').classList.contains('active'));
-    
+
     console.log('Sending free plan request:', {
         planType: planType,
         originalPrice: originalPrice,
@@ -1140,7 +1129,7 @@ function sendFreePlanRequest() {
         isMonthly: isMonthly,
         couponCode: couponCode
     });
-    
+
     $.ajax({
         url: '{{ route("process.plan.purchase") }}',
         method: 'POST',
@@ -1162,14 +1151,17 @@ function sendFreePlanRequest() {
             if (response.success) {
                 // Store payment ID for questionnaire redirect
                 currentPaymentId = response.data.payment_id;
-                
+                hasCompletedQuestionnaire = response.data.hasCompletedQuestionnaire;
+
                 // Reset payment processing state
                 resetPaymentProcessingState();
                 // Hide payment modal programmatically
                 isPaymentModalClosingProgrammatically = true;
                 $('#paymentModalPlan').modal('hide');
+
                 // Update congrats modal content based on plan type
-                updateCongratsModal(response.data.plan_type, response.data.has_consultation);
+                updateCongratsModal(response.data.plan_type, response.data.has_consultation, hasCompletedQuestionnaire);
+
                 // Show congrats modal
                 $('#congratsModalPlan').modal('show');
             } else {
@@ -1208,7 +1200,7 @@ function handlePaymentAction(clientSecret, subscriptionId) {
         }).then(function(result) {
             if (result.error) {
                 const finalPrice = document.getElementById('paymentModalPrice').textContent.replace(/[A$,\s]/g, '');
-                const isMonthly = document.getElementById('paymentModalPlan').getAttribute('data-is-monthly') === 'true' || 
+                const isMonthly = document.getElementById('paymentModalPlan').getAttribute('data-is-monthly') === 'true' ||
                      (document.getElementById('monthlyPlanBtn') && document.getElementById('monthlyPlanBtn').classList.contains('active'));
                 $('#paymentButton').prop('disabled', false).text(isMonthly ? 'Monthly | A$' + finalPrice + '/mth' : 'One Payment | A$' + finalPrice);
                 alert('Payment failed: ' + result.error.message);
@@ -1251,7 +1243,7 @@ function handlePaymentConfirmation(clientSecret, subscriptionId) {
         }).then(function(result) {
             if (result.error) {
                 const finalPrice = document.getElementById('paymentModalPrice').textContent.replace(/[A$,\s]/g, '');
-                const isMonthly = document.getElementById('paymentModalPlan').getAttribute('data-is-monthly') === 'true' || 
+                const isMonthly = document.getElementById('paymentModalPlan').getAttribute('data-is-monthly') === 'true' ||
                      (document.getElementById('monthlyPlanBtn') && document.getElementById('monthlyPlanBtn').classList.contains('active'));
                 $('#paymentButton').prop('disabled', false).text(isMonthly ? 'Monthly | A$' + finalPrice + '/mth' : 'One Payment | A$' + finalPrice);
                 alert('Payment failed: ' + result.error.message);
@@ -1293,17 +1285,18 @@ function getPlanTypeFromTitle(title) {
 }
 
 // Function to update congrats modal content based on plan type (moved outside DOMContentLoaded)
-function updateCongratsModal(planType, hasConsultation) {
+function updateCongratsModal(planType, hasConsultation, hasCompletedQuestionnaire) {
     const planName = '{!! $planDetails?->name !!}';
     const congratsPlanName = document.getElementById('congratsPlanName');
     const congratsPlanDescription = document.getElementById('congratsPlanDescription');
     const powerPlayGamePlanContent = document.getElementById('powerPlayGamePlanContent');
     const normalPlanContent = document.getElementById('normalPlanContent');
-    
+    const completeQuestionnaireBtn = document.getElementById('completeQuestionnaireBtn');
+
     // Hide both content sections first
     if (powerPlayGamePlanContent) powerPlayGamePlanContent.style.display = 'none';
     if (normalPlanContent) normalPlanContent.style.display = 'none';
-    
+
     if (planType === 'powerplay') {
         congratsPlanName.innerHTML = `<strong>Your Power Play</strong><br>${planName} + 30 min Consultation`;
         congratsPlanDescription.textContent = 'We\'ll send you an email to book your consultation. You will need to complete your questionnaire prior then Kerry will start working on your personalised nutrition plan and it will appear in your web app, as soon as it\'s ready.';
@@ -1319,6 +1312,7 @@ function updateCongratsModal(planType, hasConsultation) {
         congratsPlanDescription.textContent = 'You will need to complete your questionnaire prior then Kerry will start working on your personalised nutrition plan and it will appear in your web app, as soon as it\'s ready.';
         // Show questionnaire button for normal plans
         if (normalPlanContent) normalPlanContent.style.display = 'block';
+        if (completeQuestionnaireBtn && hasCompletedQuestionnaire) completeQuestionnaireBtn.innerHTML = 'Close';
     }
 }
 
@@ -1329,7 +1323,7 @@ function updateCongratsModal(planType, hasConsultation) {
             // Temporarily remove page refresh prevention to avoid confirmation dialog
             window.removeEventListener('beforeunload', preventRefreshWhenCongratsOpen);
             window.removeEventListener('beforeunload', preventRefreshWhenCalendarOpen);
-            
+
             // Call the questionnaire function
             checkQuestionnaireStatusAndRedirect(currentPaymentId);
         });
@@ -1340,11 +1334,11 @@ function updateCongratsModal(planType, hasConsultation) {
     if (bookTimeBtnPlan) {
         bookTimeBtnPlan.addEventListener('click', function(e) {
             e.preventDefault();
-            
+
             // Get consultation time from stored data or determine from plan type
             const planType = getPlanTypeFromTitle(document.getElementById('congratsPlanName').textContent);
             const consultationTime = (planType === 'powerplay') ? 30 : 60; // Default to 30 for powerplay, 60 for gameplan
-            
+
             // Set the appropriate calendar URL based on consultation time
             const calendarIframe = document.getElementById('calendar-iframe-plan');
             if (consultationTime === 30) {
@@ -1368,9 +1362,9 @@ function updateCongratsModal(planType, hasConsultation) {
     planGetStartedBtns.forEach(btn => {
         btn.addEventListener('click', function(e) {
             e.preventDefault();
-            
+
             const isAuthenticated = {{ Auth::check() ? 'true' : 'false' }};
-            
+
             if (!isAuthenticated) {
                 // Store plan data for after login
                 const planData = {
@@ -1381,17 +1375,17 @@ function updateCongratsModal(planType, hasConsultation) {
                     planId: this.getAttribute('data-plan-id') || '{{ $planDetails?->id }}',
                     isMonthlyActive: document.getElementById('monthlyPlanBtn') ? document.getElementById('monthlyPlanBtn').classList.contains('active') : false
                 };
-                
+
                 // Store in sessionStorage
                 sessionStorage.setItem('pendingPlanPurchase', JSON.stringify(planData));
                 window.pendingPlanPurchase = planData;
-                
+
                 // Mark that this login was triggered by plan purchase
                 sessionStorage.setItem('loginTriggeredByPlanPurchase', 'true');
-                
+
                 // Close any existing modals first
                 $('.modal').modal('hide');
-                
+
                 // Wait for existing modal to close, then show signup modal
                 setTimeout(() => {
                     // Initialize signup modal content before showing
@@ -1401,7 +1395,7 @@ function updateCongratsModal(planType, hasConsultation) {
                 }, 300);
                 return;
             }
-            
+
             // User is authenticated, show payment modal
             showPlanPaymentModal(this);
         });
@@ -1413,7 +1407,7 @@ function updateCongratsModal(planType, hasConsultation) {
         const oneTimePrice = button.getAttribute('data-plan-price');
         const monthlyPrice = button.getAttribute('data-monthly-price');
         const planId = button.getAttribute('data-plan-id') || '{{ $planDetails?->id }}';
-        
+
         // Check if user already has this plan before showing payment modal
         checkExistingPlan(planId, planType, oneTimePrice, monthlyPrice, button, storedPlanData);
     }
@@ -1463,7 +1457,7 @@ function updateCongratsModal(planType, hasConsultation) {
             // Reset button state
             button.textContent = originalText;
             button.disabled = false;
-            
+
             console.error('Error checking existing plan:', error);
             alert('An error occurred while checking your plan status. Please try again.');
         });
@@ -1475,17 +1469,17 @@ function updateCongratsModal(planType, hasConsultation) {
         let isMonthlyActive;
         let finalOneTimePrice = oneTimePrice;
         let finalMonthlyPrice = monthlyPrice;
-        
+
         if (storedPlanData) {
             // Use stored pricing preference and prices
             isMonthlyActive = storedPlanData.isMonthlyActive;
             finalOneTimePrice = storedPlanData.price;
             finalMonthlyPrice = storedPlanData.monthlyPrice;
-            
+
             // Update UI to reflect stored preference
             const monthlyBtn = document.getElementById('monthlyPlanBtn');
             const oneTimeBtn = document.getElementById('oneTimePlanBtn');
-            
+
             if (monthlyBtn && oneTimeBtn) {
                 if (isMonthlyActive) {
                     monthlyBtn.classList.add('active');
@@ -1500,15 +1494,15 @@ function updateCongratsModal(planType, hasConsultation) {
             const monthlyBtn = document.getElementById('monthlyPlanBtn');
             isMonthlyActive = monthlyBtn ? monthlyBtn.classList.contains('active') : false;
         }
-        
+
         // Close any existing modals first
         $('.modal').modal('hide');
-        
+
         // Wait for existing modal to close, then show payment modal
         setTimeout(() => {
             // Store the monthly preference in the payment modal for later use
             document.getElementById('paymentModalPlan').setAttribute('data-is-monthly', isMonthlyActive);
-            
+
             // Update payment modal content based on plan type and pricing
             if (planType === 'main') {
                 document.getElementById('paymentModalTitle').innerHTML = '{!! $planDetails?->name !!}';
@@ -1528,14 +1522,14 @@ function updateCongratsModal(planType, hasConsultation) {
                 document.getElementById('paymentButton').setAttribute('data-monthly-price', finalMonthlyPrice);
             } else if (planType === 'gameplan') {
                 document.getElementById('paymentModalTitle').textContent = 'Game Plan';
-                document.getElementById('paymentModalSubtitle').innerHTML = '{!! $planDetails?->name !!} + 60 min Consult with Kerry to cover Nutrition AND Training Advise';
+                document.getElementById('paymentModalSubtitle').innerHTML = '{!! $planDetails?->name !!} + 60 min Consult with Kerry to cover NutritionAND Training Advice';
                 document.getElementById('paymentModalPrice').textContent = isMonthlyActive ? 'A$' + finalMonthlyPrice + '/mth' : 'A$' + finalOneTimePrice;
                 document.getElementById('paymentModalPrice').setAttribute('data-original-price', isMonthlyActive ? finalMonthlyPrice : finalOneTimePrice);
                 document.getElementById('paymentModalDuration').textContent = isMonthlyActive ? 'Over {{ $months }} Months' : 'One time payment';
                 document.getElementById('paymentButton').textContent = isMonthlyActive ? 'Monthly | A$' + finalMonthlyPrice + '/mth' : 'One Payment | A$' + finalOneTimePrice;
                 document.getElementById('paymentButton').setAttribute('data-monthly-price', finalMonthlyPrice);
             }
-            
+
             // Reset coupon fields when modal is shown
             document.getElementById('promo-code-consultation').value = '';
             document.getElementById('discount-consultation').value = '';
@@ -1543,10 +1537,10 @@ function updateCongratsModal(planType, hasConsultation) {
             document.getElementById('promo-message-consultation').className = 'form-text';
             document.getElementById('toggle-coupon-consultation').textContent = 'Add a Coupon Code';
             document.getElementById('coupon-details-consultation').classList.add('d-none');
-            
+
             // Ensure required attribute is set for card holder name
             document.getElementById('card-holder-name').setAttribute('required', 'required');
-            
+
             // Show payment modal
             $('#paymentModalPlan').modal('show');
         }, 300);
@@ -1563,17 +1557,17 @@ function updateCongratsModal(planType, hasConsultation) {
             planId: button.getAttribute('data-plan-id') || '{{ $planDetails?->id }}',
             isMonthlyActive: document.getElementById('paymentModalPlan').getAttribute('data-is-monthly') === 'true'
         };
-        
+
         // Store in sessionStorage
         sessionStorage.setItem('pendingPlanPurchase', JSON.stringify(planData));
         window.pendingPlanPurchase = planData;
-        
+
         // Mark that this login was triggered by plan purchase
         sessionStorage.setItem('loginTriggeredByPlanPurchase', 'true');
-        
+
         // Close any existing modals first
         $('.modal').modal('hide');
-        
+
         // Wait for existing modal to close, then show signup modal
         setTimeout(() => {
             // Initialize signup modal content before showing
@@ -1589,11 +1583,11 @@ window.onPlanPurchaseLoginSuccess = function() {
     if (pendingPlanData) {
         try {
             const planData = JSON.parse(pendingPlanData);
-            
+
             // Update UI to reflect stored preference
             const monthlyBtn = document.getElementById('monthlyPlanBtn');
             const oneTimeBtn = document.getElementById('oneTimePlanBtn');
-            
+
             if (monthlyBtn && oneTimeBtn) {
                 if (planData.isMonthlyActive) {
                     monthlyBtn.classList.add('active');
@@ -1603,7 +1597,7 @@ window.onPlanPurchaseLoginSuccess = function() {
                     oneTimeBtn.classList.add('active');
                 }
             }
-            
+
             // Find the button with the stored plan data
             const button = document.querySelector(`.plan-get-started-btn[data-plan-type="${planData.type}"]`);
             if (button) {
@@ -1619,7 +1613,7 @@ window.onPlanPurchaseLoginSuccess = function() {
             sessionStorage.removeItem('pendingPlanPurchase');
         }
     }
-    
+
     // Clear the stored return URL
     sessionStorage.removeItem('loginTriggeredByPlanPurchase');
 };
@@ -1652,15 +1646,15 @@ window.handlePendingPlanPurchase = function() {
     if (pendingPlanData) {
         try {
             const planData = JSON.parse(pendingPlanData);
-            
+
             // Check if user is authenticated before showing payment modal
             const isAuthenticated = {{ Auth::check() ? 'true' : 'false' }};
-            
+
             if (!isAuthenticated) {
                 // User is not authenticated, show login/signup modal instead
                 // Close any existing modals first
                 $('.modal').modal('hide');
-                
+
                 // Wait for existing modal to close, then show signup modal
                 setTimeout(() => {
                     // Initialize signup modal content before showing
@@ -1671,11 +1665,11 @@ window.handlePendingPlanPurchase = function() {
                 // Don't clear pending data yet - keep it for after login
                 return;
             }
-            
+
             // User is authenticated, update UI to reflect stored preference first
             const monthlyBtn = document.getElementById('monthlyPlanBtn');
             const oneTimeBtn = document.getElementById('oneTimePlanBtn');
-            
+
             if (monthlyBtn && oneTimeBtn) {
                 if (planData.isMonthlyActive) {
                     monthlyBtn.classList.add('active');
@@ -1685,7 +1679,7 @@ window.handlePendingPlanPurchase = function() {
                     oneTimeBtn.classList.add('active');
                 }
             }
-            
+
             // Find the button with the stored plan data
             const button = document.querySelector(`.plan-get-started-btn[data-plan-type="${planData.type}"]`);
             if (button) {
@@ -1711,16 +1705,19 @@ window.initializeSignupModal = function() {
     // Show the signup/login content sections
     $('.signup-login-h2-title').removeClass('d-none');
     $('.signup-login-h2-img').removeClass('d-none');
-    
+
+    $('#signupModalathlete #new-user-singup').removeClass('d-none');
+    $('#signupModalathlete #existing-user-login').addClass('d-none');
+
     // Hide quiz-specific content
     $('.quiz-h2-title').addClass('d-none');
     $('.quiz-h2-img').addClass('d-none');
-    
+
     // Reset to step 1
     if (typeof showStep === 'function') {
         showStep(1);
     }
-    
+
     // Clear any previous form data
     $('#mobile_number').val('');
     $('#firstname').val('');
@@ -1728,11 +1725,11 @@ window.initializeSignupModal = function() {
     $('input[name="userType"]').prop('checked', false);
     $('input[name="ageGroup"]').prop('checked', false);
     $('#sportstype').val('');
-    
+
     // Remove selected classes
     $('.user-type-box').removeClass('selected');
     $('.age-box').removeClass('selected');
-    
+
     // Hide age groups and sports selection by default
     $('#age-groups-id').addClass('d-none');
     $('#select-sports-id').addClass('d-none');

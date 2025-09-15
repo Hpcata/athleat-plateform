@@ -16,12 +16,14 @@ class PlanPurchaseMail extends Mailable
     // Declare the properties
     public $user;
     public $planName;
+    public $profileLandingPage;
 
     // Constructor to pass user and plan name
-    public function __construct($user, $planName)
+    public function __construct($user, $planName, $profileLandingPage = null)
     {
         $this->user = $user;
         $this->planName = $planName;
+        $this->profileLandingPage = $profileLandingPage;
     }
 
     // Build the message
@@ -31,7 +33,8 @@ class PlanPurchaseMail extends Mailable
                     ->subject('Thank you for purchasing the ' . $this->planName . '!')
                     ->with([
                         'user' => $this->user,
-                        'planName' => $this->planName
+                        'planName' => $this->planName,
+                        'profileLandingPage' => $this->profileLandingPage
                     ]);
     }
 }

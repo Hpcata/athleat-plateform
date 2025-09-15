@@ -2,6 +2,7 @@
     $setting = \App\Models\SiteSettings::where('page_id', 'general')->where('meta_key', 'header_headermenu')->first();
     $headerData = json_decode($setting['meta_value'], true);
     $auth = auth()->guard('web')->check();
+    $userId = $auth ? auth()->user()->id : null;
 ?>
 
 @if ($auth && (Route::is('front.profile') || Route::is('front.plans.details') || Route::is('front.my-plans')))
@@ -46,7 +47,7 @@
                 <a onclick="toggleMobileMenu()" style="color: #fff; text-decoration: none; display: block; padding: 8px 16px;">Challenges and Rewards</a>
             </li>
             <li><div class="mobile-menu-divider" style="height:1px; background:#555; margin: 12px 16px;"></div></li>
-            <li><a id="scanner-btn" class="scanner-btn">Supplement Scanner</a></li>
+            <li><a href="{{ route('front.supplement-scanner') }}" class="scanner-btn">Supplement Scanner</a></li>
             <li><a class="coming-soon-popup">Level-Up Library</a></li>
             <li><a onclick="openBookingAndModal()">BioHealth Passport</a></li>
             <li>
@@ -86,21 +87,35 @@
                 @endphp
                 <nav class="nav-center">
                     {{-- On click of home I want to redirect user to home page and stay logged in if user is logged in --}}
-                    <a class="text-decoration-none nav-item" onclick="event.preventDefault(); window.location.href = '{{ route('front.index') }}';">Home</a>
-                    <span class="nav-item coming-soon-popup">Challenges and Rewards</span>
+                    <a class="text-decoration-none nav-item" onclick="event.preventDefault(); window.location.href = '{{ route('front.profile', ['id' => $userId]) }}'">Home</a>
+                    {{-- <span class="nav-item coming-soon-popup">Challenges and Rewards</span> --}}
                     <div class="nav-item dropdown">
                         {{-- Resources dropdown --}}
                         <span>Resources <i class="fas fa-chevron-down"></i></span>
                         <div class="dropdown-content">
                             {{-- Supplement scanner button --}}
-                            <a href="#" id="scanner-btn" class="scanner-btn">Supplement Scanner</a>
+                            <a href="{{ route('front.supplement-scanner') }}" class="scanner-btn">Supplement Scanner</a>
                             {{-- Level-Up library button --}}
                             <a href="#" class="coming-soon-popup">Level-Up Library</a>
                             {{-- BioHealth Passport button --}}
-                            <a href="#" onclick="openBookingAndModal()">BioHealth
-                                Passport</a>
+                            <a href="#" onclick="openBookingAndModal()">BioHealthPassport</a>
                         </div>
                     </div>
+
+                    {{-- Services dropdown --}}
+                    <div class="nav-item dropdown">
+                        <span>Services <i class="fas fa-chevron-down"></i></span>
+                        <div class="dropdown-content">
+                            <a href="{{ route('front.training.nutrition.plan') }}">Training Nutrition Plan</a>
+                            <a href="{{ route('front.competition.plan') }}">Competition Plan</a>
+                            <a href="{{ route('front.injury.recovery.plan') }}">Injury & Recovery Plan</a>
+                            <a href="{{ route('front.surgery.plan') }}">Pre & Post Surgery Plan</a>
+                            <a href="{{ route('front.consultations') }}">Private Consultations</a>
+                            <a href="#" class="coming-soon-popup">Clubs and Group bookings</a>
+                        </div>
+                    </div>
+                    {{-- Shop button --}}
+                    <a class="text-decoration-none nav-item" href="https://athleatshop.com/" target="_blank">Shop</a>
                 </nav>
                 <div class="nav-right">
                     <div class="nav-item dropdown">
@@ -117,15 +132,11 @@
                         <div class="dropdown-content">
                             {{-- My plan button --}}
                             <a href="{{ $myPlanUrl }}">My Plan</a>
+                            {{-- setting and privacy button --}}
+                            <a href="#" class="coming-soon-popup">Settings and Privacy</a>
                             {{-- Logout form --}}
-                            <form id="logout-form" action="{{ route('front.logout') }}" method="POST"
-                                style="display: none;">
-                                @csrf
-                            </form>
-                            <a class="p-2 dropdown-item" style="padding:0.75rem 1rem !important;" href="#"
-                                onclick="handleLogout(event)">
-                                Sign Out
-                            </a>
+                            <form id="logout-form" action="{{ route('front.logout') }}" method="POST"style="display: none;">@csrf</form>
+                            <a class="p-2 dropdown-item" style="padding:0.75rem 1rem !important;" href="#" onclick="handleLogout(event)">Sign Out</a>
                         </div>
                     </div>
                 </div>
@@ -153,7 +164,7 @@
                         <div class="nav-item dropdown">
                             <span>Resources <i class="fas fa-chevron-down"></i></span>
                             <div class="dropdown-content">
-                                <a href="#" id="scanner-btn" class="scanner-btn">Supplement Scanner</a>
+                                <a href="{{ route('front.supplement-scanner') }}" class="scanner-btn">Supplement Scanner</a>
                                 <a href="#" class="coming-soon-popup">Level-Up Library</a>
                                 <a href="#" onclick="openBookingAndModal()">BioHealth Passport</a>
                             </div>
@@ -192,8 +203,31 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="mx-auto navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('front.index') }}">Home</a>
+                        <a class="nav-link" href="{{ $userId ? route('front.profile', ['id' => $userId]) : route('front.index') }}">Home</a>
                     </li>
+                    @if (Auth::check())
+                    {{-- Make resources dropdown --}}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            Resources
+                            <svg width="10" height="7" viewBox="0 0 10 7" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M1 1.5L5 5.5L9 1.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a class="dropdown-item" href="{{ route('front.supplement-scanner') }}" class="scanner-btn">Supplement Scanner</a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item coming-soon-popup">Level-Up Library</a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" onclick="openBookingAndModal()">BioHealth Passport</a>
+                            </li>
+                        </ul>
+                    </li>
+                    @endif
+                    {{-- Make services dropdown --}}
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
                             Services
@@ -215,16 +249,41 @@
                             <li><a class="scroll-to-plans dropdown-item competition-plan-link row2" href="">Clubs and Group bookings</a></li>
                         </ul>
                     </li>
+                    @if (Auth::check())
+                    {{-- Make a shop menu item --}}
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://athleatshop.com/" target="_blank">Shop</a>
+                    </li>
+                    @endif
                 </ul>
 
                 {{-- Login and signup buttons --}}
                 <div class="d-flex">
                     @if (Auth::check())
                         {{-- My plans button --}}
-                        <a href="{{ route('front.my-plans') }}"
-                            class="btn btn-signup mob-hide">
-                            My Account
-                        </a>
+                        <div class="nav-item dropdown">
+                            <a href="#"
+                                role="button"
+                                data-bs-toggle="dropdown"
+                                class="btn btn-signup mob-hide text-decoration-none"
+                                aria-expanded="false"
+                                id="my-account-dropdown">
+                                My Account
+                            </a>
+                        {{-- dropdown with settings and privacy, logout and my plans --}}
+                            <ul class="dropdown-menu" aria-labelledby="my-account-dropdown">
+                                <li>
+                                    <a class="dropdown-item" href="{{ route('front.my-plans') }}">My Plans</a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="#" class="coming-soon-popup">Settings and Privacy</a>
+                                </li>
+                                <li>
+                                    <form id="logout-form" action="{{ route('front.logout') }}" method="POST"style="display: none;">@csrf</form>
+                                    <a class="dropdown-item" href="#" onclick="handleLogout(event)">Sign Out</a>
+                                </li>
+                            </ul>
+                        </div>
                     @else
                         {{-- Login and signup buttons --}}
                         <button class="btn-login mob-hide" id="login" onclick="openSingupFreePopup(true)">Log in</button>
@@ -435,10 +494,6 @@
 
         $(document).on('click', '#new-user-singup', function() {
             openSingupFreePopup();
-        });
-
-        $('.scanner-btn').click(function() {
-            location.href = "{{ route('front.supplement-scanner') }}";
         });
     });
 
