@@ -238,17 +238,12 @@ $intresetsmallimg1 = $intresetsmallimg2 = $intresetsmallimg3 = $intrestimg1 = $i
                                 Pay | $<span id="pay-button-price">120</span>
                             </button>
                         </form>
-
-
                         <p class="mt-3 text-muted small confirm-text">
                             By placing your order, you agree to our <a href="#" class="terms-link">Terms of Service</a>
                             and <a href="#" class="terms-link">Privacy Policy</a>.
                         </p>
                     </div>
                 </div>
-
-
-
             </div>
         </div>
     </div>

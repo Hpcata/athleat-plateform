@@ -76,13 +76,10 @@
 
                         <div class='signup-login-h2-title d-none'>
                             <!--  -->
-                            <label class="terms-label">By continuing, you agree to our <span class="terms-link"
-                                    onclick="openTermsModal()">Terms.</span></label>
+                            <label class="terms-label">By continuing, you agree to our <span class="terms-link" onclick="openTermsModal()">Terms.</span></label>
                             <br>
-                            <label class="terms-label d-none" id="new-user-singup">New User? <span
-                                    class="terms-link">Sign Up here For Free.</span></label>
-                            <label class="terms-label d-none" id="existing-user-login">Existing User? <span
-                                    class="terms-link">Log in here.</span></label>
+                            <label class="terms-label d-none" id="new-user-singup">New User? <spanclass="terms-link">Sign Up here For Free.</spanclass=></label>
+                            <label class="terms-label d-none" id="existing-user-login">Existing User? <span class="terms-link">Log in here.</span></label>
                         </div>
 
                         <div class='quiz-h2-title d-none'>
@@ -368,3 +365,11 @@
         </div>
     </div>
 </div>
+
+@push('scripts')
+    <script>
+        $(document).ready(function() {
+            $('#sportstype option:first').prop('selected', true);
+        });
+    </script>
+@endpush

@@ -6003,3 +6003,7 @@ a.btn-signup {
 #congratsContentConsultation .btn-signup{
     justify-content: center;
 }
+
+.w-100.btn.btn-signup{
+    justify-content: center;
+}

@@ -25,8 +25,9 @@
             </section>
 
             @php
-                // from controller: $viewState, $userPlan, $canonicalPayment, $isQuestionnaireSubmitted
-                $payment = $canonicalPayment ?? null;
+                // variables from controller: $viewState, $userPlan, $planPayment, $latestPayment, $paymentForQuestionnaireRoute, $questionnaireComplete
+                $payment = $planPayment ?? $latestPayment ?? null;
+                $questionnaireIsComplete = $questionnaireComplete ?? false;
             @endphp
 
             @if ($viewState === 'free_user')
@@ -34,20 +35,21 @@
                     'title' => 'My Plans',
                     'actionText' => 'Purchase Plan',
                     'actionRoute' => 'front.my-plans',
-                    'overlayText' => (isset($isQuestionnaireSubmitted) && !$isQuestionnaireSubmitted->is_complete) ? 'Continue your Questionnaire' : 'Purchase a personalised plan',
-                    'overlayRoute' => (isset($isQuestionnaireSubmitted) && !$isQuestionnaireSubmitted->is_complete) ? route('front.pre-plan-details', ['id' => $payment->id ?? null, 'user_id' => $payment->user_id ?? null]) : route('front.my-plans')
+                    'overlayText' => $questionnaireIsComplete ? 'Purchase a personalised plan' : 'Continue your Questionnaire',
+                    'overlayRoute' => $questionnaireIsComplete
+                        ? route('front.my-plans')
+                        : route('front.pre-plan-details', ['id' => $paymentForQuestionnaireRoute->id ?? null, 'user_id' => $paymentForQuestionnaireRoute->user_id ?? null])
                 ])
-            @elseif ($viewState === 'continue_questionnaire')
+            @elseif (in_array($viewState, ['continue_questionnaire', 'continue_questionnaire_for_plan']))
                 @include('front.pages.partials.nutrition-plan-section', [
                     'title' => 'My Plans',
                     'actionText' => 'Purchase Plan',
                     'actionRoute' => 'front.my-plans',
                     'overlayText' => 'Continue your Questionnaire',
                     'hideActionText' => false,
-                    'overlayRoute' => route('front.pre-plan-details', ['id' => $payment->id ?? null, 'user_id' => $payment->user_id ?? null])
+                    'overlayRoute' => route('front.pre-plan-details', ['id' => $paymentForQuestionnaireRoute->id ?? null, 'user_id' => $paymentForQuestionnaireRoute->user_id ?? null])
                 ])
             @elseif ($viewState === 'consultation_only_after_questionnaire' || $viewState === 'purchase_prompt')
-                {{-- Show purchase overlay (consultation only or default purchase prompt) --}}
                 @include('front.pages.partials.nutrition-plan-section', [
                     'title' => 'My Plans',
                     'actionText' => 'Purchase Plan',
@@ -57,9 +59,16 @@
                     'hideActionText' => false,
                 ])
             @elseif ($viewState === 'preparing_plan')
-                @include('front.pages.partials.plan-preparation-section', ['plan' => $payment->plan ?? $userPlan->plan ?? null, 'isPreparingPlan' => true])
+                @include('front.pages.partials.plan-preparation-section', [
+                    'plan' => $planPayment->plan ?? $userPlan->plan ?? null,
+                    'isPreparingPlan' => true
+                ])
             @elseif ($viewState === 'final_plan')
-                @include('front.pages.partials.plan-preparation-section', ['plan' => $payment->plan ?? $userPlan->plan ?? null, 'isPreparingPlan' => false, 'redirectRoute' => true])
+                @include('front.pages.partials.plan-preparation-section', [
+                    'plan' => $planPayment->plan ?? $userPlan->plan ?? null,
+                    'isPreparingPlan' => false,
+                    'redirectRoute' => true
+                ])
             @endif
 
             <!-- Challenges -->
@@ -267,8 +276,7 @@
                                 class="consult-avatar" alt="Kerry O'Bryan, expert coach avatar" style="border:none;" />
                             <span style="padding-left:0">Kerry O'Bryan • 60 min</span>
                         </div>
-                        <a href="https://booking.biohealthpassport.com.au/kerry-obryan" target="_blank"
-                            class="text-decoration-none btn-consult">Book consult</a>
+                        <a href="{{ route('front.consultations') }}" class="text-decoration-none btn-consult">Book consult</a>
                     </div>
                 </div>
             </section>
