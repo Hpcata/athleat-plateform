@@ -198,8 +198,8 @@ $(document).ready(function () {
         
         if (userType === "athlete") {
             // Allow athlete selection and proceed with normal flow
-            console.log("athlete selected");
             $("#age-groups-id").removeClass("d-none");
+            $('#sportstype option:first').prop('selected', true);
             $("#select-sports-id").removeClass("d-none");
         } else if (userType === "parent" || userType === "club") {
             // Prevent selection and show coming soon tooltip
