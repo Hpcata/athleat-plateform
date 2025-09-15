@@ -237,7 +237,7 @@
                                 <span>21 meals customised for you</span>
                             </div>
                         </div>
-                        <button class="btn-consult" onclick="showLearnMoreTooltip(this, 'Coming Soon')">Learn more</button>
+                        <button class="btn-consult" onclick="window.location.href='{{ route('front.training.nutrition.plan') }}'">Learn more</button>
                     </div>
                 </div>
 
@@ -256,8 +256,8 @@
                                 alt="Kerry O'Bryan, expert coach avatar" style="border:none;" />
                             <span style="padding-left:0">Kerry O'Bryan • 60 min</span>
                         </div>
-                        <a href="https://booking.biohealthpassport.com.au/kerry-obryan" target="_blank"
-                            class="text-decoration-none btn-consult">Book consult</a>
+                            <a href="{{ route('front.consultations') }}"
+                                class="text-decoration-none btn-consult">Book consult</a>
                     </div>
                 </div>
             </section>

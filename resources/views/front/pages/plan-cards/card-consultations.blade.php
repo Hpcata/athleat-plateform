@@ -11,6 +11,5 @@
             alt="Kerry O'Bryan, expert coach avatar" style="border:none;" />
         <span style="padding-left:0">Kerry O'Bryan</span>
     </div>
-    <a href="https://booking.biohealthpassport.com.au/kerry-obryan" target="_blank"
-        class="text-decoration-none btn-consult" style="text-decoration: none;">Book consult</a>
+    <a href="{{ route('front.consultations') }}" class="text-decoration-none btn-consult" style="text-decoration: none;">Book consult</a>
 </div>

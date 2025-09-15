@@ -24,7 +24,7 @@
                             'actionRoute' => 'front.my-plans',
                             'overlayText' => 'Continue your Questionnaire',
                             'hideActionText' => true,
-                            'overlayRoute' => route('front.pre-plan-details', ['id' => $payment->id ?? null, 'user_id' => $payment->user_id ?? null])
+                            'overlayRoute' => route('front.pre-plan-details', ['user_id' => $payment->user_id ?? null])
                         ])
                     @else
                         @if(isset($plansWithAnimation) && count($plansWithAnimation) > 0)
@@ -47,7 +47,8 @@
                                     @include('front.pages.plan-cards.card-without-animation', [
                                         'plan' => $planData['plan'],
                                         'userPlan' => $planData['userPlan'] ?? null,
-                                        'payment' => $planData['payment'] ?? null
+                                        'payment' => $planData['payment'] ?? null,
+                                        'redirectRoute' => true
                                     ])
                                 @endif
                             @endforeach
