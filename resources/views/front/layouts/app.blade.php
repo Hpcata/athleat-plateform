@@ -120,10 +120,12 @@ $delphiConfig = auth()->check() && auth()->user()->hasPurchasedPlan() ? '663f590
             let isOpen = false;
             let isOpening = false;
             let delphiInitialized = false;
+            let hoverTimeout = null;
+            let isClosing = false; // Flag to prevent recursion
 
             // Function to check if Delphi is fully loaded
             function checkDelphiReady() {
-                return $(document).find('#delphi-bubble-trigger').length > 0 && $(document).find('.delphi-bubble').length > 0;
+                return $(document).find('#delphi-bubble-trigger').length > 0;
             }
 
             // Wait for Delphi to be fully initialized
@@ -146,21 +148,21 @@ $delphiConfig = auth()->check() && auth()->user()->hasPurchasedPlan() ? '663f590
             waitForDelphi();
 
             function loadCustomDelphi() {
-                if (!isOpen && !isOpening) {
+                // Simplified opening logic - remove the isOpening check that was preventing first click
+                if (!isOpen) {
                     isOpening = true;
 
                     function tryOpenDelphi() {
                         if (checkDelphiReady()) {
-                            // Double click to ensure it opens
+                            // Single click to open
                             let trigger = $(document).find('#delphi-bubble-trigger');
                             trigger.trigger("click");
-
-                            // Small delay then trigger again to ensure it opens
+                            
+                            // Set open state after a short delay
                             setTimeout(function () {
-                                trigger.trigger("click");
                                 isOpen = true;
                                 isOpening = false;
-                            }, 50);
+                            }, 100);
                         } else {
                             // If not ready, wait a bit and try again
                             setTimeout(function () {
@@ -184,58 +186,91 @@ $delphiConfig = auth()->check() && auth()->user()->hasPurchasedPlan() ? '663f590
 
             // Function to close Delphi popup
             function closeDelphiPopup() {
-                if (isOpen && !isOpening) {
+                if (isOpen && !isOpening && !isClosing) {
+                    isClosing = true; // Prevent recursion
                     let trigger = $('#delphi-bubble-trigger');
                     if (trigger.length > 0) {
-                        trigger.click();
+                        // Use trigger() instead of click() to avoid event bubbling
+                        trigger.trigger('click');
                         isOpen = false;
                     }
+                    // Reset flag after a short delay
+                    setTimeout(function() {
+                        isClosing = false;
+                    }, 100);
                 }
             }
 
-            // Method 1: Focus/Blur approach - Close when popup loses focus
-            $(document).on('focusout', function(e) {
-                if (isOpen && !isOpening) {
-                    // Check if the focus is moving outside Delphi elements
-                    setTimeout(function() {
-                        let activeElement = document.activeElement;
-                        let isDelphiElement = $(activeElement).closest('#delphi-bubble-trigger, .delphi-bubble, .chat-widget, .start-chat, #chat-to-virtual-kez-btn, #start-chat-link').length > 0;
-
-                        if (!isDelphiElement) {
-                            closeDelphiPopup();
-                        }
-                    }, 100);
-                }
-            });
-
-            // Method 2: Click outside detection using mousedown
-            $(document).on('mousedown', function(e) {
-                if (isOpen && !isOpening) {
-                    // Check if click is on Delphi elements
-                    if ($(e.target).closest('#delphi-bubble-trigger, .delphi-bubble, .chat-widget, .start-chat, #chat-to-virtual-kez-btn, #start-chat-link').length === 0) {
-                        closeDelphiPopup();
+            // Click outside detection - close when clicking outside chat bubble (handles dynamic elements)
+            $(document).on('click', function(e) {
+                if (isOpen && !isOpening && !isClosing) {
+                    // Check if click is inside any Delphi-related element, delphi-frame, delphi-bubble-wrapper, or trigger elements
+                    let isInsideDelphiElement = $(e.target).closest('[id*="delphi"], [class*="delphi"], [id*="delphi-frame"], [class*="delphi-frame"], [id*="delphi-bubble-wrapper"], [class*="delphi-bubble-wrapper"]').length > 0;
+                    let isTriggerElement = $(e.target).closest('.chat-widget, .start-chat, #chat-to-virtual-kez-btn, #start-chat-link').length > 0;
+                    
+                    // Also check if the clicked element itself is a Delphi element, delphi-frame, or delphi-bubble-wrapper
+                    let isDirectDelphiElement = $(e.target).is('[id*="delphi"], [class*="delphi"], [id*="delphi-frame"], [class*="delphi-frame"], [id*="delphi-bubble-wrapper"], [class*="delphi-bubble-wrapper"]');
+                    
+                    // Only close if clicking outside all protected elements
+                    if (!isInsideDelphiElement && !isDirectDelphiElement && !isTriggerElement) {
+                     //   closeDelphiPopup();
                     }
                 }
             });
 
-            // Method 3: Scroll detection
+            // Hover outside detection (handles dynamic elements including delphi-frame and delphi-bubble-wrapper)
+            $(document).on('mouseleave', '[id*="delphi"], [class*="delphi"], [id*="delphi-frame"], [class*="delphi-frame"], [id*="delphi-bubble-wrapper"], [class*="delphi-bubble-wrapper"]', function() {
+                if (isOpen && !isOpening && !isClosing) {
+                    // Set a timeout to close after hovering outside
+                    hoverTimeout = setTimeout(function() {
+                        // closeDelphiPopup();
+                    }, 1000); // Close after 1 second of hovering outside
+                }
+            });
+
+            // Cancel hover timeout when hovering back over Delphi elements, delphi-frame, delphi-bubble-wrapper, or trigger elements
+            $(document).on('mouseenter', '[id*="delphi"], [class*="delphi"], [id*="delphi-frame"], [class*="delphi-frame"], [id*="delphi-bubble-wrapper"], [class*="delphi-bubble-wrapper"], .chat-widget, .start-chat, #chat-to-virtual-kez-btn, #start-chat-link', function() {
+                if (hoverTimeout) {
+                    clearTimeout(hoverTimeout);
+                    hoverTimeout = null;
+                }
+            });
+
+            // Scroll detection
             $(window).on('scroll', function() {
-                if (isOpen && !isOpening) {
+                if (isOpen && !isOpening && !isClosing) {
                     closeDelphiPopup();
                 }
             });
 
-            // Method 4: Escape key detection
+            // Escape key detection
             $(document).on('keydown', function(e) {
-                if (e.key === 'Escape' && isOpen && !isOpening) {
+                if (e.key === 'Escape' && isOpen && !isOpening && !isClosing) {
                     closeDelphiPopup();
                 }
             });
 
-            // Method 5: Window blur detection (when user switches tabs)
+            // Window blur detection (when user switches tabs)
             $(window).on('blur', function() {
-                if (isOpen && !isOpening) {
-                    closeDelphiPopup();
+                if (isOpen && !isOpening && !isClosing) {
+                    // closeDelphiPopup();
+                }
+            });
+
+            // Additional method: Close when clicking on body (excluding Delphi elements, delphi-frame, delphi-bubble-wrapper, and trigger elements)
+            $('body').on('click', function(e) {
+                if (isOpen && !isOpening && !isClosing) {
+                    // Check if click is inside any Delphi-related element, delphi-frame, delphi-bubble-wrapper, or trigger elements
+                    let isInsideDelphiElement = $(e.target).closest('[id*="delphi"], [class*="delphi"], [id*="delphi-frame"], [class*="delphi-frame"], [id*="delphi-bubble-wrapper"], [class*="delphi-bubble-wrapper"]').length > 0;
+                    let isTriggerElement = $(e.target).closest('.chat-widget, .start-chat, #chat-to-virtual-kez-btn, #start-chat-link').length > 0;
+                    
+                    // Also check if the clicked element itself is a Delphi element, delphi-frame, or delphi-bubble-wrapper
+                    let isDirectDelphiElement = $(e.target).is('[id*="delphi"], [class*="delphi"], [id*="delphi-frame"], [class*="delphi-frame"], [id*="delphi-bubble-wrapper"], [class*="delphi-bubble-wrapper"]');
+                    
+                    // Only close if clicking outside all protected elements
+                    if (!isInsideDelphiElement && !isDirectDelphiElement && !isTriggerElement) {
+                        closeDelphiPopup();
+                    }
                 }
             });
         });
