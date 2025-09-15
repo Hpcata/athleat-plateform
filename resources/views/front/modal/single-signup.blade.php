@@ -78,7 +78,7 @@
                             <!--  -->
                             <label class="terms-label">By continuing, you agree to our <span class="terms-link" onclick="openTermsModal()">Terms.</span></label>
                             <br>
-                            <label class="terms-label d-none" id="new-user-singup">New User? <spanclass="terms-link">Sign Up here For Free.</spanclass=></label>
+                            <label class="terms-label d-none" id="new-user-singup">New User? <span class="terms-link">Sign Up here For Free.</spanclass=></label>
                             <label class="terms-label d-none" id="existing-user-login">Existing User? <span class="terms-link">Log in here.</span></label>
                         </div>
 

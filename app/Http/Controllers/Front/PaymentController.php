@@ -643,8 +643,8 @@ class PaymentController extends Controller
             ->first();
 
         try {
-            $profileLandingPage = route('front.profile', $user->id);
-            Mail::to($user->email)->send(new PlanPurchaseMail($user, $plan->name, $profileLandingPage));
+            // $profileLandingPage = route('front.profile', $user->id);
+            // Mail::to($user->email)->send(new PlanPurchaseMail($user, $plan->name, $profileLandingPage));
             Mail::to(config('constants.admin_email'))->send(new PrePlanDetailsSubmitMail($user, $plan->name));
 
             return response()->json([
@@ -1014,6 +1014,10 @@ class PaymentController extends Controller
                         'updated_at' => now(),
                     ]
                 );
+
+                $profileLandingPage = route('front.profile', $user->id);
+                $plan = Plan::find($validated['plan_id']);
+                Mail::to($user->email)->send(new PlanPurchaseMail($user, $plan->name, $profileLandingPage));
             } else {
                 // Create user plan entry even if questionnaire not complete
                 $userPlan = UserPlan::updateOrCreate(
@@ -1024,6 +1028,9 @@ class PaymentController extends Controller
                         'updated_at' => now(),
                     ]
                 );
+                $profileLandingPage = route('front.profile', $user->id);
+                $plan = Plan::find($validated['plan_id']);
+                Mail::to($user->email)->send(new PlanPurchaseMail($user, $plan->name, $profileLandingPage));
             }
 
             // Update payment with user_plan_id

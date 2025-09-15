@@ -1,5 +1,5 @@
 <section class="challenges">
-    @if(!$hideActionText)
+    @if(isset($hideActionText) && !$hideActionText)
         <div class="section-header">
             <h2>{{ $title }}</h2>
             <a href="{{ route($actionRoute) }}" class="see-all">{{ $actionText }}</a>
