@@ -245,7 +245,7 @@
                         <div class="consult-user-row">
                             <img src="https://booking.biohealthpassport.com.au/public/uploads/hero01.png" class="consult-avatar"
                                 alt="Kerry O'Bryan, expert coach avatar" style="border:none;" />
-                            <span style="padding-left:0">Kerry O'Bryan • 60 min</span>
+                            <span style="padding-left:0">Kerry O'Bryan</span>
                         </div>
                         <a href="{{ route('front.consultations') }}"
                             class="text-decoration-none btn-consult">Book consult</a>

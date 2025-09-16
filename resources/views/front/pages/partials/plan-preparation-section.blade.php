@@ -6,6 +6,6 @@
     @if ($isPreparingPlan)
         @include('front.pages.plan-cards.card-with-animation', ['plan' => $plan])
     @else
-        @include('front.pages.plan-cards.card-without-animation', ['plan' => $plan])
+        @include('front.pages.plan-cards.card-without-animation', ['plan' => $plan, 'dynamicMealCount' => $dynamicMealCount ?? null])
     @endif
 </section>

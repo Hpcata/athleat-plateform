@@ -31,14 +31,13 @@
             @endphp
 
             @if ($viewState === 'free_user')
+                {{-- IMPORTANT: free users always see Purchase overlay regardless of questionnaire --}}
                 @include('front.pages.partials.nutrition-plan-section', [
                     'title' => 'My Plans',
                     'actionText' => 'Purchase Plan',
                     'actionRoute' => 'front.my-plans',
-                    'overlayText' => $questionnaireIsComplete ? 'Purchase a personalised plan' : 'Continue your Questionnaire',
-                    'overlayRoute' => $questionnaireIsComplete
-                        ? route('front.my-plans')
-                        : route('front.pre-plan-details', ['id' => $paymentForQuestionnaireRoute->id ?? null, 'user_id' => $paymentForQuestionnaireRoute->user_id ?? null])
+                    'overlayText' => 'Purchase a personalised plan',
+                    'overlayRoute' => route('front.my-plans')
                 ])
             @elseif (in_array($viewState, ['continue_questionnaire', 'continue_questionnaire_for_plan']))
                 @include('front.pages.partials.nutrition-plan-section', [
@@ -47,7 +46,7 @@
                     'actionRoute' => 'front.my-plans',
                     'overlayText' => 'Continue your Questionnaire',
                     'hideActionText' => false,
-                    'overlayRoute' => route('front.pre-plan-details', ['user_id' => $paymentForQuestionnaireRoute->user_id ?? null])
+                    'overlayRoute' => route('front.pre-plan-details', ['id' => $paymentForQuestionnaireRoute->id ?? null, 'user_id' => $paymentForQuestionnaireRoute->user_id ?? null])
                 ])
             @elseif ($viewState === 'consultation_only_after_questionnaire' || $viewState === 'purchase_prompt')
                 @include('front.pages.partials.nutrition-plan-section', [
@@ -67,7 +66,8 @@
                 @include('front.pages.partials.plan-preparation-section', [
                     'plan' => $planPayment->plan ?? $userPlan->plan ?? null,
                     'isPreparingPlan' => false,
-                    'redirectRoute' => true
+                    'redirectRoute' => true,
+                    'dynamicMealCount' => true ?? null
                 ])
             @endif
 
@@ -274,7 +274,7 @@
                         <div class="consult-user-row">
                             <img src="https://booking.biohealthpassport.com.au/public/uploads/hero01.png"
                                 class="consult-avatar" alt="Kerry O'Bryan, expert coach avatar" style="border:none;" />
-                            <span style="padding-left:0">Kerry O'Bryan • 60 min</span>
+                            <span style="padding-left:0">Kerry O'Bryan</span>
                         </div>
                         <a href="{{ route('front.consultations') }}" class="text-decoration-none btn-consult">Book consult</a>
                     </div>
