@@ -104,22 +104,35 @@
         $delphiConfig = auth()->check() && auth()->user()->hasPurchasedPlan() ? '663f5909-3622-47c9-9287-28233409948f' : '1ec65786-eafc-4dbb-a617-57b8d81c9856';
     @endphp
 
-    <script id="delphi-bubble-script">
-        window.delphi = { ...(window.delphi ?? {}) };
-        window.delphi.bubble = {
-            config: "{{ $delphiConfig }}",
-            overrides: {
-                landingPage: "CHAT",
-            },
-            trigger: {
-                color: "#0090FF",
-            },
-            container: {
-                width: "100%",
-                height: "800px",
-            },
-        };
+    @if(auth()->check() && auth()->user()->hasPurchasedPlan())
+        <script id="delphi-bubble-script">
+            window.delphi = {...(window.delphi ?? {}) };
+            window.delphi.bubble = {
+                config: "663f5909-3622-47c9-9287-28233409948f",
+                overrides: {
+                landingPage: "OVERVIEW",
+                },
+                trigger: {
+                color: "#4d87de",
+                },
+            };
+        </script>
+    @else
+        <script id="delphi-bubble-script">
+            window.delphi = {...(window.delphi ?? {}) };
+            window.delphi.bubble = {
+                config: "1ec65786-eafc-4dbb-a617-57b8d81c9856",
+                overrides: {
+                landingPage: "OVERVIEW",
+                },
+                trigger: {
+                color: "#4d87de",
+                },
+            };
+        </script>
+    @endif
 
+    <script >
         $(document).ready(function () {
             let isOpen = false;
             let isOpening = false;
