@@ -55,8 +55,7 @@
                                             </svg>Share</button>
                                     </div>
                                 </div>
-                                <img src="/public/front/images/dialog/fooditem4.webp" alt="Oats with banana and berries"
-                                    class="dialog-img" />
+                                <img src="{{ frontAssets('images/sports-training/fooditem4.webp') }}" alt="Oats with banana and berries" class="dialog-img" />
                             </div>
                             <div class="dialog-body">
                                 <div class="heading-wrap">

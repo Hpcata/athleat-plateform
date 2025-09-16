@@ -205,6 +205,9 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ $userId ? route('front.profile', ['id' => $userId]) : route('front.index') }}">Home</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('front.about-us') }}">About us</a>
+                    </li>
                     @if (Auth::check())
                     {{-- Make resources dropdown --}}
                     <li class="nav-item dropdown">

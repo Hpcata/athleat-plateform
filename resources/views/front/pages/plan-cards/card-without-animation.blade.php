@@ -17,16 +17,48 @@
                     </p>
                 </div>
 
-                <div class="consult-user-row" style="margin-top: 15px;">
-                    <img src="{{ asset('front/images/circled-meal-1.svg') }}" class="consult-avatar"
-                        alt="meal image" />
-                    <img src="{{ asset('front/images/circled-meal-2.svg') }}" class="consult-avatar overlap1"
-                        alt="meal image" />
-                    <img src="{{ asset('front/images/circled-meal-3.svg') }}" class="consult-avatar overlap2"
-                        alt="meal image" />
+                @if (isset($dynamicMealCount) && $dynamicMealCount)
+                    @php
+                        $mealCount = isset($userPlan->userMeals) ? $userPlan->userMeals->count() : 0;
+                        $userPlan = $userPlan ?? null;
+                        $latestMealImages = isset($userPlan->userMeals)
+                            ? $userPlan
+                                ->userMeals()
+                                ->with('meal')
+                                ->latest()
+                                ->get()
+                                ->map(function ($userMeal) {
+                                    return $userMeal->meal?->image ? asset('storage/' . $userMeal->meal->image) : null;
+                                })
+                                ->filter(function ($image) {
+                                    return !empty($image); // filters out null and empty strings
+                                })
+                                ->take(3)
+                                ->values()
+                                ->toArray()
+                            : [];
+                        $mealImage1 = $latestMealImages[0] ?? frontAssets('images/sports-training/fooditem1.webp');
+                        $mealImage2 = $latestMealImages[1] ?? frontAssets('images/sports-training/fooditem2.webp');
+                        $mealImage3 = $latestMealImages[2] ?? frontAssets('images/sports-training/fooditem4.webp');
+                    @endphp
 
-                    <span style="padding-left: 0px;">21 meals customised for you</span>
-                </div>
+                    <div class="consult-user-row" style="margin-top: 15px;">
+                        <img src="{{ $mealImage1 }}" class="consult-avatar" alt="meal image" />
+                        <img src="{{ $mealImage2 }}" class="consult-avatar overlap1" alt="meal image" />
+                        <img src="{{ $mealImage3 }}" class="consult-avatar overlap2" alt="meal image" />
+
+                        <span style="padding-left: 0px;">{{ $mealCount }} meals • 18 Nutrition tips</span>
+                    </div>
+                @else
+                    <div class="consult-user-row" style="margin-top: 15px;">
+                        <img src="{{ asset('front/images/circled-meal-1.svg') }}" class="consult-avatar" alt="meal image" />
+                        <img src="{{ asset('front/images/circled-meal-2.svg') }}" class="consult-avatar overlap1" alt="meal image" />
+                        <img src="{{ asset('front/images/circled-meal-3.svg') }}" class="consult-avatar overlap2" alt="meal image" />
+
+                        <span style="padding-left: 0px;">21 meals customised for you</span>
+                    </div>
+                @endif
+
                 @php
                     if (isset($redirectRoute) && isset($userPlan) && isset($plan)) {
                         switch ($plan->name) {

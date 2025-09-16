@@ -1767,7 +1767,7 @@ class FrontController extends Controller
         try {
             $user = User::select('id', 'free_user')->findOrFail($userId);
 
-            // 1) Latest payment overall (for generic overlay links, fallback)
+            // Latest payment overall (for links/fallback)
             if ($paymentId) {
                 $latestPayment = Payment::where('user_id', $userId)->where('id', $paymentId)->first();
             } else {
@@ -1777,7 +1777,7 @@ class FrontController extends Controller
                     ->first();
             }
 
-            // 2) Canonical "plan purchase" payment: latest payment that has a valid plan_id (non-null, non-zero)
+            // Canonical "plan purchase" payment (latest with valid plan_id)
             $planPayment = Payment::where('user_id', $userId)
                 ->whereNotNull('plan_id')
                 ->where('plan_id', '!=', 0)
@@ -1785,55 +1785,68 @@ class FrontController extends Controller
                 ->orderBy('id', 'desc')
                 ->first();
 
-            // 3) Latest consultation-only payment (optional, if you need it)
+            // Latest consultation-only payment (optional)
             $latestConsultationPayment = Payment::where('user_id', $userId)
                 ->whereNotNull('consultation_id')
                 ->orderBy('created_at', 'desc')
                 ->orderBy('id', 'desc')
                 ->first();
 
-            // 4) Questionnaire — check if there's any completed questionnaire for this user
+            // Questionnaire flags:
+            // - completed: at least one UserPrePlan with is_complete = 1
+            // - in-progress: there exists at least one UserPrePlan for the user where is_complete != 1 (i.e. started but not finished)
             $questionnaireComplete = UserPrePlan::where('user_id', $userId)->where('is_complete', 1)->exists();
+            $questionnaireInProgress = UserPrePlan::where('user_id', $userId)
+                ->where(function ($q) {
+                    $q->where('is_complete', 0)->orWhereNull('is_complete');
+                })
+                ->exists();
 
-            // 5) Find userPlan associated with planPayment (prefer planPayment->plan_id)
+            // userPlan associated with planPayment (prefer planPayment->plan_id), fallback to latest userPlan
             $userPlan = null;
             if ($planPayment && $planPayment->plan_id) {
                 $userPlan = UserPlan::with('plan')->where('user_id', $userId)->where('plan_id', $planPayment->plan_id)->first();
             }
-            // fallback to the latest userPlan record if not found
             if (! $userPlan) {
                 $userPlan = UserPlan::with('plan')->where('user_id', $userId)->orderBy('created_at', 'desc')->first();
             }
 
-            // For free users without any payment/plan, prepare free plan placeholder
+            // Free user placeholder when no paid plan/payment
             if (! $planPayment && ! $latestPayment && $user->free_user && ! $userPlan) {
                 $userPlan = new UserPlan();
                 $userPlan->free_user = true;
                 $userPlan->free_user_plan = Plan::all();
             }
 
-            // Normalize useful flags
-            $hasPlanPurchased = (bool) $planPayment;
-            $hasAnyPayment = (bool) $latestPayment;
-            $hasConsultation = (bool) ($latestConsultationPayment ?: $planPayment && $planPayment->consultation_id);
-            $userPlanActive = (bool) ($userPlan && isset($userPlan->status) && $userPlan->status === 'active');
-            $mailSent = (bool) ($userPlan && isset($userPlan->is_mail_sent) && $userPlan->is_mail_sent);
+            // Normalized flags
+            $hasPlanPurchased  = (bool) $planPayment;
+            $hasAnyPayment     = (bool) $latestPayment;
+            $hasConsultation   = (bool) ($latestConsultationPayment ?: ($planPayment && $planPayment->consultation_id));
+            $userPlanActive    = (bool) ($userPlan && isset($userPlan->status) && $userPlan->status === 'active');
+            $mailSent          = (bool) ($userPlan && isset($userPlan->is_mail_sent) && $userPlan->is_mail_sent);
 
-            // Decide single view state: planPayment takes precedence if exists
+            // Decide view state with correct precedence and questionnaire-in-progress check
             $viewState = 'purchase_prompt'; // default fallback
             $paymentForQuestionnaireRoute = $planPayment ?? $latestPayment ?? null;
 
-            // 1) Free user with no paid plan (and no planPayment)
-            if (! $hasPlanPurchased && ! $hasAnyPayment && $user->free_user) {
+            // 1) If the user has an in-progress questionnaire AND there is any payment (consultation or plan),
+            //    we MUST show "Continue your Questionnaire" (linking to the appropriate payment).
+            if ($questionnaireInProgress && $hasAnyPayment) {
+                if ($hasPlanPurchased) {
+                    $viewState = 'continue_questionnaire_for_plan';
+                } else {
+                    $viewState = 'continue_questionnaire';
+                }
+            }
+            // 2) FREE USER with no purchased plan and NO relevant in-progress questionnaire -> show purchase overlay
+            elseif (! $hasPlanPurchased && $user->free_user) {
                 $viewState = 'free_user';
             }
-            // 2) If there is a plan purchase -> always base the plan UI on planPayment
+            // 3) If plan purchased: base UI on the planPayment (questionnaire -> preparing/final)
             elseif ($hasPlanPurchased) {
-                // if questionnaire not complete -> continue questionnaire (point to the planPayment row)
                 if (! $questionnaireComplete) {
                     $viewState = 'continue_questionnaire_for_plan';
                 } else {
-                    // questionnaire complete -> show preparing or final based on userPlan status/mail
                     if ($userPlanActive && $mailSent) {
                         $viewState = 'final_plan';
                     } else {
@@ -1841,18 +1854,13 @@ class FrontController extends Controller
                     }
                 }
             }
-            // 3) No plan purchased but some payment exists (consultation-only or other)
+            // 4) No purchased plan but some other payment(s) exist
             else {
-                // payment exists but questionnaire incomplete -> continue questionnaire (use latest payment)
                 if ($hasAnyPayment && ! $questionnaireComplete) {
                     $viewState = 'continue_questionnaire';
-                }
-                // if consultation exists and questionnaire complete -> consultation-only prompt to purchase
-                elseif ($hasConsultation && $questionnaireComplete) {
+                } elseif ($hasConsultation && $questionnaireComplete) {
                     $viewState = 'consultation_only_after_questionnaire';
-                }
-                // else fallback purchase prompt (e.g. user had a failed txn etc.)
-                else {
+                } else {
                     $viewState = 'purchase_prompt';
                 }
             }
@@ -1862,14 +1870,15 @@ class FrontController extends Controller
 
             return view('front.pages.profile-landing', compact(
                 'userPlan',
-                'planPayment',              // canonical plan payment (if any) — used to show plan
-                'latestPayment',            // latest payment overall (for overlays or fallback routes)
+                'planPayment',
+                'latestPayment',
                 'latestConsultationPayment',
                 'questionnaireComplete',
+                'questionnaireInProgress',
                 'isAdminView',
                 'isSuperAdmin',
                 'viewState',
-                'paymentForQuestionnaireRoute' // the payment id to link pre-plan-details to (prefer planPayment)
+                'paymentForQuestionnaireRoute'
             ));
         } catch (Exception $e) {
             Log::error('Error fetching user profile: ' . $e->getMessage());

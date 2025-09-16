@@ -277,7 +277,6 @@
         const assetBaseUrl = "{{ asset('storage') }}";
 
         // Ensure userId and userPlanId are already defined globally
-
         document.addEventListener('DOMContentLoaded', function () {
             const dropdownOptions = document.querySelectorAll('.custom-dropdown-option');
             const plateImg = document.getElementById('plate-img'); // Get the image element
@@ -938,9 +937,6 @@
             $mealItemsModalLabel.text(meal_name);
             $mealItemsContainer.empty();
 
-            // Optional: show spinner
-            // $mealItemsLoadingSpinner.show();
-
             $.ajax({
                 url: '{{ route('front.meals.items', ':mealId') }}'
                     .replace(':mealId', meal_id) +
@@ -1030,12 +1026,9 @@
                         $mealItemsContainer.html('<p class="text-center">No foods available in this meal.</p>');
                     }
 
-                    // Optional: hide spinner
-                    // $mealItemsLoadingSpinner.hide();
                 },
                 error: function () {
                     $mealItemsContainer.html('<p class="text-danger text-center">Failed to load foods.</p>');
-                    // $mealItemsLoadingSpinner.hide();
                 }
             });
         }
