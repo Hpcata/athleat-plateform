@@ -89,6 +89,10 @@
         #delphi-bubble-trigger {
             display: none !important;
         }
+        
+        #delphi-bubble-trigger.show-trigger {
+            display: block !important;
+        }
     </style>
 
     <!-- Includes the script file -->
@@ -162,6 +166,8 @@
                             setTimeout(function () {
                                 isOpen = true;
                                 isOpening = false;
+                                // Show the delphi-bubble-trigger when popup is open
+                                trigger.addClass('show-trigger');
                             }, 100);
                         } else {
                             // If not ready, wait a bit and try again
@@ -184,6 +190,14 @@
                 loadCustomDelphi();
             });
 
+            // Handle click event on delphi-bubble-trigger to remove show-trigger class
+            $(document).on('click', '#delphi-bubble-trigger', function (e) {
+                if ($(this).hasClass('show-trigger')) {
+                    $(this).removeClass('show-trigger');
+                    isOpen = false;
+                }
+            });
+
             // Function to close Delphi popup
             function closeDelphiPopup() {
                 if (isOpen && !isOpening && !isClosing) {
@@ -193,6 +207,8 @@
                         // Use trigger() instead of click() to avoid event bubbling
                         trigger.trigger('click');
                         isOpen = false;
+                        // Hide the delphi-bubble-trigger when popup is closed
+                        trigger.removeClass('show-trigger');
                     }
                     // Reset flag after a short delay
                     setTimeout(function() {
