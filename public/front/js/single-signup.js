@@ -397,3 +397,9 @@ function scrollToContact() {
         });
     }
 }
+
+$(document).ready(function() {
+    $(document).on('click', '.start-without-plan-btn', function() {
+        openSingupFreePopup(true);
+    });
+});

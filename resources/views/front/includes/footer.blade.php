@@ -44,7 +44,7 @@
                     <a class="footer-link" style="position: relative;" href="https://athleatshop.com/" target="_blank">Shop</a>
                 @endif
                 <div class="dropdown">
-                    <a class="footer-link" href="#choose-plan-section">Services</a>
+                    <a class="footer-link scroll-to-plans" href="{{ route('front.index') }}#choose-plan-section">Services</a>
                     {{-- <ul class="dropdown-menu" aria-labelledby="servicesDropdown">
                         <li><a class="dropdown-item" href="{{ route('front.training.nutrition.plan') }}">Training Nutrition Plan</a></li>
                         <li><a class="dropdown-item" href="{{ route('front.competition.plan') }}">Competition plan</a></li>
