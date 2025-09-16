@@ -39,8 +39,9 @@
             <!-- Navigation Links -->
             <nav class="nav-links">
                 <a class="footer-link" style="position: relative;" href="{{ auth()->guard('web')->check() ? route('front.profile',['id' => auth()->guard('web')->user()->id]) : route('front.index' ) }}">Home</a>
+                <a class="footer-link" style="position: relative;" href="{{ route('front.about-us') }}">About us</a>
                 @if (auth()->guard('web')->check())
-                <a class="footer-link" style="position: relative;" href="https://athleatshop.com/" target="_blank">Shop</a>
+                    <a class="footer-link" style="position: relative;" href="https://athleatshop.com/" target="_blank">Shop</a>
                 @endif
                 <div class="dropdown">
                     <a class="footer-link" href="#choose-plan-section">Services</a>
