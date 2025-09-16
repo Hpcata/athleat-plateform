@@ -281,6 +281,14 @@ $monthlyGamePlanPrice = ($gamePlanPlanPrice * 1.1) / $months;
         </div>
     </div>
 
+@if(Auth::check())
+    <script>
+        $(document).ready(function() {
+            $('.start-without-plan-btn').addClass('d-none');
+        });
+    </script>
+@endif
+
 <!-- JavaScript for Modal Functionality -->
 <script src="https://js.stripe.com/v3/"></script>
 <style>

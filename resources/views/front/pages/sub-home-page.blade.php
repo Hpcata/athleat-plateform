@@ -820,7 +820,7 @@
                                 <p class="sport-nutrition-promo__desc">
                                     Think you’ve nailed your nutrition? Let’s put it to the test. Take
                                     the quiz to test your nutrition knowledge and discover how to fuel
-                                    smarter whether for performance, recovery, or everyday energy.
+                                    smarter-whether for performance, recovery, or everyday energy.
                                 </p>
                                 <button class="btn-signup" data-bs-toggle="modal" data-bs-target="#quizModal">Start the quiz</button>
                             </div>
