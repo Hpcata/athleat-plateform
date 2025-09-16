@@ -49,7 +49,7 @@
             <li><div class="mobile-menu-divider" style="height:1px; background:#555; margin: 12px 16px;"></div></li>
             <li><a href="{{ route('front.supplement-scanner') }}" class="scanner-btn">Supplement Scanner</a></li>
             <li><a class="coming-soon-popup">Level-Up Library</a></li>
-            <li><a onclick="openBookingAndModal()">BioHealth Passport</a></li>
+            <li><a class="coming-soon-popup">BioHealth Passport</a></li>
             <li>
                 <div class="mobile-menu-divider" style="height:1px; background:#555; margin: 12px 16px;"></div>
             </li>
@@ -98,7 +98,7 @@
                             {{-- Level-Up library button --}}
                             <a href="#" class="coming-soon-popup">Level-Up Library</a>
                             {{-- BioHealth Passport button --}}
-                            <a href="#" onclick="openBookingAndModal()">BioHealthPassport</a>
+                            <a href="#" class="coming-soon-popup">BioHealthPassport</a>
                         </div>
                     </div>
 
@@ -166,7 +166,7 @@
                             <div class="dropdown-content">
                                 <a href="{{ route('front.supplement-scanner') }}" class="scanner-btn">Supplement Scanner</a>
                                 <a href="#" class="coming-soon-popup">Level-Up Library</a>
-                                <a href="#" onclick="openBookingAndModal()">BioHealth Passport</a>
+                                <a href="#" class="coming-soon-popup">BioHealth Passport</a>
                             </div>
                         </div>
                     </nav>
@@ -225,7 +225,7 @@
                                 <a class="dropdown-item coming-soon-popup">Level-Up Library</a>
                             </li>
                             <li>
-                                <a class="dropdown-item" onclick="openBookingAndModal()">BioHealth Passport</a>
+                                <a class="dropdown-item coming-soon-popup">BioHealth Passport</a>
                             </li>
                         </ul>
                     </li>
