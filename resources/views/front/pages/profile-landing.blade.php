@@ -364,7 +364,7 @@
     @include('front.modal.smart-swap-items')
 @endsection
 
-@push('script')
+@push('scripts')
     <script>
         window["profile-landing-page"] = {
             userPlan: @json($userPlan ?? null),

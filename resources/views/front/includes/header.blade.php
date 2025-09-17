@@ -338,9 +338,6 @@
     }
 
     $(document).ready(function() {
-        $('#login').on('click', function() {
-            // $('#loginModal').modal('show');
-        })
         $('#login-form').submit(function(event) {
             event.preventDefault(); // Prevent the form from submitting the normal way
 
