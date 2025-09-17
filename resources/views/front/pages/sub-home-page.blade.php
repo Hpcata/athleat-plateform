@@ -959,7 +959,7 @@
 
                     <div class="slider-container">
                         <div class="slide-left logo-row">
-                            <!-- Duplicate content for seamless loop -->
+                            <!-- First set of images -->
                             @if(!empty($section->banner_image) && is_array($section->banner_image))
                                 @foreach($section->banner_image as $bannerImage)
                                     <div class="logo-card">
@@ -967,6 +967,7 @@
                                             alt="{{ $bannerImage['alt'] ?? 'Partner Logo' }}" />
                                     </div>
                                 @endforeach
+                                <!-- Duplicate for seamless loop -->
                                 @foreach($section->banner_image as $bannerImage)
                                     <div class="logo-card">
                                         <img src="{{ asset('storage/' . ($bannerImage['image'] ?? $bannerImage)) }}"
@@ -977,7 +978,7 @@
                         </div>
 
                         <div class="slide-right logo-row">
-                            <!-- Duplicate content for seamless loop -->
+                            <!-- First set of images -->
                             @if(!empty($section->image) && is_array($section->image))
                                 @foreach($section->image as $bannerImage)
                                     <div class="logo-card">
@@ -985,6 +986,7 @@
                                             alt="{{ $bannerImage['alt'] ?? 'Partner Logo' }}" />
                                     </div>
                                 @endforeach
+                                <!-- Duplicate for seamless loop -->
                                 @foreach($section->image as $bannerImage)
                                     <div class="logo-card">
                                         <img src="{{ asset('storage/' . ($bannerImage['image'] ?? $bannerImage)) }}"

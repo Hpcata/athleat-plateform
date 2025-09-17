@@ -148,7 +148,7 @@
                 const usedTypes = data.used_types;
                 const sectionTypeSelect = document.getElementById('section_type');
                 const currentSectionType = '{{ $section->section_type }}';
-                
+
                 Array.from(sectionTypeSelect.options).forEach(option => {
                     if (usedTypes.includes(option.value) && option.value !== currentSectionType) {
                         option.disabled = true;
@@ -167,7 +167,7 @@
         addRemoveLinks: true,
         uploadMultiple: true,
         acceptedFiles: 'image/*',
-        maxFiles: 10,
+        maxFiles: 30,
         init: function () {
             const dz = this;
             existingBannerImages.forEach((imagePath, i) => {
@@ -193,7 +193,7 @@
         addRemoveLinks: true,
         uploadMultiple: true,
         acceptedFiles: 'image/*',
-        maxFiles: 10,
+        maxFiles: 30,
         init: function () {
             const dz = this;
             existingImages.forEach((imagePath, i) => {

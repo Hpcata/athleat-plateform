@@ -1789,7 +1789,7 @@ body {
 /* Individual Logo Card */
 .partners-section .logo-card {
     flex-shrink: 0;
-    width: 387px;
+    width: 280px;
     border-radius: 12px;
     display: flex;
     align-items: center;
@@ -1808,7 +1808,9 @@ body {
 
 .partners-section .slide-left {
     animation-name: slide-left;
-    animation-duration: 15s;
+    animation-duration: 25s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
 }
 
 @keyframes slide-left {
@@ -1817,19 +1819,21 @@ body {
     }
 
     100% {
-        transform: translateX(-50%);
+        transform: translateX(-100%);
     }
 }
 
 /* Animation for sliding right */
 .partners-section .slide-right {
     animation-name: slide-right;
-    animation-duration: 15s;
+    animation-duration: 25s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
 }
 
 @keyframes slide-right {
     0% {
-        transform: translateX(-50%);
+        transform: translateX(-100%);
     }
 
     100% {
@@ -4802,13 +4806,15 @@ svg.user-type-icon path {
     }
 
     .partners-section .slide-left {
-        animation-duration: 30s;
-        /* Faster on mobile */
+        animation-duration: 35s;
+        animation-timing-function: linear;
+        animation-iteration-count: infinite;
     }
 
     .partners-section .slide-right {
-        animation-duration: 30s;
-        /* Faster on mobile */
+        animation-duration: 35s;
+        animation-timing-function: linear;
+        animation-iteration-count: infinite;
     }
 
     .contact-form-wrapper {
@@ -5148,7 +5154,7 @@ svg.user-type-icon path {
     }
 
     .choose-plan-section .plan-card {
-        /* margin-bottom: 30px; */
+        margin-bottom: 0;
     }
 
     .choose-plan-section .col-md-4 {
