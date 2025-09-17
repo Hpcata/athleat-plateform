@@ -142,7 +142,7 @@
                 .then(data => {
                     const usedTypes = data.used_types;
                     const sectionTypeSelect = document.getElementById('section_type');
-                    
+
                     Array.from(sectionTypeSelect.options).forEach(option => {
                         if (usedTypes.includes(option.value)) {
                             option.disabled = true;
@@ -152,7 +152,7 @@
                 })
                 .catch(error => console.error('Error loading used section types:', error));
         });
-    
+
         Dropzone.autoDiscover = false;
         // Banner Dropzone
         const bannerDropzone = new Dropzone("#banner-image-dropzone", {
@@ -161,7 +161,7 @@
             addRemoveLinks: true,
             uploadMultiple: true,
             acceptedFiles: 'image/*',
-            maxFiles: 10
+            maxFiles: 30
         });
 
         // Image Dropzone
@@ -171,7 +171,7 @@
             addRemoveLinks: true,
             uploadMultiple: true,
             acceptedFiles: 'image/*',
-            maxFiles: 10
+            maxFiles: 30
         });
 
         // Form submission
