@@ -54,7 +54,7 @@
         document.addEventListener('DOMContentLoaded', function () {
             $(document).ajaxError(function (event, jqXHR, settings, error) {
                 if (jqXHR.status === 419 || jqXHR.status === 401) {
-                    window.location.href = "https://performancehealthsupport.com";
+                    window.location.href = "https://athleat.com";
                 }
             });
 

@@ -5,6 +5,18 @@
     $userId = $auth ? auth()->user()->id : null;
 ?>
 
+@if($auth)
+<script>
+    window.isUserLoggedIn = true;
+    window.profile_landing_url = "{{ route('front.profile', ['id' => Auth::guard('web')->user()->id]) }}";
+</script>
+@else
+<script>
+    window.isUserLoggedIn = false;
+    window.profile_landing_url = "";
+</script>
+@endif
+
 @if ($auth && (Route::is('front.profile') || Route::is('front.plans.details') || Route::is('front.my-plans')))
     <!-- Mobile Menu Overlay -->
     <?php $user = auth()->user();?>

@@ -2315,7 +2315,7 @@
         function showThankYouModal() {
             // Set dynamic content
             const thankYouMessage = "We make around 300 food decisions a day... to perform at your best order your Personalised plan today.";
-            const planUrl = "https://performancehealthsupport.com/action-sport-nutrition-plan";
+            const planUrl = "https://athleat.com/action-sport-nutrition-plan";
             // Set the modal message
             $('#thankYouMessage').text(thankYouMessage);
 
