@@ -906,8 +906,7 @@ function fetchAndDisplayNutritionScore(quizId) {
             if (response.success && response.nutrition_score) {
                 // Update percentage
                 if (percentageElement) {
-                    percentageElement.textContent =
-                        response.nutrition_percentage + "%";
+                    percentageElement.textContent = response.nutrition_percentage + "%";
                 }
 
                 // Update arrow rotation
@@ -953,20 +952,14 @@ function setDefaultNutritionDisplay() {
     }
 }
 
-// Function to open modal with nutrition score
-function openCustomCongratsModalWithScore() {
-    // First open the modal
-    openCustomCongratsModal();
-
-    // Then fetch and display the nutrition score
-    fetchAndDisplayNutritionScore();
-}
-
 // Optional: Add event listener for when modal is hidden
 document.addEventListener("DOMContentLoaded", function () {
     const modal = document.getElementById("customCongratsModal");
     if (modal) {
         modal.addEventListener("hidden.bs.modal", function () {
+            // setup a session storage flag where the popup is opened or not if opened then set it to true so next time when page reload the popup will not be shown again
+            sessionStorage.removeItem("customCongratsModalOpened");
+            sessionStorage.setItem("customCongratsModalOpened", "true");
             // Any cleanup code can go here
             console.log("Modal closed");
         });
@@ -978,6 +971,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
 // Function to check if user has completed a quiz and show results
 function checkAndShowQuizResults() {
+    const customCongratsModalOpened = sessionStorage.getItem("customCongratsModalOpened");
+    if (customCongratsModalOpened) {
+        return;
+    }
     const quizId = sessionStorage.getItem("completed_quiz_id");
     if (quizId) {
         // Check if this is a completed quiz by looking for nutrition score
@@ -1012,6 +1009,7 @@ function checkAndShowQuizResults() {
             },
         });
     } else {
+        console.log("No quiz data is available");
         // Set default display when no quiz data is available
         setDefaultNutritionDisplay();
     }
