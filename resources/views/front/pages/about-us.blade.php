@@ -81,7 +81,7 @@
                         <img src="{{ webAssets('storage/' . $image) }}" alt="biohealth-logo">
                     </div>
                     {!! $section->content !!}
-                    <button class="learn-more-btn" id="biohealth-passport-learn-more-btn">Learn More
+                    <button class="learn-more-btn coming-soon-popup" id="biohealth-passport-learn-more-btn">Learn More
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                             style="margin-left: 8px;">
                             <path
@@ -156,9 +156,9 @@
 
 
         $(document).ready(function() {
-            $('#biohealth-passport-learn-more-btn').click(function() {
-                window.open('https://biohealthpassport.com.au/', '_blank');
-            });
+            // $('#biohealth-passport-learn-more-btn').click(function() {
+            //     window.open('https://biohealthpassport.com.au/', '_blank');
+            // });
         });
     </script>
 @endpush

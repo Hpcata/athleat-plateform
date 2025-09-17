@@ -89,6 +89,10 @@
         #delphi-bubble-trigger {
             display: none !important;
         }
+        
+        #delphi-bubble-trigger.show-trigger {
+            display: block !important;
+        }
     </style>
 
     <!-- Includes the script file -->
@@ -100,22 +104,35 @@
         $delphiConfig = auth()->check() && auth()->user()->hasPurchasedPlan() ? '663f5909-3622-47c9-9287-28233409948f' : '1ec65786-eafc-4dbb-a617-57b8d81c9856';
     @endphp
 
-    <script id="delphi-bubble-script">
-        window.delphi = { ...(window.delphi ?? {}) };
-        window.delphi.bubble = {
-            config: "{{ $delphiConfig }}",
-            overrides: {
-                landingPage: "CHAT",
-            },
-            trigger: {
-                color: "#0090FF",
-            },
-            container: {
-                width: "100%",
-                height: "800px",
-            },
-        };
+    @if(auth()->check() && auth()->user()->hasPurchasedPlan())
+        <script id="delphi-bubble-script">
+            window.delphi = {...(window.delphi ?? {}) };
+            window.delphi.bubble = {
+                config: "663f5909-3622-47c9-9287-28233409948f",
+                overrides: {
+                landingPage: "OVERVIEW",
+                },
+                trigger: {
+                color: "#4d87de",
+                },
+            };
+        </script>
+    @else
+        <script id="delphi-bubble-script">
+            window.delphi = {...(window.delphi ?? {}) };
+            window.delphi.bubble = {
+                config: "1ec65786-eafc-4dbb-a617-57b8d81c9856",
+                overrides: {
+                landingPage: "OVERVIEW",
+                },
+                trigger: {
+                color: "#4d87de",
+                },
+            };
+        </script>
+    @endif
 
+    <script >
         $(document).ready(function () {
             let isOpen = false;
             let isOpening = false;
@@ -162,6 +179,8 @@
                             setTimeout(function () {
                                 isOpen = true;
                                 isOpening = false;
+                                // Show the delphi-bubble-trigger when popup is open
+                                trigger.addClass('show-trigger');
                             }, 100);
                         } else {
                             // If not ready, wait a bit and try again
@@ -184,6 +203,14 @@
                 loadCustomDelphi();
             });
 
+            // Handle click event on delphi-bubble-trigger to remove show-trigger class
+            $(document).on('click', '#delphi-bubble-trigger', function (e) {
+                if ($(this).hasClass('show-trigger')) {
+                    $(this).removeClass('show-trigger');
+                    isOpen = false;
+                }
+            });
+
             // Function to close Delphi popup
             function closeDelphiPopup() {
                 if (isOpen && !isOpening && !isClosing) {
@@ -193,6 +220,8 @@
                         // Use trigger() instead of click() to avoid event bubbling
                         trigger.trigger('click');
                         isOpen = false;
+                        // Hide the delphi-bubble-trigger when popup is closed
+                        trigger.removeClass('show-trigger');
                     }
                     // Reset flag after a short delay
                     setTimeout(function() {
