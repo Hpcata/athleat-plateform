@@ -124,6 +124,24 @@
         @if($quiz->user_id)
             <p><strong>User ID:</strong> {{ $quiz->user_id }}</p>
         @endif
+        @if($quiz->nutrition_score)
+            <p><strong>Nutrition Score:</strong> {{ round(($quiz->nutrition_score / 35) * 100, 1) }}%</p>
+        @endif
+        @if($quiz->nutrition_feedback)
+            <p><strong>Nutrition Feedback:</strong> {{ $quiz->nutrition_feedback }}</p>
+        @endif
+        @if($quiz->sports_score)
+            <p><strong>Sports Score:</strong> {{ $quiz->sports_score }}</p>
+        @endif
+        @if($quiz->sports_feedback)
+            <p><strong>Sports Feedback:</strong> {{ $quiz->sports_feedback }}</p>
+        @endif
+        @if($quiz->supplement_score)
+            <p><strong>Supplements Score:</strong> {{ $quiz->supplement_score }}</p>
+        @endif
+        @if($quiz->supplement_feedback)
+            <p><strong>Supplements Feedback:</strong> {{ $quiz->supplement_feedback }}</p>
+        @endif
     </div>
 
     @foreach($questionsByForm as $formSlug => $questions)

@@ -1159,7 +1159,12 @@ document.addEventListener('DOMContentLoaded', function () {
                         setTimeout(() => {
                             // showStep(10); // Assuming step 10 is the results screen
                             $('#quizModal').modal('hide');
-                            openSingupFreePopup(false, true);
+                            // Only open signup popup if user is not already logged in
+                            if (!window.isUserLoggedIn) {
+                                openSingupFreePopup(false, true);
+                            } else {
+                                window.location.href = window.profile_landing_url;
+                            }
                             removeErrorStyling(); // Remove error styling after successful navigation
                         }, 100);
                         return; // Don't continue to the next step logic
