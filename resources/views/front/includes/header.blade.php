@@ -24,7 +24,7 @@
         style=" position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.6); z-index:1999;">
     </div>
     <header class="mobile-header">
-        <img src="{{ frontAssets('images/logo.svg') }}" alt="athleat logo" class="mobile-logo-img" width="140"height="30" />
+        <img href="{{ route('front.index') }}" src="{{ frontAssets('images/logo.svg') }}" alt="athleat logo" class="mobile-logo-img" width="140"height="30" />
         <button class="mobile-menu-toggle" aria-label="Toggle mobile menu" onclick="toggleMobileMenu()"
             style="background: none; border: none; color: #fff; cursor: pointer;margin: 0 !important;">
             <span id="mobile-menu-icon">
@@ -94,7 +94,6 @@
                 </div>
                 @php
                     $userId = Auth::guard('web')->user()->id;
-
                     $myPlanUrl = route('front.my-plans');
                 @endphp
                 <nav class="nav-center">
@@ -105,11 +104,8 @@
                         {{-- Resources dropdown --}}
                         <span>Resources <i class="fas fa-chevron-down"></i></span>
                         <div class="dropdown-content">
-                            {{-- Supplement scanner button --}}
                             <a href="{{ route('front.supplement-scanner') }}" class="scanner-btn">Supplement Scanner</a>
-                            {{-- Level-Up library button --}}
                             <a href="#" class="coming-soon-popup">Level-Up Library</a>
-                            {{-- BioHealth Passport button --}}
                             <a href="#" class="coming-soon-popup">BioHealthPassport</a>
                         </div>
                     </div>
@@ -156,7 +152,6 @@
         </header>
     @else
         @php
-            $id = request()->route('id');
             $userId = $user ? $user->id : null;
         @endphp
         <header class="header">
@@ -221,26 +216,26 @@
                         <a class="nav-link" href="{{ route('front.about-us') }}">About us</a>
                     </li>
                     @if (Auth::check())
-                    {{-- Make resources dropdown --}}
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                            Resources
-                            <svg width="10" height="7" viewBox="0 0 10 7" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M1 1.5L5 5.5L9 1.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                            </svg>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li>
-                                <a class="dropdown-item" href="{{ route('front.supplement-scanner') }}" class="scanner-btn">Supplement Scanner</a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item coming-soon-popup">Level-Up Library</a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item coming-soon-popup">BioHealth Passport</a>
-                            </li>
-                        </ul>
-                    </li>
+                        {{-- Make resources dropdown --}}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                                Resources
+                                <svg width="10" height="7" viewBox="0 0 10 7" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M1 1.5L5 5.5L9 1.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a class="dropdown-item" href="{{ route('front.supplement-scanner') }}" class="scanner-btn">Supplement Scanner</a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item coming-soon-popup">Level-Up Library</a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item coming-soon-popup">BioHealth Passport</a>
+                                </li>
+                            </ul>
+                        </li>
                     @endif
                     {{-- Make services dropdown --}}
                     <li class="nav-item dropdown">
@@ -265,10 +260,10 @@
                         </ul>
                     </li>
                     @if (Auth::check())
-                    {{-- Make a shop menu item --}}
-                    <li class="nav-item">
-                        <a class="nav-link" href="https://athleatshop.com/" target="_blank">Shop</a>
-                    </li>
+                        {{-- Make a shop menu item --}}
+                        <li class="nav-item">
+                            <a class="nav-link" href="https://athleatshop.com/" target="_blank">Shop</a>
+                        </li>
                     @endif
                 </ul>
 
@@ -285,7 +280,7 @@
                                 id="my-account-dropdown">
                                 My Account
                             </a>
-                        {{-- dropdown with settings and privacy, logout and my plans --}}
+                            {{-- dropdown with settings and privacy, logout and my plans --}}
                             <ul class="dropdown-menu" aria-labelledby="my-account-dropdown">
                                 <li>
                                     <a class="dropdown-item" href="{{ route('front.my-plans') }}">My Plans</a>

@@ -4,7 +4,7 @@
 <head>
     <title>@yield('title')</title>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
     <meta name="author" content="Untree.co">
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -76,8 +76,9 @@
 
 <body>
     <!-- GTM noscript -->
-    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-N2BZFJGB" height="0" width="0"
-            style="display:none;visibility:hidden"></iframe></noscript>
+    <noscript>
+        <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-N2BZFJGB" height="0" width="0" style="display:none;visibility:hidden"></iframe>
+    </noscript>
 
     @include('front.includes.header')
 
@@ -89,7 +90,7 @@
         #delphi-bubble-trigger {
             display: none !important;
         }
-        
+
         #delphi-bubble-trigger.show-trigger {
             display: block !important;
         }
@@ -100,39 +101,35 @@
 
     @stack('scripts')
 
-    @php
-        $delphiConfig = auth()->check() && auth()->user()->hasPurchasedPlan() ? '663f5909-3622-47c9-9287-28233409948f' : '1ec65786-eafc-4dbb-a617-57b8d81c9856';
-    @endphp
-
     @if(auth()->check() && auth()->user()->hasPurchasedPlan())
         <script id="delphi-bubble-script">
-            window.delphi = {...(window.delphi ?? {}) };
+            window.delphi = { ...(window.delphi ?? {}) };
             window.delphi.bubble = {
                 config: "663f5909-3622-47c9-9287-28233409948f",
                 overrides: {
-                landingPage: "OVERVIEW",
+                    landingPage: "OVERVIEW",
                 },
                 trigger: {
-                color: "#4d87de",
+                    color: "#4d87de",
                 },
             };
         </script>
     @else
         <script id="delphi-bubble-script">
-            window.delphi = {...(window.delphi ?? {}) };
+            window.delphi = { ...(window.delphi ?? {}) };
             window.delphi.bubble = {
                 config: "1ec65786-eafc-4dbb-a617-57b8d81c9856",
                 overrides: {
-                landingPage: "OVERVIEW",
+                    landingPage: "OVERVIEW",
                 },
                 trigger: {
-                color: "#4d87de",
+                    color: "#4d87de",
                 },
             };
         </script>
     @endif
 
-    <script >
+    <script>
         $(document).ready(function () {
             let isOpen = false;
             let isOpening = false;
@@ -174,7 +171,7 @@
                             // Single click to open
                             let trigger = $(document).find('#delphi-bubble-trigger');
                             trigger.trigger("click");
-                            
+
                             // Set open state after a short delay
                             setTimeout(function () {
                                 isOpen = true;
@@ -224,41 +221,41 @@
                         trigger.removeClass('show-trigger');
                     }
                     // Reset flag after a short delay
-                    setTimeout(function() {
+                    setTimeout(function () {
                         isClosing = false;
                     }, 100);
                 }
             }
 
             // Click outside detection - close when clicking outside chat bubble (handles dynamic elements)
-            $(document).on('click', function(e) {
+            $(document).on('click', function (e) {
                 if (isOpen && !isOpening && !isClosing) {
                     // Check if click is inside any Delphi-related element, delphi-frame, delphi-bubble-wrapper, or trigger elements
                     let isInsideDelphiElement = $(e.target).closest('[id*="delphi"], [class*="delphi"], [id*="delphi-frame"], [class*="delphi-frame"], [id*="delphi-bubble-wrapper"], [class*="delphi-bubble-wrapper"]').length > 0;
                     let isTriggerElement = $(e.target).closest('.chat-widget, .start-chat, #chat-to-virtual-kez-btn, #start-chat-link').length > 0;
-                    
+
                     // Also check if the clicked element itself is a Delphi element, delphi-frame, or delphi-bubble-wrapper
                     let isDirectDelphiElement = $(e.target).is('[id*="delphi"], [class*="delphi"], [id*="delphi-frame"], [class*="delphi-frame"], [id*="delphi-bubble-wrapper"], [class*="delphi-bubble-wrapper"]');
-                    
+
                     // Only close if clicking outside all protected elements
                     if (!isInsideDelphiElement && !isDirectDelphiElement && !isTriggerElement) {
-                     //   closeDelphiPopup();
+                        //   closeDelphiPopup();
                     }
                 }
             });
 
             // Hover outside detection (handles dynamic elements including delphi-frame and delphi-bubble-wrapper)
-            $(document).on('mouseleave', '[id*="delphi"], [class*="delphi"], [id*="delphi-frame"], [class*="delphi-frame"], [id*="delphi-bubble-wrapper"], [class*="delphi-bubble-wrapper"]', function() {
+            $(document).on('mouseleave', '[id*="delphi"], [class*="delphi"], [id*="delphi-frame"], [class*="delphi-frame"], [id*="delphi-bubble-wrapper"], [class*="delphi-bubble-wrapper"]', function () {
                 if (isOpen && !isOpening && !isClosing) {
                     // Set a timeout to close after hovering outside
-                    hoverTimeout = setTimeout(function() {
+                    hoverTimeout = setTimeout(function () {
                         // closeDelphiPopup();
                     }, 1000); // Close after 1 second of hovering outside
                 }
             });
 
             // Cancel hover timeout when hovering back over Delphi elements, delphi-frame, delphi-bubble-wrapper, or trigger elements
-            $(document).on('mouseenter', '[id*="delphi"], [class*="delphi"], [id*="delphi-frame"], [class*="delphi-frame"], [id*="delphi-bubble-wrapper"], [class*="delphi-bubble-wrapper"], .chat-widget, .start-chat, #chat-to-virtual-kez-btn, #start-chat-link', function() {
+            $(document).on('mouseenter', '[id*="delphi"], [class*="delphi"], [id*="delphi-frame"], [class*="delphi-frame"], [id*="delphi-bubble-wrapper"], [class*="delphi-bubble-wrapper"], .chat-widget, .start-chat, #chat-to-virtual-kez-btn, #start-chat-link', function () {
                 if (hoverTimeout) {
                     clearTimeout(hoverTimeout);
                     hoverTimeout = null;
@@ -266,36 +263,36 @@
             });
 
             // Scroll detection
-            $(window).on('scroll', function() {
+            $(window).on('scroll', function () {
                 if (isOpen && !isOpening && !isClosing) {
                     closeDelphiPopup();
                 }
             });
 
             // Escape key detection
-            $(document).on('keydown', function(e) {
+            $(document).on('keydown', function (e) {
                 if (e.key === 'Escape' && isOpen && !isOpening && !isClosing) {
                     closeDelphiPopup();
                 }
             });
 
             // Window blur detection (when user switches tabs)
-            $(window).on('blur', function() {
+            $(window).on('blur', function () {
                 if (isOpen && !isOpening && !isClosing) {
                     // closeDelphiPopup();
                 }
             });
 
             // Additional method: Close when clicking on body (excluding Delphi elements, delphi-frame, delphi-bubble-wrapper, and trigger elements)
-            $('body').on('click', function(e) {
+            $('body').on('click', function (e) {
                 if (isOpen && !isOpening && !isClosing) {
                     // Check if click is inside any Delphi-related element, delphi-frame, delphi-bubble-wrapper, or trigger elements
                     let isInsideDelphiElement = $(e.target).closest('[id*="delphi"], [class*="delphi"], [id*="delphi-frame"], [class*="delphi-frame"], [id*="delphi-bubble-wrapper"], [class*="delphi-bubble-wrapper"]').length > 0;
                     let isTriggerElement = $(e.target).closest('.chat-widget, .start-chat, #chat-to-virtual-kez-btn, #start-chat-link').length > 0;
-                    
+
                     // Also check if the clicked element itself is a Delphi element, delphi-frame, or delphi-bubble-wrapper
                     let isDirectDelphiElement = $(e.target).is('[id*="delphi"], [class*="delphi"], [id*="delphi-frame"], [class*="delphi-frame"], [id*="delphi-bubble-wrapper"], [class*="delphi-bubble-wrapper"]');
-                    
+
                     // Only close if clicking outside all protected elements
                     if (!isInsideDelphiElement && !isDirectDelphiElement && !isTriggerElement) {
                         closeDelphiPopup();

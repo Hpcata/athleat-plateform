@@ -47,7 +47,7 @@
                         <img src="{{ $mealImage2 }}" class="consult-avatar overlap1" alt="meal image" />
                         <img src="{{ $mealImage3 }}" class="consult-avatar overlap2" alt="meal image" />
 
-                        <span style="padding-left: 0px;">{{ $mealCount }} meals • 18 Nutrition tips</span>
+                        <span style="padding-left: 0px;">{{ $mealCount }} meals</span>
                     </div>
                 @else
                     <div class="consult-user-row" style="margin-top: 15px;">
