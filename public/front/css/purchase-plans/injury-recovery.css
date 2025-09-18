@@ -74,9 +74,19 @@
 
 .custom-accordion-content {
   padding: 0;
-  max-height: 0;
+  max-height: 0; /* Add this back for proper accordion behavior */
   overflow: hidden;
   transition: max-height 0.4s ease-in-out;
+}
+
+/* Minimum height for recovery meals accordion when open */
+.training-plan-wrapper:first-child .custom-accordion .custom-accordion-content {
+    min-height: 565px;
+}
+
+/* Ensure min-height is applied when accordion is active */
+.custom-accordion .custom-accordion-header.active + .custom-accordion-content {
+    min-height: 565px;
 }
 
 .arrow {
@@ -137,6 +147,7 @@
 .recovery-card .card-content h3 {
   font-size: 16px;
   margin: 0 0 8px;
+  font-weight: 700;
 }
 
 .recovery-card .card-content p {
@@ -255,3 +266,11 @@
   opacity: 1 !important;
 }
 
+@media (max-width: 768px) {
+.cards-grid {
+  grid-template-columns: 1fr;
+}
+.recovery-card .card-content h3 {
+  font-size: 14px;
+}
+}
