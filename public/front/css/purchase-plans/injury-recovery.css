@@ -265,12 +265,103 @@
 .injury-plan-page .custom-accordion-content .slider-wrapper:hover .slider-arrow.right-arrow {
   opacity: 1 !important;
 }
+.accordion-arrow-last{
+  display: flex;
+  justify-content: flex-end;
+}
+.resources-body{
+  padding: 20px;
+}
 
+/* Header arrow styling - only visible when closed */
+.arrow.header-arrow {
+  border: solid black;
+  border-width: 0 3px 3px 0;
+  display: inline-block;
+  padding: 3px;
+  transform: rotate(45deg);
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Hide header arrow when accordion is open */
+.custom-accordion-header.active .arrow.header-arrow {
+  opacity: 0;
+  visibility: hidden;
+  transform: rotate(-135deg);
+}
+
+/* Body arrow container - hidden by default */
+.accordion-body-arrow {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 0 24px 20px 0;
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity 0.4s ease 0.2s, transform 0.4s ease 0.2s;
+  pointer-events: none;
+  position: relative;
+}
+.accordion-body.meal-sec .accordion-body-arrow {
+  padding: 0 10px 0 0;
+}
+/* Show body arrow when accordion is active */
+.custom-accordion .custom-accordion-header.active + .custom-accordion-content .accordion-body-arrow {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+
+}
+
+/* Hide body arrow when accordion is closing */
+.custom-accordion .custom-accordion-header:not(.active) + .custom-accordion-content .accordion-body-arrow {
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* Style the body arrow - make it clickable */
+.arrow.body-arrow {
+border: solid black;
+border-width: 0 3px 3px 0;
+display: inline-block;
+padding: 3px;
+transform: rotate(225deg);
+  cursor: pointer;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* Hover effect for body arrow */
+.arrow.body-arrow:hover {
+  opacity: 1;
+}
+
+/* Ensure arrows are visible and working properly */
+.custom-accordion-content .accordion-body-arrow .arrow.body-arrow {
+  opacity: 0.8;
+  visibility: visible;
+}
+
+/* Make sure body arrow is clickable */
+.accordion-body-arrow .arrow.body-arrow {
+  pointer-events: auto !important;
+}
 @media (max-width: 768px) {
 .cards-grid {
   grid-template-columns: 1fr;
 }
 .recovery-card .card-content h3 {
   font-size: 14px;
+}
+.resources-body{
+  padding: 12px;
+}
+.accordion-body-arrow {
+  padding: 0 20px 20px 0;
+}
+.accordion-body.meal-sec .accordion-body-arrow {
+  padding: 0 3px 0 0;
 }
 }
