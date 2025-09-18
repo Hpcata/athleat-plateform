@@ -102,7 +102,7 @@ $monthlyGamePlanPrice = ($gamePlanPlanPrice * 1.1) / $months;
                                     </div>
                                 </div>
 
-                                <p class="">{{ $planDetails?->name }} + 60 min Consult with Kerry to cover NutritionAND Training Advice</p>
+                                <p class="">{{ $planDetails?->name }} + 60 min Consult with Kerry to cover Nutrition AND Training Advice</p>
                                 <div class="d-flex align-items-center justify-content-between">
                                     <button class="btn btn-signup plan-get-started-btn" data-plan-type="gameplan" data-plan-price="{{ $gamePlanPlanPrice }}" data-monthly-price="{{ number_format($monthlyGamePlanPrice, 2) }}">Get started</button>
                                     <a href="#" class="text-decoration-none whats-in-one-on-one-link" data-bs-dismiss="modal">What's in a 1 on 1
@@ -1530,7 +1530,7 @@ function updateCongratsModal(planType, hasConsultation, hasCompletedQuestionnair
                 document.getElementById('paymentButton').setAttribute('data-monthly-price', finalMonthlyPrice);
             } else if (planType === 'gameplan') {
                 document.getElementById('paymentModalTitle').textContent = 'Game Plan';
-                document.getElementById('paymentModalSubtitle').innerHTML = '{!! $planDetails?->name !!} + 60 min Consult with Kerry to cover NutritionAND Training Advice';
+                document.getElementById('paymentModalSubtitle').innerHTML = '{!! $planDetails?->name !!} + 60 min Consult with Kerry to cover Nutrition AND Training Advice';
                 document.getElementById('paymentModalPrice').textContent = isMonthlyActive ? 'A$' + parseFloat(finalMonthlyPrice).toFixed(2) + '/mth' : 'A$' + parseFloat(finalOneTimePrice).toFixed(2);
                 document.getElementById('paymentModalPrice').setAttribute('data-original-price', isMonthlyActive ? finalMonthlyPrice : finalOneTimePrice);
                 document.getElementById('paymentModalDuration').textContent = isMonthlyActive ? 'Over {{ $months }} Months' : 'One time payment';
