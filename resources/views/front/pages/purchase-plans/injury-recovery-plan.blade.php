@@ -178,8 +178,9 @@
                                     </div>
                                 </div>
 
-                                <!-- Card 2 -->
-                               
+                                 <!-- Card 2 -->
+                                 {{-- need to show this below card if user is above 18 years old --}}
+                                @if($userPlan->user->userPrePlans()->first()->getUserAge() > 18)
                                     <div class="recovery-card">
                                         <div class="card-logo">
                                             <img src="{{ frontAssets('images/card-img1.png') }}" alt="Athleat">
@@ -190,6 +191,7 @@
                                             <button class="btn btn-share" onclick="window.open('https://athleatshop.com/products/collagen-regenerate', '_blank')">Shop Now</button>
                                         </div>
                                     </div>
+                                @endif
                               
                             </div>
                         </div>
