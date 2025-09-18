@@ -1,35 +1,36 @@
 <?php
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use App\Mail\ActivePlanMail;
-use App\Models\Category;
-use App\Models\FoodCategory;
 use App\Models\Item;
-use App\Models\ItemMeal;
 use App\Models\Meal;
-use App\Models\Payment;
 use App\Models\Plan;
-use App\Models\SubCategory;
-use App\Models\TrackingType;
 use App\Models\User;
-use App\Models\UserCategory;
+use App\Models\Payment;
+use App\Models\Category;
+use App\Models\ItemMeal;
 use App\Models\UserItem;
-use App\Models\UserItemMeal;
-use App\Models\UserItemSwap;
 use App\Models\UserMeal;
 use App\Models\UserPlan;
+use App\Models\SubCategory;
 use App\Models\UserPrePlan;
-use App\Models\RecurringPayment;
-use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
+use App\Mail\ActivePlanMail;
+use App\Models\FoodCategory;
+use App\Models\TrackingType;
+use App\Models\UserCategory;
+use App\Models\UserItemMeal;
+use App\Models\UserItemSwap;
+use App\Models\UserSwapItem;
+use Illuminate\Http\Request;
+use App\Models\RecurringPayment;
+use App\Services\ActivityTracker;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
-use App\Services\ActivityTracker;
 
 class PurchasePlanController extends Controller
 {

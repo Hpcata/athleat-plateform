@@ -678,7 +678,7 @@ class PaymentController extends Controller
         // Define validation rules
         $rules = [
             'plan_id' => 'required|integer|exists:plans,id',
-            'plan_type' => 'required|string|in:main, powerplay, gameplan',
+            'plan_type' => 'required|string|in:main,powerplay,gameplan',
             'price' => 'required|numeric|min:0',
             'final_price' => 'nullable|numeric|min:0',
             'name' => 'required|string|max:255',
