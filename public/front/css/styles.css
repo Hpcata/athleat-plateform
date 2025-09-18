@@ -5120,7 +5120,7 @@ svg.user-type-icon path {
     }
 
     .carousel-item {
-        max-height: 720px;
+        min-height: 790px;
     }
 
     .about-section .about-content-wrapper {
@@ -6066,4 +6066,7 @@ a.btn-signup {
     .wizard-inner a { width: auto; padding: 0 5px; }
     .round-tab { height: 24px; width: 24px; font-size: 13px; }
     .wizard-inner a::after { top: 12px; height: 2px; }
+}
+.form-submitted-thank-you{
+    justify-self: center;
 }
