@@ -210,7 +210,7 @@
                                         </div>
                                     </div>
                                 @endif
-                              
+
                             </div>
                             <!-- Arrow at the end of body when open -->
                             <div class="accordion-body-arrow">
@@ -304,32 +304,7 @@
                 </div>
                 <div class="modal-footer"
                     style="text-align: end; padding: 12px 16px; border-top: 1px solid #d8d8d8; border-radius:0 0 12px 12px; background-color:#fff;">
-                    <button id="download-plan-btn" class="btn btn-primary" onclick="downloadPDF()">
-                        Download Plan
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Bootstrap Modal for Download Plan (keep your content inside) -->
-    <div class="modal" id="print-plan-modal" tabindex="-1" aria-labelledby="printPlanModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-xl modal-dialog-centered">
-            <div class="modal-content" style="border-radius: 12px;">
-                <div class="modal-header" style="border-bottom: 1px solid #d8d8d8;">
-                    <h5 class="modal-title" id="printPlanModalLabel">Download Plan</h5>
-                    <button type="button" class="meal-item-modal-close btn-close" data-bs-dismiss="modal"
-                        aria-label="Close"></button>
-                </div>
-                <div class="modal-body" style="padding: 0;    overflow: auto;">
-                    <div style="flex: 1 1 auto; padding: 16px 16px 0 16px;">
-                        <div id="pdf-preview" style="width: 100%; height: 100%; display: flex; justify-content: center;"
-                            class="downloadplan-inner-content"></div>
-                    </div>
-                </div>
-                <div class="modal-footer"
-                    style="text-align: end; padding: 12px 16px; border-top: 1px solid #d8d8d8; border-radius:0 0 12px 12px; background-color:#fff;">
-                    <button id="download-plan-btn" class="btn btn-primary" onclick="downloadPDF()">
+                    <button id="download-plan-btn" class="btn btn-primary" data-plan-name="{{ $plan->name }}" onclick="downloadPDF()">
                         Download Plan
                     </button>
                 </div>
@@ -369,26 +344,26 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const accordionHeaders = document.querySelectorAll('.custom-accordion-header');
-            
+
             // Simple function to calculate and set accordion height
             function setAccordionHeight(header) {
                 const content = header.nextElementSibling;
                 if (!content) return;
-                
+
                 const isOpen = header.classList.contains('active');
-                
+
                 if (isOpen) {
                     // Check if this is the recovery meals accordion (first one)
-                    const isRecoveryMeals = header.closest('.training-plan-wrapper') === 
+                    const isRecoveryMeals = header.closest('.training-plan-wrapper') ===
                         document.querySelector('.training-plan-wrapper:first-child');
-                        
+
                     // Temporarily remove max-height to get natural height
                     content.style.maxHeight = 'none';
-                    
+
                     // Use setTimeout to ensure DOM is updated
                     setTimeout(() => {
                         const naturalHeight = content.scrollHeight;
-                        
+
                         if (isRecoveryMeals) {
                             // Recovery meals has minimum 565px
                             const minHeight = 565;
@@ -407,14 +382,14 @@
                     content.style.minHeight = '0px';
                 }
             }
-            
+
             // Toggle accordion function
             function toggleAccordion(header) {
                 const content = header.nextElementSibling;
                 if (!content) return;
-                
+
                 const isCurrentlyOpen = header.classList.contains('active');
-                
+
                 if (isCurrentlyOpen) {
                     // Closing accordion
                     header.classList.remove('active');
@@ -429,7 +404,7 @@
                     }, 10);
                 }
             }
-            
+
             // Add click event listeners for header
             accordionHeaders.forEach(header => {
                 header.addEventListener('click', function (e) {
@@ -437,26 +412,26 @@
                     toggleAccordion(this);
                 });
             });
-            
+
             // Add click event listeners for body arrows
             const bodyArrows = document.querySelectorAll('.arrow.body-arrow');
             bodyArrows.forEach(arrow => {
                 arrow.addEventListener('click', function(e) {
                     e.preventDefault();
                     e.stopPropagation(); // Prevent event bubbling
-                    
+
                     // Find the accordion header for this body arrow
                     const accordionBody = this.closest('.accordion-body');
                     const accordionContent = accordionBody.closest('.custom-accordion-content');
                     const accordionHeader = accordionContent.previousElementSibling;
-                    
+
                     if (accordionHeader && accordionHeader.classList.contains('active')) {
                         // Close the accordion
                         toggleAccordion(accordionHeader);
                     }
                 });
             });
-            
+
             // Open all accordions by default after a short delay to ensure content is loaded
             setTimeout(() => {
                 accordionHeaders.forEach(header => {
@@ -473,15 +448,15 @@
                 const content = header.nextElementSibling;
                 if (content) {
                     // Check if this is the recovery meals accordion
-                    const isRecoveryMeals = header.closest('.training-plan-wrapper') === 
+                    const isRecoveryMeals = header.closest('.training-plan-wrapper') ===
                         document.querySelector('.training-plan-wrapper:first-child');
-                        
+
                     // Temporarily remove max-height to get natural height
                     content.style.maxHeight = 'none';
-                    
+
                     setTimeout(() => {
                         const naturalHeight = content.scrollHeight;
-                        
+
                         if (isRecoveryMeals) {
                             // Recovery meals has minimum 565px
                             const minHeight = 565;
@@ -493,7 +468,7 @@
                             content.style.maxHeight = naturalHeight + 'px';
                             content.style.minHeight = 'auto';
                         }
-                        
+
                         // Update arrow visibility for this content
                         const leftArrow = content.querySelector('.left-arrow');
                         const rightArrow = content.querySelector('.right-arrow');

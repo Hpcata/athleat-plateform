@@ -48,7 +48,8 @@
                                         'plan' => $planData['plan'],
                                         'userPlan' => $planData['userPlan'] ?? null,
                                         'payment' => $planData['payment'] ?? null,
-                                        'redirectRoute' => true
+                                        'redirectRoute' => true,
+                                        'dynamicMealCount' => true
                                     ])
                                 @endif
                             @endforeach
