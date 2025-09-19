@@ -194,7 +194,7 @@
             }
 
             // Handle click event to open Delphi chat
-            $(document).on('click', '.chat-widget, #chat-to-virtual-kez-btn, .start-chat, #start-chat-link', function (e) {
+            $(document).on('click', '.chat-widget, #chat-to-virtual-kez-btn, .start-chat, #start-chat-link, #welcome-card', function (e) {
                 e.preventDefault();
                 e.stopPropagation();
                 loadCustomDelphi();
@@ -232,7 +232,7 @@
                 if (isOpen && !isOpening && !isClosing) {
                     // Check if click is inside any Delphi-related element, delphi-frame, delphi-bubble-wrapper, or trigger elements
                     let isInsideDelphiElement = $(e.target).closest('[id*="delphi"], [class*="delphi"], [id*="delphi-frame"], [class*="delphi-frame"], [id*="delphi-bubble-wrapper"], [class*="delphi-bubble-wrapper"]').length > 0;
-                    let isTriggerElement = $(e.target).closest('.chat-widget, .start-chat, #chat-to-virtual-kez-btn, #start-chat-link').length > 0;
+                    let isTriggerElement = $(e.target).closest('.chat-widget, .start-chat, #chat-to-virtual-kez-btn, #start-chat-link, #welcome-card').length > 0;
 
                     // Also check if the clicked element itself is a Delphi element, delphi-frame, or delphi-bubble-wrapper
                     let isDirectDelphiElement = $(e.target).is('[id*="delphi"], [class*="delphi"], [id*="delphi-frame"], [class*="delphi-frame"], [id*="delphi-bubble-wrapper"], [class*="delphi-bubble-wrapper"]');
@@ -255,7 +255,7 @@
             });
 
             // Cancel hover timeout when hovering back over Delphi elements, delphi-frame, delphi-bubble-wrapper, or trigger elements
-            $(document).on('mouseenter', '[id*="delphi"], [class*="delphi"], [id*="delphi-frame"], [class*="delphi-frame"], [id*="delphi-bubble-wrapper"], [class*="delphi-bubble-wrapper"], .chat-widget, .start-chat, #chat-to-virtual-kez-btn, #start-chat-link', function () {
+            $(document).on('mouseenter', '[id*="delphi"], [class*="delphi"], [id*="delphi-frame"], [class*="delphi-frame"], [id*="delphi-bubble-wrapper"], [class*="delphi-bubble-wrapper"], .chat-widget, .start-chat, #chat-to-virtual-kez-btn, #start-chat-link, #welcome-card', function () {
                 if (hoverTimeout) {
                     clearTimeout(hoverTimeout);
                     hoverTimeout = null;
@@ -263,11 +263,11 @@
             });
 
             // Scroll detection
-            $(window).on('scroll', function () {
-                if (isOpen && !isOpening && !isClosing) {
-                    closeDelphiPopup();
-                }
-            });
+            // $(window).on('scroll', function () {
+            //     if (isOpen && !isOpening && !isClosing) {
+            //         closeDelphiPopup();
+            //     }
+            // });
 
             // Escape key detection
             $(document).on('keydown', function (e) {
@@ -288,7 +288,7 @@
                 if (isOpen && !isOpening && !isClosing) {
                     // Check if click is inside any Delphi-related element, delphi-frame, delphi-bubble-wrapper, or trigger elements
                     let isInsideDelphiElement = $(e.target).closest('[id*="delphi"], [class*="delphi"], [id*="delphi-frame"], [class*="delphi-frame"], [id*="delphi-bubble-wrapper"], [class*="delphi-bubble-wrapper"]').length > 0;
-                    let isTriggerElement = $(e.target).closest('.chat-widget, .start-chat, #chat-to-virtual-kez-btn, #start-chat-link').length > 0;
+                    let isTriggerElement = $(e.target).closest('.chat-widget, .start-chat, #chat-to-virtual-kez-btn, #start-chat-link, #welcome-card').length > 0;
 
                     // Also check if the clicked element itself is a Delphi element, delphi-frame, or delphi-bubble-wrapper
                     let isDirectDelphiElement = $(e.target).is('[id*="delphi"], [class*="delphi"], [id*="delphi-frame"], [class*="delphi-frame"], [id*="delphi-bubble-wrapper"], [class*="delphi-bubble-wrapper"]');
