@@ -266,6 +266,48 @@
     @include('front.modal.smart-swap-items')
 @endsection
 
+@push('styles')
+    <style>
+        /* Page break styles for PDF generation */
+        .page-break {
+            page-break-before: always !important;
+            break-before: page !important;
+            height: 0 !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            border: none !important;
+            background: transparent !important;
+            display: block !important;
+        }
+        
+        /* Ensure cards don't break across pages */
+        .card-box {
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+        }
+        
+        /* Ensure meal titles stay with their content */
+        .meal-block h5 {
+            page-break-after: avoid !important;
+            break-after: avoid !important;
+            page-break-before: avoid !important;
+            break-before: avoid !important;
+        }
+        
+        /* Ensure meal blocks stay together */
+        .meal-block {
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+        }
+        
+        /* Remove forced page break after header - let content flow naturally */
+        .header-box {
+            page-break-after: avoid !important;
+            break-after: avoid !important;
+        }
+    </style>
+@endpush
+
 @push('scripts')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
 
@@ -663,12 +705,30 @@
 
         // Main entry that prepares content and triggers html2pdf
         function downloadPDF(planName) {
+            // Check if html2pdf is available
+            if (typeof html2pdf === 'undefined') {
+                console.error('html2pdf library not loaded');
+                alert('PDF generation library not loaded. Please refresh the page and try again.');
+                return;
+            }
+
             showLoader && showLoader();
             const container = document.getElementById('pdf-content');
             if (!container) {
                 hideLoader && hideLoader();
+                console.error('PDF preview container not found');
                 return;
             }
+
+            // Check if container has content
+            if (!container.innerHTML || container.innerHTML.trim() === '') {
+                hideLoader && hideLoader();
+                console.error('PDF preview container is empty');
+                alert('Please wait for the plan to load before downloading');
+                return;
+            }
+
+            console.log('Starting PDF generation for:', planName);
 
             // convert all <img> src to base64
             const imgs = Array.from(container.querySelectorAll('img'));
@@ -679,9 +739,16 @@
             });
 
             Promise.all(imgPromises)
-                .then(() => convertBackgroundImagesToDataUrl(container))
-                .then(() => waitForImages(container))
                 .then(() => {
+                    console.log('All images converted to base64');
+                    return convertBackgroundImagesToDataUrl(container);
+                })
+                .then(() => {
+                    console.log('Background images converted');
+                    return waitForImages(container);
+                })
+                .then(() => {
+                    console.log('All images loaded, starting PDF generation');
                     // compute margins (in inches) — keep in sync with html2pdf options below
                     const topMargin = 0.3;
                     const bottomMargin = 1.0;
@@ -689,7 +756,7 @@
                     // insert page-breaks only where necessary
                     preparePageBreaks(container, topMargin, bottomMargin);
 
-                    // html2pdf options — note we DO NOT include `.meal-block` in avoid
+                    // html2pdf options — optimized for page breaks
                     const leftRightMargin = 0.3;
                     const fileName = 'print-plan-' + (planName ? planName.replace(/\s+/g, '-') : 'plan') + '.pdf';
                     const options = {
@@ -701,55 +768,42 @@
                         pagebreak: {
                             mode: ['css', 'legacy'],
                             before: '.page-break',
-                            // avoid small atomic items but not entire meal-blocks
-                            avoid: ['.card-box', '.img-square', '.header-box', '.logo']
+                            // Avoid breaking these elements - they should stay intact
+                            avoid: ['.card-box', '.img-square', '.logo', 'h5']
                         }
                     };
 
-                    html2pdf().set(options).from(container).toPdf().get('pdf').then(pdf => {
-                        const totalPages = pdf.internal.getNumberOfPages();
-                        const pageWidth = pdf.internal.pageSize.getWidth();
-                        const pageHeight = pdf.internal.pageSize.getHeight();
-
-                        const footerHeight = 0.5;
-                        const footerY = pageHeight - bottomMargin + 0.15;
-
-                        const logoWidth = 1.2;
-                        const logoHeight = 0.2;
-                        const logoX = 0.5;
-                        const logoY = footerY + (footerHeight - logoHeight) / 2;
-
-                        const circleCenterX = pageWidth / 2;
-                        const circleCenterY = footerY + footerHeight / 2;
-                        const dateText = `${planName || ''} | ${new Date().toLocaleDateString('en-GB')}`;
-                        const dateFontSize = 9;
-                        const dateX = pageWidth - 0.5;
-                        const dateY = circleCenterY + 0.04;
-
-                        for (let i = 1; i <= totalPages; i++) {
-                            pdf.setPage(i);
-                            pdf.setFillColor(255,255,255);
-                            pdf.rect(0, pageHeight - bottomMargin, pageWidth, footerHeight, 'F');
-
-                            if (window.logoBase64) {
-                                try { pdf.addImage(window.logoBase64, 'PNG', logoX, logoY, logoWidth, logoHeight); } catch(e){}
-                            }
-
-                            pdf.setTextColor(0,116,217);
-                            pdf.setFontSize(11);
-                            pdf.setFont(undefined, 'bold');
-                            pdf.text(`${i}`, circleCenterX, circleCenterY, { align: 'center', baseline: 'middle' });
-
-                            pdf.setTextColor(0,116,217);
-                            pdf.setFontSize(dateFontSize);
-                            pdf.setFont(undefined, 'normal');
-                            pdf.text(dateText, dateX, dateY, { align: 'right', baseline: 'middle' });
-                        }
-                    }).save().then(() => {
+                    // Generate and download PDF directly
+                    console.log('Starting PDF generation with options:', options);
+                    
+                    // Try the standard save method first
+                    html2pdf().set(options).from(container).save().then(() => {
                         hideLoader && hideLoader();
+                        console.log('PDF generated and downloaded successfully');
+                        alert('PDF downloaded successfully!');
                     }).catch(err => {
-                        console.error('html2pdf error', err);
-                        hideLoader && hideLoader();
+                        console.error('Standard save failed, trying alternative method:', err);
+                        
+                        // Fallback: Generate PDF blob and create download link
+                        html2pdf().set(options).from(container).toPdf().get('pdf').then(pdf => {
+                            const blob = pdf.output('blob');
+                            const url = URL.createObjectURL(blob);
+                            const link = document.createElement('a');
+                            link.href = url;
+                            link.download = options.filename || 'nutrition-plan.pdf';
+                            document.body.appendChild(link);
+                            link.click();
+                            document.body.removeChild(link);
+                            URL.revokeObjectURL(url);
+                            
+                            hideLoader && hideLoader();
+                            console.log('PDF generated and downloaded via fallback method');
+                            alert('PDF downloaded successfully!');
+                        }).catch(fallbackErr => {
+                            console.error('Fallback method also failed:', fallbackErr);
+                            hideLoader && hideLoader();
+                            alert('Failed to generate PDF. Please try again or check your browser settings.');
+                        });
                     });
                 })
                 .catch(err => {
@@ -759,60 +813,183 @@
         }
 
         function preparePageBreaks(container, topMarginInches, bottomMarginInches) {
-            // A4 height (inches)
-            const A4_IN = 11.69;
-            const usableInches = A4_IN - (topMarginInches || 0) - (bottomMarginInches || 0);
+            // A4 dimensions
+            const A4_WIDTH_IN = 8.27;
+            const A4_HEIGHT_IN = 11.69;
+            const usableInches = A4_HEIGHT_IN - (topMarginInches || 0) - (bottomMarginInches || 0);
             const PX_PER_IN = 96; // CSS px per inch
             const usablePx = usableInches * PX_PER_IN;
+            const pageWidthPx = A4_WIDTH_IN * PX_PER_IN;
 
             // Remove any previous breaks we may have added
             clearPageBreaks(container);
 
-            // iterate meal-blocks in order and decide if a break is needed before each block
-            const blocks = Array.from(container.querySelectorAll('.meal-block'));
-            for (let i = 0; i < blocks.length; i++) {
-                const block = blocks[i];
-
-                // compute the block top relative to container top (use offsetTop)
-                const blockTop = block.offsetTop;
-
-                // compute which virtual "page" it's in and remaining space on that page (px)
-                const pageIndex = Math.floor(blockTop / usablePx);
-                const withinPageTop = blockTop - (pageIndex * usablePx);
-                const remaining = usablePx - withinPageTop;
-
-                // measure heading + first card
-                const heading = block.querySelector('h5');
-                const firstCard = block.querySelector('.card-box');
-
-                const headingH = heading ? heading.offsetHeight : 0;
-                const firstCardH = firstCard ? firstCard.offsetHeight : 0;
-                const buffer = 16; // px buffer margin
-
-                const needed = headingH + firstCardH + buffer;
-
-                // If the needed space is larger than a whole page, we cannot do anything; skip
-                if (needed > usablePx) {
-                    // can't fit heading+first card on any page fully, allow natural split
-                    continue;
-                }
-
-                // If not enough remaining space on this virtual page to show heading+first
-                if (remaining < needed) {
-                    // Avoid inserting duplicate page-breaks if the previous sibling is already a break
-                    const prev = block.previousElementSibling;
-                    if (!prev || !prev.classList.contains('page-break')) {
-                        const br = document.createElement('div');
-                        br.className = 'page-break';
-                        // set a tiny height; CSS page-break will do the actual break
-                        br.style.height = '1px';
-                        br.style.pageBreakBefore = 'always';
-                        block.parentNode.insertBefore(br, block);
-                        // After insert, offsets of later elements change; that's OK
-                        // We continue iterating to adjust for inserted breaks
-                    }
+            // Create temporary A4-sized container for accurate height calculations
+            const tempContainer = createTempA4Container(container, pageWidthPx);
+            
+            try {
+                // Calculate heights using the temporary container
+                const heightData = calculateHeightsFromTempContainer(tempContainer, topMarginInches, bottomMarginInches);
+                
+                // Apply page breaks based on calculated heights
+                applyPageBreaksBasedOnHeights(container, heightData);
+                
+            } finally {
+                // Clean up temporary container
+                if (tempContainer && tempContainer.parentNode) {
+                    tempContainer.parentNode.removeChild(tempContainer);
                 }
             }
+        }
+
+        function createTempA4Container(originalContainer, pageWidthPx) {
+            // Create temporary container with A4 dimensions
+            const tempContainer = document.createElement('div');
+            tempContainer.style.cssText = `
+                position: absolute;
+                top: -9999px;
+                left: -9999px;
+                width: ${pageWidthPx}px;
+                visibility: hidden;
+                overflow: visible;
+                font-family: inherit;
+                font-size: inherit;
+                line-height: inherit;
+            `;
+            
+            // Clone the content from original container
+            const clonedContent = originalContainer.cloneNode(true);
+            tempContainer.appendChild(clonedContent);
+            
+            // Add to DOM temporarily for measurements
+            document.body.appendChild(tempContainer);
+            
+            return tempContainer;
+        }
+
+        function calculateHeightsFromTempContainer(tempContainer, topMarginInches, bottomMarginInches) {
+            const A4_HEIGHT_IN = 11.69;
+            const usableInches = A4_HEIGHT_IN - (topMarginInches || 0) - (bottomMarginInches || 0);
+            const PX_PER_IN = 96;
+            const usablePx = usableInches * PX_PER_IN;
+
+            // Get header height
+            const headerBox = tempContainer.querySelector('.header-box');
+            const headerHeight = headerBox ? headerBox.offsetHeight : 0;
+            
+            console.log('Temp container - Header height:', headerHeight);
+
+            // Get meal blocks data
+            const mealBlocks = Array.from(tempContainer.querySelectorAll('.meal-block'));
+            const mealBlockData = [];
+
+            mealBlocks.forEach((mealBlock, blockIndex) => {
+                const mealTitle = mealBlock.querySelector('h5');
+                const cards = Array.from(mealBlock.querySelectorAll('.card-box'));
+                
+                if (!mealTitle || cards.length === 0) return;
+
+                const titleHeight = mealTitle.offsetHeight;
+                const cardHeights = cards.map(card => card.offsetHeight);
+                const firstCardHeight = cardHeights[0] || 0;
+                const totalBlockHeight = titleHeight + cardHeights.reduce((sum, height) => sum + height, 0);
+
+                mealBlockData.push({
+                    index: blockIndex,
+                    titleHeight,
+                    cardHeights,
+                    firstCardHeight,
+                    totalBlockHeight,
+                    titleAndFirstCardHeight: titleHeight + firstCardHeight
+                });
+
+                console.log(`Temp container - Meal block ${blockIndex + 1}:`, {
+                    titleHeight,
+                    firstCardHeight,
+                    totalBlockHeight,
+                    cardCount: cards.length
+                });
+            });
+
+            return {
+                headerHeight,
+                mealBlockData,
+                usablePx,
+                topMarginInches,
+                bottomMarginInches
+            };
+        }
+
+        function applyPageBreaksBasedOnHeights(originalContainer, heightData) {
+            const { headerHeight, mealBlockData, usablePx } = heightData;
+            
+            let currentPageHeight = headerHeight;
+            let isFirstPage = true;
+
+            console.log('Applying page breaks based on calculated heights');
+            console.log('Starting with header height:', headerHeight, 'usable space:', usablePx);
+
+            mealBlockData.forEach((blockData, blockIndex) => {
+                const { titleHeight, cardHeights, titleAndFirstCardHeight } = blockData;
+                
+                console.log(`Processing meal block ${blockIndex + 1}:`, {
+                    titleHeight,
+                    titleAndFirstCardHeight,
+                    currentPageHeight,
+                    usablePx,
+                    isFirstPage
+                });
+
+                // Check if we need a page break before this meal block
+                if (!isFirstPage && currentPageHeight + titleAndFirstCardHeight > usablePx) {
+                    console.log(`Adding page break before meal block ${blockIndex + 1}`);
+                    const mealBlock = originalContainer.querySelectorAll('.meal-block')[blockIndex];
+                    if (mealBlock) {
+                        addPageBreak(mealBlock);
+                        currentPageHeight = 0;
+                    }
+                }
+
+                // Add title height to current page
+                currentPageHeight += titleHeight;
+
+                // Process each card in the meal block
+                cardHeights.forEach((cardHeight, cardIndex) => {
+                    if (currentPageHeight + cardHeight > usablePx) {
+                        console.log(`Adding page break before card ${cardIndex + 1} in meal block ${blockIndex + 1}`);
+                        const mealBlock = originalContainer.querySelectorAll('.meal-block')[blockIndex];
+                        const cards = mealBlock ? Array.from(mealBlock.querySelectorAll('.card-box')) : [];
+                        if (cards[cardIndex]) {
+                            addPageBreak(cards[cardIndex]);
+                            currentPageHeight = 0;
+                        }
+                    }
+
+                    currentPageHeight += cardHeight;
+                });
+
+                // Mark that we're no longer on the first page after processing first meal block
+                if (isFirstPage) {
+                    isFirstPage = false;
+                }
+            });
+        }
+
+        function addPageBreak(element) {
+            const pageBreak = document.createElement('div');
+            pageBreak.className = 'page-break';
+            pageBreak.style.cssText = `
+                page-break-before: always;
+                break-before: page;
+                height: 0;
+                margin: 0;
+                padding: 0;
+                border: none;
+                background: transparent;
+                display: block;
+            `;
+            
+            element.parentNode.insertBefore(pageBreak, element);
         }
 
         function waitForImages(container) {
