@@ -11,248 +11,96 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 
     <style>
-        /* =Box Sizing */
-        * {
-            -webkit-box-sizing: border-box;
-            -moz-box-sizing: border-box;
-            box-sizing: border-box;
-        }
+        /* =Box Sizing
+        ========================================================================================*/
+        * { -webkit-box-sizing:border-box; -moz-box-sizing: border-box; -o-box-sizing: border-box; -ms-box-sizing: border-box; box-sizing: border-box; }
+        *:before, *:after { -webkit-box-sizing: border-box; -moz-box-sizing: border-box; -o-box-sizing: border-box; -ms-box-sizing: border-box; box-sizing: border-box; }
+        input[type="text"], input[type="password"], input[type="email"], input[type="tel"], input[type="search"], textarea, select, input[type="button"], input[type="submit"], button { -webkit-box-sizing: border-box; -moz-box-sizing: border-box; -o-box-sizing: border-box; -ms-box-sizing: border-box; box-sizing: border-box;  }
 
-        *:before,
-        *:after {
-            box-sizing: border-box;
-        }
 
-        /* =Defaults */
-        html,
-        body {
-            -webkit-font-smoothing: antialiased;
-            font-smoothing: antialiased;
-            -webkit-text-size-adjust: 100%;
-            height: 100%;
-        }
+        /* =Deafult Tag & General Classes
+        ========================================================================================*/
+        html, body { -webkit-font-smoothing:antialiased; -moz-font-smoothing:antialiased; -ms-font-smoothing:antialiased; font-smoothing:antialiased; /* Fix for webkit rendering */ -webkit-text-size-adjust:100%; height: 100%; }
+        html { overflow-y: inherit !important; }
+        body { font-size:10px; line-height:1.45; font-weight: 400; font-family: 'Noto Sans', Arial, Helvetica, sans-serif; color:#222222; letter-spacing: 0.025rem; background: #fff; padding: 0; margin: 0; }
+        img { vertical-align:top; border:0; }
+        h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 { line-height:1.3; margin:0 0 0.8rem; font-weight: 700; }
+        h1 span, h2 span, h3 span, h4 span, h5 span, h6 span, .h1 span, .h2 span, .h3 span, .h4 span, .h5 span, .h6 span { font-weight: 500; }
+        h1, .h1 { font-size:22px; }
+        h2, .h2 { font-size:1.5rem; }
+        h3, .h3 { font-size:1.25rem; }
+        h4, .h4 { font-size:1.525rem; }
+        h5, .h5 { font-size:12px; }
+        h6, .h6 { font-size:10px; }
+        ul:last-child { margin: 0; }
+        ul, ol { padding-left: 0.6rem; }
+        ul li, ol li { line-height:1.45; margin-bottom: 0.35rem; }
+        p { margin:0 0 0.8rem 0; }
+        p:last-child { margin:0 0 0 0; }
+        .text-white { color: #fff; }
+        .text-primary { color:#4078DD !important; }
+        .mt-20 { margin-top: 20px; }
+        .fw-500 { font-weight: 500; }
+        .mb-2 { margin-bottom: .5rem !important; }
+        .me-2 { margin-right: .5rem !important; }
+        .me-1 { margin-right: .3rem !important; }
+        .align-items-center { align-items: center !important; }
+        .d-flex { display: flex !important; }
+        .flex-wrap { flex-wrap: wrap !important; }
+        .rounded-circle { border-radius: 50% !important; }
+        .d-inline-block { display: inline-block !important; }
+        .pl-2 { padding-left: 0.5rem; }
 
-        body {
-            font-size: 10px;
-            line-height: 1.45;
-            font-weight: 400;
-            font-family: 'Noto Sans', Arial, Helvetica, sans-serif;
-            color: #222;
-            background: #fff;
-            padding: 0;
-            margin: 0;
-        }
+        /* =Header Css
+        ========================================================================================*/
+        #header { margin-bottom: 2rem; }
+        .header-box { padding: 1.5rem; background: #3B3B3B; border-radius: 1.5rem; position: relative; z-index: 1; overflow: hidden; margin-bottom: 20px; }
+        .header-img { position: absolute; right: 0; top: 0; bottom: 0; width: 59%; z-index: -1; background-repeat: no-repeat; background-size: cover; background-position: 50% 32%; border-top-left-radius: 90px; }
+        .logo { max-width: 119px; width: 100%; margin: 0 0 32px 0; }
+        .logo img { width: 100%; height: auto; }
+        .header-box h5 { margin-bottom: 10px; }
+        .header-box h1 { margin: 0; }
+        .bg-light { background-color: #F5F5F5 !important; }
+        .row { display: flex; flex-wrap: wrap; margin-left: -6px; margin-right: -6px; }
+        .row > * { flex-shrink: 0; width: 100%; max-width: 100%; padding-right: 6px; padding-left: 6px; }
+        .col-xl-3 { flex: 0 0 auto; width: 25%; }
+        .col-xl-9 { flex: 0 0 auto; width: 75%; }
+        .col-md-6 { flex: 0 0 auto; width: 50%; }
+        .col-md-4 { flex: 0 0 auto; width: 33.3333333333%; }
+        .w-3 { width: 5px; }
+        .h-3 { height: 5px; }
+        .bg-amber-400 { background: #8CC900; }
+        .bg-sky-500 { background: #0D99FF; }
+        .bg-emerald-500 { background:#F1B020 ; }
+        .bg-rose-400 { background: #EB4C60; }
+        .img-square { border-radius: 15px; overflow: hidden; padding-top: 100%; position: relative; margin: 0; }
+        .img-square img { position: absolute; left: 0; right: 0; top: 0; bottom: 0; margin: auto; width: 100%; height: 100%; object-fit: cover; object-position: center center; }
+        .card-box { padding: 12px; border-radius: 18px; margin:0 0 8px 0;}
+        .card-box h6 { margin-bottom: 0.35rem; }
+        footer { padding-top: 1rem; padding-bottom: 1rem; margin-top: 2rem; }
 
-        img {
-            vertical-align: top;
-            border: 0;
-            max-width: 100%;
-        }
+        /* =Footer page Css
+        ========================================================================================*/
+        .f-logo { max-width: 120px; width: 100%; margin: 0; }
+        .f-logo img { width: 100%; height: auto; }
+        .text-center { text-align: center !important; }
+        .text-md-end { text-align: right !important; }
+        .page-number { width: 18px; height: 18px; display: inline-flex; align-items: center; justify-content: center; border-radius: 50px; background: #709EF1; font-size: 10px; font-weight: 600; }
 
-        h1,
-        h2,
-        h3,
-        h4,
-        h5,
-        h6 {
-            margin: 0 0 .8rem;
-            font-weight: 700;
-            line-height: 1.3;
-        }
-
-        p {
-            margin: 0 0 .8rem;
-        }
-
-        ul {
-            padding-left: 0.6rem;
-            margin: 0 0 .8rem;
-        }
-
-        /* Restore your original sizing & look */
-        h5,
-        .h5 {
-            font-size: 12px;
-        }
-
-        h6,
-        .h6 {
-            font-size: 10px;
-        }
-
-        .text-primary {
-            color: #4078DD !important;
-        }
-
-        .mt-20 {
-            margin-top: 20px;
-        }
-
-        .fw-500 {
-            font-weight: 500;
-        }
-
-        .pl-2 {
-            padding-left: 0.5rem;
-        }
-
-        /* Header */
-        .header-box {
-            padding: 1.5rem;
-            background: #3B3B3B;
-            border-radius: 1.5rem;
-            position: relative;
-            z-index: 1;
-            overflow: visible;
-            margin-bottom: 20px;
-        }
-
-        .header-img {
-            position: absolute;
-            right: 0;
-            top: 0;
-            bottom: 0;
-            width: 59%;
-            z-index: -1;
-            background-repeat: no-repeat;
-            background-size: cover;
-            background-position: 50% 32%;
-            border-top-left-radius: 90px;
-        }
-
-        .logo {
-            max-width: 119px;
-            width: 100%;
-            margin: 0 0 32px 0;
-        }
-
-        .logo img {
-            width: 100%;
-            height: auto;
-            display: block;
-        }
-
-        /* Grid */
-        .row {
-            display: flex;
-            flex-wrap: wrap;
-            margin-left: -6px;
-            margin-right: -6px;
-        }
-
-        .row>* {
-            padding-right: 6px;
-            padding-left: 6px;
-        }
-
-        .col-xl-3 {
-            flex: 0 0 auto;
-            width: 25%;
-        }
-
-        .col-xl-9 {
-            flex: 0 0 auto;
-            width: 75%;
-        }
-
-        .col-md-6 {
-            flex: 0 0 auto;
-            width: 50%;
-        }
-
-        .card-box {
-            padding: 12px;
-            border-radius: 18px;
-            margin: 0 0 8px 0;
-            background: #F5F5F5;
-        }
-
-        .card-box h6 {
-            margin-bottom: 0.35rem;
-        }
-
-        .img-square {
-            border-radius: 15px;
-            overflow: hidden;
-            position: relative;
-            margin: 0;
-        }
-
-        .img-square img {
-            width: 100%;
-            height: auto;
-            object-fit: cover;
-            object-position: center center;
-            display: block;
-        }
-
-        footer {
-            padding-top: 1rem;
-            padding-bottom: 1rem;
-            margin-top: 2rem;
-        }
-
-        /* Footer look */
-        .page-number {
-            width: 18px;
-            height: 18px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50px;
-            background: #709EF1;
-            font-size: 10px;
-            font-weight: 600;
-            color: #fff;
-        }
-
-        #pdf-content {
-            width: 720px;
-            margin: auto;
+        #pdf-content { width: 720px; margin:auto;
+                /* padding: 2rem;  */
             font-family: Noto Sans, sans-serif;
-            position: relative;
         }
 
-        /* Keep individual cards and images intact where possible */
-        .card-box,
-        .img-square,
-        .header-box,
-        .logo {
-            page-break-inside: avoid !important;
-            break-inside: avoid !important;
-            -webkit-column-break-inside: avoid !important;
-            -webkit-region-break-inside: avoid !important;
-        }
-
-        /* Meal block wrapper (no hard avoid here — JS will decide where to break) */
-        .meal-block {
-            display: block;
-            width: 100%;
+        .meal-block-page-break {
+            break-inside: avoid;
+            page-break-inside: avoid;
             margin-top: 15px;
         }
-
-        /* Keep heading from being orphaned if possible by CSS alone */
-        .meal-block>h5 {
-            font-size: 12px;
-            line-height: 1.3;
-            font-weight: 700;
-            margin-bottom: 8px;
-            page-break-after: avoid;
-            break-after: avoid;
-        }
-
-        /* Explicit page-break element used by JS (hidden apart from break behavior) */
         .page-break {
             page-break-before: always;
             break-before: page;
-            height: 1px;
-        }
-
-        @media print {
-            #pdf-content {
-                width: 720px;
-                margin: 0 auto;
-            }
+            margin-top: 15px;
         }
     </style>
 </head>

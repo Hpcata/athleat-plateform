@@ -279,13 +279,13 @@
             background: transparent !important;
             display: block !important;
         }
-        
+
         /* Ensure cards don't break across pages */
         .card-box {
             page-break-inside: avoid !important;
             break-inside: avoid !important;
         }
-        
+
         /* Ensure meal titles stay with their content */
         .meal-block h5 {
             page-break-after: avoid !important;
@@ -293,13 +293,13 @@
             page-break-before: avoid !important;
             break-before: avoid !important;
         }
-        
+
         /* Ensure meal blocks stay together */
         .meal-block {
             page-break-inside: avoid !important;
             break-inside: avoid !important;
         }
-        
+
         /* Remove forced page break after header - let content flow naturally */
         .header-box {
             page-break-after: avoid !important;
@@ -730,6 +730,26 @@
 
             console.log('Starting PDF generation for:', planName);
 
+            // Load logo if not already loaded
+            if (!window.logoBase64) {
+                console.log('Loading logo...');
+                const logoImg = new Image();
+                logoImg.crossOrigin = 'anonymous';
+                logoImg.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    canvas.width = this.width;
+                    canvas.height = this.height;
+                    ctx.drawImage(this, 0, 0);
+                    window.logoBase64 = canvas.toDataURL('image/png');
+                    console.log('Logo loaded successfully');
+                };
+                logoImg.onerror = function() {
+                    console.warn('Failed to load logo image');
+                };
+                logoImg.src = "{{ frontAssets('images/logo.svg') }}";
+            }
+
             // convert all <img> src to base64
             const imgs = Array.from(container.querySelectorAll('img'));
             const imgPromises = imgs.map(img => {
@@ -751,7 +771,7 @@
                     console.log('All images loaded, starting PDF generation');
                     // compute margins (in inches) — keep in sync with html2pdf options below
                     const topMargin = 0.3;
-                    const bottomMargin = 1.0;
+                    const bottomMargin = 1;
 
                     // insert page-breaks only where necessary
                     preparePageBreaks(container, topMargin, bottomMargin);
@@ -775,15 +795,86 @@
 
                     // Generate and download PDF directly
                     console.log('Starting PDF generation with options:', options);
-                    
+
                     // Try the standard save method first
-                    html2pdf().set(options).from(container).save().then(() => {
+                    html2pdf().set(options).from(container).toPdf().get('pdf').then(pdf => {
+                        const totalPages = pdf.internal.getNumberOfPages();
+                        const pageWidth = pdf.internal.pageSize.getWidth();
+                        const pageHeight = pdf.internal.pageSize.getHeight();
+
+                        // Footer settings
+                        const footerHeight = 0.5; // in inches
+                        const footerY = pageHeight - bottomMargin + 0.15; // 0.15in above page bottom
+
+                        // Logo
+                        const logoWidth = 1.2;
+                        const logoHeight = 0.2;
+                        const logoX = 0.5;
+                        const logoY = footerY + (footerHeight - logoHeight) / 2;
+
+                        // Circle (page number)
+                        const circleRadius = 0.15;
+                        const circleCenterX = pageWidth / 2;
+                        const circleCenterY = footerY + footerHeight / 2;
+
+                        // Right-side text
+                        const dateText = `Nutrition Training Plan | ${new Date().toLocaleDateString('en-GB')}`;
+                        const dateFontSize = 9; // smaller font
+                        const dateColor = "#649ef7"; // blue
+                        const dateX = pageWidth - 0.5;
+                        const dateY = circleCenterY + 0.04; // align with circle
+
+                        for (let i = 1; i <= totalPages; i++) {
+                            pdf.setPage(i);
+
+                            // Draw a white rectangle to clear the footer area
+                            pdf.setFillColor(255, 255, 255);
+                            pdf.rect(
+                                0,
+                                pageHeight - bottomMargin,
+                                pageWidth,
+                                footerHeight,
+                                'F'
+                            );
+
+                            // Add logo (left, vertically centered)
+                            if (window.logoBase64) {
+                                try {
+                                    pdf.addImage(window.logoBase64, 'PNG', logoX, logoY, logoWidth, logoHeight);
+                                } catch (e) {
+                                    console.warn('Failed to add logo to PDF:', e);
+                                }
+                            } else {
+                                console.warn('Logo base64 not available');
+                            }
+
+                            // Draw circle for page number
+                            pdf.setFillColor(112, 158, 241); // #709EF1 blue color
+                            pdf.circle(circleCenterX, circleCenterY, circleRadius, 'F');
+
+                            // Page number in white, centered in the circle
+                            pdf.setTextColor(255, 255, 255); // white text
+                            pdf.setFontSize(11);
+                            pdf.setFont(undefined, 'bold');
+
+                            // Center vertically and horizontally
+                            pdf.text(`${i}`, circleCenterX, circleCenterY, { align: 'center', baseline: 'middle' });
+
+                            // Date text (right, blue, smaller font, vertically centered)
+                            pdf.setTextColor(100, 158, 247); // #649EF7 blue
+                            pdf.setFontSize(dateFontSize);
+                            pdf.setFont(undefined, 'normal');
+                            pdf.text(dateText, dateX, dateY, { align: 'right', baseline: 'middle' });
+                        }
+
+                        // Save the PDF with footer
+                        pdf.save(options.filename);
                         hideLoader && hideLoader();
-                        console.log('PDF generated and downloaded successfully');
+                        console.log('PDF generated and downloaded successfully with footer');
                         alert('PDF downloaded successfully!');
                     }).catch(err => {
-                        console.error('Standard save failed, trying alternative method:', err);
-                        
+                        console.error('PDF generation with footer failed, trying alternative method:', err);
+
                         // Fallback: Generate PDF blob and create download link
                         html2pdf().set(options).from(container).toPdf().get('pdf').then(pdf => {
                             const blob = pdf.output('blob');
@@ -795,7 +886,7 @@
                             link.click();
                             document.body.removeChild(link);
                             URL.revokeObjectURL(url);
-                            
+
                             hideLoader && hideLoader();
                             console.log('PDF generated and downloaded via fallback method');
                             alert('PDF downloaded successfully!');
@@ -816,7 +907,7 @@
             // A4 dimensions
             const A4_WIDTH_IN = 8.27;
             const A4_HEIGHT_IN = 11.69;
-            const usableInches = A4_HEIGHT_IN - (topMarginInches || 0) - (bottomMarginInches || 0);
+            const usableInches = A4_HEIGHT_IN - (topMarginInches || 0);
             const PX_PER_IN = 96; // CSS px per inch
             const usablePx = usableInches * PX_PER_IN;
             const pageWidthPx = A4_WIDTH_IN * PX_PER_IN;
@@ -826,14 +917,14 @@
 
             // Create temporary A4-sized container for accurate height calculations
             const tempContainer = createTempA4Container(container, pageWidthPx);
-            
+
             try {
                 // Calculate heights using the temporary container
                 const heightData = calculateHeightsFromTempContainer(tempContainer, topMarginInches, bottomMarginInches);
-                
+
                 // Apply page breaks based on calculated heights
                 applyPageBreaksBasedOnHeights(container, heightData);
-                
+
             } finally {
                 // Clean up temporary container
                 if (tempContainer && tempContainer.parentNode) {
@@ -856,27 +947,27 @@
                 font-size: inherit;
                 line-height: inherit;
             `;
-            
+
             // Clone the content from original container
             const clonedContent = originalContainer.cloneNode(true);
             tempContainer.appendChild(clonedContent);
-            
+
             // Add to DOM temporarily for measurements
             document.body.appendChild(tempContainer);
-            
+
             return tempContainer;
         }
 
         function calculateHeightsFromTempContainer(tempContainer, topMarginInches, bottomMarginInches) {
             const A4_HEIGHT_IN = 11.69;
-            const usableInches = A4_HEIGHT_IN - (topMarginInches || 0) - (bottomMarginInches || 0);
+            const usableInches = A4_HEIGHT_IN - (topMarginInches || 0);
             const PX_PER_IN = 96;
             const usablePx = usableInches * PX_PER_IN;
 
             // Get header height
             const headerBox = tempContainer.querySelector('.header-box');
             const headerHeight = headerBox ? headerBox.offsetHeight : 0;
-            
+
             console.log('Temp container - Header height:', headerHeight);
 
             // Get meal blocks data
@@ -886,7 +977,7 @@
             mealBlocks.forEach((mealBlock, blockIndex) => {
                 const mealTitle = mealBlock.querySelector('h5');
                 const cards = Array.from(mealBlock.querySelectorAll('.card-box'));
-                
+
                 if (!mealTitle || cards.length === 0) return;
 
                 const titleHeight = mealTitle.offsetHeight;
@@ -922,7 +1013,7 @@
 
         function applyPageBreaksBasedOnHeights(originalContainer, heightData) {
             const { headerHeight, mealBlockData, usablePx } = heightData;
-            
+
             let currentPageHeight = headerHeight;
             let isFirstPage = true;
 
@@ -931,7 +1022,7 @@
 
             mealBlockData.forEach((blockData, blockIndex) => {
                 const { titleHeight, cardHeights, titleAndFirstCardHeight } = blockData;
-                
+
                 console.log(`Processing meal block ${blockIndex + 1}:`, {
                     titleHeight,
                     titleAndFirstCardHeight,
@@ -988,7 +1079,7 @@
                 background: transparent;
                 display: block;
             `;
-            
+
             element.parentNode.insertBefore(pageBreak, element);
         }
 
