@@ -887,7 +887,7 @@ if (isset($plan) && isset($plan->name)) {
             // replace the tempContainer with originalContainer
             container.replaceWith(pdfContent);
 
-            // tempContainer.remove();
+            tempContainer.remove();
         }
 
         function createTempA4Container(originalContainer, pageWidthPx) {
