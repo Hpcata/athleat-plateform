@@ -68,27 +68,27 @@
                         @if ($userPlan->userCategories->isNotEmpty())
                             @foreach ($userPlan->userCategories as $userCategory)
                                 @php
-                                    $validSubCategories = $userCategory->userSubCategories->filter(function ($subCategory) use ($userPlan, $userCategory) {
-                                        return $subCategory->userMeals
-                                        ->where('user_plan_id', $userPlan->id)
-                                        ->where('user_category_id', $userCategory->id)
-                                        ->where('user_sub_category_id', $subCategory->id)
-                                        ->isNotEmpty();
-                                    });
+                $validSubCategories = $userCategory->userSubCategories->filter(function ($subCategory) use ($userPlan, $userCategory) {
+                    return $subCategory->userMeals
+                        ->where('user_plan_id', $userPlan->id)
+                        ->where('user_category_id', $userCategory->id)
+                        ->where('user_sub_category_id', $subCategory->id)
+                        ->isNotEmpty();
+                });
                                 @endphp
 
                                 @foreach ($validSubCategories as $subCategory)
                                     @php
-                                        $meals = $subCategory->userMeals
-                                            ->where('user_plan_id', $userPlan->id)
-                                            ->where('user_category_id', $userCategory->id)
-                                            ->where('user_sub_category_id', $subCategory->id);
+                    $meals = $subCategory->userMeals
+                        ->where('user_plan_id', $userPlan->id)
+                        ->where('user_category_id', $userCategory->id)
+                        ->where('user_sub_category_id', $subCategory->id);
 
-                                        $mealCount = $subCategory->userMeals
-                                            ->where('user_plan_id', $userPlan->id)
-                                            ->where('user_category_id', $userCategory->id)
-                                            ->where('user_sub_category_id', $subCategory->id)
-                                            ->count();
+                    $mealCount = $subCategory->userMeals
+                        ->where('user_plan_id', $userPlan->id)
+                        ->where('user_category_id', $userCategory->id)
+                        ->where('user_sub_category_id', $subCategory->id)
+                        ->count();
                                     @endphp
 
                                     @if ($mealCount > 0)
@@ -152,65 +152,65 @@
             </section>
 
             @php
-                $title = $description = $label = $proteinLabel = $proteinDescription = $fuelLabel = $fuelDescription = $protectLabel = $protectDescription = '';
-                if (isset($plan) && isset($plan->name)) {
-                    switch ($plan->name) {
-                        case 'Training Nutrition Plan':
-                            $title = 'Plate Like this...';
-                            $description = 'Your carb and veggie portions vary by meal type and training load for peak performance. Protein stays the same. See the ideal ratios and what foods to choose below.';
-                            $label = 'Training Load';
-                            $proteinLabel = 'Repair Foods: Proteins';
-                            $proteinDescription = 'Keep 1/4 of the plate for protein. Include lean meat, eggs, tofu, fish, or skinless chicken to rebuild & recover muscles.';
-                            $fuelLabel = 'Fuel Foods: Carbs & Healthy Fats';
-                            $fuelDescription = 'Choose complex carbs like potatoes, pasta, noodles & rice or bread as regular fuel sources. Faster carbs, like rice crackers, fruit, bars-use pre-training.';
-                            $protectLabel = 'Protect Foods: Colourful Fruit and Veg';
-                            $protectDescription = 'A variety of fruits and colourful vegetables, eaten regularly, like berries, carrots & capsicum will drive a strong immune system & gut microbiome.';
-                            break;
-                        case 'Injury & Recovery Plan':
-                            $title = 'Recovery Meal Portions';
-                            $description = 'Injury recovery goals are - optimal healing whilst limiting muscle loss and excessive gains in body fat. Training load is reduced during injury, so fuelling requirements are lower.';
-                            $label = 'Meal Portion';
-                            $proteinLabel = 'Repair Foods: Proteins';
-                            $proteinDescription = 'Keep 1/4 of the plate for protein. Include lean meat, eggs, tofu, fish, or skinless chicken to rebuild & recover muscles.';
-                            $fuelLabel = 'Fuel Foods: Carbs & Healthy Fats';
-                            $fuelDescription = 'Choose complex carbs like potatoes, pasta, noodles & rice or bread as regular fuel sources.';
-                            $protectLabel = 'Protect Foods: Colourful Fruit and Veg';
-                            $protectDescription = 'A variety of fruits and colourful vegetables eaten regularly will drive a strong immune system & gut microbiome.';
-                            break;
-                        case 'Competition Plan':
-                            $title = 'Competition Meal Portions...';
-                            $description = 'Your carb and veggie portions vary by meal type and training load for peak performance. Protein stays the same. See the ideal ratios and what foods to choose below.';
-                            $label = 'Training Load';
-                            $proteinLabel = 'Repair foods: Proteins';
-                            $proteinDescription = 'Includes meat, eggs, fish, dairy, tofu or legumes to rebuild & recover muscle.Proteins are not a main fuel source for high-intensity sport, so they are not the priority in the lead-up, on comp day. Leaner white proteins like chicken, fish, pork & eggs are preferred pre-comp as they break down faster in the gut compared to fatty red meats. Proteins are important post-comp to maximise recovery.';
-                            $fuelLabel = 'Fuel Foods: Carbs & Healthy Fats';
-                            $fuelDescription = 'Choose complex carbs like potatoes, pasta, noodles & rice or bread as regular fuel sources that are rehearsed in training. Faster carbs foods like rice crackers, fruit, muesli bars, should be used more the closer the event is, as they digest fast and provide high-octane fuel fast.';
-                            $protectLabel = 'Protect Foods: Colourful Fruit and Veg';
-                            $protectDescription = 'Higher fibre vegetables (carrots, broccoli, mushrooms, etc) and low sugar fruits (blueberries, blackberries, cherries, lemon, limes) are not the priority on comp day as higher fibre meals can cause gut upset. Focus more on the smart carb fuelling foods.';
-                            break;
-                        case 'Injury Recovery + Post Surgery':
-                            $title = 'Plate Like this...';
-                            $description = 'Your carb and veggie portions vary by meal type and training load for peak performance. Protein stays the same. See the ideal ratios and what foods to choose below.';
-                            $label = 'Training Load';
-                            $proteinLabel = 'Repair Foods: Proteins';
-                            $proteinDescription = 'Includes meat, eggs, fish, dairy, tofu or legumes to rebuild & recover muscle.';
-                            $fuelLabel = 'Fuel Foods: Carbs & Healthy Fats';
-                            $fuelDescription = 'Choose complex carbs sources like potatoes, pasta, rice, noodles and breads.';
-                            $protectLabel = 'Protect Foods: Colourful Fruit and Veg';
-                            $protectDescription = 'A variety of mixed fruit & veg drives a strong immune system and gut microbiome.';
-                            break;
-                    }
-                } else {
-                    $title = 'Plate Like this...';
-                    $description = 'Your carb and veggie portions vary by meal type and training load for peak performance. Protein stays the same. See the ideal ratios and what foods to choose below.';
-                    $label = 'Training Load';
-                    $proteinLabel = 'Repair Foods: Proteins';
-                    $proteinDescription = 'Includes meat, eggs, fish, dairy, tofu or legumes to rebuild & recover muscle.';
-                    $fuelLabel = 'Fuel Foods: Carbs & Healthy Fats';
-                    $fuelDescription = 'Choose complex carbs sources like potatoes, pasta, rice, noodles and breads.';
-                    $protectLabel = 'Protect Foods: Colourful Fruit and Veg';
-                    $protectDescription = 'A variety of mixed fruit & veg drives a strong immune system and gut microbiome.';
-                }
+$title = $description = $label = $proteinLabel = $proteinDescription = $fuelLabel = $fuelDescription = $protectLabel = $protectDescription = '';
+if (isset($plan) && isset($plan->name)) {
+    switch ($plan->name) {
+        case 'Training Nutrition Plan':
+            $title = 'Plate Like this...';
+            $description = 'Your carb and veggie portions vary by meal type and training load for peak performance. Protein stays the same. See the ideal ratios and what foods to choose below.';
+            $label = 'Training Load';
+            $proteinLabel = 'Repair Foods: Proteins';
+            $proteinDescription = 'Keep 1/4 of the plate for protein. Include lean meat, eggs, tofu, fish, or skinless chicken to rebuild & recover muscles.';
+            $fuelLabel = 'Fuel Foods: Carbs & Healthy Fats';
+            $fuelDescription = 'Choose complex carbs like potatoes, pasta, noodles & rice or bread as regular fuel sources. Faster carbs, like rice crackers, fruit, bars-use pre-training.';
+            $protectLabel = 'Protect Foods: Colourful Fruit and Veg';
+            $protectDescription = 'A variety of fruits and colourful vegetables, eaten regularly, like berries, carrots & capsicum will drive a strong immune system & gut microbiome.';
+            break;
+        case 'Injury & Recovery Plan':
+            $title = 'Recovery Meal Portions';
+            $description = 'Injury recovery goals are - optimal healing whilst limiting muscle loss and excessive gains in body fat. Training load is reduced during injury, so fuelling requirements are lower.';
+            $label = 'Meal Portion';
+            $proteinLabel = 'Repair Foods: Proteins';
+            $proteinDescription = 'Keep 1/4 of the plate for protein. Include lean meat, eggs, tofu, fish, or skinless chicken to rebuild & recover muscles.';
+            $fuelLabel = 'Fuel Foods: Carbs & Healthy Fats';
+            $fuelDescription = 'Choose complex carbs like potatoes, pasta, noodles & rice or bread as regular fuel sources.';
+            $protectLabel = 'Protect Foods: Colourful Fruit and Veg';
+            $protectDescription = 'A variety of fruits and colourful vegetables eaten regularly will drive a strong immune system & gut microbiome.';
+            break;
+        case 'Competition Plan':
+            $title = 'Competition Meal Portions...';
+            $description = 'Your carb and veggie portions vary by meal type and training load for peak performance. Protein stays the same. See the ideal ratios and what foods to choose below.';
+            $label = 'Training Load';
+            $proteinLabel = 'Repair foods: Proteins';
+            $proteinDescription = 'Includes meat, eggs, fish, dairy, tofu or legumes to rebuild & recover muscle.Proteins are not a main fuel source for high-intensity sport, so they are not the priority in the lead-up, on comp day. Leaner white proteins like chicken, fish, pork & eggs are preferred pre-comp as they break down faster in the gut compared to fatty red meats. Proteins are important post-comp to maximise recovery.';
+            $fuelLabel = 'Fuel Foods: Carbs & Healthy Fats';
+            $fuelDescription = 'Choose complex carbs like potatoes, pasta, noodles & rice or bread as regular fuel sources that are rehearsed in training. Faster carbs foods like rice crackers, fruit, muesli bars, should be used more the closer the event is, as they digest fast and provide high-octane fuel fast.';
+            $protectLabel = 'Protect Foods: Colourful Fruit and Veg';
+            $protectDescription = 'Higher fibre vegetables (carrots, broccoli, mushrooms, etc) and low sugar fruits (blueberries, blackberries, cherries, lemon, limes) are not the priority on comp day as higher fibre meals can cause gut upset. Focus more on the smart carb fuelling foods.';
+            break;
+        case 'Injury Recovery + Post Surgery':
+            $title = 'Plate Like this...';
+            $description = 'Your carb and veggie portions vary by meal type and training load for peak performance. Protein stays the same. See the ideal ratios and what foods to choose below.';
+            $label = 'Training Load';
+            $proteinLabel = 'Repair Foods: Proteins';
+            $proteinDescription = 'Includes meat, eggs, fish, dairy, tofu or legumes to rebuild & recover muscle.';
+            $fuelLabel = 'Fuel Foods: Carbs & Healthy Fats';
+            $fuelDescription = 'Choose complex carbs sources like potatoes, pasta, rice, noodles and breads.';
+            $protectLabel = 'Protect Foods: Colourful Fruit and Veg';
+            $protectDescription = 'A variety of mixed fruit & veg drives a strong immune system and gut microbiome.';
+            break;
+    }
+} else {
+    $title = 'Plate Like this...';
+    $description = 'Your carb and veggie portions vary by meal type and training load for peak performance. Protein stays the same. See the ideal ratios and what foods to choose below.';
+    $label = 'Training Load';
+    $proteinLabel = 'Repair Foods: Proteins';
+    $proteinDescription = 'Includes meat, eggs, fish, dairy, tofu or legumes to rebuild & recover muscle.';
+    $fuelLabel = 'Fuel Foods: Carbs & Healthy Fats';
+    $fuelDescription = 'Choose complex carbs sources like potatoes, pasta, rice, noodles and breads.';
+    $protectLabel = 'Protect Foods: Colourful Fruit and Veg';
+    $protectDescription = 'A variety of mixed fruit & veg drives a strong immune system and gut microbiome.';
+}
             @endphp
 
             @include('front.pages.partials.plate-breakdown')
@@ -663,7 +663,7 @@
 
         function downloadPDF() {
             showLoader();
-            const element = document.getElementById("pdf-content");
+            var element = document.getElementById("pdf-content");
             const images = element.querySelectorAll("img");
 
             const promises = Array.from(images).map(img => {
@@ -681,6 +681,10 @@
                 const bottomMargin = 1.0; // ~18mm (footer + buffer)
                 const leftRightMargin = 0.3;
 
+                const container = document.getElementById('pdf-content');
+                addPageBreaks(container, topMargin, bottomMargin);
+                var element = document.getElementById("pdf-content");
+
                 html2pdf()
                     .set({
                         margin: [topMargin, leftRightMargin, bottomMargin, leftRightMargin],
@@ -692,7 +696,12 @@
                             format: 'a4',
                             orientation: 'portrait'
                         },
-                        pagebreak: { mode: ['css', 'legacy'] } // <-- Add this line
+                        pagebreak: {
+                            mode: ['css', 'legacy'],
+                            before: '.page-break',
+                            // Avoid breaking these elements - they should stay intact
+                            avoid: ['.card-box', '.img-square', '.logo', 'h5']
+                        }
 
                     })
                     .from(element)
@@ -755,7 +764,7 @@
                             pdf.setTextColor(0, 116, 217); // blue
                             pdf.setFontSize(dateFontSize);
                             pdf.setFont(undefined, 'normal');
-                            pdf.text(dateText, dateX, dateY, { align: 'right', baseline: 'middle' });
+                            pdf.text(dateText, dateX, dateY, { align: 'right', baseline: 'middle', background: 'red' });
                         }
                     })
                     .save()
@@ -763,6 +772,171 @@
                         hideLoader();
                     });
             });
+        }
+
+        function addPageBreaks(container, topMargin, bottomMargin) {
+            // first generate temporary content in given size canvas
+            const A4_WIDTH_IN = 8.2677;
+            const A4_HEIGHT_IN = 11.6929;
+            const PX_PER_IN = 96;
+            const A4_WIDTH_PX = A4_WIDTH_IN * PX_PER_IN;
+            const A4_HEIGHT_PX = A4_HEIGHT_IN * PX_PER_IN;
+
+            clearPageBreaks(container);
+            const tempContainer = createTempA4Container(container, A4_WIDTH_PX);
+
+            // find useable canvas
+            const usableInches = A4_HEIGHT_IN - (topMargin || 0) - (bottomMargin || 0);
+            let usablePx = usableInches * PX_PER_IN;
+
+            // also remove footer height from usablePx
+            const footerHeight = 0.5;
+            const footerHeightPx = footerHeight * PX_PER_IN;
+            usablePx = usablePx - footerHeightPx; // this is usable px of one page
+            tempUseableDivPx = usablePx;
+
+            // fetch all main div inside of pdf-content
+            const mainDivs = tempContainer.querySelectorAll('#pdf-content > *');
+
+            // start filling content one by one in pages
+            $currentPage = 1;
+
+            mainDivs.forEach(div => {
+                if (div.classList.contains('header-box') || div.classList.contains('pdf-footer')) {
+                    tempUseableDivPx = tempUseableDivPx - div.offsetHeight;
+                    return;
+                }
+
+                // if current box has class meal-block then check main divs inside if of it
+                var mealBlockDivs = div.querySelectorAll('.meal-block > *');
+
+                if (mealBlockDivs.length === 0) {
+                    return;
+                }
+
+                // need to check if h5 and first div.card-box can be fit using usablePx
+                const h5Height = mealBlockDivs[0].offsetHeight;
+                const firstCardBox = mealBlockDivs[1];
+                const firstCardBoxHeight = firstCardBox.offsetHeight;
+
+                var addedFirstCardBox = false;
+                console.log('h5Height', h5Height);
+                console.log('firstCardBoxHeight', firstCardBoxHeight);
+                console.log('tempUseableDivPx', tempUseableDivPx);
+                console.log('h5Height + firstCardBoxHeight', h5Height + firstCardBoxHeight);
+                if ((h5Height + firstCardBoxHeight) > tempUseableDivPx) {
+                    $currentPage++;
+
+                    var remainingHeight = (h5Height + firstCardBoxHeight)-tempUseableDivPx;
+
+                    if(tempUseableDivPx < 50) {
+
+                    } else {
+                        addPageBreak(div, remainingHeight);
+                    }
+                    // add page break
+                    // Insert page break before the meal block
+                    // div.parentNode.insertBefore(pageBreak, div);
+                    console.log('firstCardBox', firstCardBox);
+                    // console.log('pageBreak', pageBreak);
+
+                    // reset tempUseableDivPx to mark it as new page
+                    tempUseableDivPx = usablePx - h5Height - firstCardBoxHeight - 10;
+                    addedFirstCardBox = true;
+                }
+
+                if (addedFirstCardBox === true) {
+                    mealBlockDivs = Array.from(mealBlockDivs).slice(2);
+                } else {
+                    mealBlockDivs = Array.from(mealBlockDivs);
+                }
+                //now for each card box check if it can be fit using usablePx
+                mealBlockDivs.forEach(cardBox => {
+                    const cardBoxHeight = cardBox.offsetHeight;
+                    console.log('cardBoxHeight', cardBoxHeight);
+                    console.log('tempUseableDivPx', tempUseableDivPx);
+                    if (cardBoxHeight > tempUseableDivPx) {
+                        $currentPage++;
+
+                        var remainingHeight = cardBoxHeight-tempUseableDivPx;
+
+                        if(tempUseableDivPx < 50) {
+
+                        } else {
+                            addPageBreak(cardBox, remainingHeight);
+                        }
+                        console.log('cardBox', cardBox);
+                        // Insert page break before the card box
+                        // cardBox.parentNode.insertBefore(pageBreak, cardBox);
+
+                        // console.log('pageBreak1', pageBreak);
+
+                        // reset tempUseableDivPx to mark it as new page
+                        tempUseableDivPx = usablePx - cardBoxHeight - 10;
+                    } else {
+                        //deduct the cardBoxHeight from tempUseableDivPx
+                        tempUseableDivPx = tempUseableDivPx - cardBoxHeight;
+                    }
+                });
+
+                console.log('--------------------------------');
+            });
+
+            var pdfContent = tempContainer.firstChild;
+            console.log('pdfContent', pdfContent);
+            // replace the tempContainer with originalContainer
+            container.replaceWith(pdfContent);
+
+            // tempContainer.remove();
+        }
+
+        function createTempA4Container(originalContainer, pageWidthPx) {
+            // Create temporary container with A4 dimensions
+            const tempContainer = document.createElement('div');
+            // tempContainer.style.cssText = `
+            // position: absolute;
+            // top: -9999px;
+            // left: -9999px;
+            // width: ${pageWidthPx}px;
+            // visibility: hidden;
+            // overflow: visible;
+            // font-family: inherit;
+            // font-size: inherit;
+            // line-height: inherit;
+            // `;
+
+            // Clone the content from original container
+            const clonedContent = originalContainer.cloneNode(true);
+            tempContainer.appendChild(clonedContent);
+
+            // Add to DOM temporarily for measurements
+            document.body.appendChild(tempContainer);
+
+            return tempContainer;
+        }
+
+        // remove previously inserted page-breaks
+        function clearPageBreaks(container) {
+            const existing = container.querySelectorAll('.page-break');
+            existing.forEach(e => e.remove());
+        }
+
+        function addPageBreak(element, remainingHeight) {
+            const pageBreak = document.createElement('div');
+            pageBreak.className = 'page-break';
+            pageBreak.style.cssText = `
+            page-break-before: always;
+            break-before: page;
+            margin: 0 0 10px 0;
+            padding: 0;
+            border: none;
+            background: red;
+            display: block;
+        `;
+        // pageBreak.style.height = `${remainingHeight}px`;
+        // console.log('remainingHeight', remainingHeight);
+
+            element.parentNode.insertBefore(pageBreak, element);
         }
 
         // Helper to convert images to base64
