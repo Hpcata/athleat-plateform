@@ -923,18 +923,18 @@ if (isset($plan) && isset($plan->name)) {
 
         function addPageBreak(element, remainingHeight) {
             const pageBreak = document.createElement('div');
-            pageBreak.className = 'page-break';
-            pageBreak.style.cssText = `
-            page-break-before: always;
-            break-before: page;
-            margin: 0 0 10px 0;
-            padding: 0;
-            border: none;
-            background: red;
-            display: block;
-        `;
-        // pageBreak.style.height = `${remainingHeight}px`;
-        // console.log('remainingHeight', remainingHeight);
+                pageBreak.className = 'page-break';
+                pageBreak.style.cssText = `
+                page-break-before: always;
+                break-before: page;
+                margin: 0 0 10px 0;
+                padding: 0;
+                border: none;
+                background: red;
+                display: block;
+            `;
+            // pageBreak.style.height = `${remainingHeight}px`;
+            // console.log('remainingHeight', remainingHeight);
 
             element.parentNode.insertBefore(pageBreak, element);
         }
