@@ -579,7 +579,7 @@
                                             Optimise your training gains by eating with purpose. Perform at your peak with a personalised meal plan tailored to you & your preferences - designed by Extreme Sports Dietitian Kerry O’Bryan.
                                         </p>
                                     </div>
-                                    <button class="btn-signup" onclick="window.location.href='{{ route('front.training.nutrition.plan') }}'">Learn more</button>
+                                    <a href="{{ route('front.training.nutrition.plan') }}" class="btn-signup">Learn more</a>
                                 </div>
                             </div>
                             <div class="col-md-4">
@@ -1097,7 +1097,7 @@
 
         $(document).ready(function () {
             // Initialize iOS enhancements
-            enhanceSelectForIOS();
+            // enhanceSelectForIOS();
 
             $("#sport").change(function () {
                 let selectedSport = $(this).val();
