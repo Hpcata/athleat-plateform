@@ -351,7 +351,7 @@
                 </div>
                 <div class="modal-footer"
                     style="text-align: end; padding: 12px 16px; border-top: 1px solid #d8d8d8; border-radius:0 0 12px 12px; background-color:#fff;">
-                    <button id="download-plan-btn" class="btn btn-primary" onclick="downloadPDF()">
+                    <button id="download-plan-btn" class="btn btn-primary" onclick="downloadPDF({{ $plan->name }})">
                         Download Plan
                     </button>
                 </div>
@@ -1035,7 +1035,7 @@
                         console.log("here7");
 
                         // Right-side text
-                        const dateText = `Nutrition Training Plan | ${new Date().toLocaleDateString('en-GB')}`;
+                        const dateText = `${planName ?? ''} | ${new Date().toLocaleDateString('en-GB')}`;
                         const dateFontSize = 9; // smaller font
                         const dateColor = "#649ef7"; // blue
                         const dateX = pageWidth - 0.5;
