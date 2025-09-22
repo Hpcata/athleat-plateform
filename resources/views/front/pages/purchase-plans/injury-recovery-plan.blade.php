@@ -232,7 +232,7 @@
                                         </div>
                                     </div>
                                 @endif
-                              
+
                             </div>
                             <!-- Arrow at the end of body when open -->
                             <div class="accordion-body-arrow">
@@ -326,32 +326,7 @@
                 </div>
                 <div class="modal-footer"
                     style="text-align: end; padding: 12px 16px; border-top: 1px solid #d8d8d8; border-radius:0 0 12px 12px; background-color:#fff;">
-                    <button id="download-plan-btn" class="btn btn-primary" onclick="downloadPDF()">
-                        Download Plan
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Bootstrap Modal for Download Plan (keep your content inside) -->
-    <div class="modal" id="print-plan-modal" tabindex="-1" aria-labelledby="printPlanModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-xl modal-dialog-centered">
-            <div class="modal-content" style="border-radius: 12px;">
-                <div class="modal-header" style="border-bottom: 1px solid #d8d8d8;">
-                    <h5 class="modal-title" id="printPlanModalLabel">Download Plan</h5>
-                    <button type="button" class="meal-item-modal-close btn-close" data-bs-dismiss="modal"
-                        aria-label="Close"></button>
-                </div>
-                <div class="modal-body" style="padding: 0;    overflow: auto;">
-                    <div style="flex: 1 1 auto; padding: 16px 16px 0 16px;">
-                        <div id="pdf-preview" style="width: 100%; height: 100%; display: flex; justify-content: center;"
-                            class="downloadplan-inner-content"></div>
-                    </div>
-                </div>
-                <div class="modal-footer"
-                    style="text-align: end; padding: 12px 16px; border-top: 1px solid #d8d8d8; border-radius:0 0 12px 12px; background-color:#fff;">
-                    <button id="download-plan-btn" class="btn btn-primary" onclick="downloadPDF({{ $plan->name }})">
+                    <button id="download-plan-btn" class="btn btn-primary" onclick="downloadPDF('{{ $plan->name }}')">
                         Download Plan
                     </button>
                 </div>
@@ -395,26 +370,26 @@
         // Ensure userId and userPlanId are already defined globally
         document.addEventListener('DOMContentLoaded', function () {
             const accordionHeaders = document.querySelectorAll('.custom-accordion-header');
-            
+
             // Simple function to calculate and set accordion height
             function setAccordionHeight(header) {
                 const content = header.nextElementSibling;
                 if (!content) return;
-                
+
                 const isOpen = header.classList.contains('active');
-                
+
                 if (isOpen) {
                     // Check if this is the recovery meals accordion (first one)
-                    const isRecoveryMeals = header.closest('.training-plan-wrapper') === 
+                    const isRecoveryMeals = header.closest('.training-plan-wrapper') ===
                         document.querySelector('.training-plan-wrapper:first-child');
-                        
+
                     // Temporarily remove max-height to get natural height
                     content.style.maxHeight = 'none';
-                    
+
                     // Use setTimeout to ensure DOM is updated
                     setTimeout(() => {
                         const naturalHeight = content.scrollHeight;
-                        
+
                         if (isRecoveryMeals) {
                             // Recovery meals has minimum 565px
                             const minHeight = 565;
@@ -433,14 +408,14 @@
                     content.style.minHeight = '0px';
                 }
             }
-            
+
             // Toggle accordion function
             function toggleAccordion(header) {
                 const content = header.nextElementSibling;
                 if (!content) return;
-                
+
                 const isCurrentlyOpen = header.classList.contains('active');
-                
+
                 if (isCurrentlyOpen) {
                     // Closing accordion
                     header.classList.remove('active');
@@ -455,7 +430,7 @@
                     }, 10);
                 }
             }
-            
+
             // Add click event listeners for header
             accordionHeaders.forEach(header => {
                 header.addEventListener('click', function (e) {
@@ -463,26 +438,26 @@
                     toggleAccordion(this);
                 });
             });
-            
+
             // Add click event listeners for body arrows
             const bodyArrows = document.querySelectorAll('.arrow.body-arrow');
             bodyArrows.forEach(arrow => {
                 arrow.addEventListener('click', function(e) {
                     e.preventDefault();
                     e.stopPropagation(); // Prevent event bubbling
-                    
+
                     // Find the accordion header for this body arrow
                     const accordionBody = this.closest('.accordion-body');
                     const accordionContent = accordionBody.closest('.custom-accordion-content');
                     const accordionHeader = accordionContent.previousElementSibling;
-                    
+
                     if (accordionHeader && accordionHeader.classList.contains('active')) {
                         // Close the accordion
                         toggleAccordion(accordionHeader);
                     }
                 });
             });
-            
+
             // Open all accordions by default after a short delay to ensure content is loaded
             setTimeout(() => {
                 accordionHeaders.forEach(header => {
@@ -499,15 +474,15 @@
                 const content = header.nextElementSibling;
                 if (content) {
                     // Check if this is the recovery meals accordion
-                    const isRecoveryMeals = header.closest('.training-plan-wrapper') === 
+                    const isRecoveryMeals = header.closest('.training-plan-wrapper') ===
                         document.querySelector('.training-plan-wrapper:first-child');
-                        
+
                     // Temporarily remove max-height to get natural height
                     content.style.maxHeight = 'none';
-                    
+
                     setTimeout(() => {
                         const naturalHeight = content.scrollHeight;
-                        
+
                         if (isRecoveryMeals) {
                             // Recovery meals has minimum 565px
                             const minHeight = 565;
@@ -519,7 +494,7 @@
                             content.style.maxHeight = naturalHeight + 'px';
                             content.style.minHeight = 'auto';
                         }
-                        
+
                         // Update arrow visibility for this content
                         const leftArrow = content.querySelector('.left-arrow');
                         const rightArrow = content.querySelector('.right-arrow');
@@ -956,7 +931,6 @@
 
         function downloadPDF(planName = '') {
             showLoader();
-            console.log('downloadPDF');
             var element = document.getElementById("pdf-content");
             const images = element.querySelectorAll("img");
 
@@ -968,8 +942,6 @@
                 });
             });
 
-            console.log("here1");
-
             Promise.all(promises).then(() => {
 
                 // Set margins (in inches: 1in = 25.4mm = 72pt)
@@ -980,8 +952,6 @@
                 const container = document.getElementById('pdf-content');
                 addPageBreaks(container, topMargin, bottomMargin);
                 var element = document.getElementById("pdf-content");
-
-                console.log("here2");
 
                 html2pdf()
                     .set({
@@ -1006,18 +976,13 @@
                     .toPdf()
                     .get('pdf')
                     .then(pdf => {
-                        console.log("here3");
                         const totalPages = pdf.internal.getNumberOfPages();
                         const pageWidth = pdf.internal.pageSize.getWidth();
                         const pageHeight = pdf.internal.pageSize.getHeight();
 
-                        console.log("here4");
-
                         // Footer settings
                         const footerHeight = 0.5; // in inches
                         const footerY = pageHeight - bottomMargin + 0.15; // 0.15in above page bottom
-
-                        console.log("here5");
 
                         // Logo
                         const logoWidth = 1.2;
@@ -1025,14 +990,10 @@
                         const logoX = 0.5;
                         const logoY = footerY + (footerHeight - logoHeight) / 2;
 
-                        console.log("here6");
-
                         // Circle (page number)
                         const circleRadius = 0.15;
                         const circleCenterX = pageWidth / 2;
                         const circleCenterY = footerY + footerHeight / 2;
-
-                        console.log("here7");
 
                         // Right-side text
                         const dateText = `${planName ?? ''} | ${new Date().toLocaleDateString('en-GB')}`;
@@ -1041,13 +1002,9 @@
                         const dateX = pageWidth - 0.5;
                         const dateY = circleCenterY + 0.04; // align with circle
 
-                        console.log("here8");
 
                         for (let i = 1; i <= totalPages; i++) {
                             pdf.setPage(i);
-
-                            console.log("here9");
-
                             // Draw a white rectangle to clear the footer area
                             pdf.setFillColor(255, 255, 255);
                             pdf.rect(
@@ -1058,26 +1015,18 @@
                                 'F'
                             );
 
-                            console.log("here10");
-
                             // Add logo (left, vertically centered)
                             if (window.logoBase64) {
                                 pdf.addImage(window.logoBase64, 'PNG', logoX, logoY, logoWidth, logoHeight);
                             }
-
-                            console.log("here11");
 
                             // Page number in white, centered in the circle
                             pdf.setTextColor(0, 116, 217);
                             pdf.setFontSize(11);
                             pdf.setFont(undefined, 'bold');
 
-                            console.log("here12");
-
                             // Center vertically and horizontally
                             pdf.text(`${i}`, circleCenterX, circleCenterY, { align: 'center', baseline: 'middle' });
-
-                            console.log("here13");
 
                             // Date text (right, blue, smaller font, vertically centered)
                             pdf.setTextColor(0, 116, 217); // blue
@@ -1085,8 +1034,6 @@
                             pdf.setFont(undefined, 'normal');
                             pdf.text(dateText, dateX, dateY, { align: 'right', baseline: 'middle', background: 'red' });
                         }
-
-                        console.log("here14");
                     })
                     .save()
                     .then(() => {
@@ -1141,10 +1088,6 @@
                 const firstCardBoxHeight = firstCardBox.offsetHeight;
 
                 var addedFirstCardBox = false;
-                console.log('h5Height', h5Height);
-                console.log('firstCardBoxHeight', firstCardBoxHeight);
-                console.log('tempUseableDivPx', tempUseableDivPx);
-                console.log('h5Height + firstCardBoxHeight', h5Height + firstCardBoxHeight);
                 if ((h5Height + firstCardBoxHeight) > tempUseableDivPx) {
                     $currentPage++;
 
@@ -1158,7 +1101,6 @@
                     // add page break
                     // Insert page break before the meal block
                     // div.parentNode.insertBefore(pageBreak, div);
-                    console.log('firstCardBox', firstCardBox);
                     // console.log('pageBreak', pageBreak);
 
                     // reset tempUseableDivPx to mark it as new page
@@ -1174,8 +1116,6 @@
                 //now for each card box check if it can be fit using usablePx
                 mealBlockDivs.forEach(cardBox => {
                     const cardBoxHeight = cardBox.offsetHeight;
-                    console.log('cardBoxHeight', cardBoxHeight);
-                    console.log('tempUseableDivPx', tempUseableDivPx);
                     if (cardBoxHeight > tempUseableDivPx) {
                         $currentPage++;
 
@@ -1186,7 +1126,6 @@
                         } else {
                             addPageBreak(cardBox, remainingHeight);
                         }
-                        console.log('cardBox', cardBox);
                         // Insert page break before the card box
                         // cardBox.parentNode.insertBefore(pageBreak, cardBox);
 
@@ -1200,11 +1139,9 @@
                     }
                 });
 
-                console.log('--------------------------------');
             });
 
             var pdfContent = tempContainer.firstChild;
-            console.log('pdfContent', pdfContent);
             // replace the tempContainer with originalContainer
             container.replaceWith(pdfContent);
 
