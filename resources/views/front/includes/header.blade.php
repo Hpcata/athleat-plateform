@@ -24,7 +24,9 @@
         style=" position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.6); z-index:1999;">
     </div>
     <header class="mobile-header">
-        <img href="{{ route('front.index') }}" src="{{ frontAssets('images/logo.svg') }}" alt="athleat logo" class="mobile-logo-img" width="140"height="30" />
+        <a href="{{ route('front.index') }}">
+            <img src="{{ frontAssets('images/logo.svg') }}" alt="athleat logo" class="mobile-logo-img" width="140"height="30" />
+        </a>
         <button class="mobile-menu-toggle" aria-label="Toggle mobile menu" onclick="toggleMobileMenu()"
             style="background: none; border: none; color: #fff; cursor: pointer;margin: 0 !important;">
             <span id="mobile-menu-icon">
@@ -55,9 +57,7 @@
                 </li>
             @endif
 
-            <li class="mobile-menu-link coming-soon-popup">
-                <a onclick="toggleMobileMenu()" style="color: #fff; text-decoration: none; display: block; padding: 8px 16px;">Challenges and Rewards</a>
-            </li>
+            <li class="mobile-menu-link coming-soon-popup"><a onclick="toggleMobileMenu()" style="color: #fff; text-decoration: none; display: block; padding: 8px 16px;">Challenges and Rewards</a></li>
             <li><div class="mobile-menu-divider" style="height:1px; background:#555; margin: 12px 16px;"></div></li>
             <li><a href="{{ route('front.supplement-scanner') }}" class="scanner-btn">Supplement Scanner</a></li>
             <li><a class="coming-soon-popup">Level-Up Library</a></li>

@@ -580,6 +580,7 @@
                                         </p>
                                     </div>
                                     <a href="{{ route('front.training.nutrition.plan') }}" class="btn-signup">Learn more</a>
+                                    <button class="btn-signup" onclick="window.location.href='{{ route('front.training.nutrition.plan') }}'">Learn more</button>
                                 </div>
                             </div>
                             <div class="col-md-4">
