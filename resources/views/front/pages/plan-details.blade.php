@@ -152,65 +152,65 @@
             </section>
 
             @php
-$title = $description = $label = $proteinLabel = $proteinDescription = $fuelLabel = $fuelDescription = $protectLabel = $protectDescription = '';
-if (isset($plan) && isset($plan->name)) {
-    switch ($plan->name) {
-        case 'Training Nutrition Plan':
-            $title = 'Plate Like this...';
-            $description = 'Your carb and veggie portions vary by meal type and training load for peak performance. Protein stays the same. See the ideal ratios and what foods to choose below.';
-            $label = 'Training Load';
-            $proteinLabel = 'Repair Foods: Proteins';
-            $proteinDescription = 'Keep 1/4 of the plate for protein. Include lean meat, eggs, tofu, fish, or skinless chicken to rebuild & recover muscles.';
-            $fuelLabel = 'Fuel Foods: Carbs & Healthy Fats';
-            $fuelDescription = 'Choose complex carbs like potatoes, pasta, noodles & rice or bread as regular fuel sources. Faster carbs, like rice crackers, fruit, bars-use pre-training.';
-            $protectLabel = 'Protect Foods: Colourful Fruit and Veg';
-            $protectDescription = 'A variety of fruits and colourful vegetables, eaten regularly, like berries, carrots & capsicum will drive a strong immune system & gut microbiome.';
-            break;
-        case 'Injury & Recovery Plan':
-            $title = 'Recovery Meal Portions';
-            $description = 'Injury recovery goals are - optimal healing whilst limiting muscle loss and excessive gains in body fat. Training load is reduced during injury, so fuelling requirements are lower.';
-            $label = 'Meal Portion';
-            $proteinLabel = 'Repair Foods: Proteins';
-            $proteinDescription = 'Keep 1/4 of the plate for protein. Include lean meat, eggs, tofu, fish, or skinless chicken to rebuild & recover muscles.';
-            $fuelLabel = 'Fuel Foods: Carbs & Healthy Fats';
-            $fuelDescription = 'Choose complex carbs like potatoes, pasta, noodles & rice or bread as regular fuel sources.';
-            $protectLabel = 'Protect Foods: Colourful Fruit and Veg';
-            $protectDescription = 'A variety of fruits and colourful vegetables eaten regularly will drive a strong immune system & gut microbiome.';
-            break;
-        case 'Competition Plan':
-            $title = 'Competition Meal Portions...';
-            $description = 'Your carb and veggie portions vary by meal type and training load for peak performance. Protein stays the same. See the ideal ratios and what foods to choose below.';
-            $label = 'Training Load';
-            $proteinLabel = 'Repair foods: Proteins';
-            $proteinDescription = 'Includes meat, eggs, fish, dairy, tofu or legumes to rebuild & recover muscle.Proteins are not a main fuel source for high-intensity sport, so they are not the priority in the lead-up, on comp day. Leaner white proteins like chicken, fish, pork & eggs are preferred pre-comp as they break down faster in the gut compared to fatty red meats. Proteins are important post-comp to maximise recovery.';
-            $fuelLabel = 'Fuel Foods: Carbs & Healthy Fats';
-            $fuelDescription = 'Choose complex carbs like potatoes, pasta, noodles & rice or bread as regular fuel sources that are rehearsed in training. Faster carbs foods like rice crackers, fruit, muesli bars, should be used more the closer the event is, as they digest fast and provide high-octane fuel fast.';
-            $protectLabel = 'Protect Foods: Colourful Fruit and Veg';
-            $protectDescription = 'Higher fibre vegetables (carrots, broccoli, mushrooms, etc) and low sugar fruits (blueberries, blackberries, cherries, lemon, limes) are not the priority on comp day as higher fibre meals can cause gut upset. Focus more on the smart carb fuelling foods.';
-            break;
-        case 'Injury Recovery + Post Surgery':
-            $title = 'Plate Like this...';
-            $description = 'Your carb and veggie portions vary by meal type and training load for peak performance. Protein stays the same. See the ideal ratios and what foods to choose below.';
-            $label = 'Training Load';
-            $proteinLabel = 'Repair Foods: Proteins';
-            $proteinDescription = 'Includes meat, eggs, fish, dairy, tofu or legumes to rebuild & recover muscle.';
-            $fuelLabel = 'Fuel Foods: Carbs & Healthy Fats';
-            $fuelDescription = 'Choose complex carbs sources like potatoes, pasta, rice, noodles and breads.';
-            $protectLabel = 'Protect Foods: Colourful Fruit and Veg';
-            $protectDescription = 'A variety of mixed fruit & veg drives a strong immune system and gut microbiome.';
-            break;
-    }
-} else {
-    $title = 'Plate Like this...';
-    $description = 'Your carb and veggie portions vary by meal type and training load for peak performance. Protein stays the same. See the ideal ratios and what foods to choose below.';
-    $label = 'Training Load';
-    $proteinLabel = 'Repair Foods: Proteins';
-    $proteinDescription = 'Includes meat, eggs, fish, dairy, tofu or legumes to rebuild & recover muscle.';
-    $fuelLabel = 'Fuel Foods: Carbs & Healthy Fats';
-    $fuelDescription = 'Choose complex carbs sources like potatoes, pasta, rice, noodles and breads.';
-    $protectLabel = 'Protect Foods: Colourful Fruit and Veg';
-    $protectDescription = 'A variety of mixed fruit & veg drives a strong immune system and gut microbiome.';
-}
+                $title = $description = $label = $proteinLabel = $proteinDescription = $fuelLabel = $fuelDescription = $protectLabel = $protectDescription = '';
+                if (isset($plan) && isset($plan->name)) {
+                    switch ($plan->name) {
+                        case 'Training Nutrition Plan':
+                            $title = 'Plate Like this...';
+                            $description = 'Your carb and veggie portions vary by meal type and training load for peak performance. Protein stays the same. See the ideal ratios and what foods to choose below.';
+                            $label = 'Training Load';
+                            $proteinLabel = 'Repair Foods: Proteins';
+                            $proteinDescription = 'Keep 1/4 of the plate for protein. Include lean meat, eggs, tofu, fish, or skinless chicken to rebuild & recover muscles.';
+                            $fuelLabel = 'Fuel Foods: Carbs & Healthy Fats';
+                            $fuelDescription = 'Choose complex carbs like potatoes, pasta, noodles & rice or bread as regular fuel sources. Faster carbs, like rice crackers, fruit, bars-use pre-training.';
+                            $protectLabel = 'Protect Foods: Colourful Fruit and Veg';
+                            $protectDescription = 'A variety of fruits and colourful vegetables, eaten regularly, like berries, carrots & capsicum will drive a strong immune system & gut microbiome.';
+                            break;
+                        case 'Injury & Recovery Plan':
+                            $title = 'Recovery Meal Portions';
+                            $description = 'Injury recovery goals are - optimal healing whilst limiting muscle loss and excessive gains in body fat. Training load is reduced during injury, so fuelling requirements are lower.';
+                            $label = 'Meal Portion';
+                            $proteinLabel = 'Repair Foods: Proteins';
+                            $proteinDescription = 'Keep 1/4 of the plate for protein. Include lean meat, eggs, tofu, fish, or skinless chicken to rebuild & recover muscles.';
+                            $fuelLabel = 'Fuel Foods: Carbs & Healthy Fats';
+                            $fuelDescription = 'Choose complex carbs like potatoes, pasta, noodles & rice or bread as regular fuel sources.';
+                            $protectLabel = 'Protect Foods: Colourful Fruit and Veg';
+                            $protectDescription = 'A variety of fruits and colourful vegetables eaten regularly will drive a strong immune system & gut microbiome.';
+                            break;
+                        case 'Competition Plan':
+                            $title = 'Competition Meal Portions...';
+                            $description = 'Your carb and veggie portions vary by meal type and training load for peak performance. Protein stays the same. See the ideal ratios and what foods to choose below.';
+                            $label = 'Training Load';
+                            $proteinLabel = 'Repair foods: Proteins';
+                            $proteinDescription = 'Includes meat, eggs, fish, dairy, tofu or legumes to rebuild & recover muscle.Proteins are not a main fuel source for high-intensity sport, so they are not the priority in the lead-up, on comp day. Leaner white proteins like chicken, fish, pork & eggs are preferred pre-comp as they break down faster in the gut compared to fatty red meats. Proteins are important post-comp to maximise recovery.';
+                            $fuelLabel = 'Fuel Foods: Carbs & Healthy Fats';
+                            $fuelDescription = 'Choose complex carbs like potatoes, pasta, noodles & rice or bread as regular fuel sources that are rehearsed in training. Faster carbs foods like rice crackers, fruit, muesli bars, should be used more the closer the event is, as they digest fast and provide high-octane fuel fast.';
+                            $protectLabel = 'Protect Foods: Colourful Fruit and Veg';
+                            $protectDescription = 'Higher fibre vegetables (carrots, broccoli, mushrooms, etc) and low sugar fruits (blueberries, blackberries, cherries, lemon, limes) are not the priority on comp day as higher fibre meals can cause gut upset. Focus more on the smart carb fuelling foods.';
+                            break;
+                        case 'Injury Recovery + Post Surgery':
+                            $title = 'Plate Like this...';
+                            $description = 'Your carb and veggie portions vary by meal type and training load for peak performance. Protein stays the same. See the ideal ratios and what foods to choose below.';
+                            $label = 'Training Load';
+                            $proteinLabel = 'Repair Foods: Proteins';
+                            $proteinDescription = 'Includes meat, eggs, fish, dairy, tofu or legumes to rebuild & recover muscle.';
+                            $fuelLabel = 'Fuel Foods: Carbs & Healthy Fats';
+                            $fuelDescription = 'Choose complex carbs sources like potatoes, pasta, rice, noodles and breads.';
+                            $protectLabel = 'Protect Foods: Colourful Fruit and Veg';
+                            $protectDescription = 'A variety of mixed fruit & veg drives a strong immune system and gut microbiome.';
+                            break;
+                    }
+                } else {
+                    $title = 'Plate Like this...';
+                    $description = 'Your carb and veggie portions vary by meal type and training load for peak performance. Protein stays the same. See the ideal ratios and what foods to choose below.';
+                    $label = 'Training Load';
+                    $proteinLabel = 'Repair Foods: Proteins';
+                    $proteinDescription = 'Includes meat, eggs, fish, dairy, tofu or legumes to rebuild & recover muscle.';
+                    $fuelLabel = 'Fuel Foods: Carbs & Healthy Fats';
+                    $fuelDescription = 'Choose complex carbs sources like potatoes, pasta, rice, noodles and breads.';
+                    $protectLabel = 'Protect Foods: Colourful Fruit and Veg';
+                    $protectDescription = 'A variety of mixed fruit & veg drives a strong immune system and gut microbiome.';
+                }
             @endphp
 
             @include('front.pages.partials.plate-breakdown')
@@ -231,7 +231,7 @@ if (isset($plan) && isset($plan->name)) {
                     </div>
                 </div>
                 <div class="modal-footer" style="text-align: end; padding: 12px 16px; border-top: 1px solid #d8d8d8; border-radius:0 0 12px 12px; background-color:#fff;">
-                    <button id="download-plan-btn" class="btn btn-primary" onclick="downloadPDF({{ $plan->name }})">
+                    <button id="download-plan-btn" class="btn btn-primary" onclick="downloadPDF('{{ $plan->name }}')">
                         Download Plan
                     </button>
                 </div>

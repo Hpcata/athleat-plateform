@@ -613,7 +613,7 @@ class PlanController extends Controller
                 ->values(); // reindex
         });
         $payment = Payment::where('user_id', $request->user_id)->where('plan_id', $id)->first();
-        $userPrePlan = UserPrePlan::where('user_id', $request->user_id)->where('payment_id', $payment->id)->first();
+        $userPrePlan = UserPrePlan::where('user_id', $request->user_id)->first();
 
         $sportImagePath = null;
 
