@@ -579,7 +579,6 @@
                                             Optimise your training gains by eating with purpose. Perform at your peak with a personalised meal plan tailored to you & your preferences - designed by Extreme Sports Dietitian Kerry O’Bryan.
                                         </p>
                                     </div>
-                                    <a href="{{ route('front.training.nutrition.plan') }}" class="btn-signup">Learn more</a>
                                     <button class="btn-signup" onclick="window.location.href='{{ route('front.training.nutrition.plan') }}'">Learn more</button>
                                 </div>
                             </div>
