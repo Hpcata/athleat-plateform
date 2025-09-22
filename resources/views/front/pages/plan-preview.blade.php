@@ -95,7 +95,7 @@
         .meal-block-page-break {
             break-inside: avoid;
             page-break-inside: avoid;
-            margin-top: 15px;
+            margin-top: 10px;
         }
         .page-break {
             page-break-before: always;
