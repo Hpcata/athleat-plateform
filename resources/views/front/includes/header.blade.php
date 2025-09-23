@@ -197,8 +197,7 @@
                 @if (!Auth::check())
                     <button class="me-0 btn-login web-hide" onclick="openSingupFreePopup(true)">Log in</button>
                 @endif
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                    style="border: none">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" style="border: none">
                     <span class="menu-icon" style="color: white">
                         <img href="{{ route('front.index') }}" src="{{ frontAssets('images/bars.svg') }}" alt="ATHLEAT Logo" class="bars-icon" />
                         <img href="{{ route('front.index') }}" src="{{ frontAssets('images/cross.svg') }}" alt="Menu" class="cross-icon" />
@@ -301,7 +300,7 @@
                     @endif
 
                     {{-- Virtual Kez button --}}
-                    <button class="ms-2 btn-login web-hide">Virtual Kez</button>
+                    <button class="ms-2 btn-login web-hide" id="virtual-kez-button" onclick="closeMobileMenuAndOpenDelphi()">Virtual Kez</button>
                 </div>
             </div>
         </div>
@@ -447,6 +446,27 @@
         }
     }
 
+    function closeMobileMenuAndOpenDelphi() {
+        // Close mobile menu if it's open
+        var navbarCollapse = document.querySelector('.navbar-collapse');
+        var navbarToggler = document.querySelector('.navbar-toggler');
+
+        if (navbarCollapse && navbarCollapse.classList.contains('show')) {
+            // Close the mobile menu
+            navbarCollapse.classList.remove('show');
+
+            // Reset navbar background
+            var navbar = document.querySelector('.homepage-navbar');
+            if (navbar) navbar.classList.remove('menu-open');
+
+            // Reset icons
+            var barsIcon = document.querySelector('.bars-icon');
+            var crossIcon = document.querySelector('.cross-icon');
+            if (barsIcon) barsIcon.style.display = 'block';
+            if (crossIcon) crossIcon.style.display = 'none';
+        }
+    }
+
     // Global function to clear consultation login flag
     window.clearConsultationLoginFlag = function() {
         sessionStorage.removeItem('loginTriggeredByConsultation');
@@ -465,7 +485,7 @@
         if (typeof window.clearPlanPurchaseLoginFlag === 'function') {
             window.clearPlanPurchaseLoginFlag();
         }
-        
+
         if (isQuiz) {
             $('#signupModalathlete .signup-login-h2-title').addClass('d-none');
             $('#signupModalathlete .quiz-h2-title').removeClass('d-none');

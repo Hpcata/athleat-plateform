@@ -127,10 +127,15 @@ document.addEventListener("change", function (event) {
     if (event.target.name === "userType") {
         // Prevent parent and club from being selected
         if (event.target.value === "parent" || event.target.value === "club") {
-            event.target.checked = false;
-            return;
+            // show coming soon tooltip and proceed with normal flow
+            showComingSoonTooltip(event.target, 'Coming Soon');
+
+            // Hide tooltip after 3 seconds
+            setTimeout(() => {
+                hideComingSoonTooltip();
+            }, 3000);
         }
-        
+
         // Remove selected class from all user type boxes
         document
             .querySelectorAll("#user-type-section-id .user-type-box")
@@ -171,49 +176,48 @@ document.addEventListener("click", function (event) {
             radio.dispatchEvent(new Event("change"));
         }
     }
-    
-    // Prevent direct clicking on parent/club radio buttons
-    if (event.target.type === "radio" && event.target.name === "userType") {
-        if (event.target.value === "parent" || event.target.value === "club") {
-            event.preventDefault();
-            event.stopPropagation();
-            
-            // Show coming soon tooltip
-            const userTypeBox = event.target.closest('.user-type-box');
-            showComingSoonTooltip(userTypeBox, 'Coming Soon');
-            
-            // Hide tooltip after 3 seconds
-            setTimeout(() => {
-                hideComingSoonTooltip();
-            }, 3000);
-            
-            return false;
-        }
-    }
+
+    // // Prevent direct clicking on parent/club radio buttons
+    // if (event.target.type === "radio" && event.target.name === "userType") {
+    //     if (event.target.value === "parent" || event.target.value === "club") {
+    //         event.preventDefault();
+    //         event.stopPropagation();
+
+    //         // Show coming soon tooltip
+    //         const userTypeBox = event.target.closest('.user-type-box');
+    //         showComingSoonTooltip(userTypeBox, 'Coming Soon');
+
+    //         // Hide tooltip after 3 seconds
+    //         setTimeout(() => {
+    //             hideComingSoonTooltip();
+    //         }, 3000);
+    //     }
+    // }
 });
 
 $(document).ready(function () {
     $("#user-type-section-id .user-type-box").click(function (e) {
         const userType = $(this).find('input[type="radio"]').val();
-        
-        if (userType === "athlete") {
+
+        // now I want to proceed normal flow with the parent and club with athlete
+        if (userType === "athlete" || userType === "parent" || userType === "club") {
             // Allow athlete selection and proceed with normal flow
             $("#age-groups-id").removeClass("d-none");
             $('#sportstype option:first').prop('selected', true);
             $("#select-sports-id").removeClass("d-none");
-        } else if (userType === "parent" || userType === "club") {
+        } else {
             // Prevent selection and show coming soon tooltip
             e.preventDefault();
             e.stopPropagation();
-            
+
             // Show coming soon tooltip
             showComingSoonTooltip(this, 'Coming Soon');
-            
+
             // Hide tooltip after 3 seconds
             setTimeout(() => {
                 hideComingSoonTooltip();
             }, 3000);
-            
+
             // Don't proceed with the selection
             return false;
         }

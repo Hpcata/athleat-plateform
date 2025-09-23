@@ -58,4 +58,13 @@ class Plan extends Model
     {
         return $this->belongsToMany(Coupon::class, 'coupon_plans');
     }
+
+    public static function getUserNotPurchasedPlans($userId)
+    {
+        $payments = Payment::where('user_id', $userId)->get();
+        $purchasedPlanIds = $payments->pluck('plan_id')->toArray();
+        $notPurchasedPlans = self::whereNotIn('id', $purchasedPlanIds)->get();
+
+        return $notPurchasedPlans;
+    }
 }

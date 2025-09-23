@@ -102,10 +102,6 @@ document.addEventListener("DOMContentLoaded", function () {
     if (firstTab) {
         loadMeals(firstTab.dataset.planId, firstTab.dataset.categoryId);
     }
-
-    $("#start-chat-link, #chat-to-virtual-kez-btn").click(function () {
-        $("#delphi-bubble-trigger").click();
-    });
 });
 
 function showLoader() {

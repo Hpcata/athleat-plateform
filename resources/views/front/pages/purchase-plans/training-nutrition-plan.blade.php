@@ -124,8 +124,7 @@
                         <div class="resource-title">Supplement scanner</div>
                     </div>
 
-                    <div class="cursor-pointer resource-card-custom resource-chat hover-card"
-                        id="chat-to-virtual-kez-btn">
+                    <div class="cursor-pointer resource-card-custom resource-chat hover-card" id="chat-to-virtual-kez-btn">
                         <img src="{{ frontAssets('images/cardimg-2.webp') }}" class="resource-bg-img"
                             alt="Chat resource background" />
                         <div class="icon-bg">
@@ -196,60 +195,24 @@
 
                 <label class="plan-subtitle-mob">Nutrition plans</label>
                 <div class="consults-plans-grid">
-                    <div class="plan-card-custom plan-competition">
-                        <div class="">
-                            <div class="plan-title">Competition Plan</div>
-                            <div class="plan-desc">
-                                Unlock your peak performance with a 24-hour Competition Nutrition Plan - Ensuring you’re hydrated,
-                                fuelled & ON when it’s game time so that nutrition is never your weakness!
-                            </div>
-                            <div class="consult-user-row">
-                                <img src="{{ asset('front/images/circled-meal-1.svg') }}" class="consult-avatar" alt="Kerry O'Bryan, expert coach avatar" />
-                                <img src="{{ asset('front/images/circled-meal-2.svg') }}" class="consult-avatar overlap1"
-                                    alt="Kerry O'Bryan, expert coach avatar" />
-                                <span>21 meals customised for you</span>
+                    @if(isset($notPurchasedPlans) && $notPurchasedPlans->count() > 0)
+                        @foreach($notPurchasedPlans as $planData)
+                            @if($planData)
+                                @include('front.pages.plan-cards.card-nutrition', ['plan' => $planData])
+                            @endif
+                        @endforeach
+                    @else
+                        <div class="col-12">
+                            <div class="alert alert-warning text-center">
+                                <p>No nutrition plans available at the moment. Please check back later!</p>
                             </div>
                         </div>
-                        <button class="btn-consult" onclick="showLearnMoreTooltip(this, 'Coming Soon')">Learn more</button>
-                    </div>
-                    <div class="plan-card-custom plan-injury">
-                        <div class="">
-                            <div class="plan-title">Injury & Recovery Plan</div>
-                            <div class="plan-desc">
-                                Optimised nutrition to support soft tissue injury. Hold muscle, reduce
-                                inflammation & limit fat gain with a
-                                personalised plan that caters to where you're at. Faster recovery is the goal & nutrition is too
-                                often overlooked!
-                            </div>
-                            <div class="consult-user-row">
-                                <img src="{{ asset('front/images/circled-meal-1.svg') }}" class="consult-avatar" alt="Kerry O'Bryan, expert coach avatar" />
-                                <img src="{{ asset('front/images/circled-meal-2.svg') }}" class="consult-avatar overlap1"
-                                    alt="Kerry O'Bryan, expert coach avatar" />
-                                <span>21 meals customised for you</span>
-                            </div>
-                        </div>
-                        <button class="btn-consult" onclick="window.location.href='{{ route('front.injury.recovery.plan') }}'">Learn more</button>
-                    </div>
+                    @endif
                 </div>
 
                 <label class="plan-subtitle-mob">Consultations</label>
                 <div class="consults-plans-grid grid-1">
-                    <div class="consultation-card-custom">
-                        <div class="consult-title">Private Consultations</div>
-                        <div class="consult-desc">
-                            Get answers from a real-life expert coaching Elite Athletes and Olympians.
-                            An in-depth session to review your current approach, identify key opportunities, and give you practical,
-                            tailored strategies to reach your sporting goals. Get expert support that meets you where you’re at,
-                            with relevant education and answers to the questions that matter most.
-                        </div>
-                        <div class="consult-user-row">
-                            <img src="https://booking.biohealthpassport.com.au/public/uploads/hero01.png" class="consult-avatar"
-                                alt="Kerry O'Bryan, expert coach avatar" style="border:none;" />
-                            <span style="padding-left:0">Kerry O'Bryan</span>
-                        </div>
-                        <a href="{{ route('front.consultations') }}"
-                            class="text-decoration-none btn-consult">Book consult</a>
-                    </div>
+                    @include('front.pages.plan-cards.card-consultations')
                 </div>
             </section>
         </div>

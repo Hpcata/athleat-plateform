@@ -1867,6 +1867,7 @@ class FrontController extends Controller
 
             $isSuperAdmin = Auth::guard('admin')->user()?->is_superadmin ?? false;
             $isAdminView  = $request->get('admin_view') && $isSuperAdmin;
+            $notPurchasedPlans = Plan::getUserNotPurchasedPlans($userId);
 
             return view('front.pages.profile-landing', compact(
                 'userPlan',
@@ -1878,7 +1879,8 @@ class FrontController extends Controller
                 'isAdminView',
                 'isSuperAdmin',
                 'viewState',
-                'paymentForQuestionnaireRoute'
+                'paymentForQuestionnaireRoute',
+                'notPurchasedPlans'
             ));
         } catch (Exception $e) {
             Log::error('Error fetching user profile: ' . $e->getMessage());
@@ -2029,8 +2031,9 @@ class FrontController extends Controller
                     // redirect back with error
                     return redirect()->back()->with('error', 'User plan not found.');
                 }
+                $notPurchasedPlans = Plan::getUserNotPurchasedPlans($userId);
 
-                return view('front.pages.purchase-plans.training-nutrition-plan', compact('user', 'plan', 'sportGameData', 'userPlan'));
+                return view('front.pages.purchase-plans.training-nutrition-plan', compact('user', 'plan', 'sportGameData', 'userPlan', 'notPurchasedPlans'));
             }
         }
 
@@ -2070,8 +2073,9 @@ class FrontController extends Controller
                     // redirect back with error
                     return redirect()->back()->with('error', 'User plan not found.');
                 }
+                $notPurchasedPlans = Plan::getUserNotPurchasedPlans($userId);
 
-                return view('front.pages.purchase-plans.injury-recovery-plan', compact('user', 'plan', 'sportGameData', 'userPlan'));
+                return view('front.pages.purchase-plans.injury-recovery-plan', compact('user', 'plan', 'sportGameData', 'userPlan', 'notPurchasedPlans'));
             }
         }
 
