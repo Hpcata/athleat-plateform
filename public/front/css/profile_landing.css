@@ -4200,16 +4200,16 @@ button:focus,
 
 /*add in landing page css file */
 .purchase-plan-overlay {
-    position: fixed;
+    position: absolute;
     top: 12px;
     left: 12px;
     z-index: 3;
 }
 
-.purchase-plan-overlay.subscribe {
+/* .purchase-plan-overlay.subscribe {
     top: 64px;
     left: 12px;
-}
+} */
 
 .purchase-plan-btn {
     color: white;
@@ -4455,8 +4455,20 @@ button:focus,
     .consultation-card-custom {
         padding: 12px !important;
     }
+    .purchase-plan-overlay {
+        visibility: hidden;
+      }
+      .page-loaded .purchase-plan-overlay {
+        visibility: visible;
+      }
+    .purchase-plan-overlay {
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    z-index: 3;
+    }
     .purchase-plan-overlay.subscribe{
     top: 54px;
     left: 12px;
-}
+    }
 }

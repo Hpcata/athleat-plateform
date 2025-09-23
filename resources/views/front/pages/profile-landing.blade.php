@@ -351,6 +351,9 @@
                 frontAssets: '{{ frontAssets('') }}'
             }
         };
+        window.addEventListener("load", () => {
+        document.body.classList.add("page-loaded");
+        });
     </script>
     <script src="{!! frontAssets('js/profile-landing-page.js') !!}"></script>
 @endpush

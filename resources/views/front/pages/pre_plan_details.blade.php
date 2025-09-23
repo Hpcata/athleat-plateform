@@ -1557,7 +1557,7 @@
     <!-- Food Selection Modal -->
     <div class="modal" id="foodModal" tabindex="-1" aria-labelledby="foodModalLabel" aria-hidden="true"  data-bs-backdrop="static"
      data-bs-keyboard="false">
-        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable modal-dialog-centered">
             <div class="modal-content" style="overflow-x: hidden; overflow-y: auto;">
                 <div class="modal-header">
                     <h5 class="modal-title" id="foodModalLabel">Select Food Items</h5>
@@ -2478,7 +2478,7 @@
                                     <div class="mb-3 col-md-12">
                                     <div class="p-2 h-100 card">
                                         <div class="d-flex flex-wrap align-items-center justify-content-between">
-                                        <div class="d-flex flex-grow-1 align-items-center">
+                                        <div class="d-flex flex-grow-1 align-items-start">
                                             <input type="checkbox" class="me-2 mt-0 form-check-input sub-food-checkbox" id="${idSafe}" value="${value}">
                                             <label class="mb-0 form-check-label" for="${idSafe}">${value}</label>
                                         </div>
