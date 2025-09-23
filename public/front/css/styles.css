@@ -255,7 +255,6 @@ body {
     font-style: normal;
     font-weight: 600;
     line-height: normal;
-    transition: all 0.3s ease;
     width: max-content;
     border-radius: 6px;
     border: 1px solid var(--Blue-600, #4a84dd);
@@ -4691,8 +4690,9 @@ svg.user-type-icon path {
     }
 
     .choose-plan-section .plan-card {
-        min-height: 355px;
+        min-height: 365px;
         margin-bottom: 0;
+        transition: none;
     }
 
     .choose-plan-section .plan-card {
@@ -5454,6 +5454,11 @@ ul#quiz-phone-country-list {
 
 a.btn-signup {
     text-decoration: none;
+    -webkit-tap-highlight-color: transparent !important;
+    cursor: pointer !important;
+    touch-action: manipulation !important;
+    -webkit-touch-callout: none !important;
+    -webkit-user-select: none !important;
 }
 
 /* iOS Safari specific fixes */
