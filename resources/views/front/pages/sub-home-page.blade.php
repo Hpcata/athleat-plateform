@@ -579,7 +579,7 @@
                                             Optimise your training gains by eating with purpose. Perform at your peak with a personalised meal plan tailored to you & your preferences - designed by Extreme Sports Dietitian Kerry O’Bryan.
                                         </p>
                                     </div>
-                                    <a href="{{ route('front.training.nutrition.plan') }}" class="btn-signup">Learn more</a>
+                                    <a href="{{ route('front.training.nutrition.plan') }}" class="btn-learn-more-blue">Learn more</a>
                                 </div>
                             </div>
                             <div class="col-md-4">
@@ -620,7 +620,7 @@
                                             Unlock your peak performance with a 24-hour Competition Nutrition Plan - Ensuring you’re hydrated, fuelled & ON when it’s game time so that nutrition is never your weakness!
                                         </p>
                                     </div>
-                                    <button class="btn-signup" onclick="showLearnMoreTooltip(this, 'Coming Soon')">Learn more</button>
+                                    <button class="btn-learn-more-blue" onclick="showLearnMoreTooltip(this, 'Coming Soon')">Learn more</button>
                                 </div>
                             </div>
                             <div class="col-md-4">
@@ -647,7 +647,7 @@
                                             personalised plan that caters to where you're at. Faster recovery is the goal & nutrition is too often overlooked!
                                         </p>
                                     </div>
-                                    <button class="btn-signup" onclick="window.location.href='{{ route('front.injury.recovery.plan') }}'">Learn more</button>
+                                    <button class="btn-learn-more-blue" onclick="window.location.href='{{ route('front.injury.recovery.plan') }}'">Learn more</button>
                                 </div>
                             </div>
                             <div class="col-md-4 web-hide">
@@ -666,7 +666,7 @@
                                             Poor nutritional status before surgery will delay your recovery. The Pre & Post Surgery Nutrition Plan will ensure you are well organised with specific food, snacks & supplements that will speed up healing, hold muscle, limit fat gain & get you back in the game!
                                         </p>
                                     </div>
-                                    <button class="btn-signup" onclick="showLearnMoreTooltip(this, 'Coming Soon')">Learn more</button>
+                                    <button class="btn-learn-more-blue" onclick="showLearnMoreTooltip(this, 'Coming Soon')">Learn more</button>
                                 </div>
                             </div>
                         </div>
@@ -688,7 +688,7 @@
                                             Poor nutritional status before surgery will delay your recovery. The Pre & Post Surgery Nutrition Plan will ensure you are well organised with specific food, snacks & supplements that will speed up healing, hold muscle, limit fat gain & get you back in the game!
                                         </p>
                                     </div>
-                                    <button class="btn-signup" onclick="showLearnMoreTooltip(this, 'Coming Soon')">Learn more</button>
+                                    <button class="btn-learn-more-blue" onclick="showLearnMoreTooltip(this, 'Coming Soon')">Learn more</button>
                                 </div>
                             </div>
                             <div class="col-md-4">
@@ -708,7 +708,7 @@
                                             An in-depth session to review your current approach, identify key opportunities, and give you practical, tailored strategies to reach your sporting goals. Get expert support that meets you where you’re at, with relevant education and answers to the questions that matter most.
                                         </p>
                                     </div>
-                                    <a href="{{ route('front.consultations') }}" target="_blank" class="btn-signup">Learn more</a>
+                                    <a href="{{ route('front.consultations') }}" target="_blank" class="btn-learn-more-blue">Learn more</a>
                                 </div>
                             </div>
                             <div class="col-md-4">
@@ -735,7 +735,7 @@
                                             Contact us for club deals and group bookings.
                                         </p>
                                     </div>
-                                    <button class="btn-signup" onclick="scrollToContact()">Learn more</button>
+                                    <button class="btn-learn-more-blue" onclick="scrollToContact()">Learn more</button>
                                 </div>
                             </div>
                         </div>

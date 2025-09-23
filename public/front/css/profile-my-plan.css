@@ -316,7 +316,9 @@ body {
     align-items: flex-start;
     min-width: 0;
 }
-
+.plan-card-custom a{
+text-decoration: none;
+}
 /* .plan-title {
     margin-bottom: 0;
 } */

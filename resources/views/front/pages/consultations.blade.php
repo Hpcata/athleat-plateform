@@ -157,7 +157,7 @@ $intresetsmallimg1 = $intresetsmallimg2 = $intresetsmallimg3 = $intrestimg1 = $i
                 @endphp
                 <section class="recommended-plans-section">
                     <div class="container-homepage">
-                        <h2 class="section-title">{{ $section->title }}</h2>
+                        <h2 class="about-title" >{{ $section->title }}</h2>
                         {!! $section->content !!}
                     </div>
                 </section>
