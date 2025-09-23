@@ -315,46 +315,6 @@ $intresetsmallimg1 = $intresetsmallimg2 = $intresetsmallimg3 = $intrestimg1 = $i
     <script src="https://js.stripe.com/v3/"></script>
 
     <script>
-
-
-        // Learn more tooltip function
-        function showLearnMoreTooltip(element, message) {
-            // Create tooltip element
-            const tooltip = document.createElement('div');
-            tooltip.className = 'tooltip';
-            tooltip.textContent = message;
-            tooltip.style.cssText = `
-                    position: absolute;
-                    background: #333;
-                    color: white;
-                    padding: 8px 12px;
-                    border-radius: 4px;
-                    font-size: 14px;
-                    z-index: 1000;
-                    white-space: nowrap;
-                    pointer-events: none;
-                `;
-
-            // Position tooltip near the button
-            const rect = element.getBoundingClientRect();
-            tooltip.style.left = rect.left + 'px';
-            tooltip.style.top = (rect.bottom + 5) + 'px';
-
-            // Add to page
-            document.body.appendChild(tooltip);
-
-            // Remove after 3 seconds
-            setTimeout(() => {
-                if (tooltip.parentNode) {
-                    tooltip.parentNode.removeChild(tooltip);
-                }
-            }, 3000);
-        }
-    </script>
-
-    <script>
-
-
         // Learn more tooltip function
         function showLearnMoreTooltip(element, message) {
             // Create tooltip element
@@ -646,8 +606,6 @@ $intresetsmallimg1 = $intresetsmallimg2 = $intresetsmallimg3 = $intrestimg1 = $i
         var intrestimg1 = "{{ $intrestimg1 }}";
         var intrestimg2 = "{{ $intrestimg2 }}";
         var blueBadgeImg = "{{ $blueBadgeImg }}";
-        var intresetsmallimg3 = "{{ $intresetsmallimg3 }}";
-        var intrestimg3 = "{{ $intrestimg3 }}";
 
         if (intresetsmallimg1 !== '') {
             document.getElementById('TPMAIU-card1-icon').src = intresetsmallimg1;
@@ -664,12 +622,6 @@ $intresetsmallimg1 = $intresetsmallimg2 = $intresetsmallimg3 = $intrestimg1 = $i
         if (blueBadgeImg !== '') {
             document.getElementById('blue-badge-img').src = blueBadgeImg;
         }
-        if (intresetsmallimg3 !== '') {
-            document.getElementById('TPMAIU-card3-icon').src = intresetsmallimg3;
-        }
-        if (intrestimg3 !== '') {
-            document.getElementById('TPMAIU-card3').src = intrestimg3;
-        }
 
         //btn-signup
         $('.plan-inclusion-section .btn-signup').on('click', function () {
@@ -677,15 +629,13 @@ $intresetsmallimg1 = $intresetsmallimg2 = $intresetsmallimg3 = $intrestimg1 = $i
         });
 
         $('#competition-plan-link').on('click', function () {
-            window.location.href = "{{ route('front.competition.plan') }}";
+            showLearnMoreTooltip(this, 'Coming Soon')
         });
         $('#injury-plan-link').on('click', function () {
-            showLearnMoreTooltip(this, 'Coming Soon')
-            // window.location.href = "{{ route('front.injury.recovery.plan') }}";
+            window.location.href = "{{ route('front.injury.recovery.plan') }}";
         });
         $('#surgery-plan-link').on('click', function () {
             showLearnMoreTooltip(this, 'Coming Soon')
-            // window.location.href = "{{ route('front.surgery.plan') }}";
         });
         $('#training-plan-link').on('click', function () {
             window.location.href = "{{ route('front.training.nutrition.plan') }}";
@@ -698,58 +648,6 @@ $intresetsmallimg1 = $intresetsmallimg2 = $intresetsmallimg3 = $intrestimg1 = $i
         });
     </script>
 
-    <script>
-        // const onePaymentBtn = document.getElementById("onePaymentBtn");
-        // const monthlyPlanBtn = document.getElementById("monthlyPlanBtn");
-        // const onePaymentPlans = document.getElementById("onePaymentPlans");
-        // const monthlyPlans = document.getElementById("monthlyPlans");
-
-        // onePaymentBtn.addEventListener("click", () => {
-        //     onePaymentPlans.classList.remove("d-none");
-        //     monthlyPlans.classList.add("d-none");
-        //     onePaymentBtn.classList.add("active");
-        //     monthlyPlanBtn.classList.remove("active");
-        // });
-
-        // monthlyPlanBtn.addEventListener("click", () => {
-        //     onePaymentPlans.classList.add("d-none");
-        //     monthlyPlans.classList.remove("d-none");
-        //     monthlyPlanBtn.classList.add("active");
-        //     onePaymentBtn.classList.remove("active");
-        // });
-    </script>
-
-    <script>
-        // Handle monthlyBtn in planChooseModal
-        // document.getElementById("monthlyBtn").addEventListener("click", function () {
-        //     // Hide the current modal
-        //     const planModal = bootstrap.Modal.getInstance(document.getElementById('planChooseModal'));
-        //     if (planModal) {
-        //         planModal.hide();
-        //     }
-
-        //     // Show the consultation congrats modal
-        //     const congratsModalConsultation = new bootstrap.Modal(document.getElementById('congratsModalConsultation'));
-        //     congratsModalConsultation.show();
-        // });
-
-        // // Handle consultation booking button
-        // const consultationBtn = document.querySelector('#paymentModal .btn-signup');
-        // if (consultationBtn) {
-        //     consultationBtn.addEventListener("click", function () {
-        //         // Hide the current modal
-        //         const paymentModal = bootstrap.Modal.getInstance(document.getElementById('paymentModal'));
-        //         if (paymentModal) {
-        //             paymentModal.hide();
-        //         }
-
-        //         // Show the consultation congrats modal
-        //         const congratsModalConsultation = new bootstrap.Modal(document.getElementById('congratsModalConsultation'));
-        //         congratsModalConsultation.show();
-        //     });
-        // }
-
-    </script>
     <script>
         document.getElementById("toggle-coupon-consultation").addEventListener("click", function (e) {
             e.preventDefault();

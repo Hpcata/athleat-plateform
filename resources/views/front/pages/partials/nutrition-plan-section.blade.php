@@ -6,6 +6,7 @@
         </div>
     @endif
     <div class="slider-container">
+        <div class="fade-full"></div>
         <div class="challenge-cards horizontal-scroll" style="overflow-x:auto;scroll-behavior:smooth; position:relative;">
             @if($overlayText == 'Continue your Questionnaire')
                 <div class="purchase-plan-overlay complete-questionnaire">
@@ -21,7 +22,6 @@
                         Complete Your Questionnaire
                     </a>
                 </div>
-                <div class="fade-full"></div>
             @else
                 <div class="purchase-plan-overlay">
                     <a href="{{ $overlayRoute }}" class="purchase-plan-btn">
@@ -33,7 +33,6 @@
                         {{ $overlayText }}
                     </a>
                 </div>
-                <div class="fade-full"></div>
             @endif
 
             <div class="challenge-card clickable hover-card">

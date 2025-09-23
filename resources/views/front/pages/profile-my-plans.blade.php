@@ -48,7 +48,8 @@
                                         'plan' => $planData['plan'],
                                         'userPlan' => $planData['userPlan'] ?? null,
                                         'payment' => $planData['payment'] ?? null,
-                                        'redirectRoute' => true
+                                        'redirectRoute' => true,
+                                        'dynamicMealCount' => true
                                     ])
                                 @endif
                             @endforeach
@@ -99,8 +100,8 @@
                 <div class="card-row">
                     <label class="plan-subtitle-mob">Consultations</label>
                     <div class="consults-plans-grid grid-1">
-                                @include('front.pages.plan-cards.card-consultations')
-                        </div>
+                        @include('front.pages.plan-cards.card-consultations')
+                    </div>
                 </div>
             </section>
         </div>

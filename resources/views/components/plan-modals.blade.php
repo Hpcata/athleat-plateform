@@ -16,15 +16,12 @@ $monthlyGamePlanPrice = ($gamePlanPlanPrice * 1.1) / $months;
     <div class="modal fade" id="planChooseModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="p-3 modal-content" style="border-radius: 12px;">
-
-
                 <div class="mb-3 pb-0 border-0 modal-header">
                     <div>&nbsp;</div>
                     <h5 class="mb-0 modal-title fw-bold">Choose your plan</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 
                 </div>
-
 
                 <div class="p-0 modal-body">
                     <div class="d-flex justify-content-center mb-4">
@@ -35,9 +32,7 @@ $monthlyGamePlanPrice = ($gamePlanPlanPrice * 1.1) / $months;
                         </div>
                     </div>
 
-
                     <div id="onePaymentPlans">
-
                         <div class="mb-4 border-0 card">
                             <div class="card-body">
                                 <div class="d-flex align-items-center justify-content-between">
@@ -63,7 +58,6 @@ $monthlyGamePlanPrice = ($gamePlanPlanPrice * 1.1) / $months;
                             </div>
                         </div>
 
-
                         <div class="position-relative mb-4 border-0 card">
                             <span class="popular-badge">Popular</span>
                             <div class="card-body">
@@ -74,7 +68,6 @@ $monthlyGamePlanPrice = ($gamePlanPlanPrice * 1.1) / $months;
                                         <small class="d-block mb-2" id="powerPlayDuration">One payment</small>
                                     </div>
                                 </div>
-
                                 <p class="">{{ $planDetails?->name }} + 30 min Consult with Extreme Sports Dietitian Kerry O'Byran.</p>
                                 <div class="d-flex align-items-center justify-content-between">
                                     <button class="btn btn-signup plan-get-started-btn" data-plan-type="powerplay" data-plan-price="{{ $powerPlayPlanPrice }}" data-monthly-price="{{ number_format($monthlyPowerPlayPrice, 2) }}">Get started</button>
@@ -90,9 +83,7 @@ $monthlyGamePlanPrice = ($gamePlanPlanPrice * 1.1) / $months;
                             </div>
                         </div>
 
-
                         <div class="mb-4 border-0 card">
-
                             <div class="card-body">
                                 <div class="d-flex align-items-center justify-content-between">
                                     <h6 class="mb-1">Game Plan</h6>
@@ -228,7 +219,8 @@ $monthlyGamePlanPrice = ($gamePlanPlanPrice * 1.1) / $months;
                             </svg>
                         </div>
                         <h4 class="congrats-title"><strong>Congrats legend!</strong></h4>
-                        <p class="mb-1 congrats-subtitle" id="congratsPlanName"><strong>Your {{ $planDetails?->name }}</strong><br>{{ $planDetails?->name }}</p>
+                        <p class="mb-1 congrats-subtitle" id="congratsPlanName">
+                            <strong>Your {{ $planDetails?->name }}</strong>
                         <p class="congrats-para" id="congratsPlanDescription">
                             We'll send you an email to book your consultation. You will need to complete your
                             questionnaire prior then Kerry will start working on your personalised nutrition plan and it
@@ -465,8 +457,8 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             // Update congrats modal
-            document.getElementById('congratsPlanName').innerHTML = `Your ${planName}`;
-            document.getElementById('congratsPlanDescription').textContent = planName;
+            document.getElementById('congratsPlanName').innerHTML = `<strong>Your ${planName}</strong>`;
+            document.getElementById('congratsPlanDescription').textContent = `${planName}`;
         });
     });
 
@@ -1316,7 +1308,7 @@ function updateCongratsModal(planType, hasConsultation, hasCompletedQuestionnair
         // Show Book a time button for Game Plan
         if (powerPlayGamePlanContent) powerPlayGamePlanContent.style.display = 'block';
     } else {
-        congratsPlanName.innerHTML = `<strong>Your ${planName}</strong><br>${planName}`;
+        congratsPlanName.innerHTML = `<strong>Your ${planName}</strong>`;
         congratsPlanDescription.textContent = 'You will need to complete your questionnaire prior then Kerry will start working on your personalised nutrition plan and it will appear in your web app, as soon as it\'s ready.';
         // Show questionnaire button for normal plans
         if (normalPlanContent) normalPlanContent.style.display = 'block';

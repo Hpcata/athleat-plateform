@@ -1091,14 +1091,11 @@
                                                 <label for="snack_muesli_bars_checkbox" class="form-label">Muesli bars</label>
                                                 <div class="food-dropdown-wrapper" data-wrapper-for="Muesli bars"></div>
                                             </div>
-                                        </div>
-                                        <div class="mb-3 row">
                                             <div class="col-md-6">
                                                 <input class="form-check-input food-checkbox" type="checkbox" name="ans[food_preference][snacks][Other Snacks][]" value="" id="snack_popcorn_checkbox" data-food-key="Other Snacks" data-food-group="snacks">
                                                 <label for="snack_popcorn_checkbox" class="form-label">Other Snacks</label>
                                                 <div class="food-dropdown-wrapper" data-wrapper-for="Other Snacks"></div>
                                             </div>
-
                                         </div>
                                         <div class="mb-3 row">
                                             <div class="col-md-6">
@@ -1560,7 +1557,7 @@
     <!-- Food Selection Modal -->
     <div class="modal" id="foodModal" tabindex="-1" aria-labelledby="foodModalLabel" aria-hidden="true"  data-bs-backdrop="static"
      data-bs-keyboard="false">
-        <div class="modal-dialog modal-lg modal-dialog-scrollable" style="max-width: 50%;">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
             <div class="modal-content" style="overflow-x: hidden; overflow-y: auto;">
                 <div class="modal-header">
                     <h5 class="modal-title" id="foodModalLabel">Select Food Items</h5>
