@@ -20,19 +20,21 @@
 @if ($auth && (Route::is('front.profile') || Route::is('front.plans.details') || Route::is('front.my-plans')))
     <!-- Mobile Menu Overlay -->
     <?php $user = auth()->user();?>
-    <div class="mobile-menu-overlay" id="mobile-menu-overlay" onclick="toggleMobileMenu()"
+    <div class="mobile-menu-overlay" id="mobile-menu-overlay" onclick="handleMobileMenuToggle()"
         style=" position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.6); z-index:1999;">
     </div>
     <header class="mobile-header">
         <a href="{{ route('front.index') }}">
             <img src="{{ frontAssets('images/logo.svg') }}" alt="athleat logo" class="mobile-logo-img" width="140"height="30" />
         </a>
-        <button class="mobile-menu-toggle" aria-label="Toggle mobile menu" onclick="toggleMobileMenu()"
+        <button class="mobile-menu-toggle" aria-label="Toggle mobile menu" onclick="handleMobileMenuToggle()"
             style="background: none; border: none; color: #fff; cursor: pointer;margin: 0 !important;">
             <span id="mobile-menu-icon">
                 <!-- This will be replaced by JS -->
-                 <img src="{{ frontAssets('images/bars.svg') }}" alt="hamburger" class=""  id="hamburger-icon"/>
-                <span id="close-icon" style="display:none;"><img src="{{ frontAssets('images/cross.svg') }}" alt="hamburger" class=""  /></span>
+                 <img src="{{ frontAssets('images/bars.svg') }}" alt="hamburger" class=""  id="hamburger-icon" data-bars="{{ frontAssets('images/bars.svg') }}" data-cross="{{ frontAssets('images/cross.svg') }}"/>
+                <span id="close-icon" style="display:none;">
+                    <img src="{{ frontAssets('images/cross.svg') }}" alt="hamburger" class=""  />
+                </span>
             </span>
         </button>
     </header>
@@ -47,17 +49,17 @@
                 @endphp
                 <li class="mobile-menu-link"><a
                         href="{{ route('front.profile', ['id' => Auth::guard('web')->user()->id]) }}"
-                        onclick="toggleMobileMenu()"
+                        onclick="handleMobileMenuToggle()"
                         style="color: #fff; text-decoration: none; display: block; padding: 8px 16px;">Home</a>
                 </li>
                 <li class="mobile-menu-link"><a
                         href="{{ $myPlanUrl }}"
-                        onclick="toggleMobileMenu()"
+                        onclick="handleMobileMenuToggle()"
                         style="color: #fff; text-decoration: none; display: block; padding: 8px 16px;">My Plan</a>
                 </li>
             @endif
 
-            <li class="mobile-menu-link coming-soon-popup"><a onclick="toggleMobileMenu()" style="color: #fff; text-decoration: none; display: block; padding: 8px 16px;">Challenges and Rewards</a></li>
+            <li class="mobile-menu-link coming-soon-popup"><a onclick="handleMobileMenuToggle()" style="color: #fff; text-decoration: none; display: block; padding: 8px 16px;">Challenges and Rewards</a></li>
             <li><div class="mobile-menu-divider" style="height:1px; background:#555; margin: 12px 16px;"></div></li>
             <li><a href="{{ route('front.supplement-scanner') }}" class="scanner-btn">Supplement Scanner</a></li>
             <li><a class="coming-soon-popup">Level-Up Library</a></li>
@@ -71,12 +73,12 @@
                     <form id="logout-form-mobile" action="{{ route('front.logout') }}" method="POST"
                         style="display: none;">@csrf</form>
                     <a href="#"
-                        onclick="event.preventDefault(); document.getElementById('logout-form-mobile').submit(); toggleMobileMenu();"
+                        onclick="event.preventDefault(); document.getElementById('logout-form-mobile').submit(); handleMobileMenuToggle();"
                         style="color: #fff; text-decoration: none; display: block; padding: 8px 16px;">Sign out</a>
                 </li>
             @else
                 <li class="mobile-menu-link">
-                    <a onclick="toggleMobileMenu()"style="color: #fff; text-decoration: none; display: block; padding: 8px 16px;">Sign in</a>
+                    <a onclick="handleMobileMenuToggle()"style="color: #fff; text-decoration: none; display: block; padding: 8px 16px;">Sign in</a>
                 </li>
             @endif
         </ul>
@@ -425,24 +427,43 @@
 </script>
 
 <script>
-    function toggleMobileMenu() {
+    function setHamburgerSrc(isOpen) {
+        try {
+            var hamburgerIcon = document.getElementById('hamburger-icon');
+            if (!hamburgerIcon) return;
+            var barsSrc = hamburgerIcon.getAttribute('data-bars');
+            var crossSrc = hamburgerIcon.getAttribute('data-cross');
+            var base = isOpen ? crossSrc : barsSrc;
+            if (!base) return;
+            var finalSrc = base + (base.indexOf('?') === -1 ? '?' : '&') + 'v=' + (isOpen ? 'open' : 'closed');
+            hamburgerIcon.src = finalSrc;
+        } catch (e) {
+            console.warn('[MobileMenu] setHamburgerSrc error', e);
+        }
+    }
+
+    function handleMobileMenuToggle() {
         var menu = document.getElementById('mobile-menu');
         var overlay = document.getElementById('mobile-menu-overlay');
         var hamburgerIcon = document.getElementById('hamburger-icon');
         var closeIcon = document.getElementById('close-icon');
+        var iconWrap = document.getElementById('mobile-menu-icon');
         var isOpen = menu.classList.contains('open');
+        // Fallback: swap src directly to avoid any visibility CSS conflicts
         if (isOpen) {
             menu.classList.remove('open');
             overlay.classList.remove('open');
             document.body.style.overflow = '';
-            hamburgerIcon.style.display = 'inline';
-            closeIcon.style.display = 'none';
+            if (hamburgerIcon) hamburgerIcon.style.setProperty('display', 'block', 'important');
+            if (iconWrap) iconWrap.classList.remove('is-open');
+            setHamburgerSrc(false);
         } else {
             menu.classList.add('open');
             overlay.classList.add('open');
             document.body.style.overflow = 'hidden';
-            hamburgerIcon.style.display = 'none';
-            closeIcon.style.display = 'inline';
+            if (hamburgerIcon) hamburgerIcon.style.setProperty('display', 'block', 'important');
+            if (iconWrap) iconWrap.classList.add('is-open');
+            setHamburgerSrc(true);
         }
     }
 
@@ -526,6 +547,27 @@
 
     // Mobile menu toggle functionality
     document.addEventListener('DOMContentLoaded', function() {
+        // Ensure correct initial icon state for mobile header
+        (function() {
+            var menu = document.getElementById('mobile-menu');
+            var hamburgerIcon = document.getElementById('hamburger-icon');
+            var closeIcon = document.getElementById('close-icon');
+            var iconWrap = document.getElementById('mobile-menu-icon');
+            if (!menu || !hamburgerIcon) return;
+            var isOpen = menu.classList.contains('open');
+            if (isOpen) {
+                hamburgerIcon.style.setProperty('display', 'block', 'important');
+                if (iconWrap) iconWrap.classList.add('is-open');
+                setHamburgerSrc(true);
+            } else {
+                hamburgerIcon.style.setProperty('display', 'block', 'important');
+                if (iconWrap) iconWrap.classList.remove('is-open');
+                setHamburgerSrc(false);
+            }
+            logIconState('on-load');
+        })();
+
+        // (debug helpers removed)
         const navbarToggler = document.querySelector('.navbar-toggler');
         const navbarCollapse = document.querySelector('.navbar-collapse');
         const navbar = document.querySelector('.homepage-navbar');
