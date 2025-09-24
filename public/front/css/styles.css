@@ -4915,6 +4915,7 @@ svg.user-type-icon path {
 
     .footer-bg .tagline {
         margin: 16px 0;
+        white-space: break-spaces;
     }
 
     .footer-bg .copyright-text {
