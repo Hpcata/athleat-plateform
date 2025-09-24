@@ -579,7 +579,7 @@
                                             Optimise your training gains by eating with purpose. Perform at your peak with a personalised meal plan tailored to you & your preferences - designed by Extreme Sports Dietitian Kerry O’Bryan.
                                         </p>
                                     </div>
-                                    <a href="{{ route('front.training.nutrition.plan') }}" class="btn-learn-more-blue" onclick="event.preventDefault(); window.location.href=this.href;">Learn more</a>
+                                    <a href="{{ route('front.training.nutrition.plan') }}" class="btn-learn-more-blue">Learn more</a>
                                 </div>
                             </div>
                             <div class="col-md-4">
@@ -647,7 +647,7 @@
                                             personalised plan that caters to where you're at. Faster recovery is the goal & nutrition is too often overlooked!
                                         </p>
                                     </div>
-                                    <a href="{{ route('front.injury.recovery.plan') }}" class="btn-learn-more-blue" onclick="event.preventDefault(); window.location.href=this.href;">Learn more</a>
+                                    <a href="{{ route('front.injury.recovery.plan') }}" class="btn-learn-more-blue">Learn more</a>
                                 </div>
                             </div>
                             <div class="col-md-4 web-hide">
@@ -708,7 +708,7 @@
                                             An in-depth session to review your current approach, identify key opportunities, and give you practical, tailored strategies to reach your sporting goals. Get expert support that meets you where you’re at, with relevant education and answers to the questions that matter most.
                                         </p>
                                     </div>
-                                    <a href="{{ route('front.consultations') }}" class="btn-learn-more-blue" onclick="event.preventDefault(); window.location.href=this.href;">Learn more</a>
+                                    <a href="{{ route('front.consultations') }}" class="btn-learn-more-blue">Learn more</a>
                                 </div>
                             </div>
                             <div class="col-md-4">

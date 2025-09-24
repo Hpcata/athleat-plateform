@@ -1111,7 +1111,6 @@ body {
     flex-direction: column;
     justify-content: space-between;
     align-items: flex-start;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .choose-plan-section .plan-card .plan-card-wrapper {
@@ -6345,6 +6344,17 @@ a.btn-learn-more-blue {
     width: max-content;
     border: 1px solid #4a84dd;
     margin-top: 8px;
+}
+/* Improve tap behavior on iOS for CTA links */
+a.btn-learn-more-blue,
+.btn-learn-more-blue {
+    display: inline-block;
+    cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    pointer-events: auto;
+    position: relative;
+    z-index: 1;
 }
 .form-floating > .form-control-plaintext ~ label,
 .form-floating > .form-control:focus ~ label,
