@@ -128,7 +128,7 @@
                     <a class="text-decoration-none nav-item" href="https://athleatshop.com/" target="_blank">Shop</a>
                 </nav>
                 <div class="nav-right">
-                    <div class="nav-item dropdown">
+                    <div class="nav-item dropdown" style="width: 114px;">
                         <div class="nav-end">
                             {{-- My account button --}}
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18"
@@ -272,7 +272,7 @@
                 <div class="d-flex">
                     @if (Auth::check())
                         {{-- My plans button --}}
-                        <div class="nav-item dropdown">
+                        <div class="nav-item dropdown" style="width: 114px;">
                             <a href="#"
                                 role="button"
                                 data-bs-toggle="dropdown"
@@ -282,7 +282,7 @@
                                 My Account
                             </a>
                             {{-- dropdown with settings and privacy, logout and my plans --}}
-                            <ul class="dropdown-menu" aria-labelledby="my-account-dropdown">
+                            <ul class="dropdown-menu" aria-labelledby="my-account-dropdown" style="margin-top: 10px !important;">
                                 <li>
                                     <a class="dropdown-item" href="{{ route('front.my-plans') }}">My Plans</a>
                                 </li>

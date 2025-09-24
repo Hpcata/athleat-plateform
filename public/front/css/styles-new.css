@@ -120,6 +120,15 @@ body {
     visibility: visible;
     transform: translateY(0);
 }
+.dropdown.open .dropdown-content {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+.header .nav-right .dropdown .dropdown-content {
+    right: 0;
+    left: auto;
+}
 .main {
     padding: 0 0 2rem 0;
 }
