@@ -5244,12 +5244,12 @@ svg.user-type-icon path {
         max-width: 310px;
     }
 
-    .choose-plan-section .row {
+    /* .choose-plan-section .row {
         scroll-snap-type: x mandatory;
-    }
+    } */
 
     .choose-plan-section .col-md-4 {
-        scroll-snap-align: start;
+        /* scroll-snap-align: start; */
         padding: 0 8px;
     }
 
@@ -6344,25 +6344,6 @@ a.btn-learn-more-blue {
     width: max-content;
     border: 1px solid #4a84dd;
     margin-top: 8px;
-}
-/* Improve tap behavior on iOS for CTA links */
-a.btn-learn-more-blue,
-.btn-learn-more-blue {
-    display: inline-block;
-    cursor: pointer;
-    touch-action: manipulation;
-    -webkit-tap-highlight-color: transparent;
-    pointer-events: auto;
-    position: relative;
-    z-index: 1;
-}
-
-/* Mobile horizontal scroll: ensure pans don't consume taps */
-@media (max-width: 768px) {
-    .choose-plan-section .row {
-        touch-action: pan-x;
-        overscroll-behavior-x: contain;
-    }
 }
 
 /* On touch devices, prevent hover from hijacking the first tap */
