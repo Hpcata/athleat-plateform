@@ -6356,6 +6356,21 @@ a.btn-learn-more-blue,
     position: relative;
     z-index: 1;
 }
+
+/* Mobile horizontal scroll: ensure pans don't consume taps */
+@media (max-width: 768px) {
+    .choose-plan-section .row {
+        touch-action: pan-x;
+        overscroll-behavior-x: contain;
+    }
+}
+
+/* On touch devices, prevent hover from hijacking the first tap */
+@media (hover: none) {
+    .choose-plan-section .plan-card:hover {
+        box-shadow: none;
+    }
+}
 .form-floating > .form-control-plaintext ~ label,
 .form-floating > .form-control:focus ~ label,
 .form-floating > .form-control:not(:placeholder-shown) ~ label,
