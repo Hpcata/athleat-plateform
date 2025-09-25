@@ -12,15 +12,15 @@
             </div>
         </div>
         @if($plan->name == 'Training Nutrition Plan')
-            <button class="btn-consult" onclick="window.location.href='{{ route('front.training.nutrition.plan') }}'">Learn more</button>
+            <a href="{{ route('front.training.nutrition.plan') }}" class="btn-learn-more-blue">Learn more</a>
         @elseif($plan->name == 'Injury & Recovery Plan')
-            <button class="btn-consult" onclick="window.location.href='{{ route('front.injury.recovery.plan') }}'">Learn more</button>
+            <a href="{{ route('front.injury.recovery.plan') }}" class="btn-learn-more-blue">Learn more</a>
         @elseif($plan->name == 'Competition Plan')
-            <button class="btn-consult" onclick="showLearnMoreTooltip(this, 'Coming Soon')">Learn more</button>
+            <a class="btn-learn-more-blue" onclick="showLearnMoreTooltip(this, 'Coming Soon')">Learn more</a>
         @elseif($plan->name == 'Injury Recovery + Post Surgery')
-            <button class="btn-consult" onclick="showLearnMoreTooltip(this, 'Coming Soon')">Learn more</button>
+            <a class="btn-learn-more-blue" onclick="showLearnMoreTooltip(this, 'Coming Soon')">Learn more</a>
         @else
-            <button class="btn-consult" onclick="showLearnMoreTooltip(this, 'Coming Soon')">Learn more</button>
+            <a class="btn-learn-more-blue" onclick="showLearnMoreTooltip(this, 'Coming Soon')">Learn more</a>
         @endif
     </div>
 @endif

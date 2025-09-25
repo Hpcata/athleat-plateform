@@ -642,8 +642,8 @@
                                         </div>
                                         <h3 class="card-title">Injury & Recovery Nutrition Plan</h3>
                                         <p class="card-text">
-                                            Optimised nutrition to support soft tissue injury. Hold muscle, reduce 
-                                            inflammation & limit fat gain with a 
+                                            Optimised nutrition to support soft tissue injury. Hold muscle, reduce
+                                            inflammation & limit fat gain with a
                                             personalised plan that caters to where you're at. Faster recovery is the goal & nutrition is too often overlooked!
                                         </p>
                                     </div>
@@ -704,7 +704,7 @@
                                         </div>
                                         <h3 class="card-title">Private consultations</h3>
                                         <p class="card-text">
-                                            Get answers from a real-life expert coaching Elite Athletes and Olympians. 
+                                            Get answers from a real-life expert coaching Elite Athletes and Olympians.
                                             An in-depth session to review your current approach, identify key opportunities, and give you practical, tailored strategies to reach your sporting goals. Get expert support that meets you where you’re at, with relevant education and answers to the questions that matter most.
                                         </p>
                                     </div>
