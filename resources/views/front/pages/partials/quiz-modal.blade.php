@@ -1196,7 +1196,7 @@
                     <div class="image-section" id="quiz-image-section">
                         <img src="{{ frontAssets('images/quiz-bg.webp') }}" alt="quiz-bg" class="food-image"
                             id="quiz-main-image" style="max-height:700px;"/>
-                        <img src="{{ frontAssets('images/quiz/signup-bg.webp') }}" alt="Signup background"
+                        <img src="{{ frontAssets('images/signup-bg.webp') }}" alt="Signup background"
                             class="food-image signup-image" id="quiz-signup-image" style="display: none;" />
                     </div>
                 </div>

@@ -17,5 +17,5 @@
 
 <!-- Non-blocking Google Fonts CSS -->
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" media="print" onload="this.media='all'">
-<link rel="preload" as="image" href="{{ frontAssets('images/logo.webp') }}" type="image/webp">
+{{-- <link rel="preload" as="image" href="{{ frontAssets('images/logo.webp') }}" type="image/webp"> --}}
 <link rel="stylesheet" href="{!! frontAssets('css/tiny-slider.css') !!}">
