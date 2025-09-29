@@ -21,7 +21,7 @@
                     <div class="container-homepage">
                         <div class="hero-content-fixed">
                             {!! $section->content !!}
-                            <button class="btn-signup "
+                            <button class="btn-learn-more-blue "
                                     data-bs-toggle="modal"
                                     data-bs-target="#planChooseModal">
                                     Purchase plan
@@ -63,10 +63,10 @@
                         {!! $section->content !!}
 
                         <button id="TPMAIU-purchase-plan-btn" class=" d-none"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#planChooseModal">
-                                    Purchase plan
-                            </button>
+                                data-bs-toggle="modal"
+                                data-bs-target="#planChooseModal">
+                                Purchase plan
+                        </button>
                     </div>
                 </section>
             @endif
@@ -146,8 +146,8 @@
             document.getElementById('blue-badge-img').src = blueBadgeImg;
         }
 
-        //btn-signup
-        $('.plan-inclusion-section .btn-signup').on('click', function() {
+        //btn-learn-more-blue
+        $('.plan-inclusion-section .btn-learn-more-blue').on('click', function() {
             $('#TPMAIU-purchase-plan-btn').click();
         });
 

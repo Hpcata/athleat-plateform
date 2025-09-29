@@ -79,7 +79,7 @@
                         $route = route('front.profile', ['id' => $userPlan->user_id, 'payment_id' => $payment->id]);
                     }
                 @endphp
-                <a href="{{ $route }}" class="btn btn-signup" style="text-decoration: none;">View plan</a>
+                <a href="{{ $route }}" class="btn-learn-more-blue" data-url="{{ $route }}" style="text-decoration: none;">View plan</a>
             </div>
         </div>
     </div>

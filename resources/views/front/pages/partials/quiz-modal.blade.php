@@ -95,7 +95,7 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <button class="btn-signup" id="start-quiz-btn" data-next="2"
+                                    <button class="btn-learn-more-blue" id="start-quiz-btn" data-next="2"
                                         style="width:100%;">Let's go!</button>
                                     <button class="btn-back" id="start-over-btn"
                                         style="margin-top: 10px; display: none;">Start Over</button>
@@ -309,7 +309,7 @@
 
                             <div class="quiz-navigation">
                                 <button class=" btn-back back-step-btn" data-prev="1">Back</button>
-                                <button class=" btn-signup next-step-btn" data-next="3">Next</button>
+                                <button class=" btn-learn-more-blue next-step-btn" data-next="3">Next</button>
                             </div>
                         </div>
 
@@ -543,7 +543,7 @@
 
                             <div class="quiz-navigation">
                                 <button class=" btn-back back-step-btn" data-prev="2">Back</button>
-                                <button class=" btn-signup next-step-btn" data-next="4">Next</button>
+                                <button class=" btn-learn-more-blue next-step-btn" data-next="4">Next</button>
                             </div>
                         </div>
 
@@ -701,7 +701,7 @@
 
                             <div class="quiz-navigation">
                                 <button class=" btn-back back-step-btn" data-prev="3">Back</button>
-                                <button class=" btn-signup next-step-btn" data-next="5">Next</button>
+                                <button class=" btn-learn-more-blue next-step-btn" data-next="5">Next</button>
                             </div>
                         </div>
 
@@ -885,7 +885,7 @@
 
                             <div class="quiz-navigation">
                                 <button class=" btn-back back-step-btn" data-prev="4">Back</button>
-                                <button class=" btn-signup next-step-btn" data-next="6">Next</button>
+                                <button class=" btn-learn-more-blue next-step-btn" data-next="6">Next</button>
                             </div>
                         </div>
 
@@ -966,7 +966,7 @@
 
                             <div class="quiz-navigation">
                                 <button class=" btn-back back-step-btn" data-prev="5">Back</button>
-                                <button class=" btn-signup next-step-btn" data-next="7">Next</button>
+                                <button class=" btn-learn-more-blue next-step-btn" data-next="7">Next</button>
                             </div>
                         </div>
 
@@ -1041,7 +1041,7 @@
 
                             <div class="quiz-navigation">
                                 <button class=" btn-back back-step-btn" data-prev="6">Back</button>
-                                <button class=" btn-signup next-step-btn" data-next="8">Next</button>
+                                <button class=" btn-learn-more-blue next-step-btn" data-next="8">Next</button>
                             </div>
                         </div>
 
@@ -1114,7 +1114,7 @@
 
                             <div class="quiz-navigation">
                                 <button class=" btn-back back-step-btn" data-prev="7">Back</button>
-                                <button class=" btn-signup next-step-btn" data-next="9">Next</button>
+                                <button class=" btn-learn-more-blue next-step-btn" data-next="9">Next</button>
                             </div>
                         </div>
 
@@ -1188,7 +1188,7 @@
 
                             <div class="quiz-navigation" style="margin-top: 201px;">
                                 <button class=" btn-back back-step-btn" data-prev="8">Back</button>
-                                <button class=" btn-signup next-step-btn">Submit</button>
+                                <button class=" btn-learn-more-blue next-step-btn">Submit</button>
                             </div>
                         </div>
                     </div>

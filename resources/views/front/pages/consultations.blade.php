@@ -22,7 +22,7 @@ $intresetsmallimg1 = $intresetsmallimg2 = $intresetsmallimg3 = $intrestimg1 = $i
                     <div class="container-homepage">
                         <div class="hero-content-fixed">
                             {!! $section->content !!}
-                            <button class="btn-signup" id="book-consult-purchase-btn">View Consults</button>
+                            <button class="btn-learn-more-blue" id="book-consult-purchase-btn">View Consults</button>
                         </div>
                     </div>
                 </div>
@@ -58,7 +58,6 @@ $intresetsmallimg1 = $intresetsmallimg2 = $intresetsmallimg3 = $intrestimg1 = $i
                         <div class="title-content">
                             <h2 class="title">{{ $section->title }}</h2>
                         </div>
-                        <!-- {!! $section->content !!} -->
 
                         <div class="plan-features consultations">
                             @foreach($consultations as $consultation)
@@ -69,7 +68,7 @@ $intresetsmallimg1 = $intresetsmallimg2 = $intresetsmallimg3 = $intrestimg1 = $i
                                         <div class="pricing-section">
                                             <h2 class="pricing-amount">${{ number_format($consultation->price, 2) }} AUD</h2>
                                             <div class="pricing-buttons">
-                                                <button class="btn-signup book-consult-btn" data-consultation-id="{{ $consultation->id }}"
+                                                <button class="btn-learn-more-blue book-consult-btn" data-consultation-id="{{ $consultation->id }}"
                                                     data-consultation-price="{{ $consultation->price }}"
                                                     data-consultation-time="{{ $consultation->time }}"
                                                     data-consultation-content="{{ $consultation->content }}">
@@ -195,7 +194,7 @@ $intresetsmallimg1 = $intresetsmallimg2 = $intresetsmallimg3 = $intrestimg1 = $i
                                 <input type="text" class="h-auto form-control" id="promo-code-consultation"
                                     placeholder="Enter coupon code">
                                 <input type="hidden" class="form-control" id="discount-consultation">
-                                <button type="button" class="btn btn-signup"
+                                <button type="button" class="btn-learn-more-blue"
                                     id="apply-promo-code-consultation">Apply</button>
                             </div>
                             <small id="promo-message-consultation" class="form-text"></small>
@@ -234,7 +233,7 @@ $intresetsmallimg1 = $intresetsmallimg2 = $intresetsmallimg3 = $intrestimg1 = $i
                                 </div>
                             </div>
                             <!-- Button that swaps modal content -->
-                            <button type="button" class="w-100 btn btn-signup" id="payConsultationBtn">
+                            <button type="button" class="w-100 btn btn-learn-more-blue" id="payConsultationBtn">
                                 Pay | $<span id="pay-button-price">120</span>
                             </button>
                         </form>
@@ -273,7 +272,7 @@ $intresetsmallimg1 = $intresetsmallimg2 = $intresetsmallimg3 = $intrestimg1 = $i
                             Lets book in a time
                         </p>
                         <input type="hidden" id="payment-id" name="payment_id">
-                        <button type="button" class="w-100 btn btn-signup" id="book-time-btn">Book a Time</button>
+                        <button type="button" class="w-100 btn btn-learn-more-blue" id="book-time-btn">Book a Time</button>
                     </div>
                 </div>
             </div>
@@ -623,8 +622,8 @@ $intresetsmallimg1 = $intresetsmallimg2 = $intresetsmallimg3 = $intrestimg1 = $i
             document.getElementById('blue-badge-img').src = blueBadgeImg;
         }
 
-        //btn-signup
-        $('.plan-inclusion-section .btn-signup').on('click', function () {
+        //btn-learn-more-blue
+        $('.plan-inclusion-section .btn-learn-more-blue').on('click', function () {
             $('#TPMAIU-purchase-plan-btn').click();
         });
 

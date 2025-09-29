@@ -156,9 +156,13 @@
 
 
         $(document).ready(function() {
-            // $('#biohealth-passport-learn-more-btn').click(function() {
-            //     window.open('https://biohealthpassport.com.au/', '_blank');
-            // });
+            const anchor = document.querySelector("button.learn-more-btn");
+            function handleClick(e) {
+                // show coming soon popup
+                $('#comingSoonModal').modal('show');
+            }
+            anchor.addEventListener("click", handleClick);
+            anchor.addEventListener("touchstart", handleClick);
         });
     </script>
 @endpush

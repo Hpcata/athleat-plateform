@@ -269,7 +269,7 @@
                         {!! $section->content !!}
 
                         @if(!Auth::check())
-                            <button class="btn-signup" id="show-new-signup-modal" onclick="openSingupFreePopup()">
+                            <button class="btn-learn-more-blue" id="show-new-signup-modal" onclick="openSingupFreePopup()">
                                 Sign up
                             </button>
                         @endif
@@ -579,7 +579,7 @@
                                             Optimise your training gains by eating with purpose. Perform at your peak with a personalised meal plan tailored to you & your preferences - designed by Extreme Sports Dietitian Kerry O’Bryan.
                                         </p>
                                     </div>
-                                    <a href="{{ route('front.training.nutrition.plan') }}" class="btn-learn-more-blue">Learn more</a>
+                                    <a href="{{ route('front.training.nutrition.plan') }}" data-url="{{ route('front.training.nutrition.plan') }}" class="btn-learn-more-blue">Learn more</a>
                                 </div>
                             </div>
                             <div class="col-md-4">
@@ -647,7 +647,7 @@
                                             personalised plan that caters to where you're at. Faster recovery is the goal & nutrition is too often overlooked!
                                         </p>
                                     </div>
-                                    <a href="{{ route('front.injury.recovery.plan') }}" class="btn-learn-more-blue">Learn more</a>
+                                    <a href="{{ route('front.injury.recovery.plan') }}" data-url="{{ route('front.injury.recovery.plan') }}" class="btn-learn-more-blue">Learn more</a>
                                 </div>
                             </div>
                             <div class="col-md-4 web-hide">
@@ -797,7 +797,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <button class="btn-signup" type="submit">
+                                    <button class="btn-learn-more-blue" type="submit">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                                             style="margin-left: 8px">
                                             <path
@@ -822,7 +822,7 @@
                                     the quiz to test your nutrition knowledge and discover how to fuel
                                     smarter-whether for performance, recovery, or everyday energy.
                                 </p>
-                                <button class="btn-signup" data-bs-toggle="modal" data-bs-target="#quizModal">Start the quiz</button>
+                                <button class="btn-learn-more-blue" data-bs-toggle="modal" data-bs-target="#quizModal">Start the quiz</button>
                             </div>
                             <img @if(!empty($section->banner_image[1])) src="{{ asset('storage/' . $section->banner_image[1]) }}" @endif
                                 alt="Nutrition quiz" class="sport-nutrition-promo__bg--right sport-nutrition-promo__bg" />
@@ -1034,7 +1034,7 @@
                                             class="text-danger">*</span></label>
                                     <textarea class="form-control" id="query-message" rows="5" required></textarea>
                                 </div>
-                                <button type="submit" class="btn-signup" id="submit-query">Send message</button>
+                                <button type="submit" class="btn-learn-more-blue" id="submit-query">Send message</button>
                             </form>
                         </div>
                         <div class="d-md-flex align-items-center justify-content-center phone-mockup-wrapper d-none">

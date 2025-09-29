@@ -128,7 +128,7 @@
                     <a class="text-decoration-none nav-item" href="https://athleatshop.com/" target="_blank">Shop</a>
                 </nav>
                 <div class="nav-right">
-                    <div class="nav-item dropdown" style="width: 114px;">
+                    <div class="nav-item dropdown">
                         <div class="nav-end">
                             {{-- My account button --}}
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18"
@@ -182,7 +182,7 @@
                     <div class="nav-right">
                         {{-- Login and signup buttons --}}
                         <button class="btn-login mob-hide" id="login" onclick="openSingupFreePopup(true)">Log in</button>
-                        <button class="btn-signup" id="show-new-signup-modal" onclick="openSingupFreePopup()"> Sign up for free </button>
+                        <button class="btn-learn-more-blue" id="show-new-signup-modal" onclick="openSingupFreePopup()"> Sign up for free </button>
                     </div>
                 </div>
         </header>
@@ -272,11 +272,11 @@
                 <div class="d-flex">
                     @if (Auth::check())
                         {{-- My plans button --}}
-                        <div class="nav-item dropdown" style="width: 114px;">
+                        <div class="nav-item dropdown">
                             <a href="#"
                                 role="button"
                                 data-bs-toggle="dropdown"
-                                class="btn btn-signup mob-hide text-decoration-none"
+                                class="btn-learn-more-blue mob-hide text-decoration-none"
                                 aria-expanded="false"
                                 id="my-account-dropdown">
                                 My Account
@@ -298,7 +298,7 @@
                     @else
                         {{-- Login and signup buttons --}}
                         <button class="btn-login mob-hide" id="login" onclick="openSingupFreePopup(true)">Log in</button>
-                        <button class="btn-signup" id="show-new-signup-modal" onclick="openSingupFreePopup()">Sign up for free </button>
+                        <button class="btn-learn-more-blue" id="show-new-signup-modal" onclick="openSingupFreePopup()">Sign up for free </button>
                     @endif
 
                     {{-- Virtual Kez button --}}
