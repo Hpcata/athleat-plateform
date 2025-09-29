@@ -94,15 +94,17 @@ $intresetsmallimg1 = $intresetsmallimg2 = $intresetsmallimg3 = $intrestimg1 = $i
 
 
                     <div class="slider-container">
-                        <div class="slide-left logo-row">
+                        <div class="slide-left logo-row infinite-slider-left">
                             <!-- Duplicate content for seamless loop -->
                             @if(!empty($section->banner_image) && is_array($section->banner_image))
+                            @for($i = 0; $i < 25; $i++)
                                 @foreach($section->banner_image as $bannerImage)
                                     <div class="logo-card">
                                         <img src="{{ asset('storage/' . ($bannerImage['image'] ?? $bannerImage)) }}"
                                             alt="{{ $bannerImage['alt'] ?? 'Partner Logo' }}" />
                                     </div>
                                 @endforeach
+                                  @endfor
                                 @foreach($section->banner_image as $bannerImage)
                                     <div class="logo-card">
                                         <img src="{{ asset('storage/' . ($bannerImage['image'] ?? $bannerImage)) }}"
@@ -112,15 +114,17 @@ $intresetsmallimg1 = $intresetsmallimg2 = $intresetsmallimg3 = $intrestimg1 = $i
                             @endif
                         </div>
 
-                        <div class="slide-right logo-row">
+                        <div class="slide-right logo-row infinite-slider-right">
                             <!-- Duplicate content for seamless loop -->
                             @if(!empty($section->image) && is_array($section->image))
+                             @for($i = 0; $i < 25; $i++)
                                 @foreach($section->image as $bannerImage)
                                     <div class="logo-card">
                                         <img src="{{ asset('storage/' . ($bannerImage['image'] ?? $bannerImage)) }}"
                                             alt="{{ $bannerImage['alt'] ?? 'Partner Logo' }}" />
                                     </div>
                                 @endforeach
+                                   @endfor
                                 @foreach($section->image as $bannerImage)
                                     <div class="logo-card">
                                         <img src="{{ asset('storage/' . ($bannerImage['image'] ?? $bannerImage)) }}"
@@ -234,7 +238,7 @@ $intresetsmallimg1 = $intresetsmallimg2 = $intresetsmallimg3 = $intrestimg1 = $i
                             </div>
                             <!-- Button that swaps modal content -->
                             <button type="button" class="w-100 btn btn-learn-more-blue" id="payConsultationBtn">
-                                Pay | $<span id="pay-button-price">120</span>
+                                Pay | <span id="pay-button-price">$&nbsp;120</span>
                             </button>
                         </form>
                         <p class="mt-3 text-muted small confirm-text">
