@@ -12,9 +12,9 @@
             </div>
         </div>
         @if($plan->name == 'Training Nutrition Plan')
-            <a href="{{ route('front.training.nutrition.plan') }}" class="btn-learn-more-blue">Learn more</a>
+            <a href="{{ route('front.training.nutrition.plan') }}" data-url="{{ route('front.training.nutrition.plan') }}" class="btn-learn-more-blue">Learn more</a>
         @elseif($plan->name == 'Injury & Recovery Plan')
-            <a href="{{ route('front.injury.recovery.plan') }}" class="btn-learn-more-blue">Learn more</a>
+            <a href="{{ route('front.injury.recovery.plan') }}" data-url="{{ route('front.injury.recovery.plan') }}" class="btn-learn-more-blue">Learn more</a>
         @elseif($plan->name == 'Competition Plan')
             <a class="btn-learn-more-blue" onclick="showLearnMoreTooltip(this, 'Coming Soon')">Learn more</a>
         @elseif($plan->name == 'Injury Recovery + Post Surgery')

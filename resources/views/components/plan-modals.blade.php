@@ -45,7 +45,7 @@ $monthlyGamePlanPrice = ($gamePlanPlanPrice * 1.1) / $months;
 
                                 <p class="">{!! $planDetails?->description !!}</p>
                                 <div class="d-flex align-items-center justify-content-between">
-                                    <button class="btn btn-signup plan-get-started-btn" data-plan-type="main" data-plan-price="{{ $planDetails?->price }}" data-monthly-price="{{ number_format($monthlyPlanPrice, 2) }}">Get started</button>
+                                    <button class="btn-learn-more-blue plan-get-started-btn" data-plan-type="main" data-plan-price="{{ $planDetails?->price }}" data-monthly-price="{{ number_format($monthlyPlanPrice, 2) }}">Get started</button>
                                     <a href="" class="text-decoration-none whats-included-link" data-bs-dismiss="modal">What's included
                                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="19"
                                             viewBox="0 0 14 19" fill="none">
@@ -70,7 +70,7 @@ $monthlyGamePlanPrice = ($gamePlanPlanPrice * 1.1) / $months;
                                 </div>
                                 <p class="">{{ $planDetails?->name }} + 30 min Consult with Extreme Sports Dietitian Kerry O'Byran.</p>
                                 <div class="d-flex align-items-center justify-content-between">
-                                    <button class="btn btn-signup plan-get-started-btn" data-plan-type="powerplay" data-plan-price="{{ $powerPlayPlanPrice }}" data-monthly-price="{{ number_format($monthlyPowerPlayPrice, 2) }}">Get started</button>
+                                    <button class="btn-learn-more-blue plan-get-started-btn" data-plan-type="powerplay" data-plan-price="{{ $powerPlayPlanPrice }}" data-monthly-price="{{ number_format($monthlyPowerPlayPrice, 2) }}">Get started</button>
                                     <a href="{{ route('front.consultations') }}" class="text-decoration-none">About Consultations
                                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="19"
                                             viewBox="0 0 14 19" fill="none">
@@ -95,7 +95,7 @@ $monthlyGamePlanPrice = ($gamePlanPlanPrice * 1.1) / $months;
 
                                 <p class="">{{ $planDetails?->name }} + 60 min Consult with Kerry to cover Nutrition AND Training Advice</p>
                                 <div class="d-flex align-items-center justify-content-between">
-                                    <button class="btn btn-signup plan-get-started-btn" data-plan-type="gameplan" data-plan-price="{{ $gamePlanPlanPrice }}" data-monthly-price="{{ number_format($monthlyGamePlanPrice, 2) }}">Get started</button>
+                                    <button class="btn-learn-more-blue plan-get-started-btn" data-plan-type="gameplan" data-plan-price="{{ $gamePlanPlanPrice }}" data-monthly-price="{{ number_format($monthlyGamePlanPrice, 2) }}">Get started</button>
                                     <a href="#" class="text-decoration-none whats-in-one-on-one-link" data-bs-dismiss="modal">What's in a 1 on 1
                                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="19"
                                             viewBox="0 0 14 19" fill="none">
@@ -140,7 +140,7 @@ $monthlyGamePlanPrice = ($gamePlanPlanPrice * 1.1) / $months;
                                 <input type="text" class="h-auto form-control" id="promo-code-consultation"
                                     placeholder="Enter coupon code">
                                 <input type="hidden" class="form-control" id="discount-consultation">
-                                <button type="button" class="btn btn-signup"
+                                <button type="button" class="btn-learn-more-blue"
                                     id="apply-promo-code-consultation">Apply</button>
                             </div>
                             <small id="promo-message-consultation" class="form-text"></small>
@@ -180,7 +180,7 @@ $monthlyGamePlanPrice = ($gamePlanPlanPrice * 1.1) / $months;
                             </div>
                             <!-- Button that swaps modal content -->
                             {{-- make this button text in the center --}}
-                            <button type="submit" class="w-100 btn btn-signup" id="paymentButton">
+                            <button type="submit" class="w-100 btn btn-learn-more-blue" id="paymentButton">
                                 One Payment | A${{ number_format($planDetails?->price, 0) }}
                             </button>
                         </form>
@@ -233,11 +233,11 @@ $monthlyGamePlanPrice = ($gamePlanPlanPrice * 1.1) / $months;
                                 <p class="mb-3 congrats-para">
                                     Let's book in a time for your consultation!
                                 </p>
-                                <button type="button" class="w-100 btn btn-signup" id="book-time-btn-plan">Book a Time</button>
+                                <button type="button" class="w-100 btn btn-learn-more-blue" id="book-time-btn-plan">Book a Time</button>
                             </div>
                             <!-- For Normal Plan - show questionnaire button -->
                             <div id="normalPlanContent" style="display: none;">
-                                <button type="button" class="w-100 btn btn-signup" id="completeQuestionnaireBtn">Next - Complete Questionnaire</button>
+                                <button type="button" class="w-100 btn btn-learn-more-blue" id="completeQuestionnaireBtn">Next - Complete Questionnaire</button>
                             </div>
                         </div>
                     </div>

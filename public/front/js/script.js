@@ -1,3 +1,11 @@
+const anchor = document.querySelector("a.btn-learn-more-blue");
+function handleClick(e) {
+    alert(e.target.getAttribute("data-url"));
+    window.location.href = e.target.getAttribute("data-url");
+}
+anchor.addEventListener("click", handleClick);
+anchor.addEventListener("touchstart", handleClick);
+
 function playVideoInCard(e) {
     const t = document.getElementById(`video-player-${e}`),
         o = t.querySelector(".video-backdrop"),
@@ -18,6 +26,7 @@ function playVideoInCard(e) {
             n.paused ? n.play() : n.pause();
         });
 }
+
 document.addEventListener("DOMContentLoaded", () => {
     const e = document.querySelectorAll(".tab"),
         t = document.querySelector(".meal-cards"),
@@ -90,7 +99,8 @@ document.addEventListener("DOMContentLoaded", () => {
             })(o[n] || o.breakfast);
         });
     });
-}),
+});
+
 document.querySelectorAll('a[href^="#"]').forEach((e) => {
     e.addEventListener("click", function (e) {
         e.preventDefault();
@@ -100,7 +110,8 @@ document.querySelectorAll('a[href^="#"]').forEach((e) => {
             t && t.scrollIntoView({ behavior: "smooth", block: "start" });
         }
     });
-}),
+});
+
 document.querySelectorAll("button").forEach((e) => {
     e.onclick &&
         e.onclick.toString().includes("window.open") &&
@@ -112,7 +123,8 @@ document.querySelectorAll("button").forEach((e) => {
                     (this.textContent = e), (this.disabled = !1);
                 }, 1e3);
         });
-}),
+});
+
 document.querySelectorAll(".clickable").forEach((e) => {
     e.addEventListener("mouseenter", function () {
         this.style.transform = "translateY(-2px)";
@@ -130,29 +142,35 @@ const observerOptions = { threshold: 0.1, rootMargin: "0px 0px -50px 0px" },
                 (e.target.style.transform = "translateY(0)"));
         });
     }, observerOptions);
+
 function openVideoPopup(e) {
     const t = document.getElementById("video-popup"),
         o = document.getElementById("popup-video");
     (o.src = e), t.classList.add("show"), o.play();
 }
+
 function closeVideoPopup() {
     const e = document.getElementById("video-popup"),
         t = document.getElementById("popup-video");
     t.pause(), (t.currentTime = 0), (t.src = ""), e.classList.remove("show");
 }
+
 function toggleMobileMenu() {
     document.getElementById("mobile-menu").classList.toggle("open");
 }
+
 function openVideoPopup(e) {
     (document.getElementById("popup-video").src = e),
         document.getElementById("video-popup").classList.add("show"),
         document.body.classList.add("no-scroll");
 }
+
 function closeVideoPopup() {
     document.getElementById("video-popup").classList.remove("show"),
         (document.getElementById("popup-video").src = ""),
         document.body.classList.remove("no-scroll");
 }
+
 function openFullscreenVideoPopup(e) {
     const t = document.getElementById("fullscreen-video-popup");
     t && t.remove();
@@ -190,82 +208,32 @@ function openFullscreenVideoPopup(e) {
         (s.style.height = "3rem");
 }
 
-// let mealCardsSlider = null;
-
-// function initMealCardsSlider() {
-//     const mealCardsWrapper = document.getElementById('meal-cards-wrapper');
-//     if (mealCardsWrapper && mealCardsWrapper.children.length > 0) {
-//         mealCardsSlider = tns({
-//             container: '#meal-cards-wrapper',
-//             items: 1,
-//             slideBy: 'page',
-//             autoplay: false,
-//             mouseDrag: true,
-//             nav: false,
-//             controls: true,
-//             controlsContainer: '.training-plan .slider-wrapper',
-//             responsive: {
-//                 768: {
-//                     items: 2
-//                 },
-//                 992: {
-//                     items: 3
-//                 },
-//                 1200: {
-//                     items: 4
-//                 }
-//             }
-//         });
-//     }
-// }
-
 // Call the initialization function when the DOM is ready
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener("DOMContentLoaded", () => {
     // initMealCardsSlider();
 });
 
-// Re-initialize slider on window resize if needed
-// window.addEventListener('resize', () => {
-//     if (mealCardsSlider) {
-//         mealCardsSlider.destroy();
-//         mealCardsSlider = null;
-//     }
-//     // initMealCardsSlider();
-// });
-//         (s.style.display = "flex"),
-//         (s.style.alignItems = "center"),
-//         (s.style.justifyContent = "center"),
-//         (s.onclick = function () {
-//             o.remove();
-//         }),
-//         o.appendChild(n),
-//         o.appendChild(s),
-//         document.body.appendChild(o);
-// }
 document.querySelectorAll("section").forEach((e) => {
     (e.style.opacity = "0"),
         (e.style.transform = "translateY(20px)"),
         (e.style.transition = "opacity 0.6s ease, transform 0.6s ease"),
         observer.observe(e);
 });
+
 document.addEventListener("DOMContentLoaded", () => {
-  const selectWrapper = document.querySelector(".select-wrapper");
-  const select = document.querySelector(".two-line-select");
+    const selectWrapper = document.querySelector(".select-wrapper");
+    const select = document.querySelector(".two-line-select");
 
-  if (select && selectWrapper) {
-    select.addEventListener("focus", () => {
-      selectWrapper.classList.add("open");
-    });
+    if (select && selectWrapper) {
+        select.addEventListener("focus", () => {
+            selectWrapper.classList.add("open");
+        });
 
-    select.addEventListener("blur", () => {
-      selectWrapper.classList.remove("open");
-    });
-  } else {
-    console.warn("select-wrapper or two-line-select not found in DOM");
-  }
+        select.addEventListener("blur", () => {
+            selectWrapper.classList.remove("open");
+        });
+    }
 });
-
-// Dialog open/close logic for recipe-dialog modal removed. Bootstrap modal will be used instead.
 
 // Smart Swap toggle logic
 const smartSwapBtn = document.querySelector(".smart-swap-btn");
@@ -313,61 +281,6 @@ if (closeBtn3) {
     });
 }
 
-// document.addEventListener("DOMContentLoaded", function () {
-//     const shareBtn = document.querySelector(".btn-share");
-//     const shareDropdown = document.getElementById("share-dropdown");
-//     const shareDropdownClose = document.getElementById("share-dropdown-close");
-
-//     if (shareBtn && shareDropdown && shareDropdownClose) {
-//         shareBtn.addEventListener("click", function (e) {
-//             e.stopPropagation();
-//             console.log('Share button clicked');
-//             shareDropdown.style.display = "block";
-//             // Position dropdown below the button using getBoundingClientRect
-//             const rect = shareBtn.getBoundingClientRect();
-//             shareDropdown.style.position = "absolute";
-//             shareDropdown.style.top = (window.scrollY + rect.bottom + 8) + "px";
-//             shareDropdown.style.left = (window.scrollX + rect.left) + "px";
-//             console.log('Dropdown positioned at', shareDropdown.style.top, shareDropdown.style.left);
-//         });
-
-//         shareDropdownClose.addEventListener("click", function () {
-//             shareDropdown.style.display = "none";
-//             console.log('Share dropdown closed by close button');
-//         });
-
-//         // Close dropdown when clicking outside
-//         document.addEventListener("click", function (e) {
-//             if (!shareDropdown.contains(e.target) && e.target !== shareBtn) {
-//                 shareDropdown.style.display = "none";
-//                 console.log('Share dropdown closed by outside click');
-//             }
-//         });
-//     } else {
-//         console.warn('Share dropdown elements not found:', { shareBtn, shareDropdown, shareDropdownClose });
-//     }
-// });
-// document.addEventListener("DOMContentLoaded", function () {
-//     // Download PDF Modal logic
-//     const downloadPlanBtn = document.querySelector('.share-dropdown-item img[alt="Download"]')?.parentElement;
-//     const downloadPdfModal = document.getElementById("download-pdf-modal");
-//     const downloadPdfClose = document.getElementById("download-pdf-close");
-
-//     if (downloadPlanBtn && downloadPdfModal && downloadPdfClose) {
-//         downloadPlanBtn.addEventListener("click", function () {
-//             downloadPdfModal.style.display = "block";
-//         });
-//         downloadPdfClose.addEventListener("click", function () {
-//             downloadPdfModal.style.display = "none";
-//         });
-//         // Optional: close modal on overlay click
-//         downloadPdfModal.addEventListener("click", function (e) {
-//             if (e.target === downloadPdfModal) {
-//                 downloadPdfModal.style.display = "none";
-//             }
-//         });
-//     }
-
 // Download PDF functionality
 const downloadPdfBtn = document.getElementById("download-pdf-btn");
 if (downloadPdfBtn) {
@@ -414,24 +327,6 @@ if (downloadPdfBtn) {
         }
     });
 }
-
-// Shopping List Modal logic
-// const shoppingListBtn = document.querySelector(".btn-outline.btn");
-// const shoppingListModal = document.getElementById("shopping-list-modal");
-// const shoppingListClose = document.getElementById("shopping-list-close");
-// if (shoppingListBtn && shoppingListModal && shoppingListClose) {
-//     shoppingListBtn.addEventListener("click", function () {
-//         shoppingListModal.style.display = "block";
-//     });
-//     shoppingListClose.addEventListener("click", function () {
-//         shoppingListModal.style.display = "none";
-//     });
-//     shoppingListModal.addEventListener("click", function (e) {
-//         if (e.target === shoppingListModal) {
-//             shoppingListModal.style.display = "none";
-//         }
-//     });
-// }
 
 // Shopping List PDF download
 const shoppingListDownload = document.getElementById("shopping-list-download");
@@ -506,14 +401,16 @@ function updateCountdown() {
 setInterval(updateCountdown, 60000); // Update every minute
 
 // Target all horizontal scroll containers
-$('.challenge-cards, .challenges .challenge-cards, .surfing-videos .video-grid, .training-plan .meal-cards, .consults-plans-grid').each(function() {
+$(
+    ".challenge-cards, .challenges .challenge-cards, .surfing-videos .video-grid, .training-plan .meal-cards, .consults-plans-grid"
+).each(function () {
     var $el = $(this);
     var scrollTimeout;
-    $el.on('scroll', function() {
-        $el.addClass('show-scrollbar');
+    $el.on("scroll", function () {
+        $el.addClass("show-scrollbar");
         clearTimeout(scrollTimeout);
-        scrollTimeout = setTimeout(function() {
-            $el.removeClass('show-scrollbar');
+        scrollTimeout = setTimeout(function () {
+            $el.removeClass("show-scrollbar");
         }, 700); // Hide after 700ms of no scroll
     });
 });

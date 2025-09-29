@@ -92,7 +92,7 @@
                         </div>
 
 
-                        <button class="btn-signup" style="margin-top:8px;" onclick="sendOtp()">Continue</button>
+                        <button class="btn-learn-more-blue" style="margin-top:8px;" onclick="sendOtp()">Continue</button>
 
                         <!--  -->
                         <div class='quiz-h2-title d-none'>
@@ -202,7 +202,7 @@
                                     inputmode="numeric" />
                             </div>
                         </div>
-                        <button class="btn-signup" style="margin-top:20px;margin-bottom: 10px;"
+                        <button class="btn-learn-more-blue" style="margin-top:20px;margin-bottom: 10px;"
                             onclick="verifyOtp()">Verify</button>
                         <p class="otp-resend-text">
                             <label>
@@ -303,7 +303,7 @@
                             </div>
                         </div>
 
-                        <button class="btn-signup" onclick="completeRegistration()">Get Started</button>
+                        <button class="btn-learn-more-blue" onclick="completeRegistration()">Get Started</button>
                     </div>
 
                     <!-- Step 4: Final Step (can be customized as needed) -->
@@ -314,7 +314,7 @@
                         <p class="welcome-text">
                             Your account has been created successfully. You're all set to start your journey!
                         </p>
-                        <button class="btn-signup" onclick="closeModal()">Get Started</button>
+                        <button class="btn-learn-more-blue" onclick="closeModal()">Get Started</button>
                     </div>
 
                     <div class="image-section signup-login-h2-title d-none signup-login-h2-img">

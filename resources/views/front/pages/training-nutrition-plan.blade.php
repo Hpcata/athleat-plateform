@@ -21,7 +21,7 @@
                         <div class="container-homepage">
                             <div class="hero-content-fixed">
                                 <h1 class="hero-title-landing">{{ $section->title }}</h1>
-                                <button class="btn-signup"
+                                <button class="btn-learn-more-blue"
                                     data-bs-toggle="modal"
                                     data-bs-target="#planChooseModal">
                                     Purchase plan
@@ -143,8 +143,8 @@
             document.getElementById('TPMAIU-card2').src = intrestimg2;
         }
 
-        //btn-signup
-        $('.plan-inclusion-section .btn-signup').on('click', function() {
+        //btn-learn-more-blue
+        $('.plan-inclusion-section .btn-learn-more-blue').on('click', function() {
             $('#TPMAIU-purchase-plan-btn').click();
         });
 

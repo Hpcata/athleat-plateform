@@ -54,7 +54,7 @@
                     <a href="{{ route('front.my-plans') }}" class="btn btn-login mob-hide">My Profile</a>
                 @else
                     <button class=" btn-login mob-hide" onclick="openSingupFreePopup(true)">Log in</button>
-                    <button class=" btn-signup" onclick="openSingupFreePopup()">Sign up for free</button>
+                    <button class=" btn-learn-more-blue" onclick="openSingupFreePopup()">Sign up for free</button>
                 @endif
             </div>
 
@@ -64,7 +64,7 @@
                     <a href="{{ route('front.my-plans') }}" class="btn btn-login rounded-md">My Profile</a>
                 @else
                     <button type="button" class="rounded-md  btn-login" onclick="openSingupFreePopup(true)">Log in</button>
-                    <button type="button" class="rounded-md  btn-signup" onclick="openSingupFreePopup()">Sign up for free</button>
+                    <button type="button" class="rounded-md  btn-learn-more-blue" onclick="openSingupFreePopup()">Sign up for free</button>
                 @endif
             </div>
             <p class="copyright-text web-hide">Copyright © 2025 Catalysta Pty Ltd T/as Athlete Elite. All rights reserved.</p>
