@@ -1,4 +1,10 @@
-<link rel="stylesheet" href="{{ frontAssets('css/bootstrap/bootstrap-5.3.min.css') }}" />
+{{-- <link rel="stylesheet" href="{{ frontAssets('css/bootstrap/bootstrap-5.3.min.css') }}" /> --}}
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" as="style"
+    onload="this.onload=null;this.rel='stylesheet'">
+
+<noscript>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</noscript>
 {{-- <link rel="stylesheet" href="{{ frontAssets('css/style-1.css') }}" /> --}}
 <link rel="stylesheet" href="{{ frontAssets('css/styles.css') }}" />
 <link rel="stylesheet" href="{{ frontAssets('css/profile_landing.css') }}" />

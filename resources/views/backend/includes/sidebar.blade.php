@@ -47,7 +47,6 @@
 					<span class="sidebar-mini-text">Category</span>
 				</a>
 			</li>
-			
 			<li>
 				<a class="m-link {{request()->routeIs('admin.subcategories.*') ? 'active' : '' }}" href="{{ route('admin.subcategories.index') }}">
 					<i class="icofont-chart-flow fs-5"></i>
@@ -110,7 +109,12 @@
 					<span class="sidebar-mini-text">Consultations</span>
 				</a>
 			</li>
-			
+			<li>
+				<a class="m-link {{request()->routeIs('backend.inquiries.*') ? 'active' : '' }}" href="{{ route('backend.inquiries.index') }}">
+					<i class="icofont-support fs-5"></i>
+					<span class="sidebar-mini-text">Inquiries</span>
+				</a>
+			</li>
 			<li>
 				<a class="m-link {{request()->routeIs('testimonials.*') ? 'active' : '' }}" href="{!! route('testimonials.index') !!}">
 					<i class="icofont-users-alt-2 fs-5"></i>
@@ -123,18 +127,6 @@
 					<span class="sidebar-mini-text">Site Settings</span>
 				</a>
 			</li>
-
-			{{-- <li>
-				
-				<a class="m-link" data-bs-toggle="collapse" data-bs-target="#categories" href="#">
-					<i class="icofont-chart-flow fs-5"></i> <span>Plan Categories</span> <span class="ms-auto icofont-rounded-down text-end arrow fs-5"></span></a>
-				<!-- Menu: Sub menu ul -->
-				
-				<ul class="collapse sub-menu" id="categories">
-					<li><a class="ms-link" href="{{ route('admin.categories.index') }}">Categories List</a></li>
-					<li><a class="ms-link" href="{{ route('admin.subcategories.index') }}">Sub Categories List</a></li>
-				</ul>
-			</li> --}}
 		</ul>
 
 		<!-- Menu: menu collepce btn -->
