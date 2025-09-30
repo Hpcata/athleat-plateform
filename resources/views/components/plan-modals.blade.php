@@ -96,7 +96,7 @@ $monthlyGamePlanPrice = ($gamePlanPlanPrice * 1.1) / $months;
                                 <p class="">{{ $planDetails?->name }} + 60 min Consult with Kerry to cover Nutrition AND Training Advice</p>
                                 <div class="d-flex align-items-center justify-content-between">
                                     <button class="btn-learn-more-blue plan-get-started-btn" data-plan-type="gameplan" data-plan-price="{{ $gamePlanPlanPrice }}" data-monthly-price="{{ number_format($monthlyGamePlanPrice, 2) }}">Get started</button>
-                                    <a href="#" class="text-decoration-none whats-in-one-on-one-link" data-bs-dismiss="modal">What's in a 1 on 1
+                                    <a href="{{ route('front.consultations') }}" class="text-decoration-none">What's in a 1 on 1
                                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="19"
                                             viewBox="0 0 14 19" fill="none">
                                             <path

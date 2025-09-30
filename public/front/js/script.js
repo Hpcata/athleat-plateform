@@ -1,10 +1,11 @@
 const anchor = document.querySelector("a.btn-learn-more-blue");
 function handleClick(e) {
-    alert(e.target.getAttribute("data-url"));
     window.location.href = e.target.getAttribute("data-url");
 }
-anchor.addEventListener("click", handleClick);
-anchor.addEventListener("touchstart", handleClick);
+if (anchor) {
+    anchor.addEventListener("click", handleClick);
+    anchor.addEventListener("touchstart", handleClick);
+}
 
 function playVideoInCard(e) {
     const t = document.getElementById(`video-player-${e}`),
@@ -135,13 +136,13 @@ document.querySelectorAll(".clickable").forEach((e) => {
 });
 
 const observerOptions = { threshold: 0.1, rootMargin: "0px 0px -50px 0px" },
-    observer = new IntersectionObserver((e) => {
-        e.forEach((e) => {
-            e.isIntersecting &&
-                ((e.target.style.opacity = "1"),
-                (e.target.style.transform = "translateY(0)"));
-        });
-    }, observerOptions);
+observer = new IntersectionObserver((e) => {
+    e.forEach((e) => {
+        e.isIntersecting &&
+            ((e.target.style.opacity = "1"),
+            (e.target.style.transform = "translateY(0)"));
+    });
+}, observerOptions);
 
 function openVideoPopup(e) {
     const t = document.getElementById("video-popup"),
