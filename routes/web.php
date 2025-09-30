@@ -31,6 +31,7 @@ use App\Http\Controllers\Front\ForgotPasswordController;
 use App\Http\Controllers\Front\OtpRegistrationController;
 use App\Http\Controllers\Front\PlanController as FrontPlanController;
 use App\Http\Controllers\Front\QuizController as FrontQuizController;
+use App\Http\Controllers\Front\ConsultationController as FrontConsultationController;
 use App\Http\Controllers\Admin\Auth\LoginController as AdminAuthController;
 
 /*
@@ -280,9 +281,9 @@ Route::get('/surgery-plan', [FrontController::class, 'surgeryPlan'])->name('fron
 Route::get('/consultations', [FrontController::class, 'consultations'])->name('front.consultations');
 
 // Consultation booking routes
-Route::post('/consultation/book', [ConsultationController::class, 'bookConsultation'])->name('front.consultation.book');
-Route::get('/consultation/{id}/details', [ConsultationController::class, 'getConsultationDetails'])->name('front.consultation.details');
-Route::post('/consultation/questionnaire-status', [ConsultationController::class, 'checkQuestionnaireStatus'])->name('front.consultation.questionnaire.status');
+Route::post('/consultation/book', [FrontConsultationController::class, 'bookConsultation'])->name('front.consultation.book');
+Route::get('/consultation/{id}/details', [FrontConsultationController::class, 'getConsultationDetails'])->name('front.consultation.details');
+Route::post('/consultation/questionnaire-status', [FrontConsultationController::class, 'checkQuestionnaireStatus'])->name('front.consultation.questionnaire.status');
 
 // Front auth
 Route::post('front/register', [FrontController::class, 'register'])->name('front.register');
