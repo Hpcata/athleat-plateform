@@ -388,6 +388,8 @@ Route::prefix('quiz')->group(function () {
 });
 
 Route::get('/about-us', [FrontController::class, 'aboutUs'])->name('front.about-us');
+Route::get('/terms-and-conditions', [FrontController::class, 'termsAndConditions'])->name('front.terms-and-conditions');
+Route::get('/privacy-policy', [FrontController::class, 'privacyPolicy'])->name('front.privacy-policy');
 
 // Stripe Webhook (must be outside middleware to avoid CSRF)
 Route::post('/stripe/webhook', [App\Http\Controllers\StripeWebhookController::class, 'handleWebhook'])->name('stripe.webhook');

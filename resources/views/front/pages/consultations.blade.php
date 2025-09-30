@@ -242,8 +242,9 @@ $intresetsmallimg1 = $intresetsmallimg2 = $intresetsmallimg3 = $intrestimg1 = $i
                             </button>
                         </form>
                         <p class="mt-3 text-muted small confirm-text">
-                            By placing your order, you agree to our <a href="#" class="terms-link">Terms of Service</a>
-                            and <a href="#" class="terms-link">Privacy Policy</a>.
+                            By placing your order, you agree to our
+                            <a href="#" class="terms-link" data-title="terms-of-service" id="terms-of-service-link" data-url="{{ route('front.terms-and-conditions') }}" data-bs-toggle="modal" data-bs-target="#legalModal">Terms of Service</a>
+                            and <a href="#" class="terms-link" data-title="privacy-policy" id="privacy-policy-link" data-url="{{ route('front.privacy-policy') }}" data-bs-toggle="modal" data-bs-target="#legalModal">Privacy Policy</a>.
                         </p>
                     </div>
                 </div>

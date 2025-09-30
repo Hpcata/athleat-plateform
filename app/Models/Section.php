@@ -44,6 +44,8 @@ class Section extends Model
     const TYPE_CONSULTATION_INCLUSIONS = 'consultation_inclusions';
     const TYPE_CONSULTATION_INTERESTS = 'consultation_interests';
     const TYPE_CONSULTATION_PARTNERS = 'consultation_partners';
+    const TYPE_TERMS_OF_SERVICE = 'terms_and_conditions';
+    const TYPE_PRIVACY_POLICY = 'privacy_policy';
 
     // Get all available section types
     public static function getSectionTypes()
@@ -82,7 +84,9 @@ class Section extends Model
             self::TYPE_MEET_EXPERT => 'Meet Expert',
             self::TYPE_CONSULTATION_INCLUSIONS => 'Consultation Inclusions',
             self::TYPE_CONSULTATION_PARTNERS => 'Consultation Partners',
-            self::TYPE_CONSULTATION_INTERESTS => 'Consultation Interests'
+            self::TYPE_CONSULTATION_INTERESTS => 'Consultation Interests',
+            self::TYPE_TERMS_OF_SERVICE => 'Terms and conditions',
+            self::TYPE_PRIVACY_POLICY => 'Privacy policy'
         ];
     }
 
