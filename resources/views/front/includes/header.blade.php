@@ -273,14 +273,14 @@
                     @if (Auth::check())
                         {{-- My plans button --}}
                         <div class="nav-item dropdown">
-                            <a href="#"
+                            <button
                                 role="button"
                                 data-bs-toggle="dropdown"
                                 class="btn-learn-more-blue mob-hide text-decoration-none"
                                 aria-expanded="false"
                                 id="my-account-dropdown">
                                 My Account
-                            </a>
+                            </button>
                             {{-- dropdown with settings and privacy, logout and my plans --}}
                             <ul class="dropdown-menu" aria-labelledby="my-account-dropdown" style="margin-top: 10px !important;">
                                 <li>

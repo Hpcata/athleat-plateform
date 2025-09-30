@@ -4,7 +4,7 @@
 @section('meta_description', 'Get a personalized athlete meal plan with Performance Health Support. Expert sports nutrition plans and diet strategies tailored to fuel performance and recovery.')
 
 @php
-    $intresetsmallimg1 = $intresetsmallimg2 = $intrestimg1 = $intrestimg2 = '';
+    $intresetsmallimg1 = $intresetsmallimg2 = $intrestimg1 = $intrestimg2 = $blueBadgeImg = '';
 @endphp
 @section('content')
     @if(isset($page->sections))
@@ -51,6 +51,9 @@
                     $backgroundImage = '';
                     if (isset($section->banner_image[0])) {
                         $backgroundImage = asset('storage/' . $section->banner_image[0]);
+                    }
+                    if (isset($section->image[0])) {
+                        $blueBadgeImg = asset('storage/' . $section->image[0]);
                     }
                 @endphp
                 <section class="plan-inclusion-section" style="background-image: url('{{ $backgroundImage }}'); background-size: cover; background-position: center; background-repeat: no-repeat;">
@@ -129,6 +132,7 @@
         var intresetsmallimg2 = "{{ $intresetsmallimg2 }}";
         var intrestimg1 = "{{ $intrestimg1 }}";
         var intrestimg2 = "{{ $intrestimg2 }}";
+        var blueBadgeImg = "{{ $blueBadgeImg }}";
 
         if (intresetsmallimg1 !== '') {
             document.getElementById('TPMAIU-card1-icon').src = intresetsmallimg1;
@@ -141,6 +145,9 @@
         }
         if (intrestimg2 !== '') {
             document.getElementById('TPMAIU-card2').src = intrestimg2;
+        }
+        if (blueBadgeImg !== '') {
+            document.getElementById('blue-badge-img').src = blueBadgeImg;
         }
 
         //btn-learn-more-blue
