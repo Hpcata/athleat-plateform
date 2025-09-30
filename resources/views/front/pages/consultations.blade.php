@@ -312,6 +312,7 @@ $intresetsmallimg1 = $intresetsmallimg2 = $intresetsmallimg3 = $intrestimg1 = $i
         </div>
     </div>
 
+    @include('front.modal.legal')
 @endsection
 
 @push('scripts')
