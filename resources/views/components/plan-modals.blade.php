@@ -1,110 +1,107 @@
-{{-- Plan Modals Component --}}
-{{-- Usage: @include('components.plan-modals', ['userEmail' => $userEmail, 'planDetails' => $planDetails, 'consultations' => $consultations]) --}}
 @php
-$months = 8;
-$thirtyMinConsultationPlanPrice = $consultations->where('time', 30)->first()?->price ?? 0;
-$sixtyMinConsultationPlanPrice = $consultations->where('time', 60)->first()?->price ?? 0;
-$powerPlayPlanPrice = $planDetails?->price + $thirtyMinConsultationPlanPrice;
-$gamePlanPlanPrice = $planDetails?->price + $sixtyMinConsultationPlanPrice;
+    $months = 8;
+    $thirtyMinConsultationPlanPrice = $consultations->where('time', 30)->first()?->price ?? 0;
+    $sixtyMinConsultationPlanPrice = $consultations->where('time', 60)->first()?->price ?? 0;
+    $powerPlayPlanPrice = $planDetails?->price + $thirtyMinConsultationPlanPrice;
+    $gamePlanPlanPrice = $planDetails?->price + $sixtyMinConsultationPlanPrice;
 
-// Monthly calculations with 10% markup
-$monthlyPlanPrice = ($planDetails?->price * 1.1) / $months;
-$monthlyPowerPlayPrice = ($powerPlayPlanPrice * 1.1) / $months;
-$monthlyGamePlanPrice = ($gamePlanPlanPrice * 1.1) / $months;
+    // Monthly calculations with 10% markup
+    $monthlyPlanPrice = ($planDetails?->price * 1.1) / $months;
+    $monthlyPowerPlayPrice = ($powerPlayPlanPrice * 1.1) / $months;
+    $monthlyGamePlanPrice = ($gamePlanPlanPrice * 1.1) / $months;
 @endphp
 
-    <div class="modal fade" id="planChooseModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="p-3 modal-content" style="border-radius: 12px;">
-                <div class="mb-3 pb-0 border-0 modal-header">
-                    <div>&nbsp;</div>
-                    <h5 class="mb-0 modal-title fw-bold">Choose your plan</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+<div class="modal fade" id="planChooseModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="p-3 modal-content" style="border-radius: 12px;">
+            <div class="mb-3 pb-0 border-0 modal-header">
+                <div>&nbsp;</div>
+                <h5 class="mb-0 modal-title fw-bold">Choose your plan</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 
+            </div>
+
+            <div class="p-0 modal-body">
+                <div class="d-flex justify-content-center mb-4">
+                    <div class="d-flex justify-content-center w-fit payment-toggle-swich">
+                        <button class="position-relative toggle-btn active" id="onePaymentBtn">One Payment <span
+                                class="badge-discount">-10%</span></button>
+                        <button class="toggle-btn" id="monthlyPlanBtn">Monthly Plan</button>
+                    </div>
                 </div>
 
-                <div class="p-0 modal-body">
-                    <div class="d-flex justify-content-center mb-4">
-                        <div class="d-flex justify-content-center w-fit payment-toggle-swich">
-                            <button class="position-relative toggle-btn active" id="onePaymentBtn">One Payment <span
-                                    class="badge-discount">-10%</span></button>
-                            <button class="toggle-btn" id="monthlyPlanBtn">Monthly Plan</button>
+                <div id="onePaymentPlans">
+                    <div class="mb-4 border-0 card">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <h6 class="mb-1" id="currentPlanName">{{ $planDetails?->name }}</h6>
+                                <div class="">
+                                    <span class="" id="planPrice">A${{ number_format($planDetails?->price, 0) }}</span>
+                                    <small class="d-block mb-2" id="planDuration">One payment</small>
+                                </div>
+                            </div>
+
+                            <p class="">{!! $planDetails?->description !!}</p>
+                            <div class="d-flex align-items-center justify-content-between">
+                                <button class="btn-learn-more-blue plan-get-started-btn" data-plan-type="main" data-plan-price="{{ $planDetails?->price }}" data-monthly-price="{{ number_format($monthlyPlanPrice, 2) }}">Get started</button>
+                                <a href="" class="text-decoration-none whats-included-link" data-bs-dismiss="modal">What's included
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="19"
+                                        viewBox="0 0 14 19" fill="none">
+                                        <path
+                                            d="M8.00034 10.4993L4.85934 7.0793C4.73048 6.94917 4.6582 6.77343 4.6582 6.5903C4.6582 6.40717 4.73048 6.23144 4.85934 6.1013C4.92261 6.03705 4.99803 5.98603 5.08121 5.9512C5.16439 5.91637 5.25366 5.89844 5.34384 5.89844C5.43401 5.89844 5.52329 5.91637 5.60646 5.9512C5.68964 5.98603 5.76506 6.03705 5.82834 6.1013L9.65834 10.0093C9.78701 10.1397 9.85915 10.3156 9.85915 10.4988C9.85915 10.682 9.78701 10.8579 9.65834 10.9883L5.82834 14.8963C5.76506 14.9606 5.68964 15.0116 5.60646 15.0464C5.52329 15.0812 5.43401 15.0992 5.34384 15.0992C5.25366 15.0992 5.16439 15.0812 5.08121 15.0464C4.99803 15.0116 4.92261 14.9606 4.85934 14.8963C4.73048 14.7662 4.6582 14.5904 4.6582 14.4073C4.6582 14.2242 4.73048 14.0484 4.85934 13.9183L8.00034 10.4993Z"
+                                            fill="#3B3B3B" />
+                                    </svg>
+                                </a>
+                            </div>
                         </div>
                     </div>
 
-                    <div id="onePaymentPlans">
-                        <div class="mb-4 border-0 card">
-                            <div class="card-body">
-                                <div class="d-flex align-items-center justify-content-between">
-                                    <h6 class="mb-1" id="currentPlanName">{{ $planDetails?->name }}</h6>
-                                    <div class="">
-                                        <span class="" id="planPrice">A${{ number_format($planDetails?->price, 0) }}</span>
-                                        <small class="d-block mb-2" id="planDuration">One payment</small>
-                                    </div>
-                                </div>
-
-                                <p class="">{!! $planDetails?->description !!}</p>
-                                <div class="d-flex align-items-center justify-content-between">
-                                    <button class="btn-learn-more-blue plan-get-started-btn" data-plan-type="main" data-plan-price="{{ $planDetails?->price }}" data-monthly-price="{{ number_format($monthlyPlanPrice, 2) }}">Get started</button>
-                                    <a href="" class="text-decoration-none whats-included-link" data-bs-dismiss="modal">What's included
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="19"
-                                            viewBox="0 0 14 19" fill="none">
-                                            <path
-                                                d="M8.00034 10.4993L4.85934 7.0793C4.73048 6.94917 4.6582 6.77343 4.6582 6.5903C4.6582 6.40717 4.73048 6.23144 4.85934 6.1013C4.92261 6.03705 4.99803 5.98603 5.08121 5.9512C5.16439 5.91637 5.25366 5.89844 5.34384 5.89844C5.43401 5.89844 5.52329 5.91637 5.60646 5.9512C5.68964 5.98603 5.76506 6.03705 5.82834 6.1013L9.65834 10.0093C9.78701 10.1397 9.85915 10.3156 9.85915 10.4988C9.85915 10.682 9.78701 10.8579 9.65834 10.9883L5.82834 14.8963C5.76506 14.9606 5.68964 15.0116 5.60646 15.0464C5.52329 15.0812 5.43401 15.0992 5.34384 15.0992C5.25366 15.0992 5.16439 15.0812 5.08121 15.0464C4.99803 15.0116 4.92261 14.9606 4.85934 14.8963C4.73048 14.7662 4.6582 14.5904 4.6582 14.4073C4.6582 14.2242 4.73048 14.0484 4.85934 13.9183L8.00034 10.4993Z"
-                                                fill="#3B3B3B" />
-                                        </svg>
-                                    </a>
+                    <div class="position-relative mb-4 border-0 card">
+                        <span class="popular-badge">Popular</span>
+                        <div class="card-body">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <h6 class="mb-1">Power Play</h6>
+                                <div class="">
+                                    <span class="" id="powerPlayPrice">A${{ number_format($powerPlayPlanPrice, 0) }}</span>
+                                    <small class="d-block mb-2" id="powerPlayDuration">One payment</small>
                                 </div>
                             </div>
-                        </div>
-
-                        <div class="position-relative mb-4 border-0 card">
-                            <span class="popular-badge">Popular</span>
-                            <div class="card-body">
-                                <div class="d-flex align-items-center justify-content-between">
-                                    <h6 class="mb-1">Power Play</h6>
-                                    <div class="">
-                                        <span class="" id="powerPlayPrice">A${{ number_format($powerPlayPlanPrice, 0) }}</span>
-                                        <small class="d-block mb-2" id="powerPlayDuration">One payment</small>
-                                    </div>
-                                </div>
-                                <p class="">{{ $planDetails?->name }} + 30 min Consult with Extreme Sports Dietitian Kerry O'Byran.</p>
-                                <div class="d-flex align-items-center justify-content-between">
-                                    <button class="btn-learn-more-blue plan-get-started-btn" data-plan-type="powerplay" data-plan-price="{{ $powerPlayPlanPrice }}" data-monthly-price="{{ number_format($monthlyPowerPlayPrice, 2) }}">Get started</button>
-                                    <a href="{{ route('front.consultations') }}" class="text-decoration-none">About Consultations
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="19"
-                                            viewBox="0 0 14 19" fill="none">
-                                            <path
-                                                d="M8.00034 10.4993L4.85934 7.0793C4.73048 6.94917 4.6582 6.77343 4.6582 6.5903C4.6582 6.40717 4.73048 6.23144 4.85934 6.1013C4.92261 6.03705 4.99803 5.98603 5.08121 5.9512C5.16439 5.91637 5.25366 5.89844 5.34384 5.89844C5.43401 5.89844 5.52329 5.91637 5.60646 5.9512C5.68964 5.98603 5.76506 6.03705 5.82834 6.1013L9.65834 10.0093C9.78701 10.1397 9.85915 10.3156 9.85915 10.4988C9.85915 10.682 9.78701 10.8579 9.65834 10.9883L5.82834 14.8963C5.76506 14.9606 5.68964 15.0116 5.60646 15.0464C5.52329 15.0812 5.43401 15.0992 5.34384 15.0992C5.25366 15.0992 5.16439 15.0812 5.08121 15.0464C4.99803 15.0116 4.92261 14.9606 4.85934 14.8963C4.73048 14.7662 4.6582 14.5904 4.6582 14.4073C4.6582 14.2242 4.73048 14.0484 4.85934 13.9183L8.00034 10.4993Z"
-                                                fill="#3B3B3B" />
-                                        </svg>
-                                    </a>
-                                </div>
+                            <p class="">{{ $planDetails?->name }} + 30 min Consult with Extreme Sports Dietitian Kerry O'Byran.</p>
+                            <div class="d-flex align-items-center justify-content-between">
+                                <button class="btn-learn-more-blue plan-get-started-btn" data-plan-type="powerplay" data-plan-price="{{ $powerPlayPlanPrice }}" data-monthly-price="{{ number_format($monthlyPowerPlayPrice, 2) }}">Get started</button>
+                                <a href="{{ route('front.consultations') }}" class="text-decoration-none">About Consultations
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="19"
+                                        viewBox="0 0 14 19" fill="none">
+                                        <path
+                                            d="M8.00034 10.4993L4.85934 7.0793C4.73048 6.94917 4.6582 6.77343 4.6582 6.5903C4.6582 6.40717 4.73048 6.23144 4.85934 6.1013C4.92261 6.03705 4.99803 5.98603 5.08121 5.9512C5.16439 5.91637 5.25366 5.89844 5.34384 5.89844C5.43401 5.89844 5.52329 5.91637 5.60646 5.9512C5.68964 5.98603 5.76506 6.03705 5.82834 6.1013L9.65834 10.0093C9.78701 10.1397 9.85915 10.3156 9.85915 10.4988C9.85915 10.682 9.78701 10.8579 9.65834 10.9883L5.82834 14.8963C5.76506 14.9606 5.68964 15.0116 5.60646 15.0464C5.52329 15.0812 5.43401 15.0992 5.34384 15.0992C5.25366 15.0992 5.16439 15.0812 5.08121 15.0464C4.99803 15.0116 4.92261 14.9606 4.85934 14.8963C4.73048 14.7662 4.6582 14.5904 4.6582 14.4073C4.6582 14.2242 4.73048 14.0484 4.85934 13.9183L8.00034 10.4993Z"
+                                            fill="#3B3B3B" />
+                                    </svg>
+                                </a>
                             </div>
                         </div>
+                    </div>
 
-                        <div class="mb-4 border-0 card">
-                            <div class="card-body">
-                                <div class="d-flex align-items-center justify-content-between">
-                                    <h6 class="mb-1">Game Plan</h6>
-                                    <div class="">
-                                        <span class="" id="gamePlanPrice">A${{ number_format($gamePlanPlanPrice, 0) }}</span>
-                                        <small class="d-block mb-2" id="gamePlanDuration">One payment</small>
-                                    </div>
+                    <div class="mb-4 border-0 card">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <h6 class="mb-1">Game Plan</h6>
+                                <div class="">
+                                    <span class="" id="gamePlanPrice">A${{ number_format($gamePlanPlanPrice, 0) }}</span>
+                                    <small class="d-block mb-2" id="gamePlanDuration">One payment</small>
                                 </div>
+                            </div>
 
-                                <p class="">{{ $planDetails?->name }} + 60 min Consult with Kerry to cover Nutrition AND Training Advice</p>
-                                <div class="d-flex align-items-center justify-content-between">
-                                    <button class="btn-learn-more-blue plan-get-started-btn" data-plan-type="gameplan" data-plan-price="{{ $gamePlanPlanPrice }}" data-monthly-price="{{ number_format($monthlyGamePlanPrice, 2) }}">Get started</button>
-                                    <a href="{{ route('front.consultations') }}" class="text-decoration-none">What's in a 1 on 1
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="19"
-                                            viewBox="0 0 14 19" fill="none">
-                                            <path
-                                                d="M8.00034 10.4993L4.85934 7.0793C4.73048 6.94917 4.6582 6.77343 4.6582 6.5903C4.6582 6.40717 4.73048 6.23144 4.85934 6.1013C4.92261 6.03705 4.99803 5.98603 5.08121 5.9512C5.16439 5.91637 5.25366 5.89844 5.34384 5.89844C5.43401 5.89844 5.52329 5.91637 5.60646 5.9512C5.68964 5.98603 5.76506 6.03705 5.82834 6.1013L9.65834 10.0093C9.78701 10.1397 9.85915 10.3156 9.85915 10.4988C9.85915 10.682 9.78701 10.8579 9.65834 10.9883L5.82834 14.8963C5.76506 14.9606 5.68964 15.0116 5.60646 15.0464C5.52329 15.0812 5.43401 15.0992 5.34384 15.0992C5.25366 15.0992 5.16439 15.0812 5.08121 15.0464C4.99803 15.0116 4.92261 14.9606 4.85934 14.8963C4.73048 14.7662 4.6582 14.5904 4.6582 14.4073C4.6582 14.2242 4.73048 14.0484 4.85934 13.9183L8.00034 10.4993Z"
-                                                fill="#3B3B3B" />
-                                        </svg>
-                                    </a>
-                                </div>
+                            <p class="">{{ $planDetails?->name }} + 60 min Consult with Kerry to cover Nutrition AND Training Advice</p>
+                            <div class="d-flex align-items-center justify-content-between">
+                                <button class="btn-learn-more-blue plan-get-started-btn" data-plan-type="gameplan" data-plan-price="{{ $gamePlanPlanPrice }}" data-monthly-price="{{ number_format($monthlyGamePlanPrice, 2) }}">Get started</button>
+                                <a href="{{ route('front.consultations') }}" class="text-decoration-none">What's in a 1 on 1
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="19"
+                                        viewBox="0 0 14 19" fill="none">
+                                        <path
+                                            d="M8.00034 10.4993L4.85934 7.0793C4.73048 6.94917 4.6582 6.77343 4.6582 6.5903C4.6582 6.40717 4.73048 6.23144 4.85934 6.1013C4.92261 6.03705 4.99803 5.98603 5.08121 5.9512C5.16439 5.91637 5.25366 5.89844 5.34384 5.89844C5.43401 5.89844 5.52329 5.91637 5.60646 5.9512C5.68964 5.98603 5.76506 6.03705 5.82834 6.1013L9.65834 10.0093C9.78701 10.1397 9.85915 10.3156 9.85915 10.4988C9.85915 10.682 9.78701 10.8579 9.65834 10.9883L5.82834 14.8963C5.76506 14.9606 5.68964 15.0116 5.60646 15.0464C5.52329 15.0812 5.43401 15.0992 5.34384 15.0992C5.25366 15.0992 5.16439 15.0812 5.08121 15.0464C4.99803 15.0116 4.92261 14.9606 4.85934 14.8963C4.73048 14.7662 4.6582 14.5904 4.6582 14.4073C4.6582 14.2242 4.73048 14.0484 4.85934 13.9183L8.00034 10.4993Z"
+                                            fill="#3B3B3B" />
+                                    </svg>
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -112,166 +109,168 @@ $monthlyGamePlanPrice = ($gamePlanPlanPrice * 1.1) / $months;
             </div>
         </div>
     </div>
+</div>
 
-    <!-- Payment Modal -->
-    <div class="modal fade" id="paymentModalPlan" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
+<!-- Payment Modal -->
+<div class="modal fade" id="paymentModalPlan" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
 
-                <!-- Monthly Payment Content -->
-                <div id="paymentContentConsultation">
-                    <div class="pt-0 pb-0 border-0 modal-header">
-                        <h5 class="modal-title" id="paymentModalTitle">Power Play</h5>
+            <!-- Monthly Payment Content -->
+            <div id="paymentContentConsultation">
+                <div class="pt-0 pb-0 border-0 modal-header">
+                    <h5 class="modal-title" id="paymentModalTitle">Power Play</h5>
 
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <p class="modal-subtitle" id="paymentModalSubtitle">Nutrition Training Plan PLUS 30 min Nutrition Consultation </p>
-                        <p class="amount"><strong id="paymentModalPrice" data-original-price="0">A$51.25</strong> <span class="" id="paymentModalDuration">Per month for 8 months.</span></p>
-
-                        <span class="divider"></span>
-                        <p class="mb-2 sign-in-text" style="line-height: 22px;">Signed in as<br><strong>{{ Auth::user()->email ?? '' }}</strong></p>
-                        <a href="#" class="d-block mb-3 coupon-code" id="toggle-coupon-consultation">Add a Coupon
-                            Code</a>
-                        <!-- Coupon Code -->
-                        <div class="mb-3 d-none" id="coupon-details-consultation">
-                            <label for="promo-code-consultation" class="form-label">Coupon Code</label>
-                            <div class="d-flex gap-2">
-                                <input type="text" class="h-auto form-control" id="promo-code-consultation"
-                                    placeholder="Enter coupon code">
-                                <input type="hidden" class="form-control" id="discount-consultation">
-                                <button type="button" class="btn-learn-more-blue"
-                                    id="apply-promo-code-consultation">Apply</button>
-                            </div>
-                            <small id="promo-message-consultation" class="form-text"></small>
-                        </div>
-
-                        <form id="paymentForm">
-                            <div class="form-wrap">
-                                <div class="mb-3">
-                                    <label class="form-label">Card number</label>
-                                    <div class="input-with-icon">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" class="input-icon">
-                                            <path d="M22.5 21H1.5C1.10218 21 0.720644 20.842 0.43934 20.5607C0.158035 20.2794 0 19.8978 0 19.5L0 7.5H24V19.5C24 20.3295 23.3295 21 22.5 21ZM13.1355 11.0265C12.579 10.6995 11.94 10.5 11.25 10.5C9.1785 10.5 7.5 12.1785 7.5 14.25C7.5 16.3215 9.1785 18 11.25 18C11.94 18 12.579 17.8005 13.1355 17.4735C12.435 16.5825 12 15.471 12 14.25C12 13.029 12.435 11.9175 13.1355 11.0265ZM17.25 10.5C15.1785 10.5 13.5 12.1785 13.5 14.25C13.5 16.3215 15.1785 18 17.25 18C19.3215 18 21 16.3215 21 14.25C21 12.1785 19.3215 10.5 17.25 10.5ZM0 4.5C0 4.10218 0.158035 3.72064 0.43934 3.43934C0.720644 3.15804 1.10218 3 1.5 3H22.5C23.3295 3 24 3.6705 24 4.5V6H0V4.5Z" fill="#B1B1B1"/>
-                                        </svg>
-                                        <div id="card-number-element" class="form-control">
-                                            <!-- Stripe Elements will create form elements here -->
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Name on card</label>
-                                    <input type="text" class="form-control" id="card-holder-name" placeholder="Card name" required>
-                                </div>
-                                <div class="row">
-                                    <div class="mb-3 col-6">
-                                        <label class="form-label">Expiry date</label>
-                                        <div id="card-expiry-element" class="form-control">
-                                            <!-- Stripe Elements will create form elements here -->
-                                        </div>
-                                    </div>
-                                    <div class="mb-3 col-6">
-                                        <label class="form-label">CVV</label>
-                                        <div id="card-cvc-element" class="form-control">
-                                            <!-- Stripe Elements will create form elements here -->
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Button that swaps modal content -->
-                            {{-- make this button text in the center --}}
-                            <button type="submit" class="w-100 btn btn-learn-more-blue" id="paymentButton">
-                                One Payment | A${{ number_format($planDetails?->price, 0) }}
-                            </button>
-                        </form>
-
-                      <p class="mt-3 text-muted small confirm-text">
-                            By confirming your monthly amount, you allow Athleat Fuel to charge you for future payments in accordance with your chosen plan for the next 8 months.
-                        </p>
-                        <p class="mt-3 text-muted small confirm-text">
-                            By placing your order, you agree to our <a href="#" class="terms-link">Terms of Service</a>
-                            and <a href="#" class="terms-link">Privacy Policy</a>.
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Congrats Modal for Plan Selection -->
-    <div class="modal fade" id="congratsModalPlan" tabindex="-1" aria-labelledby="congratsModalPlanLabel"
-        aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content" style="border-radius: 12px;">
-                <div id="congratsContentPlan">
-                    <img src="{{ frontAssets('images/consultation/congrats-modal-img.png') }}" alt="Congrats"
-                        class="rounded-top w-100">
-                    <div class="p-4 text-center modal-body">
-                        <div class="mb-3">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="61" height="60" viewBox="0 0 61 60"
-                                fill="none">
-                                <path
-                                    d="M30.1875 53.75C43.4768 53.75 54.25 42.9768 54.25 29.6875C54.25 16.3981 43.4768 5.625 30.1875 5.625C16.8981 5.625 6.125 16.3981 6.125 29.6875C6.125 42.9768 16.8981 53.75 30.1875 53.75Z"
-                                    stroke="#3E8E00" stroke-width="3" />
-                                <path
-                                    d="M19.25 30.625C20.2764 31.6514 22.6373 34.0123 25.2945 36.6695C26.2708 37.6458 27.8539 37.6461 28.8302 36.6698L42.375 23.125"
-                                    stroke="#3E8E00" stroke-width="3" stroke-linecap="round" />
-                            </svg>
-                        </div>
-                        <h4 class="congrats-title"><strong>Congrats legend!</strong></h4>
-                        <p class="mb-1 congrats-subtitle" id="congratsPlanName">
-                            <strong>Your {{ $planDetails?->name }}</strong>
-                        <p class="congrats-para" id="congratsPlanDescription">
-                            We'll send you an email to book your consultation. You will need to complete your
-                            questionnaire prior then Kerry will start working on your personalised nutrition plan and it
-                            will appear in your web app, as soon as it's ready.
-                        </p>
-                        <!-- Dynamic content based on plan type -->
-                        <div id="congratsPlanContent">
-                            <!-- For Power Play/Game Plan - show Book a time button -->
-                            <div id="powerPlayGamePlanContent" style="display: none;">
-                                <p class="mb-3 congrats-para">
-                                    Let's book in a time for your consultation!
-                                </p>
-                                <button type="button" class="w-100 btn btn-learn-more-blue" id="book-time-btn-plan">Book a Time</button>
-                            </div>
-                            <!-- For Normal Plan - show questionnaire button -->
-                            <div id="normalPlanContent" style="display: none;">
-                                <button type="button" class="w-100 btn btn-learn-more-blue" id="completeQuestionnaireBtn">Next - Complete Questionnaire</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Calendar Booking Modal -->
-    <div class="modal fade" id="calendarBookingModalPlan" tabindex="-1" aria-labelledby="calendarBookingModalPlanLabel"
-        aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-xl modal-dialog-centered">
-            <div class="modal-content" style="border-radius: 12px;">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="calendarBookingModalPlanLabel">Book Your Consultation</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body p-0">
-                    <div class="calendar-container" style="height: 600px;">
-                        <!-- Google Calendar Appointment Scheduling begin -->
-                        <iframe id="calendar-iframe-plan" src="" style="border: 0" width="100%" height="600"
-                            frameborder="0"></iframe>
-                        <!-- end Google Calendar Appointment Scheduling -->
+                <div class="modal-body">
+                    <p class="modal-subtitle" id="paymentModalSubtitle">Nutrition Training Plan PLUS 30 min Nutrition Consultation </p>
+                    <p class="amount"><strong id="paymentModalPrice" data-original-price="0">A$51.25</strong> <span class="" id="paymentModalDuration">Per month for 8 months.</span></p>
+
+                    <span class="divider"></span>
+                    <p class="mb-2 sign-in-text" style="line-height: 22px;">Signed in as<br><strong>{{ Auth::user()->email ?? '' }}</strong></p>
+                    <a href="#" class="d-block mb-3 coupon-code" id="toggle-coupon-consultation">Add a Coupon
+                        Code</a>
+                    <!-- Coupon Code -->
+                    <div class="mb-3 d-none" id="coupon-details-consultation">
+                        <label for="promo-code-consultation" class="form-label">Coupon Code</label>
+                        <div class="d-flex gap-2">
+                            <input type="text" class="h-auto form-control" id="promo-code-consultation"
+                                placeholder="Enter coupon code">
+                            <input type="hidden" class="form-control" id="discount-consultation">
+                            <button type="button" class="btn-learn-more-blue"
+                                id="apply-promo-code-consultation">Apply</button>
+                        </div>
+                        <small id="promo-message-consultation" class="form-text"></small>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <p class="text-muted small mb-0">
-                        <i class="fas fa-info-circle me-1"></i>
-                        After booking your consultation, you'll be redirected based on your questionnaire completion status.
+
+                    <form id="paymentForm">
+                        <div class="form-wrap">
+                            <div class="mb-3">
+                                <label class="form-label">Card number</label>
+                                <div class="input-with-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" class="input-icon">
+                                        <path d="M22.5 21H1.5C1.10218 21 0.720644 20.842 0.43934 20.5607C0.158035 20.2794 0 19.8978 0 19.5L0 7.5H24V19.5C24 20.3295 23.3295 21 22.5 21ZM13.1355 11.0265C12.579 10.6995 11.94 10.5 11.25 10.5C9.1785 10.5 7.5 12.1785 7.5 14.25C7.5 16.3215 9.1785 18 11.25 18C11.94 18 12.579 17.8005 13.1355 17.4735C12.435 16.5825 12 15.471 12 14.25C12 13.029 12.435 11.9175 13.1355 11.0265ZM17.25 10.5C15.1785 10.5 13.5 12.1785 13.5 14.25C13.5 16.3215 15.1785 18 17.25 18C19.3215 18 21 16.3215 21 14.25C21 12.1785 19.3215 10.5 17.25 10.5ZM0 4.5C0 4.10218 0.158035 3.72064 0.43934 3.43934C0.720644 3.15804 1.10218 3 1.5 3H22.5C23.3295 3 24 3.6705 24 4.5V6H0V4.5Z" fill="#B1B1B1"/>
+                                    </svg>
+                                    <div id="card-number-element" class="form-control">
+                                        <!-- Stripe Elements will create form elements here -->
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Name on card</label>
+                                <input type="text" class="form-control" id="card-holder-name" placeholder="Card name" required>
+                            </div>
+                            <div class="row">
+                                <div class="mb-3 col-6">
+                                    <label class="form-label">Expiry date</label>
+                                    <div id="card-expiry-element" class="form-control">
+                                        <!-- Stripe Elements will create form elements here -->
+                                    </div>
+                                </div>
+                                <div class="mb-3 col-6">
+                                    <label class="form-label">CVV</label>
+                                    <div id="card-cvc-element" class="form-control">
+                                        <!-- Stripe Elements will create form elements here -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Button that swaps modal content -->
+                        {{-- make this button text in the center --}}
+                        <button type="submit" class="w-100 btn btn-learn-more-blue" id="paymentButton">
+                            One Payment | A${{ number_format($planDetails?->price, 0) }}
+                        </button>
+                    </form>
+
+                    <p class="mt-3 text-muted small confirm-text">
+                        By confirming your monthly amount, you allow Athleat Fuel to charge you for future payments in accordance with your chosen plan for the next 8 months.
+                    </p>
+                    <p class="mt-3 text-muted small confirm-text">
+                        By placing your order, you agree to our
+                        <a class="terms-link" data-title="terms-of-service" id="terms-of-service-link" data-url="{{ route('front.terms-and-conditions') }}" data-bs-toggle="modal" data-bs-target="#legalModal">Terms of Service</a> and
+                        <a class="terms-link" data-title="privacy-policy" id="privacy-policy-link" data-url="{{ route('front.privacy-policy') }}" data-bs-toggle="modal" data-bs-target="#legalModal">Privacy Policy</a>.
                     </p>
                 </div>
             </div>
         </div>
     </div>
+</div>
+
+<!-- Congrats Modal for Plan Selection -->
+<div class="modal fade" id="congratsModalPlan" tabindex="-1" aria-labelledby="congratsModalPlanLabel"
+    aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="border-radius: 12px;">
+            <div id="congratsContentPlan">
+                <img src="{{ frontAssets('images/consultation/congrats-modal-img.png') }}" alt="Congrats"
+                    class="rounded-top w-100">
+                <div class="p-4 text-center modal-body">
+                    <div class="mb-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="61" height="60" viewBox="0 0 61 60"
+                            fill="none">
+                            <path
+                                d="M30.1875 53.75C43.4768 53.75 54.25 42.9768 54.25 29.6875C54.25 16.3981 43.4768 5.625 30.1875 5.625C16.8981 5.625 6.125 16.3981 6.125 29.6875C6.125 42.9768 16.8981 53.75 30.1875 53.75Z"
+                                stroke="#3E8E00" stroke-width="3" />
+                            <path
+                                d="M19.25 30.625C20.2764 31.6514 22.6373 34.0123 25.2945 36.6695C26.2708 37.6458 27.8539 37.6461 28.8302 36.6698L42.375 23.125"
+                                stroke="#3E8E00" stroke-width="3" stroke-linecap="round" />
+                        </svg>
+                    </div>
+                    <h4 class="congrats-title"><strong>Congrats legend!</strong></h4>
+                    <p class="mb-1 congrats-subtitle" id="congratsPlanName">
+                        <strong>Your {{ $planDetails?->name }}</strong>
+                    <p class="congrats-para" id="congratsPlanDescription">
+                        We'll send you an email to book your consultation. You will need to complete your
+                        questionnaire prior then Kerry will start working on your personalised nutrition plan and it
+                        will appear in your web app, as soon as it's ready.
+                    </p>
+                    <!-- Dynamic content based on plan type -->
+                    <div id="congratsPlanContent">
+                        <!-- For Power Play/Game Plan - show Book a time button -->
+                        <div id="powerPlayGamePlanContent" style="display: none;">
+                            <p class="mb-3 congrats-para">
+                                Let's book in a time for your consultation!
+                            </p>
+                            <button type="button" class="w-100 btn btn-learn-more-blue" id="book-time-btn-plan">Book a Time</button>
+                        </div>
+                        <!-- For Normal Plan - show questionnaire button -->
+                        <div id="normalPlanContent" style="display: none;">
+                            <button type="button" class="w-100 btn btn-learn-more-blue" id="completeQuestionnaireBtn">Next - Complete Questionnaire</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Calendar Booking Modal -->
+<div class="modal fade" id="calendarBookingModalPlan" tabindex="-1" aria-labelledby="calendarBookingModalPlanLabel"
+    aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content" style="border-radius: 12px;">
+            <div class="modal-header">
+                <h5 class="modal-title" id="calendarBookingModalPlanLabel">Book Your Consultation</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-0">
+                <div class="calendar-container" style="height: 600px;">
+                    <!-- Google Calendar Appointment Scheduling begin -->
+                    <iframe id="calendar-iframe-plan" src="" style="border: 0" width="100%" height="600"
+                        frameborder="0"></iframe>
+                    <!-- end Google Calendar Appointment Scheduling -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <p class="text-muted small mb-0">
+                    <i class="fas fa-info-circle me-1"></i>
+                    After booking your consultation, you'll be redirected based on your questionnaire completion status.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
 
 @if(Auth::check())
     <script>
@@ -280,6 +279,8 @@ $monthlyGamePlanPrice = ($gamePlanPlanPrice * 1.1) / $months;
         });
     </script>
 @endif
+
+@include('front.modal.legal')
 
 <!-- JavaScript for Modal Functionality -->
 <script src="https://js.stripe.com/v3/"></script>

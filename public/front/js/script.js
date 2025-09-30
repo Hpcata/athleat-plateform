@@ -415,3 +415,25 @@ $(
         }, 700); // Hide after 700ms of no scroll
     });
 });
+
+
+$("#terms-of-service-link, #privacy-policy-link").on("click", function () {
+    const url = $(this).data("url");
+
+    $.ajax({
+        url: url,
+        type: "GET",
+        success: function (response) {
+            $("#legalModal").modal("show");
+            $("#legalModalLabel").text(response.title);
+            $("#legalModalBody").html(response.content);
+        },
+        error: function (response) {
+            alert("Failed to load content");
+            $("#legalModal").modal("hide");
+        }
+    }).fail(function (response) {
+        alert("Failed to load content");
+        $("#legalModal").modal("hide");
+    });
+});

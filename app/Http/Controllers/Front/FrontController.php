@@ -2107,4 +2107,16 @@ class FrontController extends Controller
         $page = Page::with('sections')->where('slug', 'about_us')->first();
         return view('front.pages.about-us', compact('page'));
     }
+
+    public function termsAndConditions(Request $request)
+    {
+        $page = Page::with('sections')->where('slug', 'terms_and_conditions')->first();
+        return response()->json(['content' => $page->sections->first()->content ?? '', 'title' => $page->sections->first()->title ?? '']);
+    }
+
+    public function privacyPolicy(Request $request)
+    {
+        $page = Page::with('sections')->where('slug', 'privacy_policy')->first();
+        return response()->json(['content' => $page->sections->first()->content ?? '', 'title' => $page->sections->first()->title ?? '']);
+    }
 }
