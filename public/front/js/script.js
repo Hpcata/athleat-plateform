@@ -437,3 +437,15 @@ $("#terms-of-service-link, #privacy-policy-link").on("click", function () {
         $("#legalModal").modal("hide");
     });
 });
+
+// plate breakdown prevent double tap
+document.addEventListener('DOMContentLoaded', function () {
+    var dropdownBtns = document.querySelectorAll('.custom-dropdown-button');
+    dropdownBtns.forEach(function(btn) {
+        btn.addEventListener('touchend', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            btn.click();
+        }, false);
+    });
+});

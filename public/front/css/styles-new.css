@@ -1574,7 +1574,7 @@ background-image: url(/front/images/hero-section/tennis.webp);
         overflow-x: auto;
         gap: 1rem;
         -webkit-overflow-scrolling: touch;
-        scroll-snap-type: x mandatory;
+        /* scroll-snap-type: x mandatory; */
         scrollbar-width: none;
     }
     .challenges .challenge-cards::-webkit-scrollbar,
@@ -1586,7 +1586,7 @@ background-image: url(/front/images/hero-section/tennis.webp);
         min-width: 200px;
         max-width: 200px;
         flex: 0 0 200px;
-        scroll-snap-align: start;
+        /* scroll-snap-align: start; */
     }
     .challenges .challenge-cards,
     .consults-plans-grid,
@@ -1603,14 +1603,14 @@ background-image: url(/front/images/hero-section/tennis.webp);
         overflow-x: auto;
         gap: 1rem;
         -webkit-overflow-scrolling: touch;
-        scroll-snap-type: x mandatory;
+        /* scroll-snap-type: x mandatory; */
         scrollbar-width: none;
     }
     .plan-card-custom {
         min-width: 290px;
         max-width: 290px;
         flex: 0 0 290px;
-        scroll-snap-align: start;
+        /* scroll-snap-align: start; */
         padding: 12px;
     }
     .resources-custom-grid {

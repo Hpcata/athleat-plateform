@@ -329,7 +329,7 @@ body {
     scroll-behavior: smooth;
     gap: 15px;
     -webkit-overflow-scrolling: touch;
-    scroll-snap-type: x mandatory;
+    /* scroll-snap-type: x mandatory; */
     scrollbar-width: none;
 }
 
@@ -362,7 +362,7 @@ body {
     min-width: 200px;
     max-width: 200px;
     flex: 0 0 200px;
-    scroll-snap-align: start;
+    /* scroll-snap-align: start; */
     position: relative;
     overflow: hidden;
 }
@@ -3904,7 +3904,7 @@ button:focus,
         overflow-x: auto;
         gap: 1rem;
         -webkit-overflow-scrolling: touch;
-        scroll-snap-type: x mandatory;
+        /* scroll-snap-type: x mandatory; */
         scrollbar-width: none;
     }
 
@@ -3918,7 +3918,7 @@ button:focus,
         min-width: 200px;
         max-width: 200px;
         flex: 0 0 200px;
-        scroll-snap-align: start;
+        /* scroll-snap-align: start; */
     }
 
     .challenges .challenge-cards,
@@ -3936,7 +3936,7 @@ button:focus,
         overflow-x: auto;
         gap: 1rem;
         -webkit-overflow-scrolling: touch;
-        scroll-snap-type: x mandatory;
+        /* scroll-snap-type: x mandatory; */
         scrollbar-width: none;
     }
 
@@ -3944,7 +3944,7 @@ button:focus,
         min-width: 290px;
         max-width: 290px;
         flex: 0 0 290px;
-        scroll-snap-align: start;
+        /* scroll-snap-align: start; */
         padding: 12px;
     }
 

@@ -5440,7 +5440,7 @@ a.btn-signup {
     .athlete-card {
         height: 200px;
         flex: 0 0 80%;
-        scroll-snap-align: start
+        /* scroll-snap-align: start */
     }
 
     .athlete-name {
@@ -5455,7 +5455,7 @@ a.btn-signup {
         overflow-x: auto;
         overflow-y: hidden;
         -webkit-overflow-scrolling: touch;
-        scroll-snap-type: x mandatory
+        /* scroll-snap-type: x mandatory */
     }
 }
 
