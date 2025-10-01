@@ -12,10 +12,10 @@ $intresetsmallimg1 = $intresetsmallimg2 = $intresetsmallimg3 = $intrestimg1 = $i
         @foreach($page->sections as $section)
             @if($section->section_type == \App\Models\Section::TYPE_CONSULTATION_MAIN_BANNER && $section->enabled == 1)
                 @php
-            $bannerImage = '';
-            if (isset($section->banner_image[0])) {
-                $bannerImage = $section->banner_image[0];
-            }
+                    $bannerImage = '';
+                    if (isset($section->banner_image[0])) {
+                        $bannerImage = $section->banner_image[0];
+                    }
                 @endphp
                 <div class="hero-section-landing consultations"
                     style="background-image: url('{{ webAssets('storage/' . $bannerImage) }}')">
@@ -43,14 +43,14 @@ $intresetsmallimg1 = $intresetsmallimg2 = $intresetsmallimg3 = $intrestimg1 = $i
             @endif
             @if($section->section_type == \App\Models\Section::TYPE_CONSULTATION_INCLUSIONS && $section->enabled == 1 && isset($consultations) && $consultations->count() > 0)
                 @php
-            $backgroundImage = '';
-            if (isset($section->banner_image[0])) {
-                $backgroundImage = asset('storage/' . $section->banner_image[0]);
-            }
+                    $backgroundImage = '';
+                    if (isset($section->banner_image[0])) {
+                        $backgroundImage = asset('storage/' . $section->banner_image[0]);
+                    }
 
-            if (isset($section->image[0])) {
-                $blueBadgeImg = asset('storage/' . $section->image[0]);
-            }
+                    if (isset($section->image[0])) {
+                        $blueBadgeImg = asset('storage/' . $section->image[0]);
+                    }
                 @endphp
                 <section class="plan-inclusion-section"
                     style="background-image: url('{{ $backgroundImage }}'); background-size: cover; background-position: center; background-repeat: no-repeat;">
@@ -91,7 +91,6 @@ $intresetsmallimg1 = $intresetsmallimg2 = $intresetsmallimg3 = $intrestimg1 = $i
                             {!! $section->title !!}
                         </h2>
                     </div>
-
 
                     <div class="slider-container">
                         <div class="slide-left logo-row infinite-slider-left">
@@ -139,24 +138,24 @@ $intresetsmallimg1 = $intresetsmallimg2 = $intresetsmallimg3 = $intrestimg1 = $i
             @endif
             @if($section->section_type == \App\Models\Section::TYPE_CONSULTATION_INTERESTS && $section->enabled == 1)
                 @php
-            if (isset($section->banner_image[0])) {
-                $intresetsmallimg1 = asset('storage/' . $section->banner_image[0]);
-            }
-            if (isset($section->banner_image[1])) {
-                $intrestimg1 = asset('storage/' . $section->banner_image[1]);
-            }
-            if (isset($section->banner_image[2])) {
-                $intresetsmallimg2 = asset('storage/' . $section->banner_image[2]);
-            }
-            if (isset($section->banner_image[3])) {
-                $intrestimg2 = asset('storage/' . $section->banner_image[3]);
-            }
-            if (isset($section->image[0])) {
-                $intresetsmallimg3 = asset('storage/' . $section->image[0]);
-            }
-            if (isset($section->image[1])) {
-                $intrestimg3 = asset('storage/' . $section->image[1]);
-            }
+                    if (isset($section->banner_image[0])) {
+                        $intresetsmallimg1 = asset('storage/' . $section->banner_image[0]);
+                    }
+                    if (isset($section->banner_image[1])) {
+                        $intrestimg1 = asset('storage/' . $section->banner_image[1]);
+                    }
+                    if (isset($section->banner_image[2])) {
+                        $intresetsmallimg2 = asset('storage/' . $section->banner_image[2]);
+                    }
+                    if (isset($section->banner_image[3])) {
+                        $intrestimg2 = asset('storage/' . $section->banner_image[3]);
+                    }
+                    if (isset($section->image[0])) {
+                        $intresetsmallimg3 = asset('storage/' . $section->image[0]);
+                    }
+                    if (isset($section->image[1])) {
+                        $intrestimg3 = asset('storage/' . $section->image[1]);
+                    }
                 @endphp
                 <section class="recommended-plans-section">
                     <div class="container-homepage">
@@ -628,23 +627,30 @@ $intresetsmallimg1 = $intresetsmallimg2 = $intresetsmallimg3 = $intrestimg1 = $i
             document.getElementById('blue-badge-img').src = blueBadgeImg;
         }
 
-        //btn-learn-more-blue
-        $('.plan-inclusion-section .btn-learn-more-blue').on('click', function () {
-            $('#TPMAIU-purchase-plan-btn').click();
-        });
+        const injuryPlanLink = document.getElementById('injury-plan-link');
+        const trainingPlanLink = document.getElementById('training-plan-link');
+
+        if (injuryPlanLink) {
+            injuryPlanLink.dataset.url = "{{ route('front.injury.recovery.plan') }}";
+            injuryPlanLink.addEventListener('click', function() {
+                window.location.href = injuryPlanLink.href;
+            });
+        }
+
+        if (trainingPlanLink) {
+            trainingPlanLink.dataset.url = "{{ route('front.training.nutrition.plan') }}";
+            trainingPlanLink.addEventListener('click', function() {
+                window.location.href = trainingPlanLink.href;
+            });
+        }
 
         $('#competition-plan-link').on('click', function () {
             showLearnMoreTooltip(this, 'Coming Soon')
         });
-        $('#injury-plan-link').on('click', function () {
-            window.location.href = "{{ route('front.injury.recovery.plan') }}";
-        });
         $('#surgery-plan-link').on('click', function () {
             showLearnMoreTooltip(this, 'Coming Soon')
         });
-        $('#training-plan-link').on('click', function () {
-            window.location.href = "{{ route('front.training.nutrition.plan') }}";
-        });
+
         // Scroll to Consults section when book-consult-purchase-btn is clicked
         $('#book-consult-purchase-btn').on('click', function () {
             $('html, body').animate({
