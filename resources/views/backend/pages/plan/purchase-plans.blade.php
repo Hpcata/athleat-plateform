@@ -9,6 +9,97 @@
             margin-bottom: 15px !important;
             border-top: 1px solid black !important;
         }
+
+        /* Mobile responsive table styles */
+        @media (max-width: 768px) {
+            .table-responsive-mobile {
+                display: none;
+            }
+
+            .mobile-card-view {
+                display: block;
+            }
+
+            .mobile-card {
+                border: 1px solid #dee2e6;
+                border-radius: 8px;
+                margin-bottom: 15px;
+                padding: 15px;
+                background: #fff;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            }
+
+            .mobile-card-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 10px;
+                padding-bottom: 10px;
+                border-bottom: 1px solid #eee;
+            }
+
+            .mobile-card-title {
+                font-weight: 600;
+                color: #333;
+                margin: 0;
+            }
+
+            .mobile-card-id {
+                background: #f8f9fa;
+                padding: 4px 8px;
+                border-radius: 4px;
+                font-size: 12px;
+                color: #6c757d;
+            }
+
+            .mobile-card-body {
+                margin-bottom: 10px;
+            }
+
+            .mobile-card-row {
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 8px;
+                font-size: 14px;
+            }
+
+            .mobile-card-label {
+                font-weight: 500;
+                color: #666;
+                min-width: 80px;
+            }
+
+            .mobile-card-value {
+                color: #333;
+                text-align: right;
+                flex: 1;
+                margin-left: 10px;
+            }
+
+            .mobile-card-actions {
+                display: flex;
+                gap: 5px;
+                justify-content: flex-end;
+                margin-top: 10px;
+                padding-top: 10px;
+                border-top: 1px solid #eee;
+            }
+
+            .mobile-card-actions .btn {
+                padding: 4px 8px;
+                font-size: 12px;
+            }
+        }
+
+        @media (min-width: 769px) {
+            .mobile-card-view {
+                display: none;
+            }
+
+            .table-responsive-mobile {
+                display: block;
+            }
+        }
     </style>
 
     <div class="container-xxl">
@@ -27,8 +118,7 @@
 
         <div class="row align-items-center">
             <div class="border-0 mb-4">
-                <div
-                    class="card-header pb-3 no-bg bg-transparent d-flex align-items-center px-0 justify-content-between border-bottom">
+                <div class="card-header pb-3 no-bg bg-transparent d-flex align-items-center px-0 justify-content-between border-bottom">
                     <h3 class="fw-bold mb-0">Purchase Plans List</h3>
                 </div>
             </div>
@@ -38,59 +128,140 @@
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-body">
-                        <table id="myDataTable" class="table table-hover align-middle mb-0" style="width: 100%;">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Name</th>
-                                    <th>Plan</th>
-                                    <th>Email</th>
-                                    <th>Price</th>
-                                    <th>Phone</th>
-                                    <th style="white-space: nowrap;">Purchase Date</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($payments as $payment)
-                                    @php
-                                        $isPlanCreated = false;
-                                        if (array_key_exists($payment->user_id, $useWisePlanData) && in_array($payment->plan_id, $useWisePlanData[$payment->user_id])) {
-                                            $isPlanCreated = true;
-                                        }
-                                    @endphp
+                        <!-- Search Filter - Mobile Only -->
+                        <div class="row mb-3 d-md-none">
+                            <div class="col-12">
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="input-group flex-grow-1">
+                                        <span class="input-group-text"><i class="icofont-search-1"></i></span>
+                                        <input type="text" id="searchInput" class="form-control" placeholder="Search by name, email, plan, or phone...">
+                                    </div>
+                                    <button type="button" id="clearSearch" class="btn btn-outline-secondary">
+                                        <i class="icofont-close-circled me-1"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Desktop Table View -->
+                        <div class="table-responsive-mobile">
+                            <table id="purchasePlansTable" class="table table-hover align-middle mb-0" style="width: 100%;">
+                                <thead>
                                     <tr>
-                                        <td>{{ $payment->id }}</td>
-                                        <td>{{ $payment->name }}</td>
-                                        <td>{{ $payment->plan->name ?? 'N/A' }}</td>
-                                        <td>{{ $payment->email }}</td>
-                                        <td>{{ $payment->price }}</td>
-                                        <td>{{ $payment->phone }}</td>
-                                        <td>{{ formatDate($payment->created_at) }}</td>
-                                        <td>
-                                            <!-- Action link to show payment details -->
-                                            <a href="javascript:void(0);"
-                                                class="btn btn-sm btn-outline-primary user-pre-plan-details m-1"
-                                                data-payment-id="{{ $payment->id }}"><i
-                                                    class="icofont-eye text-primary"></i></a>
-                                            <a href="javascript:void(0);"
-                                                class="btn btn-sm btn-outline-info payment-info-btn m-1"
-                                                data-payment-id="{{ $payment->id }}" title="Payment Information"><i
-                                                    class="icofont-info-circle text-info"></i></a>
-                                            @if($isPlanCreated)
-                                                <a href="{{ route('admin.purchase-plans.edit', ['user' => $payment->user_id, 'plan' => $payment->id]) }}"
-                                                    class="btn btn-sm btn-outline-success m-1"><i
-                                                        class="icofont-edit text-success"></i></a>
-                                            @else
-                                                <a href="{{ route('admin.purchase-plans.create', $payment->id) }}"
-                                                    class="btn btn-sm btn-outline-success m-1"><i
-                                                        class="icofont-plus text-success"></i></a>
-                                            @endif
-                                        </td>
+                                        <th>ID</th>
+                                        <th>Name</th>
+                                        <th>Plan</th>
+                                        <th>Email</th>
+                                        <th>Price</th>
+                                        <th>Phone</th>
+                                        <th style="white-space: nowrap;">Purchase Date</th>
+                                        <th>Action</th>
                                     </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    @foreach($payments as $payment)
+                                        @php
+                                            $isPlanCreated = false;
+                                            if (array_key_exists($payment->user_id, $useWisePlanData) && in_array($payment->plan_id, $useWisePlanData[$payment->user_id])) {
+                                                $isPlanCreated = true;
+                                            }
+                                        @endphp
+                                        <tr>
+                                            <td>{{ $payment->id }}</td>
+                                            <td>{{ $payment->name }}</td>
+                                            <td>{{ $payment->plan->name ?? 'N/A' }}</td>
+                                            <td>{{ $payment->email }}</td>
+                                            <td>{{ $payment->price }}</td>
+                                            <td>{{ $payment->phone }}</td>
+                                            <td>{{ formatDate($payment->created_at) }}</td>
+                                            <td>
+                                                <!-- Action link to show payment details -->
+                                                <a href="javascript:void(0);"
+                                                    class="btn btn-sm btn-outline-primary user-pre-plan-details m-1"
+                                                    data-payment-id="{{ $payment->id }}"><i
+                                                        class="icofont-eye text-primary"></i></a>
+                                                <a href="javascript:void(0);"
+                                                    class="btn btn-sm btn-outline-info payment-info-btn m-1"
+                                                    data-payment-id="{{ $payment->id }}" title="Payment Information"><i
+                                                        class="icofont-info-circle text-info"></i></a>
+                                                @if($isPlanCreated)
+                                                    <a href="{{ route('admin.purchase-plans.edit', ['user' => $payment->user_id, 'plan' => $payment->id]) }}"
+                                                        class="btn btn-sm btn-outline-success m-1"><i
+                                                            class="icofont-edit text-success"></i></a>
+                                                @else
+                                                    <a href="{{ route('admin.purchase-plans.create', $payment->id) }}"
+                                                        class="btn btn-sm btn-outline-success m-1"><i
+                                                            class="icofont-plus text-success"></i></a>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Mobile Card View -->
+                        <div class="mobile-card-view">
+                            @foreach($payments as $payment)
+                                @php
+                                    $isPlanCreated = false;
+                                    if (array_key_exists($payment->user_id, $useWisePlanData) && in_array($payment->plan_id, $useWisePlanData[$payment->user_id])) {
+                                        $isPlanCreated = true;
+                                    }
+                                @endphp
+                                <div class="mobile-card">
+                                    <div class="mobile-card-header">
+                                        <h6 class="mobile-card-title">{{ $payment->name }}</h6>
+                                        <span class="mobile-card-id">ID: {{ $payment->id }}</span>
+                                    </div>
+                                    <div class="mobile-card-body">
+                                        <div class="mobile-card-row">
+                                            <span class="mobile-card-label">Plan:</span>
+                                            <span class="mobile-card-value">{{ $payment->plan->name ?? 'N/A' }}</span>
+                                        </div>
+                                        <div class="mobile-card-row">
+                                            <span class="mobile-card-label">Email:</span>
+                                            <span class="mobile-card-value">{{ $payment->email }}</span>
+                                        </div>
+                                        <div class="mobile-card-row">
+                                            <span class="mobile-card-label">Price:</span>
+                                            <span class="mobile-card-value">${{ $payment->price }}</span>
+                                        </div>
+                                        <div class="mobile-card-row">
+                                            <span class="mobile-card-label">Phone:</span>
+                                            <span class="mobile-card-value">{{ $payment->phone }}</span>
+                                        </div>
+                                        <div class="mobile-card-row">
+                                            <span class="mobile-card-label">Date:</span>
+                                            <span class="mobile-card-value">{{ formatDate($payment->created_at) }}</span>
+                                        </div>
+                                    </div>
+                                    <div class="mobile-card-actions">
+                                        <a href="javascript:void(0);"
+                                            class="btn btn-sm btn-outline-primary user-pre-plan-details"
+                                            data-payment-id="{{ $payment->id }}" title="View Details">
+                                            <i class="icofont-eye"></i>
+                                        </a>
+                                        <a href="javascript:void(0);"
+                                            class="btn btn-sm btn-outline-info payment-info-btn"
+                                            data-payment-id="{{ $payment->id }}" title="Payment Info">
+                                            <i class="icofont-info-circle"></i>
+                                        </a>
+                                        @if($isPlanCreated)
+                                            <a href="{{ route('admin.purchase-plans.edit', ['user' => $payment->user_id, 'plan' => $payment->id]) }}"
+                                                class="btn btn-sm btn-outline-success" title="Edit Plan">
+                                                <i class="icofont-edit"></i>
+                                            </a>
+                                        @else
+                                            <a href="{{ route('admin.purchase-plans.create', $payment->id) }}"
+                                                class="btn btn-sm btn-outline-success" title="Create Plan">
+                                                <i class="icofont-plus"></i>
+                                            </a>
+                                        @endif
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
                     </div>
                 </div>
             </div>
@@ -127,9 +298,69 @@
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{!! backendAssets('dist/assets/bundles/dataTables.bundle.js') !!}"></script>
 
     <script>
         $(document).ready(function () {
+            // Initialize DataTable
+            let dataTable = $('#purchasePlansTable').DataTable({
+                responsive: true,
+                pageLength: 25,
+                order: [[0, 'desc']], // Sort by ID descending
+                columnDefs: [
+                    {
+                        "targets": -1, // targets the last column (Action)
+                        "orderable": false
+                    }
+                ],
+                language: {
+                    search: "",
+                    searchPlaceholder: "Search table...",
+                    lengthMenu: "Show _MENU_ entries",
+                    info: "Showing _START_ to _END_ of _TOTAL_ entries",
+                    paginate: {
+                        first: "First",
+                        last: "Last",
+                        next: "Next",
+                        previous: "Previous"
+                    }
+                }
+            });
+
+            // Desktop search functionality (DataTable built-in search)
+            // Note: Desktop uses DataTable's built-in search, mobile uses custom search below
+
+            // Mobile search functionality
+            function filterMobileCards(searchTerm) {
+                const cards = $('.mobile-card');
+                const term = searchTerm.toLowerCase();
+
+                cards.each(function() {
+                    const card = $(this);
+                    const name = card.find('.mobile-card-title').text().toLowerCase();
+                    const plan = card.find('.mobile-card-value').eq(0).text().toLowerCase(); // Plan is first value
+                    const email = card.find('.mobile-card-value').eq(1).text().toLowerCase(); // Email is second value
+                    const phone = card.find('.mobile-card-value').eq(3).text().toLowerCase(); // Phone is fourth value
+
+                    if (name.includes(term) || plan.includes(term) || email.includes(term) || phone.includes(term)) {
+                        card.show();
+                    } else {
+                        card.hide();
+                    }
+                });
+            }
+
+            // Mobile search input handler
+            $('#searchInput').on('keyup', function() {
+                const searchTerm = $(this).val();
+                filterMobileCards(searchTerm);
+            });
+
+            // Mobile clear search handler
+            $('#clearSearch').on('click', function() {
+                $('.mobile-card').show();
+            });
+
             $(document).on('click', '.user-pre-plan-details', function () {
                 const paymentId = $(this).data('payment-id');
                 $.ajax({
