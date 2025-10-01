@@ -26,7 +26,7 @@
 	<div class="row align-items-center">
 		<div class="border-0 mb-4">
 			<div class="card-header pb-3 no-bg bg-transparent d-flex align-items-center px-0 justify-content-between border-bottom">
-				<h3 class="fw-bold mb-0">Section List</h3>
+				<h3 class="fw-bold mb-0">Section List <span class="text-muted fs-5">({{ $page->title }})</span></h3>
                 <div class="d-flex gap-2 ms-auto">
                     <a href="{{ route('pages.index') }}" class="btn btn-outline-primary">Back</a>
                     <a href="{!! route('sections.create', ['page' => $page->id]) !!}" class="btn btn-primary btn-set-task">

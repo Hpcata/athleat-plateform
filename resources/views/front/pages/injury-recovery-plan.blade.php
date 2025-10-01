@@ -62,11 +62,11 @@
                         </div>
                         {!! $section->content !!}
 
-                        <button id="TPMAIU-purchase-plan-btn" class=" d-none"
-                                data-bs-toggle="modal"
-                                data-bs-target="#planChooseModal">
-                                Purchase plan
-                        </button>
+                        {{-- <button id="TPMAIU-purchase-plan-btn"
+                            data-bs-toggle="modal"
+                            data-bs-target="#planChooseModal">
+                            Purchase plan
+                        </button> --}}
                     </div>
                 </section>
             @endif
@@ -146,24 +146,32 @@
             document.getElementById('blue-badge-img').src = blueBadgeImg;
         }
 
-        //btn-learn-more-blue
-        $('.plan-inclusion-section .btn-learn-more-blue').on('click', function() {
-            $('#TPMAIU-purchase-plan-btn').click();
-        });
+        // $('.plan-inclusion-section .btn-learn-more-blue').on('click', function() {
+        //     $('#TPMAIU-purchase-plan-btn').click();
+        // });
+
+        const injuryPlanLink = document.getElementById('injury-plan-link');
+        const trainingPlanLink = document.getElementById('training-plan-link');
+
+        if (injuryPlanLink) {
+            injuryPlanLink.dataset.url = "{{ route('front.injury.recovery.plan') }}";
+            injuryPlanLink.addEventListener('click', function() {
+                window.location.href = injuryPlanLink.href;
+            });
+        }
+
+        if (trainingPlanLink) {
+            trainingPlanLink.dataset.url = "{{ route('front.training.nutrition.plan') }}";
+            trainingPlanLink.addEventListener('click', function() {
+                window.location.href = trainingPlanLink.href;
+            });
+        }
 
         $('#competition-plan-link').on('click', function() {
             showLearnMoreTooltip(this, 'Coming Soon')
-            // window.location.href = "{{ route('front.competition.plan') }}";
-        });
-        $('#injury-plan-link').on('click', function() {
-            window.location.href = "{{ route('front.injury.recovery.plan') }}";
         });
         $('#surgery-plan-link').on('click', function() {
             showLearnMoreTooltip(this, 'Coming Soon')
-            // window.location.href = "{{ route('front.surgery.plan') }}";
-        });
-        $('#training-plan-link').on('click', function() {
-            window.location.href = "{{ route('front.training.nutrition.plan') }}";
         });
 
         $(document).ready(function() {

@@ -16,11 +16,11 @@
         @elseif($plan->name == 'Injury & Recovery Plan')
             <a href="{{ route('front.injury.recovery.plan') }}" data-url="{{ route('front.injury.recovery.plan') }}" class="btn-learn-more-blue">Learn more</a>
         @elseif($plan->name == 'Competition Plan')
-            <a class="btn-learn-more-blue" onclick="showLearnMoreTooltip(this, 'Coming Soon')">Learn more</a>
+            <button class="btn-learn-more-blue" onclick="showLearnMoreTooltip(this, 'Coming Soon')">Learn more</button>
         @elseif($plan->name == 'Injury Recovery + Post Surgery')
-            <a class="btn-learn-more-blue" onclick="showLearnMoreTooltip(this, 'Coming Soon')">Learn more</a>
+            <button class="btn-learn-more-blue" onclick="showLearnMoreTooltip(this, 'Coming Soon')">Learn more</button>
         @else
-            <a class="btn-learn-more-blue" onclick="showLearnMoreTooltip(this, 'Coming Soon')">Learn more</a>
+            <button class="btn-learn-more-blue" onclick="showLearnMoreTooltip(this, 'Coming Soon')">Learn more</button>
         @endif
     </div>
 @endif
