@@ -64,7 +64,7 @@
                 <button class="btn btn-share print-plan-btn" data-user-id="{{ $user->id}}" data-plan-id="{{ $plan->id}}">View plan</button>
                 <button class="btn-outline btn" id="shoppingList" data-bs-toggle="modal"
                     data-bs-target="#shoppingListModal">Shopping list</button>
-                <button class="btn btn-share coming-soon-popup" type="button" id="">
+                {{-- <button class="btn btn-share coming-soon-popup" type="button" id="">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="17" viewBox="0 0 16 17" fill="none">
                         <g clip-path="url(#clip0_3008_7695)">
                             <path
@@ -78,8 +78,7 @@
                         </defs>
                     </svg>
                     Share
-                </button>
-
+                </button> --}}
             </div>
 
             <!-- Recovery Meals -->
