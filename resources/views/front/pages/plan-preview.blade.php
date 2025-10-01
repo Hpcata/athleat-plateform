@@ -54,12 +54,12 @@
         /* =Header Css
         ========================================================================================*/
         #header { margin-bottom: 2rem; }
-        .header-box { padding: 1.5rem; background: #3B3B3B; border-radius: 1.5rem; position: relative; z-index: 1; overflow: hidden; margin-bottom: 20px; }
-        .header-img { position: absolute; right: 0; top: 0; bottom: 0; width: 59%; z-index: -1; background-repeat: no-repeat; background-size: cover; background-position: 50% 32%; border-top-left-radius: 90px; }
+        .header-box { padding: 1rem; background: #3B3B3B; border-radius: 1.5rem; position: relative; z-index: 1; overflow: hidden; margin-bottom: 20px; }
+        .header-img { position: absolute; right: 0; top: 0; bottom: 0; width: 143px; z-index: -1; background-repeat: no-repeat; background-size: cover; background-position: 50% 32%; border-top-left-radius: 90px; }
         .logo { max-width: 119px; width: 100%; margin: 0 0 32px 0; }
         .logo img { width: 100%; height: auto; }
         .header-box h5 { margin-bottom: 10px; }
-        .header-box h1 { margin: 0; }
+        .header-box h1 { margin: 0;font-size:18px; }
         .bg-light { background-color: #F5F5F5 !important; }
         .row { display: flex; flex-wrap: wrap; margin-left: -6px; margin-right: -6px; }
         .row > * { flex-shrink: 0; width: 100%; max-width: 100%; padding-right: 6px; padding-left: 6px; }

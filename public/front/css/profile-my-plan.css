@@ -774,7 +774,7 @@ margin-top: 96px;
         padding-top: 0;
         scrollbar-width: none;
         -ms-overflow-style: none;
-        scroll-snap-type: x mandatory;
+        /* scroll-snap-type: x mandatory; */
         margin-bottom: 0;
     }
 
@@ -782,7 +782,7 @@ margin-top: 96px;
         min-width: 310px;
         max-width: 310px;
         flex: 0 0 auto;
-        scroll-snap-align: start;
+        /* scroll-snap-align: start; */
         min-height: 310px;
     }
 
@@ -807,7 +807,7 @@ margin-top: 96px;
         overflow-x: auto;
         gap: 1rem;
         -webkit-overflow-scrolling: touch;
-        scroll-snap-type: x mandatory;
+        /* scroll-snap-type: x mandatory;;; */
         scrollbar-width: none;
     }
 
@@ -815,7 +815,7 @@ margin-top: 96px;
         min-width: 290px;
         max-width: 290px;
         flex: 0 0 290px;
-        scroll-snap-align: start;
+        /* scroll-snap-align: start; */
         padding: 12px;
     }
 
