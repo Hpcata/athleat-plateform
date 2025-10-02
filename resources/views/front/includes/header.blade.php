@@ -47,15 +47,11 @@
                     $userId = Auth::guard('web')->user()->id;
                     $myPlanUrl = route('front.my-plans');
                 @endphp
-                <li class="mobile-menu-link"><a
-                        href="{{ route('front.profile', ['id' => Auth::guard('web')->user()->id]) }}"
-                        onclick="handleMobileMenuToggle()"
-                        style="color: #fff; text-decoration: none; display: block; padding: 8px 16px;">Home</a>
+                <li class="mobile-menu-link">
+                    <a href="{{ route('front.profile', ['id' => Auth::guard('web')->user()->id]) }}" onclick="handleMobileMenuToggle()" style="color: #fff; text-decoration: none; display: block; padding: 8px 16px;">Home</a>
                 </li>
-                <li class="mobile-menu-link"><a
-                        href="{{ $myPlanUrl }}"
-                        onclick="handleMobileMenuToggle()"
-                        style="color: #fff; text-decoration: none; display: block; padding: 8px 16px;">My Plan</a>
+                <li class="mobile-menu-link">
+                    <a href="{{ $myPlanUrl }}" onclick="handleMobileMenuToggle()" style="color: #fff; text-decoration: none; display: block; padding: 8px 16px;">My Plans</a>
                 </li>
             @endif
 
@@ -64,17 +60,12 @@
             <li><a href="{{ route('front.supplement-scanner') }}" class="scanner-btn">Supplement Scanner</a></li>
             <li><a class="coming-soon-popup">Level-Up Library</a></li>
             <li><a class="coming-soon-popup">BioHealth Passport</a></li>
-            <li>
-                <div class="mobile-menu-divider" style="height:1px; background:#555; margin: 12px 16px;"></div>
-            </li>
+            <li><div class="mobile-menu-divider" style="height:1px; background:#555; margin: 12px 16px;"></div></li>
             @if (Auth::check() && Auth::guard('web')->user()->is_superadmin == 0)
                 <li class="mobile-menu-link">
                     {{-- Logout form --}}
-                    <form id="logout-form-mobile" action="{{ route('front.logout') }}" method="POST"
-                        style="display: none;">@csrf</form>
-                    <a href="#"
-                        onclick="event.preventDefault(); document.getElementById('logout-form-mobile').submit(); handleMobileMenuToggle();"
-                        style="color: #fff; text-decoration: none; display: block; padding: 8px 16px;">Sign out</a>
+                    <form id="logout-form-mobile" action="{{ route('front.logout') }}" method="POST" style="display: none;">@csrf</form>
+                    <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form-mobile').submit(); handleMobileMenuToggle();" style="color: #fff; text-decoration: none; display: block; padding: 8px 16px;">Sign out</a>
                 </li>
             @else
                 <li class="mobile-menu-link">
@@ -99,9 +90,7 @@
                     $myPlanUrl = route('front.my-plans');
                 @endphp
                 <nav class="nav-center">
-                    {{-- On click of home I want to redirect user to home page and stay logged in if user is logged in --}}
                     <a class="text-decoration-none nav-item" onclick="event.preventDefault(); window.location.href = '{{ route('front.profile', ['id' => $userId]) }}'">Home</a>
-                    {{-- <span class="nav-item coming-soon-popup">Challenges and Rewards</span> --}}
                     <div class="nav-item dropdown">
                         {{-- Resources dropdown --}}
                         <span>Resources <i class="fas fa-chevron-down"></i></span>
@@ -141,12 +130,12 @@
                         </div>
                         <div class="dropdown-content">
                             {{-- My plan button --}}
-                            <a href="{{ $myPlanUrl }}">My Plan</a>
+                            <a href="{{ $myPlanUrl }}">My Plans</a>
                             {{-- setting and privacy button --}}
-                            <a href="#" class="coming-soon-popup">Settings and Privacy</a>
+                            <a class="coming-soon-popup">Settings and Privacy</a>
                             {{-- Logout form --}}
                             <form id="logout-form" action="{{ route('front.logout') }}" method="POST"style="display: none;">@csrf</form>
-                            <a class="p-2 dropdown-item" style="padding:0.75rem 1rem !important;" href="#" onclick="handleLogout(event)">Sign Out</a>
+                            <a class="p-2 dropdown-item" style="padding:0.75rem 1rem !important;" onclick="handleLogout(event)">Sign Out</a>
                         </div>
                     </div>
                 </div>
@@ -265,6 +254,11 @@
                         <li class="nav-item">
                             <a class="nav-link" href="https://athleatshop.com/" target="_blank">Shop</a>
                         </li>
+
+                        {{-- my plan link --}}
+                        <li class="nav-item">
+                            <a class="nav-link web-hide" href="{{ route('front.my-plans') }}">My Plans</a>
+                        </li>
                     @endif
                 </ul>
 
@@ -298,11 +292,11 @@
                     @else
                         {{-- Login and signup buttons --}}
                         <button class="btn-login mob-hide" id="login" onclick="openSingupFreePopup(true)">Log in</button>
-                        <button class="btn-learn-more-blue" id="show-new-signup-modal" onclick="openSingupFreePopup()">Sign up for free </button>
+                        <button class="btn-learn-more-blue me-2" id="show-new-signup-modal" onclick="openSingupFreePopup()">Sign up for free </button>
                     @endif
 
                     {{-- Virtual Kez button --}}
-                    <button class="ms-2 btn-login web-hide" id="virtual-kez-button" onclick="closeMobileMenuAndOpenDelphi()">Virtual Kez</button>
+                    <button class="btn-login web-hide" id="virtual-kez-button" onclick="closeMobileMenuAndOpenDelphi()">Virtual Kez</button>
                 </div>
             </div>
         </div>
