@@ -129,7 +129,7 @@
                     <!-- Right Section: Buttons -->
                     <div class="col-auto d-flex mt-2 mt-sm-0">
                         <a href="javascript:void(0);" class="btn btn-primary btn-set-task me-3 user-pre-plan-details"
-                            data-payment-id="{{ $payment->id }}">View User Details</a>
+                            data-payment-id="{{ $payment->user_id }}">View User Details</a>
                         <a href="{{ route('admin.purchase-plans.index') }}" class="btn btn-primary btn-set-task">Back</a>
                     </div>
                 </div>
