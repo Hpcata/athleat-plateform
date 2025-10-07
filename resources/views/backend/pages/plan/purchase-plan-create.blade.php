@@ -76,7 +76,7 @@
                     <h3 class="fw-bold mb-0" style="">({{ $payment->user->name }})</h3>
                 </div>
                 <div class="">
-                    <a href="javascript:void(0);" class="btn btn-primary btn-set-task mx-3 user-pre-plan-details" data-payment-id="{{ $payment->id }}" >View User Details</a>
+                    <a href="javascript:void(0);" class="btn btn-primary btn-set-task mx-3 user-pre-plan-details" data-payment-id="{{ $payment->user_id }}" >View User Details</a>
                     <a href="{{ route('admin.purchase-plans.index') }}" class="btn btn-primary btn-set-task back-button">Back</a>
                 </div>
             </div>

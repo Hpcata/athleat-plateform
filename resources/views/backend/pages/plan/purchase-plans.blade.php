@@ -178,7 +178,7 @@
                                                 <!-- Action link to show payment details -->
                                                 <a href="javascript:void(0);"
                                                     class="btn btn-sm btn-outline-primary user-pre-plan-details m-1"
-                                                    data-payment-id="{{ $payment->id }}"><i
+                                                    data-payment-id="{{ $payment->user_id }}"><i
                                                         class="icofont-eye text-primary"></i></a>
                                                 <a href="javascript:void(0);"
                                                     class="btn btn-sm btn-outline-info payment-info-btn m-1"

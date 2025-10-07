@@ -647,7 +647,7 @@ class PurchasePlanController extends Controller
             $userPrePlan = UserPrePlan::with(['prePlanDetails' => function ($query) {
                 $query->where('form_slug', 'food_preference')
                     ->orderBy('id', 'asc');
-            }])->where('payment_id', $payment->id)->first();
+            }])->where('user_id', $payment->user_id)->first();
 
             $foodPreferences = collect();
 
@@ -672,7 +672,7 @@ class PurchasePlanController extends Controller
             $step5Foods           = Item::select(['id', 'title'])->get();
             $otherFoods           = $userPrePlan           = UserPrePlan::with(['prePlanDetails' => function ($query) {
                 $query->where('form_slug', 'food_preference')->whereIn('question', ['Cuisines', 'Snacks']);
-            }])->where('payment_id', $payment->id)->first();
+            }])->where('user_id', $payment->user_id)->first();
 
             $groupedAnswers = [];
 
@@ -1768,7 +1768,7 @@ class PurchasePlanController extends Controller
 
     public function getPrePlanDetails($id)
     {
-        $userPrePlan    = UserPrePlan::with('prePlanDetails', 'payment')->where('payment_id', $id)->first();
+        $userPrePlan    = UserPrePlan::with('prePlanDetails')->where('user_id', $id)->first();
         $prePlanDetails = $userPrePlan->prePlanDetails ?? [];
         if (! $userPrePlan) {
             return response()->json([
@@ -1780,7 +1780,7 @@ class PurchasePlanController extends Controller
         $userDetails = [
             'name'       => isset($userPrePlan->user) ? $userPrePlan->user->name : '',
             'email'      => isset($userPrePlan->user) ? $userPrePlan->user->email : '',
-            'phone'      => $userPrePlan->payment->phone,
+            'phone'      => $userPrePlan->user->phone,
             'dob'        => formatDate($userPrePlan->dob) ?? '',
             'address'    => $userPrePlan->address ?? '',
             'occupation' => $userPrePlan->occupation ?? '',
