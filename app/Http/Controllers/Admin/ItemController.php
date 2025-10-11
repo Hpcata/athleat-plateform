@@ -89,91 +89,96 @@ class ItemController extends Controller
             'sodium'            => 'nullable',
         ]);
 
-        // Handle image upload
-        if ($request->hasFile('image')) {
-            $data['image'] = $request->file('image')->store('items', 'public');
-        }
+        try {
+            DB::beginTransaction();
 
-        if ($request->has('is_locked')) {
-            $data['is_locked'] = $request->is_locked;
-        } else {
-            $data['is_locked'] = 0;
-        }
-
-        if ($request->has('selected_qty_unit') && $request->selected_qty_unit != null) {
-            $rawSelectedUnit = $request->selected_qty_unit;
-
-            if (is_string($rawSelectedUnit)) {
-                // Clean and decode the string in case it's escaped
-
-                $cleaned = trim($rawSelectedUnit, '"'); // remove outer quotes
-                $decoded = json_decode(stripslashes($cleaned), true);
-
-            } elseif (is_array($rawSelectedUnit)) {
-                $decoded = $rawSelectedUnit;
-
-            } else {
-                $decoded = [];
+            // Handle image upload
+            if ($request->hasFile('image')) {
+                $data['image'] = $request->file('image')->store('items', 'public');
             }
 
-            $data['selected_qty_unit'] = ($decoded);
-        }
+            $data['is_locked'] = $request->has('is_locked') ? $request->is_locked : 0;
 
-        // Create item
-        $item = Item::create($data);
-        $item->tags()->sync($request->input('tag_ids'));   // attaches tags via pivot
-        $item->flags()->sync($request->input('flag_ids')); // attaches tags via pivot
+            if ($request->has('selected_qty_unit') && $request->selected_qty_unit != null) {
+                $rawSelectedUnit = $request->selected_qty_unit;
 
-        // Sync swap items
-        if ($request->is_swiped == 1 && $request->has('swap_item_ids')) {
-            $item->swapItems()->sync($request->swap_item_ids);
+                if (is_string($rawSelectedUnit)) {
+                    $cleaned = trim($rawSelectedUnit, '"'); // remove outer quotes
+                    $decoded = json_decode(stripslashes($cleaned), true);
+                } elseif (is_array($rawSelectedUnit)) {
+                    $decoded = $rawSelectedUnit;
+                } else {
+                    $decoded = [];
+                }
 
-            $userIds = DB::table('user_item_swaps')
-                ->distinct()
-                ->pluck('user_id');
+                $data['selected_qty_unit'] = $decoded;
+            }
 
-            if ($userIds->isNotEmpty()) {
-                foreach ($userIds as $userId) {
-                    // Check if the user has an active plan
-                    $hasActivePlan = DB::table('user_plans')
-                        ->where('user_id', $userId)
-                        ->where('status', 'active') // Assuming 'status' indicates if the plan is active
-                        ->exists();
+            // Create item
+            $item = Item::create($data);
 
-                    // Only proceed if the user has an active plan
-                    if ($hasActivePlan) {
-                        foreach ($request->swap_item_ids as $swapItemId) {
+            // Sync related models
+            $item->tags()->sync($request->input('tag_ids'));
+            $item->flags()->sync($request->input('flag_ids'));
 
-                            $swapItem = Item::find($swapItemId);
+            // Sync swap items if applicable
+            if ($request->is_swiped == 1 && $request->has('swap_item_ids')) {
+                $item->swapItems()->sync($request->swap_item_ids);
 
-                            $exists = DB::table('user_item_swaps')
-                                ->where('user_id', $userId)
-                                ->where('item_id', $item->id)
-                                ->where('swap_item_id', $swapItemId)
-                                ->exists();
+                $userIds = DB::table('user_item_swaps')
+                    ->distinct()
+                    ->pluck('user_id');
 
-                            if (! $exists) {
-                                DB::table('user_item_swaps')->insert([
-                                    'user_id'           => $userId,
-                                    'item_id'           => $item->id,
-                                    'swap_item_id'      => $swapItemId,
-                                    'qty'               => $swapItem->qty,
-                                    'unit'              => $swapItem->unit,
-                                    'carbs'             => $swapItem->carbs,
-                                    'fat'               => $swapItem->fat,
-                                    'protein'           => $swapItem->protein,
-                                    'selected_qty_unit' => $swapItem->selected_qty_unit,
-                                    'created_at'        => now(),
-                                    'updated_at'        => now(),
-                                ]);
+                if ($userIds->isNotEmpty()) {
+                    foreach ($userIds as $userId) {
+                        $hasActivePlan = DB::table('user_plans')
+                            ->where('user_id', $userId)
+                            ->where('status', 'active')
+                            ->exists();
+
+                        if ($hasActivePlan) {
+                            foreach ($request->swap_item_ids as $swapItemId) {
+                                $swapItem = Item::find($swapItemId);
+
+                                $exists = DB::table('user_item_swaps')
+                                    ->where('user_id', $userId)
+                                    ->where('item_id', $item->id)
+                                    ->where('swap_item_id', $swapItemId)
+                                    ->exists();
+
+                                if (! $exists) {
+                                    DB::table('user_item_swaps')->insert([
+                                        'user_id'           => $userId,
+                                        'item_id'           => $item->id,
+                                        'swap_item_id'      => $swapItemId,
+                                        'qty'               => $swapItem->qty,
+                                        'unit'              => $swapItem->unit,
+                                        'carbs'             => $swapItem->carbs,
+                                        'fat'               => $swapItem->fat,
+                                        'protein'           => $swapItem->protein,
+                                        'selected_qty_unit' => is_array($swapItem->selected_qty_unit) ? json_encode($swapItem->selected_qty_unit) : $swapItem->selected_qty_unit,
+                                        'created_at'        => now(),
+                                        'updated_at'        => now(),
+                                    ]);
+                                }
                             }
                         }
                     }
                 }
             }
-        }
 
-        return redirect()->route('admin.items.index')->with('success', 'Item created successfully.');
+            DB::commit();
+
+            return redirect()->route('admin.items.index')->with('success', 'Item created successfully.');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            // Optional: Log the error for debugging
+            Log::error('Item creation failed: '.$e->getMessage());
+            // Redirect user to same route with errors
+            return redirect()->route('admin.items.create')->withErrors('An error occurred while creating the item. Please try again.');
+        }
     }
 
     public function edit(Item $item)
@@ -215,61 +220,59 @@ class ItemController extends Controller
             'dietary_fibre'     => 'nullable',
             'sodium'            => 'nullable',
         ]);
-        // Handle image upload
-        if ($request->hasFile('image')) {
-            // Delete old image if it exists
-            if ($item->image) {
-                Storage::delete('public/' . $item->image);
-            }
-            $path = $request->file('image')->store('items', 'public'); // Store image
 
-            $data['image'] = $path;
-        }
+        try {
+            DB::beginTransaction();
 
-        if ($request->has('selected_qty_unit') && $request->selected_qty_unit != null) {
-            $rawSelectedUnit = $request->selected_qty_unit;
-
-            if (is_string($rawSelectedUnit)) {
-                // Clean and decode the string in case it's escaped
-                $cleaned = trim($rawSelectedUnit, '"'); // remove outer quotes
-                $decoded = json_decode(stripslashes($cleaned), true);
-            } elseif (is_array($rawSelectedUnit)) {
-                $decoded = $rawSelectedUnit;
-            } else {
-                $decoded = [];
+            // Handle image upload
+            if ($request->hasFile('image')) {
+                if ($item->image) {
+                    Storage::delete('public/' . $item->image);
+                }
+                $path = $request->file('image')->store('items', 'public');
+                $data['image'] = $path;
             }
 
-            // Re-encode to proper JSON format to store in DB
-            $data['selected_qty_unit'] = ($decoded);
-        }
+            // Handle selected_qty_unit
+            if ($request->has('selected_qty_unit') && $request->selected_qty_unit != null) {
+                $rawSelectedUnit = $request->selected_qty_unit;
 
-        if ($request->has('is_locked')) {
-            $data['is_locked'] = $request->is_locked;
-        } else {
-            $data['is_locked'] = 0;
-        }
-        // Update item
-        $item->update($data);
-        $item->tags()->sync($request->input('tag_ids'));   // attaches tags via pivot
-        $item->flags()->sync($request->input('flag_ids')); // attaches tags via pivot
+                if (is_string($rawSelectedUnit)) {
+                    $cleaned = trim($rawSelectedUnit, '"');
+                    $decoded = json_decode(stripslashes($cleaned), true);
+                } elseif (is_array($rawSelectedUnit)) {
+                    $decoded = $rawSelectedUnit;
+                } else {
+                    $decoded = [];
+                }
 
-        if ($request->is_swiped == 1) {
-            // Sync the swap items (this will attach new ones and detach the old ones)
-            if ($request->has('swap_item_ids')) {
+                $data['selected_qty_unit'] = $decoded;
+            }
+
+            $data['is_locked'] = $request->has('is_locked') ? $request->is_locked : 0;
+
+            // Update the item record
+            $item->update($data);
+
+            // Sync related models
+            $item->tags()->sync($request->input('tag_ids'));
+            $item->flags()->sync($request->input('flag_ids'));
+
+            // Handle swap items
+            if ($request->is_swiped == 1 && $request->has('swap_item_ids')) {
                 $item->swapItems()->sync($request->swap_item_ids);
+
                 $userIds = DB::table('user_item_swaps')
                     ->distinct()
                     ->pluck('user_id');
 
                 if ($userIds->isNotEmpty()) {
                     foreach ($userIds as $userId) {
-                        // Check if the user has an active plan
                         $hasActivePlan = DB::table('user_plans')
                             ->where('user_id', $userId)
-                            ->where('status', 'active') // Assuming 'status' indicates if the plan is active
+                            ->where('status', 'active')
                             ->exists();
 
-                        // Only proceed if the user has an active plan
                         if ($hasActivePlan) {
                             foreach ($request->swap_item_ids as $swapItemId) {
                                 $swapItem = Item::find($swapItemId);
@@ -278,6 +281,10 @@ class ItemController extends Controller
                                     ->where('item_id', $item->id)
                                     ->where('swap_item_id', $swapItemId)
                                     ->first();
+
+                                $selectedQtyUnit = is_array($swapItem->selected_qty_unit)
+                                    ? json_encode($swapItem->selected_qty_unit)
+                                    : $swapItem->selected_qty_unit;
 
                                 if (! $exists) {
                                     DB::table('user_item_swaps')->insert([
@@ -289,29 +296,43 @@ class ItemController extends Controller
                                         'carbs'             => $swapItem->carbs,
                                         'fat'               => $swapItem->fat,
                                         'protein'           => $swapItem->protein,
-                                        'selected_qty_unit' => is_array($swapItem->selected_qty_unit)
-                                        ? json_encode($swapItem->selected_qty_unit)
-                                        : $swapItem->selected_qty_unit,
-                                        // 'protein' => $item->protein,
+                                        'selected_qty_unit' => $selectedQtyUnit,
                                         'created_at'        => now(),
                                         'updated_at'        => now(),
                                     ]);
                                 } else {
-                                    $exists->qty               = $swapItem->qty;
-                                    $exists->unit              = $swapItem->unit;
-                                    $exists->carbs             = $swapItem->carbs;
-                                    $exists->fat               = $swapItem->fat;
-                                    $exists->protein           = $swapItem->protein;
-                                    $exists->selected_qty_unit = $swapItem->selected_qty_unit;
-                                    $exists->save();
+                                    $exists->update([
+                                        'qty'               => $swapItem->qty,
+                                        'unit'              => $swapItem->unit,
+                                        'carbs'             => $swapItem->carbs,
+                                        'fat'               => $swapItem->fat,
+                                        'protein'           => $swapItem->protein,
+                                        'selected_qty_unit' => $selectedQtyUnit,
+                                    ]);
                                 }
                             }
                         }
                     }
                 }
             }
+
+            DB::commit();
+
+            return redirect()->route('admin.items.index')
+                ->with('success', 'Item updated successfully.');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            Log::error('Item update failed: ' . $e->getMessage(), [
+                'item_id' => $item->id,
+                'user_id' => auth()->id(),
+            ]);
+
+            // Redirect user to same route with errors
+            return redirect()->route('admin.items.edit', $item->id)
+                ->withErrors('An error occurred while updating the item. Please try again.');
         }
-        return redirect()->route('admin.items.index')->with('success', 'Item updated successfully.');
     }
 
     public function destroy(Item $item)

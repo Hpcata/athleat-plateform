@@ -15,7 +15,7 @@ class Item extends Model
     protected $casts = [
         'selected_qty_unit' => 'array',
     ];
-    
+
     public $timestamps = true;  // Ensure timestamps are enabled
 
     public function meals()
@@ -26,7 +26,6 @@ class Item extends Model
     public function swapItems()
     {
         return $this->belongsToMany(Item::class, 'item_swaps', 'item_id', 'swap_item_id');
-        // ->wherePivot('item_id', '<>', \DB::raw('swap_item_id'));
     }
 
     public function items()

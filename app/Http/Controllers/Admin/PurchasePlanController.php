@@ -1228,7 +1228,7 @@ class PurchasePlanController extends Controller
                     $totalCarbs += $item->pivot->carbs ?? $item->carbs;
                     $totalProtein += $item->pivot->protein ?? $item->protein;
                     $totalFat += $item->pivot->fat ?? $item->fat;
-                    $totalEnergy += floatval($item->energy) ?? floatval($item->energy);
+                    $totalEnergy += floatval($item->energy ?? 0) ?? floatval($item->energy);
                     $swapItems = $item->swapItems->map(function ($swapItem) {
                         return [
                             'id'                => $swapItem->id,
@@ -1331,7 +1331,7 @@ class PurchasePlanController extends Controller
                     $totalCarbs += isset($item->carbs) ? $item->carbs : $item->items->carbs;
                     $totalProtein += isset($item->protein) ? $item->protein : $item->items->protein;
                     $totalFat += isset($item->fat) ? $item->fat : $item->items->fat;
-                    $totalEnergy += isset($item->energy) ? floatval($item->energy) : (isset($item->items->energy) ? floatval($item->items->energy) : 0);
+                    $totalEnergy += isset($item->energy) ? floatval($item->energy ?? 0) : (isset($item->items->energy) ? floatval($item->items->energy) : 0);
 
                     $swapItems = UserItemSwap::with('swapItem')
                         ->where('item_id', $item->item_id)
@@ -1413,7 +1413,7 @@ class PurchasePlanController extends Controller
                 $totalCarbs += $item->pivot->carbs ?? $item->carbs;
                 $totalProtein += $item->pivot->protein ?? $item->protein;
                 $totalFat += $item->pivot->fat ?? $item->fat;
-                $totalEnergy += floatval($item->energy) ?? floatval($item->energy);
+                $totalEnergy += floatval($item->energy ?? 0) ?? floatval($item->energy);
 
                 $swapItems = optional($item->swapItems)->map(function ($swapItem) {
                     return [
@@ -1515,7 +1515,7 @@ class PurchasePlanController extends Controller
                         $carbs += $item->pivot->carbs ?? $item->carbs ?? 0;
                         $protein += $item->pivot->protein ?? $item->protein ?? 0;
                         $fat += $item->pivot->fat ?? $item->fat ?? 0;
-                        $energy += $item->pivot->energy ?? floatval($item->energy ?? 0);
+                        $energy += floatval($item->pivot->energy ?? 0) ?? floatval($item->energy ?? 0);
                     }
 
                     $meals->push([
@@ -1669,7 +1669,7 @@ class PurchasePlanController extends Controller
                             $carbs += $item->pivot->carbs ?? $item->carbs ?? 0;
                             $protein += $item->pivot->protein ?? $item->protein ?? 0;
                             $fat += $item->pivot->fat ?? $item->fat ?? 0;
-                            $energy += $item->pivot->energy ?? floatval($item->energy ?? 0);
+                            $energy += floatval($item->pivot->energy ?? 0) ?? floatval($item->energy ?? 0);
                         }
 
                         $meals->push([
