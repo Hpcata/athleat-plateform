@@ -75,7 +75,7 @@
                             <!-- Title Field -->
                             <div class="col-md-12">
                                 <label for="title" class="form-label">Title<small class="text-danger">*</small></label>
-                                <input type="text" name="title" class="form-control" id="title" value="{{ $item->title ?? '' }}" >
+                                <input type="text" name="title" class="form-control" id="title" value="{{ old('title', $item->title ?? '') }}" >
                                 <p class="mt-3 px-2" id="subTitle" style="font-size: 16px;"></p>
                                 <p class="nutrition-info mt-2 mb-0 text-muted px-2" style="font-size: 16px;"></p>
                                 @error('title')
@@ -91,12 +91,12 @@
                                         Generate Description
                                     </button>
                                 </div>
-                                <textarea name="description" id="description" class="form-control mt-2" rows="4">{{ $item->description ?? '' }}</textarea>
+                                <textarea name="description" id="description" class="form-control mt-2" rows="4">{{ old('description', $item->description ?? '') }}</textarea>
                             </div>
 
                             <div class="col-md-12">
                                 <label for="note" class="form-label">Notes</label>
-                                <textarea name="note" class="form-control" rows="2">{{ $item->note ?? '' }}</textarea>
+                                <textarea name="note" class="form-control" rows="2">{{ old('note', $item->note ?? '') }}</textarea>
                             </div>
 
                             <div class="col-md-12">
@@ -131,7 +131,7 @@
                                     <input type="checkbox"
                                         id="lockCheckbox"
                                         name="is_locked"
-                                        value="{{ $item->is_locked ?? 0 }}"
+                                        value="{{ old('is_locked', $item->is_locked ?? 0) }}"
                                         class="form-check-input"
                                         {{ isset($item) ? ($item->is_locked == 1 ? 'checked' : '') : '' }}
                                     />
@@ -239,7 +239,7 @@
                                                             name="qty"
                                                             id="qty"
                                                             class="form-control qty-input"
-                                                            value="{{ $item->qty ?? '' }}"
+                                                            value="{{ old('qty', $item->qty ?? '') }}"
                                                             placeholder="Enter quantity"
                                                         >
                                                     </div>
@@ -273,7 +273,7 @@
                                         <!-- Protein Field -->
                                         <div class="col-md-6">
                                             <label for="protein" class="form-label">Protein</label>
-                                            <input type="number" name="protein" class="form-control" id="protein" value="{{ number_format($item->protein ?? '0' ,1)}}"
+                                            <input type="number" name="protein" class="form-control" id="protein" value="{{ number_format(old('protein', $item->protein ?? '0') ,1)}}"
                                                 step="0.01" min="0" placeholder="Enter Protein">
                                             <small class="text-muted">Please enter the value in grams (e.g., 5, 10.5).</small>
                                         </div>
@@ -281,7 +281,7 @@
                                         <!-- Serving Size Field -->
                                         <div class="col-md-2 mt-3">
                                             <label for="serving_size" class="form-label">Serving Size</label>
-                                            <input type="number" name="serving_size" class="form-control d-inline-block d-flex" id="serving_size" value="{{ number_format($item->serving_size ?? '0', 1) }}"  step="0.01" min="0" placeholder="Enter Serving Size">
+                                            <input type="number" name="serving_size" class="form-control d-inline-block d-flex" id="serving_size" value="{{ number_format(old('serving_size', $item->serving_size ?? '0'), 1) }}"  step="0.01" min="0" placeholder="Enter Serving Size">
                                             <!-- <p>Gm</p> -->
                                             @error('serving_size')
                                                 <div class="text-danger">{{ $message }}</div>
@@ -302,7 +302,7 @@
                                         <!-- Carbohydrate Field -->
                                         <div class="col-md-6 mt-3">
                                             <label for="carbs" class="form-label">Carbohydrate</label>
-                                            <input type="number" name="carbs" class="form-control" id="carbs" value="{{ number_format($item->carbs ?? '0', 1) }}"
+                                            <input type="number" name="carbs" class="form-control" id="carbs" value="{{ number_format(old('carbs', $item->carbs ?? '0'), 1) }}"
                                                 step="0.01" min="0" placeholder="Enter Carbohydrate">
                                             <small class="text-muted">Please enter the value in grams (e.g., 5, 10.5).</small>
                                         </div>
@@ -310,20 +310,20 @@
                                         <!-- Serving Per Pack Field -->
                                         <div class="col-md-6 mt-3">
                                             <label for="serving_per_pack" class="form-label">Serving Per Pack</label>
-                                            <input type="text" name="serving_per_pack" class="form-control" id="serving_per_pack" value="{{ $item->serving_per_pack ?? '' }}"  placeholder="Enter Serving Per Pack">
+                                            <input type="text" name="serving_per_pack" class="form-control" id="serving_per_pack" value="{{ old('serving_per_pack', $item->serving_per_pack ?? '') }}"  placeholder="Enter Serving Per Pack">
                                             <small class="text-muted">Please enter the total number of servings per pack.</small>
                                         </div>
 
                                         <!-- Fat Field -->
                                         <div class="col-md-6 mt-3">
                                             <label for="fat" class="form-label">Fat</label>
-                                            <input type="number" name="fat" class="form-control" id="fat" value="{{ number_format($item->fat ?? '0', 1) }}" step="0.01" min="0" placeholder="Enter Fat">
+                                            <input type="number" name="fat" class="form-control" id="fat" value="{{ number_format(old('fat', $item->fat ?? '0'), 1) }}" step="0.01" min="0" placeholder="Enter Fat">
                                             <small class="text-muted">Please enter the value in grams (e.g., 5, 10.5).</small>
                                         </div>
                                         <!-- Fat Field -->
                                         <div class="col-md-6 mt-3">
                                             <label for="energy" class="form-label">Energy</label>
-                                            <input type="text" name="energy" class="form-control" id="energy" value="{{ old('energy', $item->energy ?? '') }}" placeholder="Enter Energy">
+                                            <input type="text" name="energy" class="form-control" id="energy" value="{{ old('energy', $item->energy ?? '0') }}" placeholder="Enter Energy">
                                             <small class="text-muted">Please enter the value in kJ (e.g., 786.5kJ)</small>
                                         </div>
 
@@ -362,12 +362,12 @@
                                 <label for="is_swiped" class="form-label">Is Swapped? &nbsp;</label>
                                 <small class="form-text text-muted">(Is this item used in the swapped list?)</small>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="is_swiped" id="is_swiped_yes" value="1"
+                                    <input class="form-check-input" type="radio" name="is_swiped" id="is_swiped_yes" value="{{ old('is_swiped', $item->is_swiped ?? 1) }}"
                                         {{ (isset($item) && $item->is_swiped == 1) || !isset($item) ? 'checked' : '' }}>
                                     <label class="form-check-label" for="is_swiped_yes">Yes</label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="is_swiped" id="is_swiped_no" value="0"
+                                    <input class="form-check-input" type="radio" name="is_swiped" id="is_swiped_no" value="{{ old('is_swiped', $item->is_swiped ?? 0) }}"
                                         {{ (isset($item) && $item->is_swiped == 0) ? 'checked' : '' }}>
                                     <label class="form-check-label" for="is_swiped_no">No</label>
                                 </div>
@@ -386,14 +386,14 @@
                                 <label for="image" class="form-label">Image</label>
                                 <input type="file" name="image" class="form-control">
                                 @if (isset($item) && $item->image)
-                                    <img src="{{ webAssets('storage/' . $item->image) }}" alt="Item Image" class="img-thumbnail mt-2" style="max-height: 150px;">
+                                    <img src="{{ webAssets('storage/' . old('image', $item->image)) }}" alt="Item Image" class="img-thumbnail mt-2" style="max-height: 150px;">
                                 @endif
                             </div>
 
                             <input type="hidden"
                             id="selected_measurements_hidden"
                             name="selected_qty_unit"
-                            value="{{ json_encode($selectedUnits) }}">
+                            value="{{ json_encode(old('selected_qty_unit', $selectedUnits)) }}">
 
                         </div>
                         <button type="submit" class="btn btn-primary mt-4">{{ isset($item) ? 'Update' : 'Create' }}</button>
