@@ -66,7 +66,8 @@ class PlanController extends Controller
                                     )
                                     ->with(['userMeals' => fn ($mealQ) =>
                                         $mealQ->where('user_plan_id', $userPlan->id)
-                                    ]);
+                                    ])
+                                    ->orderBy('id');
                             }
                         ]);
                 }
