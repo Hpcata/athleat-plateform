@@ -67,27 +67,27 @@
                         @if ($userPlan->userCategories->isNotEmpty())
                             @foreach ($userPlan->userCategories as $userCategory)
                                 @php
-                $validSubCategories = $userCategory->userSubCategories->filter(function ($subCategory) use ($userPlan, $userCategory) {
-                    return $subCategory->userMeals
-                        ->where('user_plan_id', $userPlan->id)
-                        ->where('user_category_id', $userCategory->id)
-                        ->where('user_sub_category_id', $subCategory->id)
-                        ->isNotEmpty();
-                });
+                                    $validSubCategories = $userCategory->userSubCategories->filter(function ($subCategory) use ($userPlan, $userCategory) {
+                                        return $subCategory->userMeals
+                                            ->where('user_plan_id', $userPlan->id)
+                                            ->where('user_category_id', $userCategory->id)
+                                            ->where('user_sub_category_id', $subCategory->id)
+                                            ->isNotEmpty();
+                                    });
                                 @endphp
 
                                 @foreach ($validSubCategories as $subCategory)
                                     @php
-                    $meals = $subCategory->userMeals
-                        ->where('user_plan_id', $userPlan->id)
-                        ->where('user_category_id', $userCategory->id)
-                        ->where('user_sub_category_id', $subCategory->id);
+                                        $meals = $subCategory->userMeals
+                                            ->where('user_plan_id', $userPlan->id)
+                                            ->where('user_category_id', $userCategory->id)
+                                            ->where('user_sub_category_id', $subCategory->id);
 
-                    $mealCount = $subCategory->userMeals
-                        ->where('user_plan_id', $userPlan->id)
-                        ->where('user_category_id', $userCategory->id)
-                        ->where('user_sub_category_id', $subCategory->id)
-                        ->count();
+                                        $mealCount = $subCategory->userMeals
+                                            ->where('user_plan_id', $userPlan->id)
+                                            ->where('user_category_id', $userCategory->id)
+                                            ->where('user_sub_category_id', $subCategory->id)
+                                            ->count();
                                     @endphp
 
                                     @if ($mealCount > 0)
@@ -98,11 +98,11 @@
                                                     <h2>{{ $subCategory->subCategory->title ?? '' }} ({{ $mealCount }})</h2>
                                                 </div>
                                                 <div class="slider-wrapper" style="position:relative;">
-                                                <button class="left-arrow slider-arrow" >
-                                                    <svg width="18" height="24" viewBox="0 0 18 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                        <polyline points="14,4 4,16 14,28" stroke="#080808" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-                                                    </svg>
-                                                </button>
+                                                    <button class="left-arrow slider-arrow" >
+                                                        <svg width="18" height="24" viewBox="0 0 18 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                            <polyline points="14,4 4,16 14,28" stroke="#080808" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                                                        </svg>
+                                                    </button>
                                                     <div class="challenge-cards horizontal-scroll" style="overflow-x:auto;scroll-behavior:smooth;">
                                                         @foreach ($meals as $meal)
                                                             <div class="challenge-card clickable quick-view-btn"
@@ -134,7 +134,7 @@
                                                             </div>
                                                         @endforeach
                                                     </div>
-                                                <button class="right-arrow slider-arrow">
+                                                    <button class="right-arrow slider-arrow">
                                                         <svg width="18" height="24" viewBox="0 0 18 32" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                             <polyline points="4,4 14,16 4,28" stroke="#080808" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
                                                         </svg>
