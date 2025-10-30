@@ -23,9 +23,9 @@
                         <div class="hero-content-fixed">
                             {!! $section->content !!}
                             <button class="btn-learn-more-blue "
-                                    data-bs-toggle="modal" 
-                                    data-bs-target="#planChooseModal">
-                                    Purchase plan
+                                data-bs-toggle="modal"
+                                data-bs-target="#planChooseModal">
+                                Purchase plan
                             </button>
                         </div>
                     </div>
@@ -64,10 +64,10 @@
                         {!! $section->content !!}
 
                         <button id="TPMAIU-purchase-plan-btn" class=" d-none"
-                                    data-bs-toggle="modal" 
-                                    data-bs-target="#planChooseModal">
-                                    Purchase plan
-                            </button>
+                            data-bs-toggle="modal"
+                            data-bs-target="#planChooseModal">
+                            Purchase plan
+                        </button>
                     </div>
                 </section>
             @endif
@@ -98,7 +98,7 @@
 
     @include('front.pages.partials.purchase-plan-register')
     @include('front.pages.partials.purchase-plan-login')
-    
+
     @include('components.plan-modals', [
         'userEmail' => Auth::check() ? Auth::user()->email : 'guest@example.com',
         'planDetails' => $planDetails,
@@ -152,29 +152,28 @@
             $('#TPMAIU-purchase-plan-btn').click();
         });
 
+        const trainingPlanLink = document.getElementById('training-plan-link');
+        if (trainingPlanLink) {
+            trainingPlanLink.dataset.url = "{{ route('front.training.nutrition.plan') }}";
+            trainingPlanLink.addEventListener('click', function() {
+                window.location.href = trainingPlanLink.href;
+            });
+        }
+
         $('#competition-plan-link').on('click', function() {
-            window.location.href = "{{ route('front.competition.plan') }}";
-        });
-        $('#injury-plan-link').on('click', function() {
-            window.location.href = "{{ route('front.injury.recovery.plan') }}";
-        });
-        $('#surgery-plan-link').on('click', function() {
-            window.location.href = "{{ route('front.surgery.plan') }}";
-        });
-        $('#training-plan-link').on('click', function() {
-            window.location.href = "{{ route('front.training.nutrition.plan') }}";
+            showLearnMoreTooltip(this, 'Coming Soon')
         });
 
-$(document).ready(function() {
-    if($('.plan-inclusion-section .pricing-section .pricing-amount').length > 0) {
-        $('.plan-inclusion-section .pricing-section .pricing-amount').html('${{ number_format($planDetails?->price, 0) }} AUD');
-    }
-    
-    // Check if there's a pending plan purchase after page refresh
-    if (typeof window.handlePendingPlanPurchase === 'function') {
-        window.handlePendingPlanPurchase();
-    }
-});
+        $(document).ready(function() {
+            if($('.plan-inclusion-section .pricing-section .pricing-amount').length > 0) {
+                $('.plan-inclusion-section .pricing-section .pricing-amount').html('${{ number_format($planDetails?->price, 0) }} AUD');
+            }
+
+            // Check if there's a pending plan purchase after page refresh
+            if (typeof window.handlePendingPlanPurchase === 'function') {
+                window.handlePendingPlanPurchase();
+            }
+        });
     </script>
 
     <script src="{!! frontAssets('js/purchase-plan.js') !!}"></script>

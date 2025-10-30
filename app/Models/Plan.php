@@ -63,7 +63,10 @@ class Plan extends Model
     {
         $payments = Payment::where('user_id', $userId)->get();
         $purchasedPlanIds = $payments->pluck('plan_id')->toArray();
-        $notPurchasedPlans = self::whereNotIn('id', $purchasedPlanIds)->get();
+        $notPurchasedPlans = self::whereNotIn('id', $purchasedPlanIds)
+            ->whereNotIn('id', function ($query) {
+                $query->select('sub_plan_id')->from('plan_sub_plans');
+            })->get();
 
         return $notPurchasedPlans;
     }

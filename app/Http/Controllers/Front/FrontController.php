@@ -1958,7 +1958,10 @@ class FrontController extends Controller
             $isQuestionnaireSubmitted = UserPrePlan::select('is_complete')->where('user_id', $user->id)->first();
             // Get not purchased plans
             $purchasedPlanIds = $payments->pluck('plan_id')->toArray();
-            $notPurchasedPlans = Plan::whereNotIn('id', $purchasedPlanIds)->get();
+            $notPurchasedPlans = Plan::whereNotIn('id', $purchasedPlanIds)
+                ->whereNotIn('id', function ($query) {
+                    $query->select('sub_plan_id')->from('plan_sub_plans');
+                })->get();
 
             if ($isQuestionnaireSubmitted && !$isQuestionnaireSubmitted->is_complete) {
                 $payment = $payments->first();
@@ -2089,7 +2092,7 @@ class FrontController extends Controller
     public function surgeryPlan(Request $request)
     {
         $page        = Page::with('sections')->where('slug', 'surgery_plan')->first();
-        $planDetails = Plan::where('name', 'Injury Recovery + Post Surgery')->first();
+        $planDetails = Plan::where('name', 'Pre & Post Surgery Plan')->first();
         $consultations = Consultation::whereIn('time', [30, 60])->get();
 
         return view('front.pages.surgery_plan', compact('page', 'planDetails', 'consultations'));

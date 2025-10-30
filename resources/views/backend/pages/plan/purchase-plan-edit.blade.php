@@ -372,8 +372,11 @@
                                             case 'Competition Plan':
                                                 $route = route('front.competition.plan');
                                                 break;
-                                            case 'Injury Recovery + Post Surgery':
+                                            case 'Pre & Post Surgery Plan':
                                                 $route = route('front.surgery.plan');
+                                                break;
+                                            default:
+                                                $route = route('front.profile', ['id' => $firstUserPlan->user_id, 'payment_id' => $payment->id]);
                                                 break;
                                         }
                                     } else {

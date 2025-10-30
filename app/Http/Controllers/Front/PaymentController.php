@@ -349,8 +349,11 @@ class PaymentController extends Controller
                 ->exists();
 
             if ($hasCompletedQuestionnaire) {
+                $plan = Plan::with('subPlans')->find($validated['plan_id']);
+
+                // ✅ Insert main plan
                 DB::table('user_plans')->updateOrInsert(
-                    ['user_id' => $user->id, 'plan_id' => $validated['plan_id']],
+                    ['user_id' => $user->id, 'plan_id' => $plan->id],
                     [
                         'status'      => 'created',
                         'modified_by' => auth()->id(),
@@ -358,6 +361,21 @@ class PaymentController extends Controller
                         'created_at'  => now(),
                     ]
                 );
+
+                // ✅ Insert sub-plans if any
+                if ($plan && $plan->subPlans->isNotEmpty()) {
+                    foreach ($plan->subPlans as $subPlan) {
+                        DB::table('user_plans')->updateOrInsert(
+                            ['user_id' => $user->id, 'plan_id' => $subPlan->id],
+                            [
+                                'status'      => 'created',
+                                'modified_by' => auth()->id(),
+                                'updated_at'  => now(),
+                                'created_at'  => now(),
+                            ]
+                        );
+                    }
+                }
             }
 
             DB::commit();
@@ -1001,37 +1019,48 @@ class PaymentController extends Controller
             }
 
             // Ensure entry in user_plans if questionnaire already complete
+            // ✅ Step 1: Check questionnaire completion
             $hasCompletedQuestionnaire = UserPrePlan::where('user_id', $user->id)
                 ->where('is_complete', 1)
                 ->exists();
 
-            if ($hasCompletedQuestionnaire) {
-                $userPlan = UserPlan::updateOrCreate(
-                    ['user_id' => $user->id, 'plan_id' => $validated['plan_id']],
-                    [
-                        'status' => 'active',
-                        'modified_by' => auth()->id(),
-                        'updated_at' => now(),
-                    ]
-                );
+            // ✅ Step 2: Fetch plan with sub-plans
+            $plan = Plan::with('subPlans')->find($validated['plan_id']);
 
-                $profileLandingPage = route('front.profile', $user->id);
-                $plan = Plan::find($validated['plan_id']);
-                Mail::to($user->email)->send(new PlanPurchaseMail($user, $plan->name, $profileLandingPage));
-            } else {
-                // Create user plan entry even if questionnaire not complete
-                $userPlan = UserPlan::updateOrCreate(
-                    ['user_id' => $user->id, 'plan_id' => $validated['plan_id']],
-                    [
-                        'status' => 'pending',
-                        'modified_by' => auth()->id(),
-                        'updated_at' => now(),
-                    ]
-                );
-                $profileLandingPage = route('front.profile', $user->id);
-                $plan = Plan::find($validated['plan_id']);
-                Mail::to($user->email)->send(new PlanPurchaseMail($user, $plan->name, $profileLandingPage));
+            // ✅ Step 3: Insert main plan
+            $userPlan = UserPlan::updateOrCreate(
+                ['user_id' => $user->id, 'plan_id' => $plan->id],
+                [
+                    'status' => $hasCompletedQuestionnaire ? 'active' : 'pending',
+                    'modified_by' => auth()->id(),
+                    'updated_at' => now(),
+                    'created_at' => now(),
+                ]
+            );
+
+            // ✅ Step 4: Insert all sub-plans (if any)
+            if ($plan->subPlans->isNotEmpty()) {
+                $subPlanIds = $plan->subPlans->pluck('id')->toArray();
+
+                foreach ($subPlanIds as $subPlanId) {
+                    UserPlan::updateOrCreate(
+                        ['user_id' => $user->id, 'plan_id' => $subPlanId],
+                        [
+                            'status' => $hasCompletedQuestionnaire ? 'active' : 'pending',
+                            'modified_by' => auth()->id(),
+                            'updated_at' => now(),
+                            'created_at' => now(),
+                        ]
+                    );
+                }
             }
+
+            // ✅ Step 5: Update payment with main user_plan_id
+            $payment->update(['user_plan_id' => $userPlan->id]);
+
+            // ✅ Step 6: Send plan purchase mail for main plan
+            $profileLandingPage = route('front.profile', $user->id);
+            Mail::to($user->email)->send(new PlanPurchaseMail($user, $plan->name, $profileLandingPage));
 
             // Update payment with user_plan_id
             $payment->update(['user_plan_id' => $userPlan->id]);

@@ -577,18 +577,23 @@ class PurchasePlanController extends Controller
         try {
             $payment    = Payment::find($planId);
             $plan       = $payment->plan;
-            $subPlanIds = $plan->subPlans->pluck('id')->toArray();
+            $planId = $plan->id; // your current plan
+            $userId = $user->id;
 
-            $userPlans = UserPlan::with([
-                'plan.categories' => function ($query) {
-                    $query->select('categories.id', 'categories.title');
-                },
-            ])
-                ->where('user_id', $user->id)
-                ->where('plan_id', $plan->id)
-                ->when($subPlanIds, function ($query) use ($subPlanIds) {
-                    return $query->orWhereIn('plan_id', $subPlanIds);
-                })->get();
+            // Step 1: Get sub plan IDs for this main plan
+            $subPlanIds = $plan->subPlans()->pluck('plans.id')->toArray(); // ensure correct table alias
+
+            // Step 2: Combine main + sub plan IDs
+            $planIds = array_merge([$planId], $subPlanIds);
+
+            // Step 3: Fetch user plans
+            $userPlans = UserPlan::with(['plan.categories' => function ($query) {
+                $query->select('categories.id', 'categories.title');
+            }])
+            ->where('user_id', $userId)
+            ->whereIn('plan_id', $planIds)
+            ->get();
+
 
             if (! $userPlans) {
                 return redirect()->route('admin.purchase-plans.index')->with('error', 'User Plan not found.');
@@ -845,9 +850,9 @@ class PurchasePlanController extends Controller
                 'plan',
                 'userCategories.userSubcategories.userMeals.userItems',
             ])
-                ->where('user_id', $request->user_id)
-                ->whereIn('plan_id', $request->plan_id)
-                ->get();
+            ->where('user_id', $request->user_id)
+            ->whereIn('plan_id', $request->plan_id)
+            ->get();
 
             // Check if the UserPlan exists
             if (! $userPlans) {
