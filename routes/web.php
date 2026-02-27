@@ -29,6 +29,7 @@ use App\Http\Controllers\Admin\SiteSettingsController;
 use App\Http\Controllers\Admin\SportCategoryController;
 use App\Http\Controllers\Front\ForgotPasswordController;
 use App\Http\Controllers\Front\OtpRegistrationController;
+use App\Http\Controllers\Front\SportInquiresController;
 use App\Http\Controllers\Front\PlanController as FrontPlanController;
 use App\Http\Controllers\Front\QuizController as FrontQuizController;
 use App\Http\Controllers\Front\ConsultationController as FrontConsultationController;
@@ -388,6 +389,7 @@ Route::prefix('quiz')->group(function () {
     Route::post('/nutrition-score', [FrontQuizController::class, 'getNutritionScore'])->name('front.quiz.nutrition-score');
 });
 
+Route::post('/sport-inquires', [SportInquiresController::class, 'sportInquires'])->name('front.sport-inquires');
 Route::get('/about-us', [FrontController::class, 'aboutUs'])->name('front.about-us');
 Route::get('/terms-and-conditions', [FrontController::class, 'termsAndConditions'])->name('front.terms-and-conditions');
 Route::get('/privacy-policy', [FrontController::class, 'privacyPolicy'])->name('front.privacy-policy');

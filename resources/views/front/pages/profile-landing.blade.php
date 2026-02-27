@@ -15,7 +15,7 @@
                     <div class="welcome-message" style="position: relative;">
                         <h2>Welcome back legend! How's your week going?</h2>
                         <div class="welcome-row">
-                            <a class="start-chat" id="start-chat-link">Start chat</a>
+                            <!--<a class="start-chat" id="start-chat-link">Start chat</a>-->
                             <span class="assistant-name">Kerry O'Bryan Virtual</span>
                         </div>
                         <img src="{{ frontAssets('images/profile.svg') }}" alt="Profile" class="profile-avatar-overlap" />

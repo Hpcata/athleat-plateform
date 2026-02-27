@@ -11,6 +11,7 @@
 		"php": "^7.3|^8.0",
 		"barryvdh/laravel-dompdf": "^3.0",
 		"cviebrock/eloquent-sluggable": "^9.0",
+		"doctrine/dbal": "*",
 		"fruitcake/laravel-cors": "^2.0",
 		"guzzlehttp/guzzle": "^7.0.1",
 		"laravel/framework": "^9.0",
