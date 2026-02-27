@@ -15,6 +15,7 @@ return new class extends Migration
     {
         if (Schema::hasTable('items') && ! Schema::hasColumn('items', 'fat')) {
             Schema::table('items', function (Blueprint $table) {
+                 $table->decimal('carbs', 7, 2)->nullable();
                 $table->decimal('fat', 5, 2)->nullable()->after('carbs');
             });
         }
@@ -30,6 +31,7 @@ return new class extends Migration
         if (Schema::hasTable('items') && Schema::hasColumn('items', 'fat')) {
             Schema::table('items', function (Blueprint $table) {
                 $table->dropColumn('fat');
+                $table->dropColumn('carbs');
             });
         }
     }

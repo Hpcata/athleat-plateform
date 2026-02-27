@@ -187,10 +187,10 @@
                         <div class="chat-avatar">
                             <img src="{{ frontAssets('images/virtual kez.svg') }}" alt="Virtual Kez Avatar" />
                         </div>
-                        <div class="chat-bubble">
+                        <!-- <div class="chat-bubble">
                             <span>Hi, I’m Virtual Kez. Try calling me for free!</span>
                             <img src="{{ frontAssets('images/bubble-arrow.svg') }}" alt="Virtual Kez Avatar" class="bubble-arrow" />
-                        </div>
+                        </div>-->
                     </div>
                 </div>
 
@@ -364,7 +364,7 @@
                                                 <div class="feature-content">
                                                     <h3>Food Made Easy with Tools + Skills + Confidence</h3>
                                                     <p>
-                                                        Fast, real food prep with tips, shortcuts, and practical know-how.
+                                                        Fast, real food prep with tips, shortcuts, and practical know-how library.
                                                     </p>
                                                 </div>
                                             </div>
@@ -394,7 +394,7 @@
                                                 </div>
                                             </div>
 
-                                            <div class="feature-item">
+                                            <!--<div class="feature-item">
                                                 <div class="feature-icon">
                                                     <img src="{{ frontAssets('images/Phone.svg') }}" width="24" height="24"
                                                         alt="Phone" />
@@ -445,7 +445,7 @@
                                                         Track meals, upload pics and get progress feedback in our platform. *Coming Soon
                                                     </p>
                                                 </div>
-                                            </div>
+                                            </div>-->
                                         </div>
                                     </div>
 
@@ -460,7 +460,7 @@
                                                     <img src="{{ frontAssets('images/bulb.svg') }}" width="25" height="33" alt="bulb" />
                                                 </div>
                                                 <div class="feature-content">
-                                                    <h3>Knowledge & Tools </h3>
+                                                    <h3>Knowledge and skills Library </h3>
                                                     <p>
                                                         Understand how your choices impact energy,ecovery, and long-term gains.
                                                     </p>
@@ -481,7 +481,7 @@
                                             </div>
 
 
-                                            <div class="feature-item">
+                                            <!--<div class="feature-item">
                                                 <div class="feature-icon">
                                                     <img src="{{ frontAssets('images/Phone.svg') }}" width="25" height="33"
                                                         alt="bulb" />
@@ -492,9 +492,7 @@
                                                         Get 24/7 support with Virtual Kez Calls – from food to recovery advice.
                                                     </p>
                                                 </div>
-                                            </div>
-
-
+                                            </div>-->
                                             <div class="feature-item">
                                                 <div class="feature-icon">
                                                     <img src="{{ frontAssets('images/information.svg') }}" width="25" height="33"
@@ -507,8 +505,20 @@
                                                     </p>
                                                 </div>
                                             </div>
+                                             <div class="feature-item">
+                                                <div class="feature-icon">
+                                                    <img src="{{ frontAssets('images/Medal.svg') }}" width="33" height="33"
+                                                        alt="Balanced meal with lean protein and vegetables" />
+                                                </div>
+                                                <div class="feature-content">
+                                                    <h3>Built by a Pro</h3>
+                                                    <p>
+                                                        Created by  Kerry O’Bryan- Extreme Sports Dietition to Olympic gold medalists and  pro sports like NRL, Surfing, Skate, and BMX champions.
+                                                    </p>
+                                                </div>
+                                            </div>
 
-                                            <div class="feature-item">
+                                            <!--<div class="feature-item">
                                                 <div class="feature-icon">
                                                     <img src="{{ frontAssets('images/Gift.svg') }}" width="25" height="33" alt="bulb" />
                                                 </div>
@@ -531,7 +541,7 @@
                                                        Built-in tracking, meal photo uploads, and progress checks through our secure platform *coming soon
                                                     </p>
                                                 </div>
-                                            </div>
+                                            </div>-->
                                         </div>
                                     </div>
                                 </div>
@@ -822,7 +832,7 @@
                                     the quiz to test your nutrition knowledge and discover how to fuel
                                     smarter-whether for performance, recovery, or everyday energy.
                                 </p>
-                                <button class="btn-learn-more-blue" data-bs-toggle="modal" data-bs-target="#quizModal">Start the quiz</button>
+                                <a class="btn-learn-more-blue" href="https://athleat.thinkific.com/courses/NutritionQuiz">Start the quiz</a>
                             </div>
                             <img @if(!empty($section->banner_image[1])) src="{{ asset('storage/' . $section->banner_image[1]) }}" @endif
                                 alt="Nutrition quiz" class="sport-nutrition-promo__bg--right sport-nutrition-promo__bg" />
@@ -1136,8 +1146,8 @@
                 e.preventDefault();
 
                 // TODO: Remove this after testing
-                $('#comingSoonModal').modal('show');
-                return;
+               // $('#comingSoonModal').modal('show');
+                //return;
 
                 // iOS-specific form handling
                 if (isIOS()) {
@@ -1170,6 +1180,44 @@
 
                 // Show the modal
                 $("#confirmationModal").modal("show");
+                $("#category").val($("#sport option:selected").text());
+                $("#sport_game_txt").val(sportGame);
+                $("#state").val(state);
+                document.getElementById('sportInquiryForm').addEventListener('submit', function(e) {
+                        e.preventDefault();
+                        let button = $('#inquiryBtn');
+
+                        button.prop('disabled', true);
+                        button.find('.btn-text').hide();
+                        button.find('.btn-loader').show();
+                        let formData = new FormData(this);
+
+                        fetch("{{ route('front.sport-inquires') }}", {
+                            method: "POST",
+                            headers: {
+                            'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value
+                            },
+                            body: formData
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if(data.success) {
+                                document.getElementById('successMessage').innerText = data.message;
+                                document.getElementById('successMessage').style.display = 'block';
+                                document.getElementById('sportInquiryForm').reset();
+                                 button.prop('disabled', false);
+                                 button.find('.btn-text').show();
+                                 button.find('.btn-loader').hide();
+                            }
+                           
+                        }).catch(error => {
+                             alert("Something went wrong.");
+                              button.prop('disabled', false);
+                              button.find('.btn-text').show();
+                              button.find('.btn-loader').hide();
+                        });
+                });
+                return;
             };
         });
 
