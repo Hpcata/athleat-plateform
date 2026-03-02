@@ -124,7 +124,7 @@
                         <div class="resource-title">Supplement scanner</div>
                     </div>
 
-                    <div class="cursor-pointer resource-card-custom resource-chat hover-card" id="chat-to-virtual-kez-btn">
+                    <!--<div class="cursor-pointer resource-card-custom resource-chat hover-card" id="chat-to-virtual-kez-btn">
                         <img src="{{ frontAssets('images/cardimg-2.webp') }}" class="resource-bg-img"
                             alt="Chat resource background" />
                         <div class="icon-bg">
@@ -132,7 +132,7 @@
                                 alt="Chat icon for virtual Kez" />
                         </div>
                         <div class="resource-title">Chat to Virtual Kez</div>
-                    </div>
+                    </div>-->
                     <div class="resource-card-custom resource-tip">
                         <div class="tip-title">Kez's Tip of the Day</div>
                         <div class="tip-text">

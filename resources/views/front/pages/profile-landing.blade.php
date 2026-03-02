@@ -14,12 +14,12 @@
                 <div class="welcome-card hover-card" id="welcome-card">
                     <div class="welcome-message" style="position: relative;">
                         <h2>Welcome back legend! How's your week going?</h2>
-                        <div class="welcome-row">
-                            <!--<a class="start-chat" id="start-chat-link">Start chat</a>-->
+                        <!--<<div class="welcome-row">
+                            <a class="start-chat" id="start-chat-link">Start chat</a>
                             <span class="assistant-name">Kerry O'Bryan Virtual</span>
                         </div>
                         <img src="{{ frontAssets('images/profile.svg') }}" alt="Profile" class="profile-avatar-overlap" />
-                        <div class="welcome-arrow"></div>
+                        <div class="welcome-arrow"></div>-->
                     </div>
                 </div>
             </section>
@@ -158,11 +158,11 @@
                     <div class="cursor-pointer resource-card-custom resource-chat hover-card" id="chat-to-virtual-kez-btn">
                         <img src="{{ frontAssets('images/cardimg-2.webp') }}" class="resource-bg-img"
                             alt="Chat resource background" />
-                        <div class="icon-bg">
+                    <!--    <div class="icon-bg">
                             <img src="{{ frontAssets('images/chat.svg') }}" class="resource-bg-img"
                                 alt="Chat icon for virtual Kez" />
                         </div>
-                        <div class="resource-title">Chat to Virtual Kez</div>
+                        <div class="resource-title">Chat to Virtual Kez</div>-->
                     </div>
                     <div class="resource-card-custom resource-tip">
                         <div class="tip-title">Kez's Tip of the Day</div>
