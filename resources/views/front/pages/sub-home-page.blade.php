@@ -183,11 +183,11 @@
                         </div>
                     </div>
                     <!-- Chat Widget -->
-                    <div class="chat-widget desktop-view mob-hide">
+                    <!-- <div class="chat-widget desktop-view mob-hide">
                         <div class="chat-avatar">
                             <img src="{{ frontAssets('images/virtual kez.svg') }}" alt="Virtual Kez Avatar" />
                         </div>
-                        <!-- <div class="chat-bubble">
+                        <div class="chat-bubble">
                             <span>Hi, I’m Virtual Kez. Try calling me for free!</span>
                             <img src="{{ frontAssets('images/bubble-arrow.svg') }}" alt="Virtual Kez Avatar" class="bubble-arrow" />
                         </div>-->
