@@ -333,7 +333,7 @@ if (downloadPdfBtn) {
 const shoppingListDownload = document.getElementById("shopping-list-download");
 if (shoppingListDownload) {
     shoppingListDownload.addEventListener("click", function () {
-        const content = document.getElementById("pdf-content");
+        const content = document.getElementById("shopping-list-content");
         if (!content) return;
         if (typeof html2pdf === "undefined") {
             const script = document.createElement("script");
