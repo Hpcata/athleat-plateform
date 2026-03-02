@@ -677,9 +677,9 @@
             Promise.all(promises).then(() => {
 
                 // Set margins (in inches: 1in = 25.4mm = 72pt)
-                const topMargin = 0.3; // ~15mm
+                const topMargin = 0; // ~15mm
                 const bottomMargin = 1.0; // ~18mm (footer + buffer)
-                const leftRightMargin = 0.3;
+                const leftRightMargin = 0;
 
                 const container = document.getElementById('pdf-content');
                 addPageBreaks(container, topMargin, bottomMargin);
@@ -898,14 +898,14 @@
                 pageBreak.style.cssText = `
                 page-break-before: always;
                 break-before: page;
-                margin: 0 0 10px 0;
+                margin: 0 0 0px 0;
                 padding: 0;
                 border: none;
                 background: red;
                 display: block;
             `;
 
-            element.parentNode.insertBefore(pageBreak, element);
+            //element.parentNode.insertBefore(pageBreak, element);
         }
 
         // Helper to convert images to base64
