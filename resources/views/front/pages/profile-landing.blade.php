@@ -13,7 +13,7 @@
             <section class="welcome-section">
                 <div class="welcome-card hover-card" id="welcome-card">
                     <div class="welcome-message" style="position: relative;">
-                        <h2>Welcome back legend! How's your week going?</h2>
+                        <h2>Welcome back legend!</h2>
                         <!--<<div class="welcome-row">
                             <a class="start-chat" id="start-chat-link">Start chat</a>
                             <span class="assistant-name">Kerry O'Bryan Virtual</span>
@@ -155,7 +155,7 @@
                         <div class="resource-title">Supplement scanner</div>
                     </div>
 
-                    <div class="cursor-pointer resource-card-custom resource-chat hover-card" id="chat-to-virtual-kez-btn">
+                    <div class="cursor-pointer resource-card-custom resource-chat hover-card">
                         <img src="{{ frontAssets('images/cardimg-2.webp') }}" class="resource-bg-img"
                             alt="Chat resource background" />
                     <!--    <div class="icon-bg">
