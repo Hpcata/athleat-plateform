@@ -237,6 +237,9 @@
                         </a>
                         <ul class="dropdown-menu">
                             <li>
+                                <a class="dropdown-item" href="https://athleat.thinkific.com/collections" target="_blank">Free Info & Course</a>
+                            </li>
+                            <li>
                                 <a class="dropdown-item" href="{{ route('front.training.nutrition.plan') }}">Training Nutrition Plan</a>
                             </li>
                             <li>
