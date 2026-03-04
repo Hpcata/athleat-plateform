@@ -34,7 +34,7 @@ class SportInquiresController extends Controller
         Mail::to('kerry@athleat.com')->send(new SportInquiryMail($inquiry->toArray()));
         return response()->json([
                 'success' => true,
-            'message' => 'Thanks for subscribe'
+            'message' => 'Thanks for subscribing'
         ]);
     }
     
