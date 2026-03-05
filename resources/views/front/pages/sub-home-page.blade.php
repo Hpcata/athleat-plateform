@@ -52,7 +52,15 @@
         color: #333 !important;
         font-weight: 500 !important;
     }
-    
+       @media only screen and (max-width: 600px){
+            .sport-nutrition-promo_bg
+            {
+                right:4px !important;
+                height:90px !important;
+                width:90px !important;
+            }
+           
+        }
 </style>
 
 @section('content')
