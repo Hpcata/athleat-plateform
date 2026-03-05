@@ -52,6 +52,7 @@
         color: #333 !important;
         font-weight: 500 !important;
     }
+    
 </style>
 
 @section('content')
@@ -111,6 +112,7 @@
             color: #000;
             text-decoration: underline;
         }
+      
     </style>
 
     @php
@@ -296,7 +298,7 @@
                         </button>
                     </div>
 
-                    <!-- Chat Widget -->
+                    <!-- Chat Widget
                     <div class="chat-widget mobile-view web-hide">
                         <div class="chat-avatar">
                             <img src="{{ frontAssets('images/virtual kez.svg') }}" alt="Virtual Kez Avatar" />
@@ -305,7 +307,7 @@
                             <span>Hi, I’m Virtual Kez. Try calling me for free!</span>
                             <img src="{{ frontAssets('images/bubble-arrow.svg') }}" alt="Virtual Kez Avatar" class="bubble-arrow" />
                         </div>
-                    </div>
+                    </div> -->
                 </section>
             @endif
             @if($section->section_type == \App\Models\Section::TYPE_WHY_IT_WORKS && $section->enabled == 1)
@@ -662,8 +664,8 @@
                                 </div>
                             </div>
                             <div class="col-md-4 web-hide">
-                                <div class="plan-card">
-                                    
+                                <div class="plan-card" style="position:relative;">
+                                     <img src="{{ asset('front/images/comming_soon.jpg') }}" alt="Nutrition quiz" class="sport-nutrition-promo_bg--right sport-nutrition-promo_bg position-absolute" style="bottom: 20px;right: 20px;width: 120px;height: 120px;display: block;top: unset;left: unset;">
                                     <div class="plan-card-wrapper">
                                         <div class="plan-icon">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42"
