@@ -298,8 +298,7 @@
                         <button class="btn-learn-more-blue me-2" id="show-new-signup-modal" onclick="openSingupFreePopup()">Sign up for free </button>
                     @endif
 
-                    {{-- Virtual Kez button --}}
-                    <button class="btn-login web-hide" id="virtual-kez-button" onclick="closeMobileMenuAndOpenDelphi()">Virtual Kez</button>
+                    
                 </div>
             </div>
         </div>
