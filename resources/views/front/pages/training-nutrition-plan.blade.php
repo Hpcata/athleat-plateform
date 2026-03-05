@@ -11,8 +11,8 @@
             .sport-nutrition-promo_bg
             {
                 right:4px !important;
-                height:90px !important;
-                width:90px !important;
+                height:80px !important;
+                width:80px !important;
             }
             .pricing-buttons .btn-login{height:73px;}
         }
