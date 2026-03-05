@@ -6,6 +6,17 @@
 @php
     $intresetsmallimg1 = $intresetsmallimg2 = $intrestimg1 = $intrestimg2 = $blueBadgeImg = '';
 @endphp
+<style>
+      @media only screen and (max-width: 600px){
+            .sport-nutrition-promo_bg
+            {
+                right:4px !important;
+                height:90px !important;
+                width:90px !important;
+            }
+            .pricing-buttons .btn-login{height:73px;}
+        }
+</style>
 @section('content')
     @if(isset($page->sections))
         @foreach($page->sections as $section)
